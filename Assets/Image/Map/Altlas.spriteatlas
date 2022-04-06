@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Altlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: iPhone
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 33
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    - serializedVersion: 3
+      m_BuildTarget: Android
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 47
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: c4ab7069843d52a4b8342a0926e6eefd, type: 3}
+    - {fileID: 2800000, guid: e9c29e34e42fc2849b066fcb28dcb069, type: 3}
+    - {fileID: 21300000, guid: dc5f180e0cf047349a5fe8b4a0ca97bc, type: 3}
+    - {fileID: 21300000, guid: 8cd35cd2af907f24bbc70fbe8f5ecfca, type: 3}
+    - {fileID: 21300000, guid: e27fc300303b95547b7ff2395165e33c, type: 3}
+    - {fileID: 21300000, guid: 9929abb2ec73f9d458adfd6d4c93cada, type: 3}
+    - {fileID: 21300000, guid: 18830d12ff2c4a44c9f114060baaddf8, type: 3}
+    - {fileID: 2800000, guid: b6cafa65a536a674ebecdf4cb89dc60a, type: 3}
+    - {fileID: 2800000, guid: 3b45a329a184cc24d9aa24611999ceef, type: 3}
+    - {fileID: 2800000, guid: 9c8cc0128dfb9e443a6047ec72bb20d9, type: 3}
+    - {fileID: 2800000, guid: f3f1c42f9e216fe438a47b9928cc30ed, type: 3}
+    - {fileID: 21300000, guid: d82a1f4612e895c4bbda4af09d26efb6, type: 3}
+    - {fileID: 2800000, guid: dde6b5b1e96c8974aa5a13091fe192ad, type: 3}
+    - {fileID: 2800000, guid: 00afc91de2ed82b4cbbc8e456009a14e, type: 3}
+    - {fileID: 2800000, guid: d7857f6b3c4b27246be5728915a1a7aa, type: 3}
+    - {fileID: 2800000, guid: f3aabdffa8bb4ab4da50b1d117454b17, type: 3}
+    - {fileID: 2800000, guid: 66167caa657dbb44498319d188b99499, type: 3}
+    - {fileID: 2800000, guid: 918ec98fdb16c1f48b7dbb82803cfc9f, type: 3}
+    - {fileID: 2800000, guid: 84a4a887a3cf26048bfba56564b08d13, type: 3}
+    - {fileID: 2800000, guid: 68b5bf2c14138e34aa59ecf8191d566a, type: 3}
+    - {fileID: 2800000, guid: 004829d825c37974e8d5fa44a2e5128b, type: 3}
+    - {fileID: 2800000, guid: a014978232c0b8b499990a7319312169, type: 3}
+    - {fileID: 2800000, guid: 4ffd53eb11a04d14f89bb62dfa40a79e, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: e27fc300303b95547b7ff2395165e33c, type: 3}
+  - {fileID: 21300000, guid: dde6b5b1e96c8974aa5a13091fe192ad, type: 3}
+  - {fileID: 21300000, guid: 9c8cc0128dfb9e443a6047ec72bb20d9, type: 3}
+  - {fileID: 21300000, guid: 18830d12ff2c4a44c9f114060baaddf8, type: 3}
+  - {fileID: 21300000, guid: a014978232c0b8b499990a7319312169, type: 3}
+  - {fileID: 21300000, guid: 9929abb2ec73f9d458adfd6d4c93cada, type: 3}
+  - {fileID: 21300000, guid: 8cd35cd2af907f24bbc70fbe8f5ecfca, type: 3}
+  - {fileID: 21300000, guid: e9c29e34e42fc2849b066fcb28dcb069, type: 3}
+  - {fileID: 21300000, guid: b6cafa65a536a674ebecdf4cb89dc60a, type: 3}
+  - {fileID: 21300000, guid: d82a1f4612e895c4bbda4af09d26efb6, type: 3}
+  - {fileID: 21300000, guid: 84a4a887a3cf26048bfba56564b08d13, type: 3}
+  - {fileID: 21300000, guid: 004829d825c37974e8d5fa44a2e5128b, type: 3}
+  - {fileID: 21300000, guid: 3b45a329a184cc24d9aa24611999ceef, type: 3}
+  - {fileID: 21300000, guid: c4ab7069843d52a4b8342a0926e6eefd, type: 3}
+  - {fileID: 21300000, guid: 66167caa657dbb44498319d188b99499, type: 3}
+  - {fileID: 21300000, guid: d7857f6b3c4b27246be5728915a1a7aa, type: 3}
+  - {fileID: 21300000, guid: 4ffd53eb11a04d14f89bb62dfa40a79e, type: 3}
+  - {fileID: 21300000, guid: 68b5bf2c14138e34aa59ecf8191d566a, type: 3}
+  - {fileID: 21300000, guid: 00afc91de2ed82b4cbbc8e456009a14e, type: 3}
+  - {fileID: 21300000, guid: dc5f180e0cf047349a5fe8b4a0ca97bc, type: 3}
+  - {fileID: 21300000, guid: f3f1c42f9e216fe438a47b9928cc30ed, type: 3}
+  - {fileID: 21300000, guid: 918ec98fdb16c1f48b7dbb82803cfc9f, type: 3}
+  - {fileID: 21300000, guid: f3aabdffa8bb4ab4da50b1d117454b17, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Door.4
+  - LettreE
+  - LettreB
+  - Door.7
+  - Wall_Torch
+  - Door.3
+  - Door.2
+  - CaveSansPortes
+  - Door_open_wihtoutcrane 1
+  - LettreD
+  - bleu
+  - CleCassee
+  - LettreA
+  - arbres-bottom
+  - Skull 1
+  - mure_extraPorte
+  - HexagoneTuo
+  - Cle
+  - LettreF
+  - Door 1
+  - LettreC
+  - Barricade
+  - mure_extraPorte 1
+  m_RenderDataMap: {}
+  m_Tag: Altlas
+  m_IsVariant: 0

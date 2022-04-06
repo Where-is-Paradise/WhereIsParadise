@@ -1,0 +1,131 @@
+{
+  "menu_trailer_skip":"Clique pour passer",
+  "menu_presentation_launch": "Clique pour commencer..",
+  "menu_play":"Jouer",
+  "menu_setting":"Paramètres",
+  "menu_about":"À propos",
+  "menu_quit":"Quitter",
+
+  "menu_matchmaking":"Trouver une partie",
+  "menu_createLobby":"Créer une partie",
+  "menu_joinLobby":"Rejoindre une partie",
+
+  "menu_placeholder_pseudo":"Votre pseudo..",
+  "menu_join":"Rejoindre",
+
+  "menu_placeholder_enterCode":"Entrer le code",
+  "menu_difficulty_easy":"Facile",
+  "menu_difficulty_medium":"Moyen",
+  "menu_difficulty_hard":"Difficile",
+  "menu_foggyRoom":"Salles embrumées",
+  "menu_virusRoom":"Salles contaminées",
+  "menu_hellRoom":"Salle de l'Enfer",
+  "menu_roomWithKey":"Salles avec clef",
+  "menu_miniMap":"Carte",
+  "menu_KeyInMap":"Clefs affichées",
+  "menu_start":"Lancer",
+  "menu_error_codeRoomIsIncorrect":"Le code est incorrect.",
+  "menu_information_connection":"Connexion..",
+  "menu_information_connection_buttonCancel":"Annuler",
+
+  "waitingRoom_players":"Joueurs",
+  "waitingRoom_code":"Code : ",
+  "waitingRoom_searchPlayer":"Recherche de joueurs..",
+  "waitingRoom_button_setting":"Paramètres",
+
+
+  "menu_setting_controls":"Controles",
+  "menu_setting_controls_moveForward":"Avancer",
+  "menu_setting_controls_moveBackward":"Reculer",
+  "menu_setting_controls_moveRight":"Droite",
+  "menu_setting_controls_moveLeft":"Gauche",
+  "menu_setting_controls_exploration":"Exploration",
+  "menu_setting_controls_voteDoor":"Vote de Porte",
+  "menu_setting_controls_Map":"Carte",
+
+  "menu_setting_video":"Video",
+  "menu_setting_video_resolution":"Résolution",
+  "menu_setting_video_fullscreen":"Fullscreen",
+  "menu_setting_video_apply":"Appliquer",
+
+  "menu_setting_audio":"Audio",
+  "menu_setting_audio_mainVolume":"Principale",
+  "menu_setting_audio_musicVolume":"Musique",
+  "menu_setting_audio_mute":"Muet",
+
+
+  "menu_setting_language":"Langage",
+  "menu_setting_language_relaunch":"Le jeu doit se relancer..",
+
+  "Loading" : "Chargement..",
+
+  "panel_information_corruptedSoul":"Âme corrompue",
+  "panel_information_lostSoul":"Âme égarée",
+  "game_echap_quit":"Quitter la partie",
+  "game_echap_unblockPlayer_description":"Si votre personnage (ou la salle) est bloqué, vous pouvez cliquer sur le bouton ci-dessous, ce qui permettra de réinitialiser votre personnage et la salle dans laquelle vous vous trouvez.",
+  "game_echap_unblockPlayer":"Débloquer joueur",
+
+  "game_echap_tutorial":"Tutoriel",
+  "game_echap_tutorial_initialTutorial":"Lancer le tutoriel de départ",
+  "game_echap_tutorial_doorVote":"Vote de porte",
+  "game_echap_tutorial_playerRole":"Rôles des joueurs",
+  "game_echap_tutorial_exploration":"Exploration",
+  "game_echap_tutorial_specialRoom":"Salles spéciales",
+
+  "game_echap_tutorial_doorVote_1":"Lorsque le chef d'équipe vote pour choisir une porte (rester appuyé sur la touche F par défaut), cela affiche les zones de portes avec les lettres correspondantes.",
+  "game_echap_tutorial_doorVote_2":"Pour que le vote soit pris en compte, il suffit que le joueur se trouve dans la zone rectangle correspondant à la porte que le joueur souhaite ouvrir.",
+  "game_echap_tutorial_doorVote_3":"La porte avec le plus grand nombre de joueurs s'ouvre.",
+
+  "game_echap_tutorial_playerRole_1":"Les âmes égarées doivent trouver le paradis.",
+  "game_echap_tutorial_playerRole_2":"Les âmes corrompues doivent obliger l'équipe à utiliser toutes les clés,\n\n Elles sont désignées aléatoirement et se distinguent par les cornes.
+ Elles ont la capacité de voir où se trouvent les différents types de salles (Paradis, Enfer, salle embrumée, etc.)",
+ "game_echap_tutorial_playerRole_3":"Un nouveau chef d'équipe est désigné aléatoirement à chaque vote de l'équipe (vote pour ouvrir une porte ou vote pour une exploration annulé).\n\nIl se distingue par sa couronne.\n\n1) Il a la capacité de lancer une exploration (si le conditions sont remplies).\n2) Il a la possibilité de voter pour choisir une porte à ouvrir.",
+
+ "game_echap_tutorial_exploration_1":"Pour lancer une exploration, vous devez choisir le(s) joueur(s) avec le clic gauche de la souris.",
+ "game_echap_tutorial_exploration_2":"Le ou les joueurs sélectionnés doivent se trouver dans la zone de la porte jusqu'à ce que la lettre s'affiche au-dessus du joueur.\nLe joueur qui a par exemple la porte C peut explorer la salle derrière la porte C (si l'équipe accepte l'exploration).",
+ "game_echap_tutorial_exploration_3":"Le chef d'équipe peut lancer l'exploration avec la touche E (restez appuyé sur E par défaut).",
+ "game_echap_tutorial_exploration_4":"Lorsqu'un joueur explore une salle, il a la possibilité de voir le nombre de salles qu'il doit traverser pour atteindre la salle du Paradis.",
+ "game_echap_tutorial_exploration_*":"1. Une seule exploration est possible par salle, à chaque fois qu'une clé est utilisée, la possibilité d'exploration est déverrouillée.",
+
+ "game_echap_tutorial_specialRoom_1":"Les salles embrumées ont la capacité de masquer la distance qui s'affiche lors de l'exploration (si un joueur entre dans une salle embrumée pendant l'exploration, il ne verra pas la distance entre lui et le paradis).",
+ "game_echap_tutorial_specialRoom_2":"Les salles contaminées ont la capacité de modifier un vote concernant l'ouverture d'une porte, lorsqu'un vote est terminé dans une salle contaminée, une porte au hasard s'ouvre.",
+ "game_echap_tutorial_specialRoom_3":"Lorsque l'équipe est à une et une seule salle du Paradis, l'enfer apparaît à une salle de là où trouve l'équipe de joueurs. si l'équipe entre dans cette salle, quel que soit son nombre de clés, c'est terminé !",
+ "game_echap_tutorial_specialRoom_4":"Les salles de clés permettent de récupérer une clé supplémentaire pour l'équipe.",
+
+  "tutorial_initial_LostSoul_0" : "Âme égarée",
+  "tutorial_initial_LostSoul_1" : "Vous êtes une âme égarée et votre objectif est de trouver la porte du Paradis !",
+  "tutorial_initial_LostSoul_2" : "Mais attention dans votre équipe se cache des âmes compompues",
+
+  "tutorial_initial_CorruptedSoul_0" : "Âme corrompue",
+  "tutorial_initial_CorruptedSoul_1" : "Vous êtes une âme Corrompue et votre objectif est de faire en sorte que votre équipe ne trouve pas le Paradis.",
+
+  "tutorial_initial_RandomBoss" : "Un chef d'équipe est désigné aléatoirement en début de partie.",
+  "tutorial_initial_BossChoosePlayer" : "Le chef d'équipe doit sélectionner un ou plusieurs joueurs afin de les envoyer en exploration, vous devez cliquer ( ou tapoter ) sur le(s) future(s) explorateur(s).",
+  "tutorial_initial_PlayerSelectionedGoToDoorZone" : "Le ou les joueurs sélectionnés doivent se rendre dans la zone de la porte jusqu'à ce que la lettre s'affiche au-dessus du personnage. Le joueur qui a par exemple la lettre A pourra explorer la salle derrière la porte A  (si le chef lance l'exploration et que l'équipe l'accepte).",
+  "tutorial_initial_PlayerSelectionedGoToDoorZone_2" : "Le chef d'équipe peut lancer une exploration en restant appuyé sur la touche \"E\" (par défaut):",
+
+  "tutorial_initial_VoteExploration_0" : "l'exploration est soumise au vote de l'équipe, la majorité l'emporte, la zone \"V\" permet d'accepter l'exploration et la zone \"X\" de la refuser.",
+  "tutorial_initial_VoteExploration_1" : "Si le vote est accepté, des torches seront utilisées aux nombres d'explorateurs.\n\n Vous et votre équipe possèdez un nombre de torches limitées.",
+  "tutorial_initial_Exploration_spectre" : "Les portes soumises a l'exploration s'ouvrent.. les explorateurs peuvent accéder aux portes associées à leurs âmes.",
+  "tutorial_initial_Exploration_distance" : "Lorsqu'un joueur explore une salle, il a la capacité de voir le nombre de salle qu'il le sépare du Paradis.",
+
+  "tutorial_initial_BossVoteDoor_0" : "Le chef d'équipe doit lancer un vote pour ouvrir une porte, restez appuyé(e) sur F ( par défaut).",
+  "tutorial_initial_BossVoteDoor_1" : "Chaque ouverture de porte utilise une clef, vous et votre équipe possèdez un nombre de clefs limités.",
+  "tutorial_initial_BossVoteDoor_2" : "La porte avec le plus de vote ( joueurs dans la zone) s'ouvre..",
+  "tutorial_initial_BossVoteDoor_3" : "Annulation du vote",
+  "tutorial_initial_BossVoteDoor_4" : "Vote pour la porte F",
+
+  "tutorial_initial_Map_0" : "Vous pouvez acceder à la map du donjon, en utilisant la touche \"M\"",
+  "tutorial_initial_Map_1" : "Ce nombre permet d'identifier la salle.",
+  "tutorial_initial_Map_2" : "Ce nombre donne la distance par rapport à la salle de départ.",
+
+  "tutorial_initial_Resumue_0" : "Avec toutes les distances récupérées lors des explorations, vous devriez être capable de savoir dans quelle salle se cache la porte du paradis, à moins que les âmes corompues réussises a vous berner !",
+  "tutorial_initial_Resumue_1" : "Si vous n'avez plus suffisament de clef pour atteindre le Paradis, l'enfer apparaîtra automatiquement.",
+  "tutorial_initial_Resumue_2" : "N'oubliez pas ne faites confiance à personne ! ",
+
+  "tutorial_moreInformation" : "Pour plus d'informations  :  échap => Tutoriel",
+
+  "tutorial_oneExploration_possible" : "Félicitations, vous venez de faire votre première exploration en équipe.\n Attention vous ne pouvez pas enchaîner les explorations, après chaque exploration vous devez obligatoirement ouvrir une porte.",
+  "tutorial_button_quit" : "Ok",
+
+  }

@@ -1,0 +1,130 @@
+{
+  "menu_trailer_skip":"건너뛰려면 마우스 클릭",
+  "menu_presentation_launch": "실행하려면 클릭하세요..",
+  "menu_play":"게임 시작",
+  "menu_setting":"설정",
+  "menu_about":"회사 소개",
+  "menu_quit":"나가기",
+
+  "menu_matchmaking":"매치메이킹",
+  "menu_createLobby":"로비 생성",
+  "menu_joinLobby":"로비 참가",
+
+  "menu_placeholder_pseudo":"당신의 닉네임.",
+  "menu_join":"게임 참여",
+
+  "menu_placeholder_enterCode":"코드 입력",
+  "menu_difficulty_easy":"쉬움",
+  "menu_difficulty_medium":"중간",
+  "menu_difficulty_hard":"어려움",
+  "menu_foggyRoom":"안개 낀 방",
+  "menu_virusRoom":"바이러스 방",
+  "menu_hellRoom":"지옥 방",
+  "menu_roomWithKey":"추가 열쇠방",
+  "menu_miniMap":"미니맵 표시",
+  "menu_KeyInMap":"열쇠방 표시",
+  "menu_start":"시작",
+  "menu_error_codeRoomIsIncorrect":"방의 코드가 올바르지 않습니다.",
+  "menu_information_connection":"연결",
+  "menu_information_connection_buttonCancel":"취소",
+
+  "waitingRoom_players":"플레이어",
+  "waitingRoom_code":"암호 : ",
+  "waitingRoom_searchPlayer":"플레이어 찾기",
+  "waitingRoom_button_setting":"게임의 설정",
+
+  "menu_setting_controls":"컨트롤",
+  "menu_setting_controls_moveForward":"앞으로 이동",
+  "menu_setting_controls_moveBackward":"뒤로 이동",
+  "menu_setting_controls_moveRight":"오른쪽으로 이동",
+  "menu_setting_controls_moveLeft":"왼쪽으로 이동",
+  "menu_setting_controls_exploration":"탐험 보내기",
+  "menu_setting_controls_voteDoor":"문 투표하기",
+  "menu_setting_controls_Map":"미니맵",
+
+  "menu_setting_video":"비디오",
+  "menu_setting_video_resolution":"해상도",
+  "menu_setting_video_fullscreen":"전체 화면",
+  "menu_setting_video_apply":"적용",
+
+  "menu_setting_audio":"오디오",
+  "menu_setting_audio_mainVolume":"메인 볼륨",
+  "menu_setting_audio_musicVolume":"음악 볼륨",
+  "menu_setting_audio_mute":"음소거",
+
+
+  "menu_setting_language":"언어",
+  "menu_setting_language_relaunch":"게임이 다시 시작됩니다",
+
+  "Loading" : "로딩 중",
+
+  "panel_information_corruptedSoul":"타락한 영혼",
+  "panel_information_lostSoul":"길 잃은 영혼",
+  "game_echap_quit":"로비 나가기",
+  "game_echap_unblockPlayer_description":"캐릭터(또는 방)가 차단된 경우 아래 버튼을 클릭하면 캐릭터와 방이 재설정됩니다.",
+  "game_echap_unblockPlayer":"플레이어 차단 해제",
+
+  "game_echap_tutorial":"튜토리얼",
+  "game_echap_tutorial_initialTutorial":"초반 가이드",
+  "game_echap_tutorial_doorVote":"문 투표",
+  "game_echap_tutorial_playerRole":"플레이어 역할",
+  "game_echap_tutorial_exploration":"탐험",
+  "game_echap_tutorial_specialRoom":"특수 룸",
+
+  "game_echap_tutorial_doorVote_1":"팀 리더가 문을 선택하기 위해 투표(F 키를 누르고 있음)하면 해당 문자와 ​​함께 문 구역이 표시됩니다.",
+  "game_echap_tutorial_doorVote_2":"투표가 적용되려면 플레이어가 열려고 하는 문에 해당하는 직사각형 영역에 있어야 합니다.",
+  "game_echap_tutorial_doorVote_3":"플레이어 수가 가장 많은 문이 열립니다.",
+
+  "game_echap_tutorial_playerRole_1":"길 잃은 영혼은 낙원을 찾아야 합니다.",
+  "game_echap_tutorial_playerRole_2":"타락한 영혼은 팀이 모든 키를 사용하도록 해야 합니다.\n\n 무작위로 지정되며 뿔로 서로를 구별할 수 있습니다.
+ 그들은 다양한 유형의 방(낙원, 지옥, 안개 낀 방 등)이 어디에 있는지 볼 수 있습니다.",
+ "game_echap_tutorial_playerRole_3":"팀 리더는 왕관을 쓰고 있으며 팀이 투표할 때마다 무작위로 지정됩니다. (문 투표 이후 혹은 탐험 투표 취소).\n2) 그는 탐험을 지시하거나 열고 싶은 문을 선택하는 투표를 할 수 있습니다.",
+
+ "game_echap_tutorial_exploration_1":"탐험을 지시하려면 마우스 좌클릭으로 플레이어를 선택해야 합니다.",
+ "game_echap_tutorial_exploration_2":"선택된 플레이어는 플레이어 위에 문자가 표시될 때까지 문  근처에 있어야 합니다.\n예를 들어 C문에 있는 플레이어는 C문 뒤의 방을 탐색할 수 있습니다(팀이 탐험 투표를 수락하는 경우).",
+ "game_echap_tutorial_exploration_3":"팀 리더는 E키를 꾹 눌러 탐험 투표를 시작할 수 있습니다.",
+ "game_echap_tutorial_exploration_4":"플레이어가 방을 탐험할 때 낙원에 도달하기 위해 건너야 하는 방의 수를 볼 수 있습니다.",
+ "game_echap_tutorial_exploration_*":"1. 방당 한 번의 탐험 시도만 가능하며, 열쇠를 사용할 때마다 탐험을 다시 수행할 수 있습니다.",
+
+ "game_echap_tutorial_specialRoom_1":"안개 낀방은 탐험할 때 표시되는 거리를 숨깁니다.(플레이어가 탐험 중 안개 방에 들어가면 낙원과의 거리를 볼 수 없음).",
+ "game_echap_tutorial_specialRoom_2":"오염된 방은 문 투표 결과를 뒤바꾸며, 오염된 방에서 투표가 완료되면 가장 많은 표를 얻은 문이 아닌 무작위 문이 열립니다.",
+ "game_echap_tutorial_specialRoom_3":"팀이 낙원과 한 칸 거리에 있을 때 다른 한 칸 거리의 방에서 지옥 방이 나타납니다. 열쇠의 갯수에 상관없이 팀이 이 방에 들어오면 패배합니다!",
+ "game_echap_tutorial_specialRoom_4":"키 룸에서는 팀의 추가 키를 획득할 수 있습니다.",
+
+
+ "tutorial_initial_LostSoul_0" : "길 잃은 영혼",
+ "tutorial_initial_LostSoul_1" : "당신은 길 잃은 영혼이고 당신의 목표는 낙원의 문을 찾는 것입니다!",
+ "tutorial_initial_LostSoul_2" : "그러나 팀에 숨어있는 타락한 영혼을 조심하십시오.",
+
+ "tutorial_initial_CorruptedSoul_0" : "타락한 영혼",
+ "tutorial_initial_CorruptedSoul_1" : "당신은 타락한 영혼이고 목표는 팀의 모든 키를 소진시키거나 지옥 방으로 데려가는 것입니다.",
+
+ "tutorial_initial_RandomBoss" : "팀장은 게임 시작 시 무작위로 지정되며, 문이 열리거나 투표가 취소되면 팀장이 변경됩니다(문을 열기 위한 투표 또는 탐험 보내기).",
+ "tutorial_initial_BossChoosePlayer" : "팀 리더는 탐험에 파견하기 위해 한 명 이상의 플레이어를 선택(좌클릭)해야 합니다. 흰색 테두리로 선택된 플레이어는 \"탐험가\"로 간주됩니다.",
+ "tutorial_initial_PlayerSelectionedGoToDoorZone" : "선택된 플레이어는 문자가 캐릭터 위에 나타날 때까지 문 근처로 이동해야 합니다. 예를 들어 문자 A가 있는 플레이어는 A 문 뒤의 방을 탐험할 수 있습니다(리더가 플레이어를 선택해 탐험을 지시하고 팀이 이를 수락하는 경우).",
+ "tutorial_initial_PlayerSelectionedGoToDoorZone_2" : "팀 리더는 기본적으로 \"E\" 키를 누르고 있거나 아래 이미지에서 탐색을 시작할 수 있습니다.",
+
+ "tutorial_initial_VoteExploration_0" : "탐험 여부는 팀의 투표에 따라 결정되며, 다수결에 의해 \"V\" 구역은 탐험을 수락하고 \"X\" 구역은 거부로 결정됩니다.",
+ "tutorial_initial_VoteExploration_1" : "투표가 승인되면 보낸 탐험가 수에 따라 횃불이 소모됩니다.\n\n당신의 팀이 보유한 횃불 수량은 한정되어 있습니다.",
+ "tutorial_initial_Exploration_spectre" : "탐험 대상의 문이 열립니다. 탐험가는 영혼 근처의 문에 접근할 수 있습니다.",
+ "tutorial_initial_Exploration_distance" : "플레이어가 방을 탐험할 때, 해당 방과 낙원까지의 거리(방의 수)를 볼 수 있습니다.",
+
+ "tutorial_initial_BossVoteDoor_0" : "팀장은 문 개방 투표를 진행할 수 있습니다. F 계속 누르기(기본 설정).",
+ "tutorial_initial_BossVoteDoor_1" : "각 문을 열 때마다 키가 사용되며 열쇠의 수량은 제한되어 있습니다.",
+ "tutorial_initial_BossVoteDoor_2" : "가장 많은 득표수(지역 내 플레이어)를 받은 문이 열립니다..",
+ "tutorial_initial_BossVoteDoor_3" : "투표 취소",
+ "tutorial_initial_BossVoteDoor_4" : "문 F에 투표",
+
+ "tutorial_initial_Map_0" : "\"M\"을 눌러 던전 맵을 볼 수 있습니다.",
+ "tutorial_initial_Map_1" : "이 숫자는 방 고유번호를 의미합니다.",
+ "tutorial_initial_Map_2" : "이 숫자는 시작 방까지의 거리를 나타냅니다.",
+
+ "tutorial_initial_Resumue_0" : "탐험하는 동안 거리를 파악했다면 타락한 영혼이 당신을 속이지 않는 한 천국의 문이 어느 방에 숨겨져 있는지 알 수 있을 겁니다!",
+ "tutorial_initial_Resumue_1" : "더 이상 낙원에 도달할 수 있는 충분한 열쇠가 없으면 지옥이 자동으로 나타납니다.",
+ "tutorial_initial_Resumue_2" : "아무도 믿을 수 없다는 사실을 기억하세요!",
+
+ "tutorial_moreInformation" : "추가 정보: ESC => 튜토리얼",
+"tutorial_oneExploration_possible" : "첫 번째 팀 탐사를 완료한 것을 축하합니다.\n 각 탐사 후에는 불가피하게 문을 열어야 하므로 연속 탐사를 할 수 없으므로 주의하십시오.",
+
+
+}

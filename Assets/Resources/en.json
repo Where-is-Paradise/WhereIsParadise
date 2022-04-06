@@ -1,0 +1,128 @@
+{
+  "menu_trailer_skip":"Mouse click to skip",
+  "menu_presentation_launch": "Click to launch..",
+  "menu_play":"Play",
+  "menu_setting":"Setting",
+  "menu_about":"About",
+  "menu_quit":"Quit",
+
+  "menu_matchmaking":"Matchmaking",
+  "menu_createLobby":"Create Lobby",
+  "menu_joinLobby":"Join Lobby",
+
+  "menu_placeholder_pseudo":"Your pseudo..",
+  "menu_join":"Join",
+
+  "menu_placeholder_enterCode":"Enter code..",
+  "menu_difficulty_easy":"Easy",
+  "menu_difficulty_medium":"Medium",
+  "menu_difficulty_hard":"Hard",
+  "menu_foggyRoom":"Foggy room",
+  "menu_virusRoom":"Virus room",
+  "menu_hellRoom":"Hell room",
+  "menu_roomWithKey":"Room with Key",
+  "menu_miniMap":"Mini map",
+  "menu_KeyInMap":"Keys in map",
+  "menu_start":"Start",
+  "menu_error_codeRoomIsIncorrect":"The code room is incorrect.",
+  "menu_information_connection":"Login..",
+  "menu_information_connection_buttonCancel":"Cancel",
+
+  "waitingRoom_players":"Players",
+  "waitingRoom_code":"Code : ",
+  "waitingRoom_searchPlayer":"Search players..",
+  "waitingRoom_button_setting":"Setting of game",
+
+  "menu_setting_controls":"Controls",
+  "menu_setting_controls_moveForward":"Move Forward",
+  "menu_setting_controls_moveBackward":"Move Backward",
+  "menu_setting_controls_moveRight":"Move Right",
+  "menu_setting_controls_moveLeft":"Move Left",
+  "menu_setting_controls_exploration":"Exploration",
+  "menu_setting_controls_voteDoor":"Vote Door",
+  "menu_setting_controls_Map":"Map",
+
+  "menu_setting_video":"Video",
+  "menu_setting_video_resolution":"Resolution",
+  "menu_setting_video_fullscreen":"Fullscreen",
+  "menu_setting_video_apply":"Apply",
+
+  "menu_setting_audio":"Audio",
+  "menu_setting_audio_mainVolume":"Main Volume",
+  "menu_setting_audio_musicVolume":"Music Volume",
+  "menu_setting_audio_mute":"Mute",
+
+
+  "menu_setting_language":"Language",
+  "menu_setting_language_relaunch":"Game need to relaunch..",
+
+  "Loading" : "Loading..",
+
+  "panel_information_corruptedSoul":"Corrupted Soul",
+  "panel_information_lostSoul":"Lost Soul",
+  "game_echap_quit":"Quit Lobby",
+  "game_echap_unblockPlayer_description":"If your character (or the room) is blocked, you can click on the button below, which will reset your character and the room",
+  "game_echap_unblockPlayer":"Unblock Player",
+
+  "game_echap_tutorial":"Tutorial",
+  "game_echap_tutorial_initialTutorial":"Launch initial tutorial",
+  "game_echap_tutorial_doorVote":"Door vote",
+  "game_echap_tutorial_playerRole":"Player role",
+  "game_echap_tutorial_exploration":"Exploration",
+  "game_echap_tutorial_specialRoom":"Special Room",
+
+  "game_echap_tutorial_doorVote_1":"When the team leader votes to choose a door (stay press F key by default), this displays the door zones with the corresponding letters.",
+  "game_echap_tutorial_doorVote_2":"For the vote to be taken into account, the player just needs to be in the corresponding rectangle area to the door the player wishes to open.",
+  "game_echap_tutorial_doorVote_3":"The door with the highest number of players opens.",
+
+  "game_echap_tutorial_playerRole_1":"Lost Souls must find paradise.",
+  "game_echap_tutorial_playerRole_2":"Corrupted souls must make the team use all the keys,\n\n They are designated randomly and are distinguished by the horns.
+ they have the ability to see where the different types of rooms are (Paradise, Hell, foggy room, etc.)",
+ "game_echap_tutorial_playerRole_3":"A team leader is randomly designated each time the team votes (votes to open a door or votes for an exploration canceled).\n\nIt is distinguished by its crown.\n\n1) He has the ability to launch an exploration (if the conditions are met).\n2) He has the ability to cast a vote to choose a door to open.",
+
+ "game_echap_tutorial_exploration_1":"To launch exploration, you have to choose player(s) whith the mouse click.",
+ "game_echap_tutorial_exploration_2":"Player(s) are choosen have to be in the doorway area until the letter is displayed above the player.\nThe player who has for example door C, can explore the room behind door C (if the team accepts the exploration).",
+ "game_echap_tutorial_exploration_3":"The team leader can  launch the exploration with the input ( stay press E by default ).",
+ "game_echap_tutorial_exploration_4":"When a player explores a room, he has the ability to see the number of rooms he must cross to reach the paradise room.",
+ "game_echap_tutorial_exploration_*":"1. Only one exploration is possible per room, each time a key is used, the possibility of exploring is unlocked.",
+
+ "game_echap_tutorial_specialRoom_1":"Foggy rooms have the ability to hide the distance that is displayed when exploring, (if a player goes into a foggy room while exploring, they will not see the distance between them and Heaven).",
+ "game_echap_tutorial_specialRoom_2":"Contaminated rooms have the ability to modify a vote regarding the opening of a door, when a vote is completed in a contaminated room, a random door opens, not the door with the most votes.",
+ "game_echap_tutorial_specialRoom_3":"When the team is at one room in Paradise, hell appears one room away where the team is. if the team enters this room, regardless of their number of keys, it's over!",
+ "game_echap_tutorial_specialRoom_4":"Key rooms allow you to retrieve an additional key for the team.",
+
+ "tutorial_initial_LostSoul_0" : "Lost Soul",
+ "tutorial_initial_LostSoul_1" : "You are a lost soul and your goal is to find the Paradise's Door!",
+ "tutorial_initial_LostSoul_2" : "But be careful in your team hides Corrupted Souls",
+
+ "tutorial_initial_CorruptedSoul_0" : "Corrupted Souls",
+ "tutorial_initial_CorruptedSoul_1" : "You are a Corrupted Soul and your goal is to use all of your team's keys or take them straight to hell.",
+
+ "tutorial_initial_RandomBoss" : "A team leader is randomly designated at the start of the game, the team leader changes if a door is open or if a vote is canceled (vote to open a door or exploration).",
+ "tutorial_initial_BossChoosePlayer" : "The team leader must select ( left click ) one or more players in order to send them on exploration. If the player is illuminated, he is considered an \"explorer\".",
+ "tutorial_initial_PlayerSelectionedGoToDoorZone" : "The selected player(s) must go to the door area until the letter appears above the character. The player who has for example the letter A will be able to explore the room behind door A (if the leader launches the exploration and the team accepts it).",
+ "tutorial_initial_PlayerSelectionedGoToDoorZone_2" : "The team leader can launch an exploration by holding down the \"E\" key (by default) or on the image below:",
+
+ "tutorial_initial_VoteExploration_0" : "The exploration is subject to the team's vote, the majority wins, the \"V\" zone allows to accept the exploration and the \"X\" zone to refuse it.",
+ "tutorial_initial_VoteExploration_1" : "If the vote is accepted, torches will be used according to the number of explorers.\n\nYou and your team have a limited number of torches.",
+ "tutorial_initial_Exploration_spectre" : "The doors subject to exploration open. Explorers can access the doors associated with their souls.",
+ "tutorial_initial_Exploration_distance" : "When a player explores a room, he has the ability to see the number of rooms separating him from Paradise.",
+
+ "tutorial_initial_BossVoteDoor_0" : "The team leader can cast a vote to open a door, F Input (default).",
+ "tutorial_initial_BossVoteDoor_1" : "Each door opening uses a key, you and your team have a limited number of keys.",
+ "tutorial_initial_BossVoteDoor_2" : "The door with the most votes (players in the area) opens..",
+ "tutorial_initial_BossVoteDoor_3" : "cancellation of vote",
+ "tutorial_initial_BossVoteDoor_4" : "Vote for Door F",
+
+ "tutorial_initial_Map_0" : "You can access the dungeon map, using the \"M\" Input",
+ "tutorial_initial_Map_1" : "This number identifies the room.",
+ "tutorial_initial_Map_2" : "This number gives the distance from the starting room.",
+
+ "tutorial_initial_Resumue_0" : "With all the distances recovered during the explorations, you should be able to know in which room the door of paradise is hidden, unless the corrupted souls manage to fool you !",
+ "tutorial_initial_Resumue_1" : "If you no longer have enough keys to reach Heaven, Hell will automatically appear.",
+ "tutorial_initial_Resumue_2" : "Remember don't trust anyone !",
+
+ "tutorial_moreInformation" : "For more information: ESC => Tutorial",
+ "tutorial_oneExploration_possible" : "Congrats you just did you first team exploration.\n Be careful you can't do a series explorations, after each  exploration you have to inevitably open a door.",
+
+}
