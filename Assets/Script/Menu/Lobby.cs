@@ -44,6 +44,8 @@ public class Lobby : MonoBehaviourPunCallbacks
     public void ConnectToMaster()
     {
 
+        setPhotonAppVersion();
+        
         PhotonNetwork.AutomaticallySyncScene = true;
 
         PhotonNetwork.ConnectUsingSettings();
