@@ -62,6 +62,7 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.indexSkin = indexSkin;
         player.DesactivateAllSkin();
+        Debug.Log("sendSkin : " + indexSkin);
         player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).gameObject.SetActive(true);
     }
 

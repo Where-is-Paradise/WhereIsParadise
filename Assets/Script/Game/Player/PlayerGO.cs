@@ -112,6 +112,7 @@ public class PlayerGO : MonoBehaviour
         TapCount = 0;
 
         enhanceOwners();
+
     }
 
     private void enhanceOwners()
@@ -423,7 +424,7 @@ public class PlayerGO : MonoBehaviour
                 if (isBoss)
                 {
                     gameManager.ResetTimerBoss(true);
-                    transform.GetChild(2).GetChild(1).GetComponent<Text>().enabled = false;
+                    transform.GetChild(2).GetChild(0).GetComponent<Text>().enabled = false;
                     timerBoss = 40;
                 }
 
@@ -571,20 +572,27 @@ public class PlayerGO : MonoBehaviour
 
     private void turnLeft()
     {
-        Transform perso = transform.Find("Perso");
-        perso.localScale = new Vector3(
-            Mathf.Abs(perso.localScale.x),
-            perso.localScale.y
-        );
+        Transform infoCanvas = this.transform.Find("InfoCanvas");
+        Transform activityCanvas = this.transform.Find("ActivityCanvas");
+
+        this.transform.localScale = new Vector3(0.8f, 0.8f, 0);
+        
+        // Invert transformations for displayed texts
+        infoCanvas.Find("PlayerName").localScale = new Vector3(0.7f, 0.7f);
+        infoCanvas.Find("ChatPanel").Find("ChatText").localScale = new Vector3(1, 1);
+        activityCanvas.Find("SelectedRoomName").localScale = new Vector3(1.5f, 1.5f);
     }
 
     private void turnRight()
     {
-        Transform perso = transform.Find("Perso");
-        perso.localScale = new Vector3(
-            -Mathf.Abs(perso.localScale.x),
-            perso.localScale.y
-        );
+        Transform infoCanvas = this.transform.Find("InfoCanvas");
+        Transform activityCanvas = this.transform.Find("ActivityCanvas");
+        this.transform.localScale = new Vector3(-0.8f, 0.8f, 0); ;
+
+        // Invert transformations for displayed texts
+        infoCanvas.Find("PlayerName").localScale = new Vector3(-0.7f, 0.7f);
+        infoCanvas.Find("ChatPanel").Find("ChatText").localScale = new Vector3(-1, 1);
+        activityCanvas.Find("SelectedRoomName").localScale = new Vector3(-1.5f, 1.5f);
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
@@ -878,7 +886,7 @@ public class PlayerGO : MonoBehaviour
     {
         for (int i = 0; i < 9; i++)
         {
-            transform.GetChild(1).GetChild(1).GetChild(indexSkin).gameObject.SetActive(false);
+            transform.GetChild(1).GetChild(1).GetChild(i).gameObject.SetActive(false);
         }
 
     }

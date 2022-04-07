@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
 using Photon.Realtime;
+using UnityEngine.SceneManagement;
 
 
 public class Lobby : MonoBehaviourPunCallbacks
@@ -41,20 +43,16 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     }
 
+
+
     public void ConnectToMaster()
     {
-
-        setPhotonAppVersion();
-        
         PhotonNetwork.AutomaticallySyncScene = true;
-
+        
         PhotonNetwork.ConnectUsingSettings();
+        
     }
 
-    private void setPhotonAppVersion() {
-        PhotonNetwork.NetworkingClient.AppVersion = Application.version;
-        PhotonNetwork.GameVersion = Application.version;
-    }
 
     public override void OnConnectedToMaster()
     {
@@ -94,17 +92,17 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        CreateRoom(20 , true);
+        CreateRoom(8 , true);
     }
 
     public void CreateRoom(int maxPlayerParam, bool isVisible)
     {
-        code = GenerateCodeRoom(7);
+        code = GenerateCodeRoom(5);
         Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
         maxPlayer = maxPlayerParam;
         PhotonNetwork.CreateRoom(code, new RoomOptions { MaxPlayers = (byte) maxPlayer , PublishUserId = true, IsVisible = isVisible });
         ui_management.SetNbPlayerUI(1, maxPlayer);
-        code2 = GenerateCodeRoom(7);
+        code2 = GenerateCodeRoom(5);
         setting.codeRoom = code2;
     }
 
@@ -115,7 +113,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         ui_management.SetNbPlayerUI(1, maxPlayer);
         ui_management.LauchWaitingRoom();
         Destroy(GameObject.Find("Setting_backWaitingRoom").gameObject);
-        code2 = GenerateCodeRoom(7);
+        code2 = GenerateCodeRoom(5);
         Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
         setting.codeRoom = code2;
         code = oldCode;
@@ -292,6 +290,20 @@ public class Lobby : MonoBehaviourPunCallbacks
         {
             if (player.GetComponent<PhotonView>().IsMine)
             {
+                return player;
+            }
+        }
+        return null;
+    }
+    public GameObject GetPlayerMineGO()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            //Debug.Log(player.GetComponent<PhotonView>().ViewID);
+            if (player.GetComponent<PhotonView>().IsMine)
+            {
+                //Debug.Log(player.GetComponent<PhotonView>().ViewID);
                 return player;
             }
         }

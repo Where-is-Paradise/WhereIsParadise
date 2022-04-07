@@ -22,10 +22,10 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         
     }
 
-/*    public override void OnDisconnected(DisconnectCause cause)
+    public override void OnDisconnected(DisconnectCause cause)
     {
-        ui_management.DisplayErrorPanel(message);
-    }*/
+        MainReconnect();
+    }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
@@ -80,6 +80,30 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
     }
 
+
+    private IEnumerator MainReconnect()
+    {
+        while (PhotonNetwork.NetworkingClient.LoadBalancingPeer.PeerState != ExitGames.Client.Photon.PeerStateValue.Disconnected)
+        {
+            Debug.Log("Waiting for client to be fully disconnected..", this);
+
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        Debug.Log("Client is disconnected!", this);
+
+        if (!PhotonNetwork.ReconnectAndRejoin())
+        {
+            if (PhotonNetwork.Reconnect())
+            {
+                Debug.Log("Successful reconnected!", this);
+            }
+        }
+        else
+        {
+            Debug.Log("Successful reconnected and joined!", this);
+        }
+    }
 
 
 

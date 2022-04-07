@@ -99,7 +99,6 @@ public class GameManager : MonoBehaviourPun
 
         if (PhotonNetwork.IsMasterClient)
         {
-
             int randomWidth = Random.Range(15, 30);
             int randomHeight = Random.Range(15, 30);
             gameManagerNetwork.SendWidthHeightMap(randomWidth, randomHeight);
@@ -1144,6 +1143,11 @@ public class GameManager : MonoBehaviourPun
         {
             door.transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
             door.GetComponent<Door>().isOpenForAll = false;
+            foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+            {
+                Physics2D.IgnoreCollision(player.GetComponent<BoxCollider2D>(), door.GetComponent<BoxCollider2D>(), false);
+            }
+            
         }
     }
 

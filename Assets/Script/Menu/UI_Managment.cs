@@ -100,6 +100,12 @@ public class UI_Managment : MonoBehaviourPun
 
     public GameObject chatPanelInputParent;
 
+    public int indexSkinUI = 0;
+
+    public GameObject PanelAllSkin;
+    public GameObject ArrowLeftSkin;
+    public GameObject ArrowRightSkin;
+
     float k = -1;
     // Start is called before the first frame update
     void Start()
@@ -189,6 +195,8 @@ public class UI_Managment : MonoBehaviourPun
         {
             k = 0;
         }
+
+        CheckIndexSkinOutOfBounds();
 
     }
 
@@ -534,6 +542,11 @@ public class UI_Managment : MonoBehaviourPun
         gameObject.SetActive(true);
     }
 
+    public void InverseStateActive(GameObject gameObjectParam)
+    {
+        gameObjectParam.SetActive(!gameObjectParam.activeSelf);
+    }
+
     public void OnClickOKpanelErrorForm(GameObject gameObject)
     {
         gameObject.SetActive(false);
@@ -551,8 +564,12 @@ public class UI_Managment : MonoBehaviourPun
     
     public void DisplayErrorPanel(string message)
     {
-        panelErrorForm.SetActive(true);
-        panelErrorForm.transform.GetChild(0).GetComponent<Text>().text = message;
+        if (panelErrorForm)
+        {
+            panelErrorForm.SetActive(true);
+            panelErrorForm.transform.GetChild(0).GetComponent<Text>().text = message;
+        }
+       
     }
 
     public void ChangeColorButton(List<GameObject> listButton, int indexMenu )
@@ -722,6 +739,56 @@ public class UI_Managment : MonoBehaviourPun
         player.GetComponent<PlayerGO>().GetPlayerMineGO().GetComponent<PlayerGO>().DisplayChat(false);
     }
 
+    public void CopyCode(Text textObj)
+    {
+        GUIUtility.systemCopyBuffer = textObj.text;
+    }
+
+    public void CheckIndexSkinOutOfBounds()
+    {
+        if(indexSkinUI == 0)
+        {
+            ArrowLeftSkin.SetActive(false);
+            
+        }
+        else
+        {
+            ArrowLeftSkin.SetActive(true);
+            if(indexSkinUI == PanelAllSkin.transform.childCount - 1)
+            {
+                ArrowRightSkin.SetActive(false);
+            }
+            else
+            {
+                ArrowRightSkin.SetActive(true);
+            }
+        }
+    }
+
+    public void SetIndexSkin(bool isRight)
+    {
+        int oldIndexSkin = indexSkinUI;
+        if (isRight)
+        {
+            indexSkinUI++;
+        }
+        else
+        {
+            indexSkinUI--;
+        }
+
+        UpdateSkin(oldIndexSkin);
+    }
+    public void UpdateSkin(int oldIndexSkin)
+    {
+        PanelAllSkin.transform.GetChild(oldIndexSkin).gameObject.SetActive(false);
+        PanelAllSkin.transform.GetChild(indexSkinUI).gameObject.SetActive(true);
+    }
+
+    public void OnclickSavenNewIndexSkin()
+    {
+        lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkin(indexSkinUI);
+    }
 
     public void QuitGame()
     {
