@@ -572,27 +572,20 @@ public class PlayerGO : MonoBehaviour
 
     private void turnLeft()
     {
-        Transform infoCanvas = this.transform.Find("InfoCanvas");
-        Transform activityCanvas = this.transform.Find("ActivityCanvas");
-
-        this.transform.localScale = new Vector3(0.8f, 0.8f, 0);
-        
-        // Invert transformations for displayed texts
-        infoCanvas.Find("PlayerName").localScale = new Vector3(0.7f, 0.7f);
-        infoCanvas.Find("ChatPanel").Find("ChatText").localScale = new Vector3(1, 1);
-        activityCanvas.Find("SelectedRoomName").localScale = new Vector3(1.5f, 1.5f);
+        Transform perso = transform.Find("Perso");
+        perso.localScale = new Vector3(
+            Mathf.Abs(perso.localScale.x),
+            perso.localScale.y
+        );
     }
 
     private void turnRight()
     {
-        Transform infoCanvas = this.transform.Find("InfoCanvas");
-        Transform activityCanvas = this.transform.Find("ActivityCanvas");
-        this.transform.localScale = new Vector3(-0.8f, 0.8f, 0); ;
-
-        // Invert transformations for displayed texts
-        infoCanvas.Find("PlayerName").localScale = new Vector3(-0.7f, 0.7f);
-        infoCanvas.Find("ChatPanel").Find("ChatText").localScale = new Vector3(-1, 1);
-        activityCanvas.Find("SelectedRoomName").localScale = new Vector3(-1.5f, 1.5f);
+    Transform perso = transform.Find("Perso");
+    perso.localScale = new Vector3(
+        -Mathf.Abs(perso.localScale.x),
+        perso.localScale.y
+    );
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
