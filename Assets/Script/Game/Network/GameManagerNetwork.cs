@@ -130,13 +130,13 @@ public class GameManagerNetwork : MonoBehaviourPun
     }
 
 
-    public void SendMap(int indexRoom, bool isExit, bool isObstacle, bool isInitial, int distance_exit, int distance_pathFinding,int distance_pathFinding_IR,bool isLast, bool isFoggy , bool isVirus, bool hasKey)
+    public void SendMap(int indexRoom, bool isExit, bool isObstacle, bool isInitial, int distance_exit, int distance_pathFinding,int distance_pathFinding_IR,bool isLast, bool isFoggy , bool isVirus, bool hasKey, bool chest)
     {
-        photonView.RPC("SetRooms", RpcTarget.Others, indexRoom,isExit,isObstacle, isInitial, distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey);
+        photonView.RPC("SetRooms", RpcTarget.Others, indexRoom,isExit,isObstacle, isInitial, distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey, chest);
     }
 
     [PunRPC]
-    public void SetRooms(int indexRoom, bool isExit, bool isObstacle,bool isInitial, int distance_exit, int distance_pathFinding,int  distance_pathFinding_IR, bool isLast, bool isFoggy, bool isVirus, bool hasKey)
+    public void SetRooms(int indexRoom, bool isExit, bool isObstacle,bool isInitial, int distance_exit, int distance_pathFinding,int  distance_pathFinding_IR, bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest)
     {
         gameManager.game.dungeon.rooms[indexRoom].SetIsExit(isExit);
         gameManager.game.dungeon.rooms[indexRoom].SetIsObstacle(isObstacle);
@@ -146,7 +146,9 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.rooms[indexRoom].distance_pathFinding_initialRoom = distance_pathFinding_IR;
         gameManager.game.dungeon.rooms[indexRoom].isFoggy = isFoggy;
         gameManager.game.dungeon.rooms[indexRoom].hasKey = hasKey;
+        gameManager.game.dungeon.rooms[indexRoom].chest = chest;
         gameManager.game.dungeon.rooms[indexRoom].SetIsVirus(isVirus);
+        
         //gameManager.game.dungeon
 
         if (isExit)
@@ -690,14 +692,57 @@ public class GameManagerNetwork : MonoBehaviourPun
             if (enter)
             {
                 gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote++;
-                player.GetComponent<PlayerGO>().hasVoteVD = true;
+                //player.GetComponent<PlayerGO>().hasVoteVD = true;
                 //player.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
             }
             else
             { 
                 gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote--;
-                player.GetComponent<PlayerGO>().hasVoteVD = false;
+                //player.GetComponent<PlayerGO>().hasVoteVD = false;
                 player.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
+
+            }
+        }
+    }
+
+    public void SendCollisionChestVote(int indexPlayer, int indexChest, bool enter, bool stay)
+    {
+        photonView.RPC("SetCollisionChestVote", RpcTarget.All, indexPlayer, indexChest, enter, stay);
+    }
+    [PunRPC]
+    public void SetCollisionChestVote(int indexPlayer,int indexChest,  bool enter, bool stay)
+    {
+        GameObject chest = null;
+        for (int i = 0; i < GameObject.FindGameObjectsWithTag("Chest").Length; i++)
+        {
+            if (GameObject.FindGameObjectsWithTag("Chest")[i].transform.Find("VoteZone").GetComponent<ChestZoneVote>().indexChest == indexChest)
+            {
+                chest = GameObject.FindGameObjectsWithTag("Chest")[i];
+            }
+        }
+
+        GameObject player = gameManager.GetPlayer(indexPlayer);
+        if (stay)
+        {
+            player.transform.GetChild(1).GetChild(9).gameObject.SetActive(true);
+            if (indexChest == 1)
+                player.transform.GetChild(1).GetChild(6).gameObject.SetActive(true);
+        }
+        else
+        {
+            if (enter)
+            {
+                chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote++;
+                player.transform.GetChild(1).GetChild(9).gameObject.SetActive(true);
+                if (indexChest == 1)
+                    player.transform.GetChild(1).GetChild(6).gameObject.SetActive(true);
+            }
+            else
+            {
+                chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote--;
+                player.transform.GetChild(1).GetChild(9).gameObject.SetActive(false);
+                if (indexChest == 1)
+                    player.transform.GetChild(1).GetChild(6).gameObject.SetActive(false);
 
             }
         }

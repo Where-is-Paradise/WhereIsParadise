@@ -89,6 +89,8 @@ public class Game : ScriptableObject
             dungeon.InsertRandomVirusRoom();
         if(setting.RANDOM_ROOM_ADDKEYS)
             dungeon.InserKeyInRandomRoom();
+
+        dungeon.InsertRandomChestRoom();
     }
 
     public void SetKeyCounter()

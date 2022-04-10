@@ -15,6 +15,7 @@ TagManager:
   - Hell
   - Hexagone
   - CollisionPlayer
+  - Chest
   layers:
   - Default
   - TransparentFX

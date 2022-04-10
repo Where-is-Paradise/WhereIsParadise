@@ -340,6 +340,7 @@ public class GameManager : MonoBehaviourPun
             newHexagone.GetComponent<Hexagone>().isFoggy = room.isFoggy;
             newHexagone.GetComponent<Hexagone>().isVirus = room.GetIsVirus();
             newHexagone.GetComponent<Hexagone>().hasKey = room.hasKey;
+            newHexagone.GetComponent<Hexagone>().chest = room.chest;
             newHexagone.GetComponent<Hexagone>().pos_X = room.GetPos_X();
             newHexagone.GetComponent<Hexagone>().pos_Y = room.GetPos_Y();
 
@@ -410,7 +411,12 @@ public class GameManager : MonoBehaviourPun
             }
         }
 
-       
+        if (room.GetComponent<Hexagone>().chest)
+        {
+            room.GetComponent<SpriteRenderer>().color = new Color(44 / 255f, 70 / 255f, 30 / 255f);
+        }
+
+
     }
 
     public void SpawnPlayer()
@@ -702,7 +708,8 @@ public class GameManager : MonoBehaviourPun
         {
             gameManagerNetwork.SendMap(room.GetIndex(), room.GetIsExit(), room.GetIsObstacle(), 
                 room.GetIsInitialeRoom(),room.GetDistance_exit(), room.GetDistance_pathfinding(),
-                room.distance_pathFinding_initialRoom, counter == game.dungeon.rooms.Count , room.isFoggy, room.GetIsVirus(), room.hasKey);
+                room.distance_pathFinding_initialRoom, counter == game.dungeon.rooms.Count , room.isFoggy, 
+                room.GetIsVirus(), room.hasKey, room.chest);
 
             counter++;
         }
@@ -1436,6 +1443,7 @@ public class GameManager : MonoBehaviourPun
             Win();
             
         }
+        UpdateSpecialsRooms(game.currentRoom);
 
         if (GetPlayerMineGO().GetComponent<PlayerGO>().isChooseForExpedition)
         {
@@ -1908,6 +1916,25 @@ public class GameManager : MonoBehaviourPun
         {
             listNamePlayer.Add(player.GetComponent<PlayerGO>().playerName);
         }
+    }
+
+    public void UpdateSpecialsRooms(RoomHex room)
+    {
+        if (room.chest)
+        {
+            UpdateChestRoom();
+            return;
+        }
+        ClearSpecialRoom();
+    }
+
+    public void UpdateChestRoom()
+    {
+        ui_Manager.DisplayChestRoom();
+    }
+
+    public void ClearSpecialRoom() {
+        ui_Manager.ClearSpecialRoom();
     }
 
     public void  GetImpostorName()

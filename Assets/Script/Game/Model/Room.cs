@@ -44,6 +44,7 @@ public class RoomHex : ScriptableObject
     public bool hasKey = false;
     public bool availableKey = true;
     public bool availableKeyAnimation = true;
+    public bool chest = false;
 
     public int nbKeyInPath = 0;
 

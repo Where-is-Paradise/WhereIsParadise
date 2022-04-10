@@ -12,6 +12,7 @@ public class UI_Manager : MonoBehaviour
 
     public GameManager gameManager;
     public GameObject map;
+    public GameObject MainRoomGraphic;
 
     public GameObject text_distance_room;
 
@@ -959,6 +960,26 @@ setting_button_echapMenu.SetActive(false);
                 door.transform.GetChild(5).gameObject.SetActive(false);
                 door.transform.GetChild(5).GetChild(1).GetChild(1).GetChild(i).gameObject.SetActive(false);
             }
+        }
+    }
+    public void DisplayChestRoom()
+    {
+        MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject.SetActive(true);
+
+    }
+    public void ClearSpecialRoom()
+    {
+        for(int i = 0; i < MainRoomGraphic.transform.Find("Special").childCount; i++)
+        {
+            MainRoomGraphic.transform.Find("Special").transform.GetChild(i).gameObject.SetActive(false);
+        }
+    }
+
+    public void DisplayVoteChest(bool display)
+    {
+        for (int i = 0; i < MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").childCount; i++)
+        {
+            MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").GetChild(i).Find("VoteZone").gameObject.SetActive(display);
         }
     }
 

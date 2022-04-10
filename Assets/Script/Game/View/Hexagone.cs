@@ -26,6 +26,7 @@ public class Hexagone : MonoBehaviour
     public bool isFoggy;
     public bool isVirus;
     public bool hasKey;
+    public bool chest;
 
     public GameManager gameManager;
 

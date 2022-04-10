@@ -442,6 +442,21 @@ public class Dungeon : ScriptableObject
         }
     }
 
+    public void InsertRandomChestRoom()
+    {
+        foreach (RoomHex room in rooms)
+        {
+            if (!room.GetIsObstacle() && !room.GetIsInitialeRoom() && (room.GetDistance_pathfinding() - 1) > 0)
+            {
+                int randomInt = Random.Range(0, 2);
+                if (randomInt == 0)
+                {
+                    room.chest = true;
+                }
+            }
+        }
+    }
+
     public void SetListRoomTraversed()
     {
         foreach (RoomHex room in rooms)
