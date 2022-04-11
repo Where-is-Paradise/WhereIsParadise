@@ -452,9 +452,29 @@ public class Dungeon : ScriptableObject
                 if (randomInt == 0)
                 {
                     room.chest = true;
+                    SetUpChests(room);
                 }
             }
         }
+    }
+
+    public void SetUpChests(RoomHex room)
+    {
+        int randomAward = Random.Range(0, 3);
+        int randomIndex = Random.Range(0, 2);
+
+        if(randomIndex == 0)
+        {
+            room.chestList.Add(Chest.CreateInstance(0, true, randomAward));
+            room.chestList.Add(Chest.CreateInstance(1, false, randomAward));
+        }
+        else
+        {
+            room.chestList.Add(Chest.CreateInstance(0, false, randomAward));
+            room.chestList.Add(Chest.CreateInstance(1, true, randomAward));
+        }
+       
+
     }
 
     public void SetListRoomTraversed()

@@ -278,6 +278,9 @@ public class PlayerGO : MonoBehaviour
                 }
                 launchVoteDoorMobile = false;
             }
+
+
+
         }
 
         if (InputManager.GetButtonDown("Enter") && GetComponent<PhotonView>().IsMine)
@@ -443,10 +446,9 @@ public class PlayerGO : MonoBehaviour
             this.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
         }
 
-
         SetZIndexByPositionY();
-
         ActionnWantToChangeBoss();
+        LaunchVoteChest();
 
     }
 
@@ -786,6 +788,15 @@ public class PlayerGO : MonoBehaviour
                 gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.GetDistance_pathfinding(), null);
         }
     }
+
+    public void LaunchVoteChest()
+    {
+        if (Input.GetKeyUp(KeyCode.G))
+        {
+            gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
+        }
+    }
+
 
     public void OnTriggerExit2D(Collider2D collision)
     {

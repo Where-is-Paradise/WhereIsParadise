@@ -711,6 +711,13 @@ public class GameManager : MonoBehaviourPun
                 room.distance_pathFinding_initialRoom, counter == game.dungeon.rooms.Count , room.isFoggy, 
                 room.GetIsVirus(), room.hasKey, room.chest);
 
+            if (room.chest)
+            {
+                for (int i = 0; i< 2; i++)
+                {
+                    gameManagerNetwork.SendChestData(room.GetIndex(), room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                }
+            }
             counter++;
         }
     }
@@ -1930,7 +1937,7 @@ public class GameManager : MonoBehaviourPun
 
     public void UpdateChestRoom()
     {
-        ui_Manager.DisplayChestRoom();
+        ui_Manager.DisplayChestRoom(true);
     }
 
     public void ClearSpecialRoom() {
@@ -1998,6 +2005,121 @@ public class GameManager : MonoBehaviourPun
 
         return true;
     }
+
+    public IEnumerator LaunchTimerChest()
+    {
+        yield return new WaitForSeconds(5);
+        ui_Manager.ActiveZoneVoteChest(false);
+        GameObject chest = CalculVoteChest();
+        ChestManagement(chest);
+        StartCoroutine(CoroutineHideChest());
+    }
+
+    public GameObject CalculVoteChest()
+    {
+        int pivot = 0;
+        GameObject chestWithMoreVote = null;
+        foreach (GameObject chest in GameObject.FindGameObjectsWithTag("Chest"))
+        {
+            int nbVote = chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote;
+            if(pivot <= nbVote)
+            {
+                pivot = nbVote;
+                chestWithMoreVote = chest;
+            }
+        }
+        return chestWithMoreVote;
+    }
+
+    public void ChestManagement(GameObject chest)
+    {
+        if (chest.name == "BlueChest")
+        {
+            if (game.currentRoom.chestList[0].isAward)
+            {
+                chest.transform.Find("Award").gameObject.SetActive(true);
+                chest.transform.Find("Award").transform.GetChild(game.currentRoom.chestList[0].indexAward).gameObject.SetActive(true);
+            }
+            else
+            {
+                chest.transform.Find("Penalty").gameObject.SetActive(true);
+                chest.transform.Find("Penalty").transform.GetChild(game.currentRoom.chestList[0].indexAward).gameObject.SetActive(true);
+            }
+            AddBonusAndPenaltyChest(game.currentRoom.chestList[0].indexAward, game.currentRoom.chestList[0].isAward);
+        }
+        else 
+        { 
+            if(chest.name == "RedChest")
+            {
+                if (game.currentRoom.chestList[1].isAward)
+                {
+                    chest.transform.Find("Award").gameObject.SetActive(true);
+                    chest.transform.Find("Award").transform.GetChild(game.currentRoom.chestList[1].indexAward).gameObject.SetActive(true);
+                }
+                else
+                {
+                    chest.transform.Find("Penalty").gameObject.SetActive(true);
+                    chest.transform.Find("Penalty").transform.GetChild(game.currentRoom.chestList[1].indexAward).gameObject.SetActive(true);
+
+                }
+            }
+            AddBonusAndPenaltyChest(game.currentRoom.chestList[1].indexAward, game.currentRoom.chestList[1].isAward);
+        }
+    }
+    public void AddBonusAndPenaltyChest(int indexAward, bool isAward)
+    {
+        switch (indexAward)
+        {
+            case 0:
+                if (isAward)
+                {
+                    game.key_counter++;
+                    ui_Manager.LaunchAnimationAddKey();
+                }
+                else
+                {
+                    game.key_counter--;
+                    ui_Manager.LaunchAnimationBrokenKey();
+                }
+                break;
+            case 1:
+                if (isAward)
+                {
+                    game.nbTorch++;
+                }
+                else
+                {
+                    game.nbTorch--;
+                }
+                game.nbTorch++;
+                break;
+            case 2:
+                if (isAward)
+                {
+                    game.currentRoom.GetDistance_pathfinding();
+                }
+                else
+                {
+                    ChangePositionParadise();
+                }
+                    
+                break;
+        }
+    }
+
+    public IEnumerator CoroutineHideChest()
+    {
+        yield return new WaitForSeconds(4);
+        ui_Manager.ResetChestRoom();
+        ui_Manager.DisplayChestRoom(false);
+        
+    }
+
+    public void ChangePositionParadise()
+    {
+
+    }
+
 
 
 }

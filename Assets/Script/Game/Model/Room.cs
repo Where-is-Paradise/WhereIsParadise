@@ -46,6 +46,8 @@ public class RoomHex : ScriptableObject
     public bool availableKeyAnimation = true;
     public bool chest = false;
 
+    public List<Chest> chestList = null;
+
     public int nbKeyInPath = 0;
 
     public void Init(int pos_X, int pos_Y)
@@ -65,6 +67,7 @@ public class RoomHex : ScriptableObject
         {
             door_isOpen.Add(false);
         }
+        chestList = new List<Chest>();
     }
 
     public static RoomHex CreateInstance(int pos_X, int pos_Y)

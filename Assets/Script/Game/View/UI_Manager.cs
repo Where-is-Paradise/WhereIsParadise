@@ -962,11 +962,31 @@ setting_button_echapMenu.SetActive(false);
             }
         }
     }
-    public void DisplayChestRoom()
+    public void DisplayChestRoom(bool display)
     {
-        MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject.SetActive(true);
+        MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject.SetActive(display);
 
     }
+    public void ResetChestRoom()
+    {
+        GameObject chestRoom = MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject;
+        for (int i = 0; i < chestRoom.transform.childCount; i++)
+        {
+            GameObject chestRoomAward = chestRoom.transform.GetChild(i).Find("Award").gameObject;
+            for (int j = 0; j< chestRoomAward.transform.childCount; j++)
+            {
+                chestRoomAward.transform.GetChild(j).gameObject.SetActive(false);
+            }
+            GameObject chestRoomPenalty = chestRoom.transform.GetChild(i).Find("Penalty").gameObject;
+            for (int h = 0; h < chestRoomPenalty.transform.childCount; h++)
+            {
+                chestRoomPenalty.transform.GetChild(h).gameObject.SetActive(false);
+            }
+
+        }
+        
+    }
+
     public void ClearSpecialRoom()
     {
         for(int i = 0; i < MainRoomGraphic.transform.Find("Special").childCount; i++)
@@ -999,6 +1019,16 @@ setting_button_echapMenu.SetActive(false);
             
         }
     }
+
+    public void ActiveZoneVoteChest(bool active)
+    {
+        foreach(GameObject chest in GameObject.FindGameObjectsWithTag("Chest"))
+        {
+            chest.transform.Find("VoteZone").gameObject.SetActive(active);
+        }
+        
+    }
+
     public void OpenParadise()
     {
         gameManager.GetPlayerMineGO().transform.GetChild(1).GetChild(7).gameObject.SetActive(false);

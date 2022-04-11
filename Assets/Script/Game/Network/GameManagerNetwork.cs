@@ -996,4 +996,28 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.tutorial[11].SetActive(true);
         gameManager.ui_Manager.listTutorialBool[11] = true;
     }
+
+
+    public void SendActiveZoneVoteChest()
+    {
+        photonView.RPC("SetActiveZoneVoteChest", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetActiveZoneVoteChest()
+    {
+        gameManager.ui_Manager.ActiveZoneVoteChest(true);
+        StartCoroutine(gameManager.LaunchTimerChest());
+    }
+
+    public void SendChestData(int indexRoom , int index, bool isAward, int indexAward)
+    {
+        photonView.RPC("SetChestData", RpcTarget.All, indexRoom,index, isAward, indexAward);
+    }
+
+    [PunRPC]
+    public void SetChestData(int indexRoom, int index, bool isAward, int indexAward)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].chestList.Add(Chest.CreateInstance(index, isAward, indexAward));
+    }
 }
