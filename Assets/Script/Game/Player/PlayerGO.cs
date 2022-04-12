@@ -583,11 +583,11 @@ public class PlayerGO : MonoBehaviour
 
     private void turnRight()
     {
-    Transform perso = transform.Find("Perso");
-    perso.localScale = new Vector3(
-        -Mathf.Abs(perso.localScale.x),
-        perso.localScale.y
-    );
+        Transform perso = transform.Find("Perso");
+        perso.localScale = new Vector3(
+            -Mathf.Abs(perso.localScale.x),
+            perso.localScale.y
+        );
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
@@ -723,7 +723,7 @@ public class PlayerGO : MonoBehaviour
                 gameManager.ui_Manager.Display_identificationExpedition(false);
                 gameManager.ui_Manager.DisplayKeyAndTorch(true);
                 if (gameManager.SamePositionAtInitialRoom())
-                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.GetDistance_pathfinding(), null);
+                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
             }
         }
         if (InputManager.GetButtonUp("Exploration"))
@@ -737,7 +737,7 @@ public class PlayerGO : MonoBehaviour
             gameManager.ui_Manager.Display_identificationExpedition(false);
             gameManager.ui_Manager.DisplayKeyAndTorch(true);
             if (gameManager.SamePositionAtInitialRoom())
-                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.GetDistance_pathfinding(), null);
+                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
         }
 
 
@@ -772,7 +772,7 @@ public class PlayerGO : MonoBehaviour
                 gameManager.ui_Manager.Display_identificationVoteDoor(false);
                 gameManager.ui_Manager.DisplayKeyAndTorch(true);
                 if (gameManager.SamePositionAtInitialRoom())
-                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.GetDistance_pathfinding(), null);
+                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
             }
         }
         if (InputManager.GetButtonUp("VoteDoor"))
@@ -785,7 +785,7 @@ public class PlayerGO : MonoBehaviour
             gameManager.ui_Manager.Display_identificationVoteDoor(false);
             gameManager.ui_Manager.DisplayKeyAndTorch(true);
             if (gameManager.SamePositionAtInitialRoom())
-                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.GetDistance_pathfinding(), null);
+                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
         }
     }
 

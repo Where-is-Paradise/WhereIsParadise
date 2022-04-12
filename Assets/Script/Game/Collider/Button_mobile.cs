@@ -8,13 +8,11 @@ public class Button_mobile : MonoBehaviour
     private float timeStayTouch = 0;
 
     public GameManager gameManager;
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -64,20 +62,18 @@ public class Button_mobile : MonoBehaviour
                 gameManager.ui_Manager.Display_identificationExpedition(false);
                 gameManager.ui_Manager.DisplayKeyAndTorch(true);
                 if (gameManager.SamePositionAtInitialRoom())
-                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.GetDistance_pathfinding(), null);
+                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
             }
         }
         if (up)
         {
             gameManager.ui_Manager.zoneX_startAnmation.SetActive(false);
             timeStayTouch = 0;
-            //isFirstTouch = false;
-            //canMove = true;
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
             gameManager.ui_Manager.Display_identificationExpedition(false);
             gameManager.ui_Manager.DisplayKeyAndTorch(true);
             if (gameManager.SamePositionAtInitialRoom())
-                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.GetDistance_pathfinding(), null);
+                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
         }
 
 
@@ -112,7 +108,7 @@ public class Button_mobile : MonoBehaviour
                 gameManager.ui_Manager.Display_identificationVoteDoor(false);
                 //gameManager.ui_Manager.DisplayKeyAndTorch(true);
 /*                if (gameManager.SamePositionAtInitialRoom())
-                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.GetDistance_pathfinding(), null);*/
+                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);*/
             }
         }
         if (up)
@@ -125,7 +121,7 @@ public class Button_mobile : MonoBehaviour
             gameManager.ui_Manager.Display_identificationVoteDoor(false);
 /*            gameManager.ui_Manager.DisplayKeyAndTorch(true);
             if (gameManager.SamePositionAtInitialRoom())
-                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.GetDistance_pathfinding(), null);*/
+                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);*/
         }
     }
 }
