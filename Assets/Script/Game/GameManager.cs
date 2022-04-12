@@ -297,24 +297,15 @@ public class GameManager : MonoBehaviourPun
     {
         foreach (Room room in game.dungeon.rooms)
         {
-            //Hexagone hexagone = new Hexagone(room);
             Hexagone newHexagone = Instantiate(hexagone);
             newHexagone.Room = room;
-            // EASY REFACTOR
-            float positionTransformationX;
-            float positionTransformationY;
-            if (room.Y % 2 != 0)
-            {
-                positionTransformationX = (initial_X + 0.82f) + (1.6f * room.X);
-                positionTransformationY = (initial_Y) + (-1.41f * room.Y);
-            }
-            else
-            {
+            
 
-                positionTransformationX = initial_X + (1.6f * room.X);
-                positionTransformationY = initial_Y + (-1.41f * room.Y);
+            float rankGap = room.Y % 2 != 0 ? 0.82f : 0;
 
-            }
+            float positionTransformationX = (initial_X + rankGap) + (1.6f * room.X);
+            float positionTransformationY = (initial_Y) + (-1.41f * room.Y);
+            
             newHexagone.transform.position = new Vector3(positionTransformationX, positionTransformationY);
 
             newHexagone.GetComponent<Hexagone>().index_text.text = room.GetIndex().ToString();
