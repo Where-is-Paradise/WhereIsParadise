@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Luminosity.IO;
-
 
 public class UI_Manager : MonoBehaviour
 {
@@ -110,7 +108,7 @@ setting_button_echapMenu.SetActive(false);
     void Update()
     {
 
-        if (gameManager.voteDoorHasProposed && gameManager.timer.timerLaunch && gameManager.game.currentRoom.GetIsVirus() )
+        if (gameManager.voteDoorHasProposed && gameManager.timer.timerLaunch && gameManager.game.currentRoom.IsVirus)
         {
             MixLetterDoorUI();
         }
@@ -199,7 +197,7 @@ setting_button_echapMenu.SetActive(false);
 
     }
 
-    public void SetDistanceRoom(int distance, RoomHex room)
+    public void SetDistanceRoom(int distance, Room room)
     {
 
         text_distance_room.GetComponent<Text>().text = distance.ToString();
@@ -816,67 +814,67 @@ setting_button_echapMenu.SetActive(false);
     }
     public void ShowAllDataInMap()
     {
-        foreach (GameObject room in gameManager.dungeon)
+        foreach (Hexagone hexagone in gameManager.dungeon)
         {
-            ShowDataMapInOneRoom(room);
+            ShowDataMapInOneRoom(hexagone);
         }
     }
 
-    public void ShowDataMapInOneRoom(GameObject room)
+    public void ShowDataMapInOneRoom(Hexagone hexagone)
     {
-
+        Room room = hexagone.Room;
         //room.GetComponent<Hexagone>().distanceText.text = room.GetComponent<Hexagone>().distance_pathFinding.ToString();
-        if (room.GetComponent<Hexagone>().isObstacle)
+        if (room.IsObstacle)
         {
-                room.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
-                room.GetComponent<Hexagone>().distanceText.text = "";
-                room.GetComponent<Hexagone>().index_text.text = "";
+                hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
+                hexagone.GetComponent<Hexagone>().distanceText.text = "";
+                hexagone.GetComponent<Hexagone>().index_text.text = "";
         }
-        if (room.GetComponent<Hexagone>().isInitialeRoom)
+        if (room.IsInitiale)
         {
-            room.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
-            room.GetComponent<Hexagone>().isTraversed = true;
+            hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
+            room.IsTraversed = true;
         }
-        if (room.GetComponent<Hexagone>().hasKey)
+        if (room.HasKey)
         {
-            room.transform.GetChild(0).GetChild(2).gameObject.SetActive(true);
-            room.GetComponent<Hexagone>().distanceText.text = "";
-            room.GetComponent<Hexagone>().index_text.text = "";
+            hexagone.transform.GetChild(0).GetChild(2).gameObject.SetActive(true);
+            hexagone.GetComponent<Hexagone>().distanceText.text = "";
+            hexagone.GetComponent<Hexagone>().index_text.text = "";
         }
-        if (room.GetComponent<Hexagone>().isFoggy)
+        if (room.IsFoggy)
         {
-            room.GetComponent<SpriteRenderer>().color = new Color(87 / 255f, 89 / 255f, 96 / 255f);
+            hexagone.GetComponent<SpriteRenderer>().color = new Color(87 / 255f, 89 / 255f, 96 / 255f);
         }
-        if (room.GetComponent<Hexagone>().isVirus )
+        if (room.IsVirus )
         {
-            room.GetComponent<SpriteRenderer>().color = new Color(66 / 255f, 0 / 255f, 117 / 255f);
+            hexagone.GetComponent<SpriteRenderer>().color = new Color(66 / 255f, 0 / 255f, 117 / 255f);
         }
-        if (room.GetComponent<Hexagone>().isExit)
+        if (room.IsExit)
         {
-            room.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
-            room.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
+            hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
+            hexagone.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
 
-            if (room.GetComponent<Hexagone>().hasKey)
+            if (room.HasKey)
             {
-                room.transform.GetChild(0).GetChild(2).gameObject.SetActive(false);
-                room.transform.GetChild(0).GetChild(5).gameObject.SetActive(true);
+                hexagone.transform.GetChild(0).GetChild(2).gameObject.SetActive(false);
+                hexagone.transform.GetChild(0).GetChild(5).gameObject.SetActive(true);
             }
         }
-        if (room.GetComponent<Hexagone>().isTraversed)
+        if (room.IsTraversed)
         {
-            room.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
+            hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
         }
         if (gameManager.hell)
         {
-            if (room.GetComponent<Hexagone>().pos_X == gameManager.hell.GetPos_X() && room.GetComponent<Hexagone>().pos_Y == gameManager.hell.GetPos_Y())
+            if (room.X == gameManager.hell.X && room.Y == gameManager.hell.Y)
             {
-                room.GetComponent<SpriteRenderer>().color = new Color((float)(255 / 255f), (float)0f / 255f, (float)0f / 255f, 1);
-                room.transform.GetChild(0).GetChild(4).gameObject.SetActive(true);
+                hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(255 / 255f), (float)0f / 255f, (float)0f / 255f, 1);
+                hexagone.transform.GetChild(0).GetChild(4).gameObject.SetActive(true);
 
-                if (gameManager.hell.hasKey)
+                if (gameManager.hell.HasKey)
                 {
-                    room.transform.GetChild(0).GetChild(2).gameObject.SetActive(false);
-                    room.transform.GetChild(0).GetChild(5).gameObject.SetActive(true);
+                    hexagone.transform.GetChild(0).GetChild(2).gameObject.SetActive(false);
+                    hexagone.transform.GetChild(0).GetChild(5).gameObject.SetActive(true);
                 }
 
             }

@@ -1,27 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Dungeon : ScriptableObject
 {
-    public List<RoomHex> rooms;
-    public RoomHex exit;
+    public List<Room> rooms;
+    public Room exit;
     private int height;
     private int width;
     private int ratio_obstacle;
-    public RoomHex initialRoom;
-    private List<RoomHex> listObstaclePivot;
-    private List<RoomHex> listRoomTraversed;
+    public Room initialRoom;
+    private List<Room> listObstaclePivot;
+    private List<Room> listRoomTraversed;
 
 
 
-    public void Init(int width , int height , int ratio_obstacle)
+    public void Init(int width, int height, int ratio_obstacle)
     {
-        this.rooms = new List<RoomHex>();
+        this.rooms = new List<Room>();
         this.height = height;
         this.width = width;
         this.ratio_obstacle = ratio_obstacle;
-        listRoomTraversed = new List<RoomHex>();
+        listRoomTraversed = new List<Room>();
     }
 
     public static Dungeon CreateInstance(int width, int height, int ratio_obstacle)
@@ -34,32 +33,29 @@ public class Dungeon : ScriptableObject
     public void CreateRooms()
     {
         int counterIndex = 0;
-        for(int i = 0; i < height; i++)
+        for (int i = 0; i < height; i++)
         {
-            for(int j = 0; j < width; j++)
+            for (int j = 0; j < width; j++)
             {
-                RoomHex newRoom  = RoomHex.CreateInstance(j , i);
+                Room newRoom = Room.CreateInstance(j, i);
                 rooms.Add(newRoom);
                 newRoom.SetIndex(counterIndex);
                 counterIndex++;
             }
         }
         InitiateNeigbour();
-        //SetInitialRoom();
-
-        //initialRoom.SetSpecificNeighbour();
     }
 
     public void SetInitialRoom()
     {
         initialRoom = GetInitialRoom();
-        initialRoom.SetIsObstacle(false);
-        initialRoom.SetIsInitialeRoom(true);
+        initialRoom.IsObstacle = false;
+        initialRoom.IsInitiale = true;
     }
 
     public void InitiateNeigbour()
     {
-        foreach(RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
             room.AddNeighbour(rooms);
             room.SetSpecificNeighbour();
@@ -71,30 +67,30 @@ public class Dungeon : ScriptableObject
     {
         if (this.exit)
         {
-            this.exit.SetIsExit(false);
+            this.exit.IsExit = false;
         }
-        List<RoomHex> potentialExit = new List<RoomHex>();
+        List<Room> potentialExit = new List<Room>();
         int counter = 0;
-        foreach (RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            if(room.distance_pathFinding_initialRoom == distance)
+            if (room.distance_pathFinding_initialRoom == distance)
             {
                 potentialExit.Add(room);
                 counter++;
             }
         }
-        if(counter == 0)
+        if (counter == 0)
         {
             return false;
         }
         int randomIndexRoom = Random.Range(0, potentialExit.Count);
         this.exit = potentialExit[randomIndexRoom];
-        if (this.exit.GetIsObstacle())
+        if (this.exit.IsObstacle)
         {
             return false;
         }
-        this.exit.SetIsExit(true);
-        this.exit.SetIsObstacle(false);
+        this.exit.IsExit = true;
+        this.exit.IsObstacle = false;
         return true;
     }
 
@@ -102,91 +98,77 @@ public class Dungeon : ScriptableObject
     public void AddObstacles()
     {
         int randomInt;
-        foreach (RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            if (room.GetIsInitialeRoom() || room.GetIsExit())
+            if (room.IsInitiale || room.IsExit)
             {
                 continue;
             }
             randomInt = Random.Range(0, 4);
-            if (randomInt == 0)
-            {
-                room.SetIsObstacle(true);
-            }
-            else
-            {
-                room.SetIsObstacle(false);
-            }
+            room.IsObstacle = randomInt == 0;
         }
 
-        List<RoomHex> listObstacle = GetListObstacle();
+        List<Room> listObstacle = GetListObstacle();
 
-        foreach(RoomHex obstacle in listObstacle)
+        foreach (Room obstacle in listObstacle)
         {
             randomInt = Random.Range(0, 3);
             if (randomInt == 0)
-            { 
-                foreach( RoomHex room in obstacle.listNeighbour)
+            {
+                foreach (Room room in obstacle.listNeighbour)
                 {
                     randomInt = Random.Range(0, 4);
-                    if (randomInt  == 0 && !room.GetIsInitialeRoom() && !room.GetIsExit())
+                    if (randomInt == 0 && !room.IsInitiale && !room.IsExit)
                     {
-                        room.SetIsObstacle(true);
+                        room.IsObstacle = true;
                     }
                 }
             }
         }
-        
+
     }
 
     public void AddObstacles_two(float percentage)
     {
         float randomInt;
-        foreach (RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-          
-            if (room.GetIsInitialeRoom() || room.GetIsExit())
+
+            if (room.IsInitiale || room.IsExit)
             {
                 continue;
             }
-            randomInt = Random.Range(0,100);
-            if (randomInt < percentage)
-            {
-                room.SetIsObstacle(true);
-            }
-            else
-            {
-                room.SetIsObstacle(false);
-            }
+            randomInt = Random.Range(0, 100);
+            room.IsObstacle = randomInt < percentage;
         }
         listObstaclePivot = GetListObstacle();
     }
 
-    public void PropagationObstacle(float initial, float percentage, int direction = -1 )
+    public void PropagationObstacle(float initial, float percentage, int direction = -1)
     {
-        if(initial == 100)
+        if (initial == 100)
         {
             return;
         }
-        List<RoomHex> listObstacle = GetListObstacle();
+        List<Room> listObstacle = GetListObstacle();
         float randomInt;
-        foreach (RoomHex obstacle in listObstacle)
+        foreach (Room obstacle in listObstacle)
         {
-            randomInt = Random.Range(0,100);
-            if(randomInt < 100 - initial)
+            randomInt = Random.Range(0, 100);
+            if (randomInt < 100 - initial)
             {
-                if(direction == -1)
+                if (direction == -1)
                 {
                     int randomIntTwo = Random.Range(0, obstacle.listNeighbour.Count);
                     for (int i = 0; i < obstacle.listNeighbour.Count; i++)
                     {
-                        if (randomIntTwo == i && !obstacle.listNeighbour[i].GetIsInitialeRoom() && !obstacle.listNeighbour[i].GetIsExit())
+                        if (randomIntTwo == i && !obstacle.listNeighbour[i].IsInitiale && !obstacle.listNeighbour[i].IsExit)
                         {
-                            obstacle.listNeighbour[i].SetIsObstacle(true);
+                            obstacle.listNeighbour[i].IsObstacle = true;
                             PropagationObstacle(initial + percentage, percentage, randomIntTwo);
 
                             return;
-                            
+
                         }
                     }
                 }
@@ -194,45 +176,44 @@ public class Dungeon : ScriptableObject
                 {
                     for (int i = 0; i < obstacle.listNeighbour.Count; i++)
                     {
-                        if (direction == i && !obstacle.listNeighbour[i].GetIsInitialeRoom() && !obstacle.listNeighbour[i].GetIsExit())
+                        if (direction == i && !obstacle.listNeighbour[i].IsInitiale && !obstacle.listNeighbour[i].IsExit)
                         {
-                            obstacle.listNeighbour[i].SetIsObstacle(true);
+                            obstacle.listNeighbour[i].IsObstacle = true;
                             PropagationObstacle(initial + percentage, percentage, direction);
                             return;
                         }
                     }
-                   
+
                 }
-               
+
             }
-           
+
         }
-       
+
     }
 
     public void SetPathFindingDistanceAllRoom()
     {
-        foreach(RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            int distance = GetPathFindingDistance(room, exit);
-            room.SetDistance_pathfinding(distance);
+            room.DistancePathFinding = GetPathFindingDistance(room, exit);
         }
     }
 
 
     public void SetPathFindingDistanceInitiateRoom()
     {
-        foreach (RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
             int distance = GetPathFindingDistance(room, initialRoom);
             room.distance_pathFinding_initialRoom = distance;
-             
+
         }
     }
 
     public void SetDistanceReelInitialRoom()
     {
-        foreach (RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
             int distance = GetDistance(room, initialRoom);
             room.distance_reel_initialRoom = distance;
@@ -241,14 +222,14 @@ public class Dungeon : ScriptableObject
 
     }
 
-    public int GetPathFindingDistance(RoomHex initialRoom, RoomHex exit)
+    public int GetPathFindingDistance(Room iialRoom, Room exit)
     {
-        List<RoomHex> openList = new List<RoomHex>();
-        List<RoomHex> closeList = new List<RoomHex>();
+        List<Room> openList = new List<Room>();
+        List<Room> closeList = new List<Room>();
         openList.Add(initialRoom);
         while (openList.Count > 0)
         {
-            RoomHex current = openList[0];
+            Room current = openList[0];
             for (int i = 1; i < openList.Count; i++)
             {
                 if (openList[i].Fcost() < current.Fcost() || (openList[i].Fcost() == current.Fcost()))
@@ -262,86 +243,88 @@ public class Dungeon : ScriptableObject
             closeList.Add(current);
 
 
-            if (current.GetPos_X() == exit.GetPos_X() && current.GetPos_Y() == exit.GetPos_Y())
+            if (current.X == exit.X && current.Y == exit.Y)
             {
                 return RetracePath(initialRoom, exit);
             }
-                
 
-            foreach (RoomHex neighbour in current.listNeighbour)
+
+            foreach (Room neighbour in current.listNeighbour)
             {
-                if(neighbour.GetPos_X() == exit.GetPos_X() && neighbour.GetPos_Y() == exit.GetPos_Y())
+                if (neighbour.X == exit.X && neighbour.Y == exit.Y)
                 {
                     neighbour.parent = current;
                     return RetracePath(initialRoom, exit);
                 }
-                if (neighbour.GetIsObstacle() || closeList.Contains(neighbour))
+                if (neighbour.IsObstacle || closeList.Contains(neighbour))
                 {
                     continue;
                 }
-                int newCostToNeighbour = current.gcost + (GetDistance(neighbour, current)*5) ;
-                if (newCostToNeighbour < neighbour.gcost || !openList.Contains(neighbour) || GetDistance(neighbour,current) == 0)
+                int newCostToNeighbour = current.gcost + (GetDistance(neighbour, current) * 5);
+                if (newCostToNeighbour < neighbour.gcost || !openList.Contains(neighbour) || GetDistance(neighbour, current) == 0)
                 {
                     neighbour.hcost = GetDistance(neighbour, exit);
-                    neighbour.gcost = newCostToNeighbour ;
+                    neighbour.gcost = newCostToNeighbour;
                     neighbour.parent = current;
                 }
                 if (!openList.Contains(neighbour))
                 {
                     openList.Add(neighbour);
-                    
+
                 }
             }
         }
-        return -1; 
+        return -1;
     }
 
-    private int RetracePath(RoomHex startNode, RoomHex endNode)
+    private int RetracePath(Room startNode, Room endNode)
     {
-        List<RoomHex> path = new List<RoomHex>();
-        RoomHex currentNode = endNode;
+        List<Room> path = new List<Room>();
+        Room currentNode = endNode;
 
         while (currentNode != startNode)
         {
             path.Add(currentNode);
             currentNode = currentNode.parent;
-            
+
         }
         return path.Count;
 
     }
 
 
-    static public int  GetDistance(RoomHex a, RoomHex b) {
+    static public int GetDistance(Room a, Room b)
+    {
 
-        var x = a.GetPos_X() - ((a.GetPos_Y() - (a.GetPos_Y()&1)) / 2);
-        var z = a.GetPos_Y();
+        var x = a.X - ((a.Y - (a.Y & 1)) / 2);
+        var z = a.Y;
         var y = (-x) - z;
 
 
-        var x2 = b.GetPos_X() - ((b.GetPos_Y() - (b.GetPos_Y()&1)) / 2);
-        var z2 = b.GetPos_Y();
+        var x2 = b.X - ((b.Y - (b.Y & 1)) / 2);
+        var z2 = b.Y;
         var y2 = (-x2) - z2;
 
 
-        return Mathf.Max(Mathf.Abs(x  - x2), Mathf.Abs(y - y2), Mathf.Abs(z - z2));
+        return Mathf.Max(Mathf.Abs(x - x2), Mathf.Abs(y - y2), Mathf.Abs(z - z2));
 
     }
 
 
 
-    private RoomHex GetInitialRoom()
+    private Room GetInitialRoom()
     {
         int X_reference = Random.Range(0, width);
+        int X_referen = Random.Range(0, width);
         int Y_reference = Random.Range(0, height);
 
-        foreach (RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
 
-            if (room.GetPos_X() == X_reference && room.GetPos_Y() == Y_reference)
+            if (room.X == X_reference && room.Y == Y_reference)
             {
                 initialRoom = room;
-                initialRoom.isTraversed = true;
+                initialRoom.IsTraversed = true;
                 return room;
             }
         }
@@ -349,12 +332,12 @@ public class Dungeon : ScriptableObject
         return null;
     }
 
-    private List<RoomHex> GetListObstacle()
+    private List<Room> GetListObstacle()
     {
-        List<RoomHex> listObstacle = new List<RoomHex>();
-        foreach(RoomHex room in rooms)
+        List<Room> listObstacle = new List<Room>();
+        foreach (Room room in rooms)
         {
-            if (room.GetIsObstacle())
+            if (room.IsObstacle)
             {
                 listObstacle.Add(room);
             }
@@ -364,17 +347,16 @@ public class Dungeon : ScriptableObject
 
     public void SetDistanceAllRoom()
     {
-        foreach(RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            int distance = GetDistance(room, initialRoom);
-            room.SetDistance_exit(distance);
+            room.DistanceExit = GetDistance(room, initialRoom);
         }
     }
-    public RoomHex GetRoomByPosition(int x , int y)
+    public Room GetRoomByPosition(int x, int y)
     {
-        foreach(RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            if(room.GetPos_X() == x && room.GetPos_Y() == y)
+            if (room.X == x && room.Y == y)
             {
                 return room;
             }
@@ -382,11 +364,11 @@ public class Dungeon : ScriptableObject
         return null;
     }
 
-    public RoomHex GetRoomByIndex(int index)
+    public Room GetRoomByIndex(int index)
     {
-        foreach ( RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            if(index == room.GetIndex())
+            if (index == room.GetIndex())
             {
                 return room;
             }
@@ -396,30 +378,30 @@ public class Dungeon : ScriptableObject
 
     public void InsertRandomFoggyRoom()
     {
-        foreach(RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            if (!room.GetIsObstacle() && !room.GetIsInitialeRoom() && !room.GetIsExit())
+            if (!room.IsObstacle && !room.IsInitiale && !room.IsExit)
             {
                 int randomInt = Random.Range(0, 8);
                 if (randomInt == 0)
                 {
-                    room.isFoggy = true;
+                    room.IsFoggy = true;
                 }
             }
-            
+
         }
     }
 
     public void InserKeyInRandomRoom()
     {
-        foreach (RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            if (!room.GetIsObstacle() && !room.GetIsInitialeRoom() && !room.GetIsExit() && (room.GetDistance_pathfinding() != exit.GetDistance_pathfinding()))
+            if (!room.IsObstacle && !room.IsInitiale && !room.IsExit && (room.DistancePathFinding != exit.DistancePathFinding))
             {
                 int randomInt = Random.Range(0, 6);
                 if (randomInt == 0)
                 {
-                    room.hasKey = true;
+                    room.HasKey = true;
                 }
             }
 
@@ -428,14 +410,14 @@ public class Dungeon : ScriptableObject
 
     public void InsertRandomVirusRoom()
     {
-        foreach (RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            if (!room.GetIsObstacle() && !room.GetIsInitialeRoom() && (room.GetDistance_pathfinding()-1) > 0)
+            if (!room.IsObstacle && !room.IsInitiale && (room.DistancePathFinding - 1) > 0)
             {
                 int randomInt = Random.Range(0, 25);
                 if (randomInt == 0)
                 {
-                    room.SetIsVirus(true);
+                    room.IsVirus = true;
                 }
             }
 
@@ -479,9 +461,9 @@ public class Dungeon : ScriptableObject
 
     public void SetListRoomTraversed()
     {
-        foreach (RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            if (room.isTraversed)
+            if (room.IsTraversed)
             {
                 listRoomTraversed.Add(room);
             }
@@ -490,13 +472,13 @@ public class Dungeon : ScriptableObject
 
     public bool GetIfThereisKeyInShortsPath(int nbkey)
     {
-       SetListRoomTraversed();
-       foreach (RoomHex roomTraversed in listRoomTraversed)
-       {
+        SetListRoomTraversed();
+        foreach (Room roomTraversed in listRoomTraversed)
+        {
             if (roomTraversed.SetNeigbourCloser_pathfinding(nbkey))
                 return true;
-           
-       }
+
+        }
         return false;
     }
 
@@ -504,9 +486,9 @@ public class Dungeon : ScriptableObject
     {
         int counter = 0;
         int distanceReference = exit.distance_pathFinding_initialRoom;
-        foreach (RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            if(!room.GetIsObstacle() && room.distance_pathFinding_initialRoom == distanceReference)
+            if (!room.IsObstacle && room.distance_pathFinding_initialRoom == distanceReference)
             {
                 counter++;
             }
@@ -525,7 +507,7 @@ public class Dungeon : ScriptableObject
         return width;
     }
 
-    public void SetExit(RoomHex room)
+    public void SetExit(Room room)
     {
         this.exit = room;
     }

@@ -12,7 +12,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        Room room = PhotonNetwork.CurrentRoom;
+        Photon.Realtime.Room room = PhotonNetwork.CurrentRoom;
         room.IsOpen = false;
     }
 

@@ -19,7 +19,7 @@ public class Game : ScriptableObject
 
     public List<Expedition> current_expedition;
 
-    public RoomHex currentRoom; 
+    public Room currentRoom; 
 
     public int counter_acceptVote;
     public int counter_refuseVote;
@@ -81,7 +81,7 @@ public class Game : ScriptableObject
                 }
             }
             
-        } while (dungeon.initialRoom.GetDistance_pathfinding() == -1 || !correctExit);
+        } while (dungeon.initialRoom.DistancePathFinding == -1 || !correctExit);
 
         if (setting.FOGGY_ROOM)
             dungeon.InsertRandomFoggyRoom();
@@ -95,7 +95,7 @@ public class Game : ScriptableObject
 
     public void SetKeyCounter()
     {
-        key_counter = (currentRoom.GetDistance_pathfinding() + setting.KEY_ADDITIONAL);
+        key_counter = (currentRoom.DistancePathFinding + setting.KEY_ADDITIONAL);
         //key_counter = 25;
     }
 
@@ -192,7 +192,7 @@ public class Game : ScriptableObject
     public void CreateExpedition(int idPlayer, int roomID)
     {
         PlayerDun player = GetPlayerById(idPlayer);
-        RoomHex room = GetRoomById(roomID);
+        Room room = GetRoomById(roomID);
         current_expedition.Add(Expedition.CreateInstance(player, room, roomID));
     }
 
@@ -218,9 +218,9 @@ public class Game : ScriptableObject
         return null;
     } 
 
-    public RoomHex GetRoomById(int roomID)
+    public Room GetRoomById(int roomID)
     {
-        RoomHex room = null;
+        Room room = null;
         switch (roomID)
         {
             case 0 :
@@ -282,17 +282,17 @@ public class Game : ScriptableObject
         }   
     }
 
-    public List<int> GetDoorObstacle(RoomHex room)
+    public List<int> GetDoorObstacle(Room room)
     {
         List<int> listRoomObstacle = new  List<int>();
 
-        Dictionary<RoomHex, int> mapRoomObstacle;
+        Dictionary<Room, int> mapRoomObstacle;
 
         mapRoomObstacle = room.listIndexRoom;
 
-        foreach (KeyValuePair<RoomHex, int> roomWithID in mapRoomObstacle)
+        foreach (KeyValuePair<Room, int> roomWithID in mapRoomObstacle)
         {
-            if (roomWithID.Key.GetIsObstacle())
+            if (roomWithID.Key.IsObstacle)
             {
                 listRoomObstacle.Add(roomWithID.Value);
             }
@@ -330,16 +330,16 @@ public class Game : ScriptableObject
 
     
 
-    public List<int> GetDoorNoneObstacle(RoomHex room)
+    public List<int> GetDoorNoneObstacle(Room room)
     {
         List<int> listRoomObstacle = new List<int>();
-        Dictionary<RoomHex, int> mapRoomObstacle;
+        Dictionary<Room, int> mapRoomObstacle;
         mapRoomObstacle = room.listIndexRoom;
 
-        foreach (KeyValuePair<RoomHex, int> roomWithID in mapRoomObstacle)
+        foreach (KeyValuePair<Room, int> roomWithID in mapRoomObstacle)
         {
            
-            if (roomWithID.Value != -1 && !roomWithID.Key.GetIsObstacle())
+            if (roomWithID.Value != -1 && !roomWithID.Key.IsObstacle)
             {
                 listRoomObstacle.Add(roomWithID.Value);
             }

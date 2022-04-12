@@ -138,19 +138,18 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetRooms(int indexRoom, bool isExit, bool isObstacle,bool isInitial, int distance_exit, int distance_pathFinding,int  distance_pathFinding_IR, bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest)
     {
-        gameManager.game.dungeon.rooms[indexRoom].SetIsExit(isExit);
-        gameManager.game.dungeon.rooms[indexRoom].SetIsObstacle(isObstacle);
-        gameManager.game.dungeon.rooms[indexRoom].SetDistance_exit(distance_exit);
-        gameManager.game.dungeon.rooms[indexRoom].SetDistance_pathfinding(distance_pathFinding);
-        gameManager.game.dungeon.rooms[indexRoom].SetIsInitialeRoom(isInitial);
+        gameManager.game.dungeon.rooms[indexRoom].IsExit = isExit;
+        gameManager.game.dungeon.rooms[indexRoom].IsObstacle = isObstacle;
+        gameManager.game.dungeon.rooms[indexRoom].DistanceExit = distance_exit;
+        gameManager.game.dungeon.rooms[indexRoom].DistancePathFinding = distance_pathFinding;
+        gameManager.game.dungeon.rooms[indexRoom].IsInitiale = isInitial;
         gameManager.game.dungeon.rooms[indexRoom].distance_pathFinding_initialRoom = distance_pathFinding_IR;
-        gameManager.game.dungeon.rooms[indexRoom].isFoggy = isFoggy;
-        gameManager.game.dungeon.rooms[indexRoom].hasKey = hasKey;
-        gameManager.game.dungeon.rooms[indexRoom].chest = chest;
-        gameManager.game.dungeon.rooms[indexRoom].SetIsVirus(isVirus);
-        
-        //gameManager.game.dungeon
 
+        gameManager.game.dungeon.rooms[indexRoom].IsFoggy = isFoggy;
+        gameManager.game.dungeon.rooms[indexRoom].HasKey = hasKey;
+        gameManager.game.dungeon.rooms[indexRoom].chest = chest;
+        gameManager.game.dungeon.rooms[indexRoom].IsVirus = isVirus;
+        
         if (isExit)
         {
             gameManager.game.dungeon.SetExit(gameManager.game.dungeon.rooms[indexRoom]);
@@ -160,7 +159,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
             gameManager.game.dungeon.initialRoom = gameManager.game.dungeon.rooms[indexRoom];
             gameManager.game.currentRoom = gameManager.game.dungeon.initialRoom;
-            gameManager.ui_Manager.SetDistanceRoom(gameManager.game.currentRoom.GetDistance_pathfinding(), gameManager.game.currentRoom); 
+            gameManager.ui_Manager.SetDistanceRoom(gameManager.game.currentRoom.DistancePathFinding, gameManager.game.currentRoom); 
         }
 
         if (isLast)
@@ -170,7 +169,7 @@ public class GameManagerNetwork : MonoBehaviourPun
             gameManager.SetPositionHexagone();
             gameManager.SetDoorObstacle(gameManager.game.currentRoom);
             gameManager.game.SetKeyCounter();
-            gameManager.distanceInitial = gameManager.game.currentRoom.GetDistance_pathfinding();
+            gameManager.distanceInitial = gameManager.game.currentRoom.DistancePathFinding;
             gameManager.SetInitialPositionPlayers();
         }
        
@@ -452,7 +451,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.nbKeyBroken++;
         gameManager.ui_Manager.SetNBKey();
         gameManager.alreaydyExpeditionHadPropose = false;
-        if (gameManager.game.currentRoom.GetIsVirus())
+        if (gameManager.game.currentRoom.IsVirus)
         {
             gameManager.ui_Manager.ResetLetterDoor();
         }
@@ -469,15 +468,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetHell(int indexHell)
     {
         gameManager.hell = gameManager.game.dungeon.GetRoomByIndex(indexHell);
-        gameManager.hell.isHell = true;
-        GameObject[] hexagones = GameObject.FindGameObjectsWithTag("Hexagone");
-        foreach(GameObject hexagone in hexagones)
-        {
-            if(hexagone.GetComponent<Hexagone>().index == indexHell)
-            {
-                hexagone.GetComponent<Hexagone>().isHell = true;
-            }
-        }
+        gameManager.hell.IsHell = true;
         gameManager.SetCurrentRoomColor();
     }
 
@@ -803,9 +794,9 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (!isExpedition)
         {
             //door.GetComponent<Door>().isOpenForAll = true;
-            RoomHex roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
+            Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
             roomInPlayer.door_isOpen[indexDoor] = true;
-            gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam).isTraversed = true;
+            gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam).IsTraversed = true;
             
         }
 
@@ -922,7 +913,7 @@ public class GameManagerNetwork : MonoBehaviourPun
             gameManager.gameManagerNetwork.SendHavetoGoToExpedition(false, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
             /*
-                        RoomHex roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(gameManager.game.currentRoom.GetPos_X(), gameManager.game.currentRoom.GetPos_Y());
+                        Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(gameManager.game.currentRoom.GetPos_X(), gameManager.game.currentRoom.GetPos_Y());
                         roomInPlayer.door_isOpen[indexDoor] = true;*/
 
 

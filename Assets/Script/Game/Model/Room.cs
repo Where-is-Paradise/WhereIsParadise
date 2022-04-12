@@ -1,47 +1,62 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomHex : ScriptableObject
+
+public class Room : ScriptableObject
 {
 
     private int index;
-    private int pos_X;
-    private int pos_Y;
+    public int Index { get { return index; } }
+    private int x;
+    public int X { get { return x; } }
+    private int y;
+    public int Y { get { return y; } }
 
     private bool isExit;
+    public bool IsExit { get { return isExit; } set { isExit = value; } }
     private bool isObstacle;
-    private bool isInitialeRoom;
+    public bool IsObstacle { get { return isObstacle; } set { isObstacle = value; } }
+    private bool isInitiale;
+    public bool IsInitiale { get { return isInitiale; } set { isInitiale = value; } }
     private bool isVirus;
+    public bool IsVirus { get { return isVirus; } set { isVirus = value; } }
 
-    private int distance_exit;
-    private int distance_pathFinding;
+    private int distanceExit;
+    public int DistanceExit { get { return distanceExit; } set { distanceExit = value; } }
+    private int distancePathFinding;
+    public int DistancePathFinding { get { return distancePathFinding; } set { distancePathFinding = value; } }
     public int distance_pathFinding_initialRoom;
     public int distance_reel_initialRoom;
 
-    public List<RoomHex> listNeighbour;
+    public List<Room> listNeighbour;
 
-    public RoomHex up_Right_neighbour;
-    public RoomHex up_Left_neighbour;
-    public RoomHex right_neighbour;
-    public RoomHex left_neighbour;
-    public RoomHex down_Right_neighbour;
-    public RoomHex down_Left_neighbour;
+    public Room up_Right_neighbour;
+    public Room up_Left_neighbour;
+    public Room right_neighbour;
+    public Room left_neighbour;
+    public Room down_Right_neighbour;
+    public Room down_Left_neighbour;
 
     public int hcost;
     public int gcost;
 
-    public RoomHex parent;
+    public Room parent;
 
-    public Dictionary<RoomHex, int> listIndexRoom;
-    public List<RoomHex> listNeigbour_pathfinding;
+    public Dictionary<Room, int> listIndexRoom;
+    public List<Room> listNeigbour_pathfinding;
 
     public List<bool> door_isOpen;
 
-    public bool isHell = false;
-    public bool isTraversed = false;
-    public bool isFoggy = false;
-    public bool hasKey = false;
+    private bool isHell = false;
+    public bool IsHell { get { return isHell; } set { isHell = value; } }
+    private bool isTraversed = false;
+    public bool IsTraversed { get { return isTraversed; } set { isTraversed = value; } }
+    private bool isFoggy = false;
+    public bool IsFoggy { get { return isFoggy; } set { isFoggy = value; } }
+    private bool hasKey = false;
+    public bool HasKey { get { return hasKey; } set { hasKey = value; } }
+
+
     public bool availableKey = true;
     public bool availableKeyAnimation = true;
     public bool chest = false;
@@ -52,147 +67,147 @@ public class RoomHex : ScriptableObject
 
     public void Init(int pos_X, int pos_Y)
     {
-        this.pos_X = pos_X;
-        this.pos_Y = pos_Y;
-        distance_pathFinding = 0;
-        listIndexRoom = new Dictionary<RoomHex, int>();
-        listNeigbour_pathfinding = new List<RoomHex>();
+        this.x = pos_X;
+        this.y = pos_Y;
+        distancePathFinding = 0;
+        listIndexRoom = new Dictionary<Room, int>();
+        listNeigbour_pathfinding = new List<Room>();
         door_isOpen = new List<bool>();
         isVirus = false;
         isObstacle = false;
-        isInitialeRoom = false;
+        isInitiale = false;
         isExit = false;
         availableKeyAnimation = true;
-        for (int i = 0; i< 6; i++)
+        for (int i = 0; i < 6; i++)
         {
             door_isOpen.Add(false);
         }
         chestList = new List<Chest>();
     }
 
-    public static RoomHex CreateInstance(int pos_X, int pos_Y)
+    public static Room CreateInstance(int pos_X, int pos_Y)
     {
-        var data = ScriptableObject.CreateInstance<RoomHex>();
-        data.Init(pos_X , pos_Y);
+        var data = ScriptableObject.CreateInstance<Room>();
+        data.Init(pos_X, pos_Y);
         return data;
     }
 
-    public void AddNeighbour(List<RoomHex> listRoom)
+    public void AddNeighbour(List<Room> roomList)
     {
-        listNeighbour = new List<RoomHex>();
-        foreach ( RoomHex room in listRoom)
+        listNeighbour = new List<Room>();
+        foreach (Room room in roomList)
         {
             int distance = Dungeon.GetDistance(room, this);
-            if(distance == 1)
+            if (distance == 1)
             {
                 listNeighbour.Add(room);
             }
         }
 
-        if (isInitialeRoom)
+        if (isInitiale)
         {
             gcost = 5;
         }
     }
 
 
-    public Dictionary<RoomHex, int> SetSpecificNeighbour()
+    public Dictionary<Room, int> SetSpecificNeighbour()
     {
-       
+
         int indexRoom = -1;
-        foreach(RoomHex room in listNeighbour)
+        foreach (Room room in listNeighbour)
         {
-            if(this.pos_Y%2 == 0)
+            if (this.y % 2 == 0)
             {
-                if(room.GetPos_X() == this.pos_X && room.GetPos_Y() < this.pos_Y)
+                if (room.X == this.x && room.Y < this.y)
                 {
                     up_Right_neighbour = room;
                     room.gcost = 5;
                     indexRoom = 2;
-                    listIndexRoom.Add(up_Right_neighbour,indexRoom);
+                    listIndexRoom.Add(up_Right_neighbour, indexRoom);
                 }
-                else if(room.GetPos_X() < this.pos_X && room.GetPos_Y() < this.pos_Y)
+                else if (room.X < this.x && room.Y < this.y)
                 {
                     up_Left_neighbour = room;
                     room.gcost = 5;
                     indexRoom = 1;
-                    listIndexRoom.Add(up_Left_neighbour,indexRoom);
+                    listIndexRoom.Add(up_Left_neighbour, indexRoom);
                 }
-                else if(room.GetPos_X() > this.pos_X  && room.GetPos_Y() == this.pos_Y)
+                else if (room.X > this.x && room.Y == this.y)
                 {
                     right_neighbour = room;
                     room.gcost = 5;
                     indexRoom = 3;
-                    listIndexRoom.Add(right_neighbour,indexRoom);
+                    listIndexRoom.Add(right_neighbour, indexRoom);
                 }
-                else if( room.GetPos_X() < this.pos_X && room.GetPos_Y() == this.pos_Y)
+                else if (room.X < this.x && room.Y == this.y)
                 {
                     left_neighbour = room;
                     indexRoom = 0;
                     room.gcost = 5;
-                    listIndexRoom.Add(left_neighbour,indexRoom);
+                    listIndexRoom.Add(left_neighbour, indexRoom);
                 }
-                else if (room.GetPos_X() == this.pos_X && room.GetPos_Y() > this.pos_Y)
+                else if (room.X == this.x && room.Y > this.y)
                 {
                     down_Right_neighbour = room;
                     room.gcost = 5;
                     indexRoom = 4;
-                    listIndexRoom.Add(down_Right_neighbour,indexRoom);
+                    listIndexRoom.Add(down_Right_neighbour, indexRoom);
                 }
-                else if (room.GetPos_X() < this.pos_X && room.GetPos_Y() > this.pos_Y)
+                else if (room.X < this.x && room.Y > this.y)
                 {
                     down_Left_neighbour = room;
                     room.gcost = 5;
                     indexRoom = 5;
-                    listIndexRoom.Add(down_Left_neighbour,indexRoom);
+                    listIndexRoom.Add(down_Left_neighbour, indexRoom);
                 }
             }
             else
             {
-                if (room.GetPos_X() > this.pos_X && room.GetPos_Y() < this.pos_Y)
+                if (room.X > this.x && room.Y < this.y)
                 {
                     up_Right_neighbour = room;
                     room.gcost = 5;
                     indexRoom = 2;
-                    listIndexRoom.Add(up_Right_neighbour,indexRoom);
+                    listIndexRoom.Add(up_Right_neighbour, indexRoom);
                 }
-                else if (room.GetPos_X() == this.pos_X && room.GetPos_Y() < this.pos_Y)
+                else if (room.X == this.x && room.Y < this.y)
                 {
                     up_Left_neighbour = room;
                     room.gcost = 5;
                     indexRoom = 1;
-                    listIndexRoom.Add(up_Left_neighbour,indexRoom);
+                    listIndexRoom.Add(up_Left_neighbour, indexRoom);
                 }
-                else if (room.GetPos_X() > this.pos_X && room.GetPos_Y() == this.pos_Y)
+                else if (room.X > this.x && room.Y == this.y)
                 {
                     right_neighbour = room;
                     room.gcost = 5;
                     indexRoom = 3;
-                    listIndexRoom.Add(right_neighbour,indexRoom);
+                    listIndexRoom.Add(right_neighbour, indexRoom);
                 }
-                else if (room.GetPos_X() < this.pos_X && room.GetPos_Y() == this.pos_Y)
+                else if (room.X < this.x && room.Y == this.y)
                 {
                     left_neighbour = room;
                     indexRoom = 0;
                     room.gcost = 5;
-                    listIndexRoom.Add(left_neighbour,indexRoom);
+                    listIndexRoom.Add(left_neighbour, indexRoom);
                 }
-                else if (room.GetPos_X() > this.pos_X && room.GetPos_Y() > this.pos_Y)
+                else if (room.X > this.x && room.Y > this.y)
                 {
                     down_Right_neighbour = room;
                     room.gcost = 5;
                     indexRoom = 4;
-                    listIndexRoom.Add(down_Right_neighbour,indexRoom);
+                    listIndexRoom.Add(down_Right_neighbour, indexRoom);
                 }
-                else if (room.GetPos_X() == this.pos_X && room.GetPos_Y() > this.pos_Y)
+                else if (room.X == this.x && room.Y > this.y)
                 {
                     down_Left_neighbour = room;
                     room.gcost = 5;
                     indexRoom = 5;
-                    listIndexRoom.Add(down_Left_neighbour,indexRoom);
+                    listIndexRoom.Add(down_Left_neighbour, indexRoom);
                 }
             }
-            
+
         }
 
         return listIndexRoom;
@@ -200,19 +215,20 @@ public class RoomHex : ScriptableObject
 
     }
 
-    
+
 
     public int GetNumberOfNeigbourNoneObstacleAndNotOpen()
     {
         int counter = 0;
-        foreach(RoomHex room in listNeighbour){
+        foreach (Room room in listNeighbour)
+        {
 
-            if (!room.isObstacle  )
+            if (!room.isObstacle)
             {
                 counter++;
             }
         }
-        for(int i = 0; i < 6; i++)
+        for (int i = 0; i < 6; i++)
         {
             if (door_isOpen[i])
             {
@@ -237,26 +253,26 @@ public class RoomHex : ScriptableObject
         {
             return false;
         }
-        
+
 
         List<bool> listHasKey = new List<bool>();
-        foreach (RoomHex room in listNeighbour)
+        foreach (Room room in listNeighbour)
         {
-            
-            if (!room.isObstacle && !room.isTraversed && room.distance_pathFinding < this.distance_pathFinding)
+
+            if (!room.isObstacle && !room.isTraversed && room.distancePathFinding < this.distancePathFinding)
             {
                 listHasKey.Add(room.SetNeigbourCloser_pathfinding((nbKey - 1) + nbKeyAdditional));
             }
-            
+
         }
-        foreach(bool hasKey in listHasKey)
+        foreach (bool hasKey in listHasKey)
         {
             if (hasKey)
             {
                 nbKeyInPath++;
                 return true;
             }
-                
+
         }
         return false;
 
@@ -275,87 +291,17 @@ public class RoomHex : ScriptableObject
         this.index = index;
     }
 
-    public int GetPos_X()
-    {
-        return this.pos_X;
-    }
-    public void SetPos_X(int pos_X)
-    {
-        this.pos_X = pos_X;
+    public bool HasSameLocation(Room otherRoom) {
+        return this.x == otherRoom.X && this.y == otherRoom.Y;
     }
 
-    public int GetPos_Y()
+    public override string ToString()
     {
-        return this.pos_Y;
-    }
-    public void SetPos_Y(int pos_Y)
-    {
-        this.pos_Y = pos_Y;
-    }
-
-    public bool GetIsExit()
-    {
-        return this.isExit;
-    }
-
-    public void SetIsExit(bool isExit)
-    {
-        this.isExit = isExit;
-    }
-
-    public bool GetIsVirus()
-    {
-        return this.isVirus;
-    }
-
-    public void SetIsVirus(bool isVirus)
-    {
-        this.isVirus = isVirus;
-    }
-
-    public bool GetIsObstacle()
-    {
-        return this.isObstacle;
-    }
-
-    public void SetIsObstacle(bool isObstacle)
-    {
-        this.isObstacle = isObstacle;
-    }
-
-    public int GetDistance_exit()
-    {
-        return this.distance_exit;
-    }
-    public void SetDistance_exit(int distance_exit)
-    {
-        this.distance_exit = distance_exit;
-    }
-
-    public int GetDistance_pathfinding()
-    {
-        return this.distance_pathFinding;
-    }
-    public void SetDistance_pathfinding(int distance_pathFinding)
-    {
-        this.distance_pathFinding = distance_pathFinding;
-    }
-
-    public void SetIsInitialeRoom(bool isInitialeRoom)
-    {
-        this.isInitialeRoom = isInitialeRoom;
-    }
-    public bool GetIsInitialeRoom()
-    {
-        return this.isInitialeRoom;
-    }
-
-    public override string  ToString()
-    {
-        for(int i =0; i < 6; i++)
+        for (int i = 0; i < 6; i++)
         {
             return door_isOpen[i] + " ";
         }
         return "";
     }
 }
+
