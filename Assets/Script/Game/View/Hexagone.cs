@@ -29,7 +29,7 @@ public class Hexagone : MonoBehaviour
     void Update()
     {
         if (room == null) {
-            Debug.LogError("Room is null");
+            //Debug.LogError("Room is null");
             return;
         }
         if(room.DistancePathFinding == -1)

@@ -56,9 +56,9 @@ public class Game : ScriptableObject
         setting.NB_IMPOSTOR = CalculNbImpostor();
 
         bool correctExit;
-        int randomPercentageRatioObatacle = Random.Range(40, 50);
-        int randomPercentagePropagation = Random.Range(2, 7);
-        int randomPercentageInitialPropagation = Random.Range(5, 20);
+        int randomPercentageRatioObatacle = Random.Range(30, 35);
+        int randomPercentagePropagation = Random.Range(10, 15);
+        int randomPercentageInitialPropagation = Random.Range(10, 20);
         do
         {
             Debug.Log("creation map");

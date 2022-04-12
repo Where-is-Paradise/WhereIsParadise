@@ -222,7 +222,7 @@ public class Dungeon : ScriptableObject
 
     }
 
-    public int GetPathFindingDistance(Room iialRoom, Room exit)
+    public int GetPathFindingDistance(Room initialRoom, Room exit)
     {
         List<Room> openList = new List<Room>();
         List<Room> closeList = new List<Room>();

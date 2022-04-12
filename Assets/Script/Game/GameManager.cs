@@ -97,8 +97,8 @@ public class GameManager : MonoBehaviourPun
 
         if (PhotonNetwork.IsMasterClient)
         {
-            int randomWidth = Random.Range(15, 30);
-            int randomHeight = Random.Range(15, 30);
+            int randomWidth = Random.Range(15, 16);
+            int randomHeight = Random.Range(15, 16);
             gameManagerNetwork.SendWidthHeightMap(randomWidth, randomHeight);
         }
 
@@ -297,8 +297,9 @@ public class GameManager : MonoBehaviourPun
     {
         foreach (Room room in game.dungeon.rooms)
         {
-            Hexagone newHexagone = new Hexagone(room);
-
+            //Hexagone hexagone = new Hexagone(room);
+            Hexagone newHexagone = Instantiate(hexagone);
+            newHexagone.Room = room;
             // EASY REFACTOR
             float positionTransformationX;
             float positionTransformationY;
@@ -314,18 +315,9 @@ public class GameManager : MonoBehaviourPun
                 positionTransformationY = initial_Y + (-1.41f * room.Y);
 
             }
-            newHexagone.transform.position = new Vector3(positionTransformationX, positionTransformationY, -4);
+            newHexagone.transform.position = new Vector3(positionTransformationX, positionTransformationY);
 
             newHexagone.GetComponent<Hexagone>().index_text.text = room.GetIndex().ToString();
-            if (setting.DISPLAY_OBSTACLE_MAP || GetPlayerMine().GetIsImpostor())
-            {
-                // newHexagone.GetComponent<Hexagone>().distance_pathFinding = room.distance_pathFinding_initialRoom;
-            }
-            else
-            {
-                // newHexagone.GetComponent<Hexagone>().distance_pathFinding = room.distance_reel_initialRoom;
-            }
-
             newHexagone.transform.parent = map.transform;
             dungeon.Add(newHexagone);
         }
