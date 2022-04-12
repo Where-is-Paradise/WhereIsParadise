@@ -791,10 +791,16 @@ public class PlayerGO : MonoBehaviour
 
     public void LaunchVoteChest()
     {
-        if (Input.GetKeyUp(KeyCode.G))
+        if (!GetComponent<PhotonView>().IsMine)
         {
-            gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
+            return;
         }
+        if (!Input.GetKeyUp(KeyCode.G))
+        {
+            return;
+        }
+        gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
+       
     }
 
 

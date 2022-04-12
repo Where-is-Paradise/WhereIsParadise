@@ -23,14 +23,14 @@ public class ChestZoneVote : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine )
+        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine && gameManager.voteChestHasProposed)
         {
             gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, true, false);
         }
     }
     public void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine)
+        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine && gameManager.voteChestHasProposed)
         {
             gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, false, false);
         }
@@ -38,7 +38,7 @@ public class ChestZoneVote : MonoBehaviour
 
     public void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine)
+        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine && gameManager.voteChestHasProposed)
         {
             gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, false, true);
         }

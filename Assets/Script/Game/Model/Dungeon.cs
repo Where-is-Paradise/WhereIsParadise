@@ -430,7 +430,7 @@ public class Dungeon : ScriptableObject
         {
             if (!room.IsObstacle && !room.IsInitiale && (room.DistancePathFinding - 1) > 0)
             {
-                int randomInt = Random.Range(0, 2);
+                int randomInt = Random.Range(0, 1);
                 if (randomInt == 0)
                 {
                     room.chest = true;
@@ -480,6 +480,29 @@ public class Dungeon : ScriptableObject
 
         }
         return false;
+    }
+
+    public List<Room> GetListRoomByDistance(Room room , int distance)
+    {
+        List<Room> listRoomWithCorrectDistance = new List<Room>();
+        foreach (Room roomIndex in rooms)
+        {
+            if (roomIndex.IsObstacle)
+            {
+                continue;
+            }
+            if (roomIndex.IsExit)
+            {
+                continue;
+            }
+            int distanceIndex = GetPathFindingDistance(roomIndex, room);
+            if(distanceIndex != distance)
+            {
+                continue;
+            }
+            listRoomWithCorrectDistance.Add(roomIndex);
+        }
+        return listRoomWithCorrectDistance;
     }
 
     public int GetNumberOfPossiblityOfExit()

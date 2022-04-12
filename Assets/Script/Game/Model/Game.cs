@@ -69,13 +69,13 @@ public class Game : ScriptableObject
             dungeon.SetPathFindingDistanceInitiateRoom();
             dungeon.SetDistanceReelInitialRoom();
             //int distanceExit = Random.Range(5, 9);
-            int distanceExit = 2;
+            int distanceExit = 5;
             correctExit = dungeon.AssignRandomExit(distanceExit);
             if (correctExit)
             {
                 dungeon.SetPathFindingDistanceAllRoom();
                 int nbOfPossiblity = dungeon.GetNumberOfPossiblityOfExit();
-                if(nbOfPossiblity < 5)
+                if(nbOfPossiblity < 2)
                 {
                     correctExit = false;
                 }

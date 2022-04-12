@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Room : ScriptableObject
 {
-
+    [SerializeField]
     private int index;
     public int Index { get { return index; } }
     private int x;
@@ -60,6 +60,7 @@ public class Room : ScriptableObject
     public bool availableKey = true;
     public bool availableKeyAnimation = true;
     public bool chest = false;
+    public bool chestIsOpen = false;
 
     public List<Chest> chestList = null;
 

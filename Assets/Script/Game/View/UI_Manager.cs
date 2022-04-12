@@ -676,6 +676,15 @@ setting_button_echapMenu.SetActive(false);
        
     }
     
+    public void ResetAllPlayerLightAround()
+    {
+        foreach(GameObject player  in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            player.transform.GetChild(1).GetChild(9).gameObject.SetActive(false);
+            player.transform.GetChild(1).GetChild(6).gameObject.SetActive(false);
+        }
+    }
+
     public void DisplayBlackScreenToDemonWhenAllGone()
     {
         DisplayBlackScreen(true, true);
@@ -962,9 +971,77 @@ setting_button_echapMenu.SetActive(false);
     }
     public void DisplayChestRoom(bool display)
     {
+        if (display)
+        {
+            if (gameManager.game.currentRoom.chestIsOpen)
+            {
+                return;
+            }
+            if (gameManager.game.currentRoom.IsExit)
+            {
+                return;
+            }
+            if (gameManager.game.currentRoom.IsHell)
+            {
+                return;
+            }
+            if (!gameManager.NbKeySufficient())
+            {
+                return;
+            }
+        }
         MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject.SetActive(display);
-
+        DisplayAwardAndPenaltyForImpostor(display);
     }
+    public void DisplayAwardAndPenaltyForImpostor(bool display)
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        {
+            return;
+        }
+        GameObject chestRoom = MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject;
+        foreach (Chest chest in gameManager.game.currentRoom.chestList)
+        {
+            if (chest.isAward)
+            {
+                GameObject chestRoomAward = chestRoom.transform.GetChild(chest.index).Find("Award").gameObject;
+                chestRoomAward.SetActive(display);
+                chestRoomAward.transform.GetChild(chest.indexAward).gameObject.SetActive(display);
+                if (display)
+                {
+                    chestRoomAward.transform.GetChild(chest.indexAward).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.4f);
+                    chestRoomAward.transform.GetChild(chest.indexAward).Find("Canvas").Find("PlusOne").GetComponent<Text>().color = new Color(255, 255, 255, 0.4f);
+                }
+                else
+                {
+                    chestRoomAward.transform.GetChild(chest.indexAward).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                    chestRoomAward.transform.GetChild(chest.indexAward).Find("Canvas").Find("PlusOne").GetComponent<Text>().color = new Color(255, 255, 255, 1f);
+                }
+            }
+            else
+            {
+                GameObject chestRoomPenalty = chestRoom.transform.GetChild(chest.index).Find("Penalty").gameObject;
+                chestRoomPenalty.SetActive(display);
+                chestRoomPenalty.transform.GetChild(chest.indexAward).gameObject.SetActive(display);
+                if (display)
+                {
+                    chestRoomPenalty.transform.GetChild(chest.indexAward).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.4f);
+                    chestRoomPenalty.transform.GetChild(chest.indexAward).Find("Canvas").transform.Find("LessOne").GetComponent<Text>().color = new Color(255, 255, 255, 0.4f);
+                }
+                else
+                {
+                    chestRoomPenalty.transform.GetChild(chest.indexAward).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                    chestRoomPenalty.transform.GetChild(chest.indexAward).Find("Canvas").transform.Find("LessOne").GetComponent<Text>().color = new Color(255, 255, 255, 1f);
+                }
+            }
+            
+           
+        }
+
+        SetDistanceTextAwardChest(0);
+        SetDistanceTextAwardChest(1);
+    }
+
     public void ResetChestRoom()
     {
         GameObject chestRoom = MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject;
@@ -980,9 +1057,20 @@ setting_button_echapMenu.SetActive(false);
             {
                 chestRoomPenalty.transform.GetChild(h).gameObject.SetActive(false);
             }
-
+            GameObject chestRoomVoteZone = chestRoom.transform.GetChild(i).Find("VoteZone").gameObject;
+            chestRoomVoteZone.GetComponent<ChestZoneVote>().nbVote = 0;
         }
-        
+
+        DisplayAwardAndPenaltyForImpostor(false);
+
+
+    }
+
+    public void SetDistanceTextAwardChest(int indexChest)
+    {
+        GameObject chestRoom = MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject;
+
+        chestRoom.transform.GetChild(indexChest).Find("Award").Find("Distance").Find("Canvas").Find("PlusOne").GetComponent<Text>().text = gameManager.game.currentRoom.DistancePathFinding.ToString();
     }
 
     public void ClearSpecialRoom()
@@ -991,6 +1079,7 @@ setting_button_echapMenu.SetActive(false);
         {
             MainRoomGraphic.transform.Find("Special").transform.GetChild(i).gameObject.SetActive(false);
         }
+        ResetChestRoom();
     }
 
     public void DisplayVoteChest(bool display)

@@ -703,6 +703,10 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetCollisionChestVote(int indexPlayer,int indexChest,  bool enter, bool stay)
     {
+        if (!gameManager.voteChestHasProposed)
+        {
+            return;
+        }
         GameObject chest = null;
         for (int i = 0; i < GameObject.FindGameObjectsWithTag("Chest").Length; i++)
         {
@@ -796,7 +800,7 @@ public class GameManagerNetwork : MonoBehaviourPun
             //door.GetComponent<Door>().isOpenForAll = true;
             Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
             roomInPlayer.door_isOpen[indexDoor] = true;
-            gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam).IsTraversed = true;
+            //gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam).IsTraversed = true;
             
         }
 
@@ -997,6 +1001,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetActiveZoneVoteChest()
     {
+        gameManager.voteChestHasProposed = true;
         gameManager.ui_Manager.ActiveZoneVoteChest(true);
         StartCoroutine(gameManager.LaunchTimerChest());
     }
@@ -1010,5 +1015,21 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetChestData(int indexRoom, int index, bool isAward, int indexAward)
     {
         gameManager.game.dungeon.rooms[indexRoom].chestList.Add(Chest.CreateInstance(index, isAward, indexAward));
+    }
+
+    public void SendNewParadise(int index)
+    {
+        photonView.RPC("SetNewParadise", RpcTarget.Others, index);
+    }
+
+    [PunRPC]
+    public void SetNewParadise(int index)
+    {
+        gameManager.game.dungeon.exit.IsExit = false;
+        Room newParadise = gameManager.game.dungeon.GetRoomByIndex(index);
+        gameManager.game.dungeon.exit = newParadise;
+        newParadise.IsExit = true;
+        gameManager.SetCurrentRoomColor();
+        gameManager.game.dungeon.SetPathFindingDistanceAllRoom();
     }
 }
