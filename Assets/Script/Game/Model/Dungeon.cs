@@ -426,9 +426,9 @@ public class Dungeon : ScriptableObject
 
     public void InsertRandomChestRoom()
     {
-        foreach (RoomHex room in rooms)
+        foreach (Room room in rooms)
         {
-            if (!room.GetIsObstacle() && !room.GetIsInitialeRoom() && (room.GetDistance_pathfinding() - 1) > 0)
+            if (!room.IsObstacle && !room.IsInitiale && (room.DistancePathFinding - 1) > 0)
             {
                 int randomInt = Random.Range(0, 2);
                 if (randomInt == 0)
@@ -440,7 +440,7 @@ public class Dungeon : ScriptableObject
         }
     }
 
-    public void SetUpChests(RoomHex room)
+    public void SetUpChests(Room room)
     {
         int randomAward = Random.Range(0, 3);
         int randomIndex = Random.Range(0, 2);

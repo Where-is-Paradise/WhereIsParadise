@@ -13,9 +13,12 @@ public class Hexagone : MonoBehaviour
     public Text distanceText;
     public Text index_text;
 
-
+    public Hexagone(Room room) {
+        this.room = room;
+    }
     void Start()
     {
+        
         if (GameObject.Find("GameManager"))
         {
             gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -25,6 +28,10 @@ public class Hexagone : MonoBehaviour
 
     void Update()
     {
+        if (room == null) {
+            Debug.LogError("Room is null");
+            return;
+        }
         if(room.DistancePathFinding == -1)
         {
             this.gameObject.SetActive(false);

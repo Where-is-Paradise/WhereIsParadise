@@ -117,35 +117,35 @@ public class GameManager : MonoBehaviourPun
 
     public void MasterClientCreateMap()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-
-            gameManagerNetwork.SendSetting(setting.NUMBER_EXPEDTION_MAX, setting.DISPLAY_MINI_MAP,
-                setting.DISPLAY_OBSTACLE_MAP, setting.DISPLAY_KEY_MAP, setting.RANDOM_ROOM_ADDKEYS,
-                setting.LIMITED_TORCH, setting.TORCH_ADDITIONAL);
-            game.CreationMap();
-            game.ChangeBoss();
-            game.AssignRole();
-            SendRole();
-            SendMap();
-            ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
-            if (setting.LIMITED_TORCH)
-            {
-                game.nbTorch = game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) + setting.TORCH_ADDITIONAL;
-                gameManagerNetwork.SendTorchNumber(game.nbTorch);
-                ui_Manager.SetTorchNumber();
-            }
-            GenerateHexagone(-7, 3.5f);
-            GenerateObstacle();
-            SetDoorObstacle(game.currentRoom);
-            SetPositionHexagone();
-            SendBoss();
-            game.SetKeyCounter();
-            gameManagerNetwork.SendKey(game.key_counter);
-            ui_Manager.SetNBKey();
-            SetInitialPositionPlayers();
+        if (!PhotonNetwork.IsMasterClient) {
+            return;
         }
 
+        gameManagerNetwork.SendSetting(setting.NUMBER_EXPEDTION_MAX, setting.DISPLAY_MINI_MAP,
+            setting.DISPLAY_OBSTACLE_MAP, setting.DISPLAY_KEY_MAP, setting.RANDOM_ROOM_ADDKEYS,
+            setting.LIMITED_TORCH, setting.TORCH_ADDITIONAL);
+
+        game.CreationMap();
+        game.ChangeBoss();
+        game.AssignRole();
+        SendRole();
+        SendMap();
+        ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
+        if (setting.LIMITED_TORCH)
+        {
+            game.nbTorch = game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) + setting.TORCH_ADDITIONAL;
+            gameManagerNetwork.SendTorchNumber(game.nbTorch);
+            ui_Manager.SetTorchNumber();
+        }
+        GenerateHexagone(-7, 3.5f);
+        GenerateObstacle();
+        SetDoorObstacle(game.currentRoom);
+        SetPositionHexagone();
+        SendBoss();
+        game.SetKeyCounter();
+        gameManagerNetwork.SendKey(game.key_counter);
+        ui_Manager.SetNBKey();
+        SetInitialPositionPlayers();
     }
 
     // Update is called once per frame
@@ -291,18 +291,15 @@ public class GameManager : MonoBehaviourPun
                 }
             }
         }
-
-
     }
 
     public void GenerateHexagone(float initial_X, float initial_Y)
     {
-
         foreach (Room room in game.dungeon.rooms)
         {
+            Hexagone newHexagone = new Hexagone(room);
 
-            Hexagone newHexagone = GameObject.Instantiate(hexagone);
-            newHexagone.Room = room;
+            // EASY REFACTOR
             float positionTransformationX;
             float positionTransformationY;
             if (room.Y % 2 != 0)
