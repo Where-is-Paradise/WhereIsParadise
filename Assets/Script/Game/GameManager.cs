@@ -93,15 +93,14 @@ public class GameManager : MonoBehaviourPun
         SetTABToList(listPlayerTab, listPlayer);
         setting = GameObject.FindGameObjectWithTag("Setting").GetComponent<Setting>();
         game.setting = setting;
-
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            int randomWidth = Random.Range(15, 16);
-            int randomHeight = Random.Range(15, 16);
-            gameManagerNetwork.SendWidthHeightMap(randomWidth, randomHeight);
-        }
-
+        game.Launch(15, 15);
+        MasterClientCreateMap();
+        /*        if (PhotonNetwork.IsMasterClient)
+                {
+                    int randomWidth = Random.Range(15, 16);
+                    int randomHeight = Random.Range(15, 16);
+                    gameManagerNetwork.SendWidthHeightMap(randomWidth, randomHeight);
+                }*/
 
         roomTeam = game.currentRoom;
         numberPlayer = listPlayerTab.Length;
@@ -120,6 +119,7 @@ public class GameManager : MonoBehaviourPun
         if (!PhotonNetwork.IsMasterClient) {
             return;
         }
+        
 
         gameManagerNetwork.SendSetting(setting.NUMBER_EXPEDTION_MAX, setting.DISPLAY_MINI_MAP,
             setting.DISPLAY_OBSTACLE_MAP, setting.DISPLAY_KEY_MAP, setting.RANDOM_ROOM_ADDKEYS,
