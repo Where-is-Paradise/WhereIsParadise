@@ -1055,6 +1055,7 @@ MonoBehaviour:
   additionalSizeTextToMobile: 1.4
   quitTutorialN7: 0
   wantToChangeBoss: 0
+  isTouchByFireBall: 0
   chatPanel: {fileID: 0}
 --- !u!114 &7384524027293410437
 MonoBehaviour:
@@ -2063,7 +2064,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &523250120582018824
 Transform:
   m_ObjectHideFlags: 0

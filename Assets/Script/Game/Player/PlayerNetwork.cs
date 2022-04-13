@@ -222,4 +222,19 @@ public class PlayerNetwork : MonoBehaviourPun
         player.GetPlayer(indexPlayer).transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().color = new Color(255, 0, 0);
         player.GetPlayer(indexPlayer).GetComponent<PlayerGO>().SendMessagePlayerInTimes();
     }
+
+    public void SendDisplayCharacter(bool display)
+    {
+        photonView.RPC("SetDisplayCharacter", RpcTarget.Others ,display);
+    }
+
+    [PunRPC]
+    public void SetDisplayCharacter(bool display)
+    {
+        for(int i = 0; i < player.transform.childCount; i++)
+        {
+            player.transform.GetChild(i).gameObject.SetActive(display);
+        }
+       
+    }
 }

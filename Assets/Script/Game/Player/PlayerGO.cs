@@ -89,6 +89,8 @@ public class PlayerGO : MonoBehaviour
     public bool quitTutorialN7 = true;
     public bool wantToChangeBoss = false;
 
+    public bool isTouchByFireBall = false;
+
     public GameObject chatPanel;
 
     private void Awake()
@@ -831,6 +833,12 @@ public class PlayerGO : MonoBehaviour
     {
         this.indexSkin = indexSkin;
         SetPlayerNameServer();
+    }
+
+    public void DisplayCharacter(bool display)
+    {
+        GetComponent<PlayerNetwork>().SendDisplayCharacter(display);
+        transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
     }
 
     public void SetPlayerNameServer()

@@ -61,6 +61,7 @@ public class Room : ScriptableObject
     public bool availableKeyAnimation = true;
     public bool chest = false;
     public bool chestIsOpen = false;
+    public bool fireBall = false;
 
     public List<Chest> chestList = null;
 

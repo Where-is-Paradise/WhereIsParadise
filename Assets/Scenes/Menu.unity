@@ -1098,7 +1098,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ActivatelimiteFPS: 1
-  target: 61
+  target: 121
 --- !u!4 &81851875
 Transform:
   m_ObjectHideFlags: 0

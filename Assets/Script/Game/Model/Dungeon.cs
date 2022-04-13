@@ -423,6 +423,20 @@ public class Dungeon : ScriptableObject
 
         }
     }
+    public void InsertRandomFireBallRoom()
+    {
+        foreach (Room room in rooms)
+        {
+            if (!room.IsObstacle && !room.IsInitiale && (room.DistancePathFinding - 1) > 0)
+            {
+                int randomInt = Random.Range(0, 1);
+                if (randomInt == 0)
+                {
+                    room.fireBall = true;
+                }
+            }
+        }
+    }
 
     public void InsertRandomChestRoom()
     {
@@ -439,7 +453,7 @@ public class Dungeon : ScriptableObject
             }
         }
     }
-
+    
     public void SetUpChests(Room room)
     {
         int randomAward = Random.Range(0, 3);

@@ -90,7 +90,8 @@ public class Game : ScriptableObject
         if(setting.RANDOM_ROOM_ADDKEYS)
             dungeon.InserKeyInRandomRoom();
 
-       dungeon.InsertRandomChestRoom();
+       //dungeon.InsertRandomChestRoom();
+       dungeon.InsertRandomFireBallRoom();
     }
 
     public void SetKeyCounter()
