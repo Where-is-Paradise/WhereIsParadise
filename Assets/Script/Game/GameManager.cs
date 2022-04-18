@@ -112,6 +112,8 @@ public class GameManager : MonoBehaviourPun
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendQuitTutorialN7(false);
         }
+
+
     }
 
 
@@ -693,6 +695,10 @@ public class GameManager : MonoBehaviourPun
                 {
                     gameManagerNetwork.SendChestData(room.GetIndex(), room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
                 }
+            }
+            if (room.fireBall)
+            {
+                gameManagerNetwork.SendFireBallData(room.GetIndex(), room.fireBall);
             }
             counter++;
         }
@@ -1935,18 +1941,21 @@ public class GameManager : MonoBehaviourPun
 
     public void UpdateSpecialsRooms(Room room)
     {
-        if (room.chest && !room.chestIsOpen)
+        if (room.chest && !room.speciallyPowerIsUsed)
         {
-            UpdateChestRoom();
+            ui_Manager.DisplayChestRoom(true);
             return;
         }
+        if(room.fireBall && !room.speciallyPowerIsUsed)
+        {
+            ui_Manager.DisplayFireBallRoom(true);
+            return;
+        }
+
         ui_Manager.ClearSpecialRoom();
     }
 
-    public void UpdateChestRoom()
-    {
-        ui_Manager.DisplayChestRoom(true);
-    }
+
 
 
     public void GetImpostorName()
@@ -2021,7 +2030,7 @@ public class GameManager : MonoBehaviourPun
         GameObject chest = CalculVoteChest();
         ChestManagement(chest);
         StartCoroutine(CoroutineHideChest());
-        game.currentRoom.chestIsOpen = true;
+        game.currentRoom.speciallyPowerIsUsed = true;
     }
 
     public GameObject CalculVoteChest()
@@ -2148,6 +2157,16 @@ public class GameManager : MonoBehaviourPun
         Debug.Log(randomIndex);
         ui_Manager.SetDistanceTextAwardChest(0);
         ui_Manager.SetDistanceTextAwardChest(1);
+    }
+
+    public void ResetFireBallRoom()
+    {
+        GameObject[] turrets = GameObject.FindGameObjectsWithTag("Turret");
+        foreach(GameObject turret in turrets)
+        {
+            turret.GetComponent<Turret>().canFire = true;
+            turret.GetComponent<Turret>().DestroyFireBalls();
+        }
     }
 
 

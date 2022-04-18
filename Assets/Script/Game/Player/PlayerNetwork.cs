@@ -231,6 +231,9 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetDisplayCharacter(bool display)
     {
+
+         player.isTouchByFireBall = !display;
+
         for(int i = 0; i < player.transform.childCount; i++)
         {
             player.transform.GetChild(i).gameObject.SetActive(display);

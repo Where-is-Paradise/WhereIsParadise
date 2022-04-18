@@ -7,7 +7,6 @@ public class FireBall : MonoBehaviourPun
 {
     public int speed = 2;
     public Vector2 direction = new Vector2(0,0);
-
     // Start is called before the first frame update
     void Start()
     {
@@ -55,14 +54,6 @@ public class FireBall : MonoBehaviourPun
             }
 
         }
-        /*        if (nameWall == "Left" || nameWall == "Right")
-                {
-                     direction = new Vector2(-direction.x, direction.y);
-                }
-                if (nameWall == "Top" || nameWall == "Bottom")
-                {
-                    direction = new Vector2(direction.x, -direction.y);
-                }*/
     }
 
     
@@ -78,14 +69,21 @@ public class FireBall : MonoBehaviourPun
             {
                 return;
             }
-            collision.gameObject.GetComponent<PlayerGO>().isTouchByFireBall = true;
-            collision.gameObject.GetComponent<PlayerGO>().DisplayCharacter(false);
 
+            collision.gameObject.GetComponent<PlayerGO>().DisplayCharacter(false);
+            collision.gameObject.GetComponent<PlayerGO>().rankTouchBall = GameObject.FindGameObjectsWithTag("Player").Length -  GetAllPlayerTouchByFireBall();
+            collision.gameObject.GetComponent<PlayerGO>().isTouchByFireBall = true;
+           
+            if (collision.gameObject.GetComponent<PlayerGO>().rankTouchBall == 1)
+            {
+                photonView.RPC("ResetIsTouchFireBall", RpcTarget.All);
+                collision.gameObject.GetComponent<PlayerGO>().DisplayCharacter(true);
+                collision.gameObject.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.SendDisplayFireBallRoom(false);
+                collision.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedition();
+                collision.gameObject.GetComponent<PlayerGO>().isBoss = true;
+            }
             
-            // dont work 
-            if(PhotonNetwork.IsMasterClient)
-                PhotonNetwork.Destroy(this.gameObject);
-            Destroy(this.gameObject);
+            SendDestroy();
         }
         else
         {
@@ -97,6 +95,65 @@ public class FireBall : MonoBehaviourPun
         }
     }
 
+    public void SendDestroy()
+    {
+        photonView.RPC("SetDestoy", RpcTarget.All);
+    }
+
+
+    [PunRPC]
+    public void SetDestoy()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.Destroy(this.gameObject);
+        }
+    }
+
+    public int GetAllPlayerTouchByFireBall()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        int counter = 0;
+        foreach(GameObject player in players)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchByFireBall)
+            {
+                counter++;
+            }
+        }
+        return counter;
+
+    }
+
+    [PunRPC]
+    public void ResetIsTouchFireBall()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            player.GetComponent<PlayerGO>().isTouchByFireBall = false;
+            player.GetComponent<PlayerGO>().DisplayCharacter(true);
+        }
+    }
+
+    public void SendParent(int indexParent)
+    {
+        photonView.RPC("SetParent", RpcTarget.All, indexParent);
+    }
+
+    [PunRPC]
+    public void SetParent(int indexParent)
+    {
+        GameObject[] parents = GameObject.FindGameObjectsWithTag("Turret");
+        foreach(GameObject parent in parents)
+        {
+            if(parent.GetComponent<Turret>().index == indexParent)
+            {
+                this.transform.parent = parent.transform;
+            }
+        }
+    }
 
 
 

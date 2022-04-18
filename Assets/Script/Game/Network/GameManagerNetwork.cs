@@ -1017,6 +1017,17 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.rooms[indexRoom].chestList.Add(Chest.CreateInstance(index, isAward, indexAward));
     }
 
+    public void SendFireBallData(int indexRoom,bool isFireBall)
+    {
+        photonView.RPC("SetFireBallData", RpcTarget.All, indexRoom, isFireBall);
+    }
+
+    [PunRPC]
+    public void SetFireBallData(int indexRoom, bool isFireBall)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].fireBall = isFireBall;
+    }
+
     public void SendNewParadise(int index)
     {
         photonView.RPC("SetNewParadise", RpcTarget.Others, index);
@@ -1032,4 +1043,24 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.SetCurrentRoomColor();
         gameManager.game.dungeon.SetPathFindingDistanceAllRoom();
     }
+
+
+    public void SendDisplayFireBallRoom(bool display)
+    {
+        photonView.RPC("SetDisplayFireBallRoom", RpcTarget.All, display);
+    }
+    [PunRPC]
+    public void SetDisplayFireBallRoom(bool display)
+    {
+        if (!display)
+        {
+            gameManager.ResetFireBallRoom();
+        }
+        gameManager.ui_Manager.DisplayFireBallRoom(display);
+        gameManager.game.currentRoom.speciallyPowerIsUsed = !display;
+
+       
+    }
+
+    
 }

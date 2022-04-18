@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class Turret : MonoBehaviourPun
 {
+    public int index;
     public float frequency;
     public GameObject fireBall;
 
-    private bool canFire = false;
+    public bool canFire = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -42,13 +43,12 @@ public class Turret : MonoBehaviourPun
 
     public void ShotFireBall()
     {
-        //GameObject fireball = Instantiate(fireBall, this.transform.position , Quaternion.identity);
         GameObject fireball = PhotonNetwork.Instantiate("FireBall", this.transform.position, Quaternion.identity);
         fireball.GetComponent<FireBall>().direction = this.transform.right;
-
+        fireball.transform.parent = this.gameObject.transform;
+        fireball.GetComponent<FireBall>().SendParent(fireball.transform.parent.GetComponent<Turret>().index);
         frequency = Random.Range(5, 15);
         SendFrequency(frequency);
-        //StartCoroutine(CoroutineFrequency(frequency));
     }
 
     public IEnumerator CoroutineFrequency(float frequency)
@@ -67,5 +67,12 @@ public class Turret : MonoBehaviourPun
     public void SetFrequency(float frequency)
     {
         StartCoroutine(CoroutineFrequency(frequency));
+    }
+
+    public void DestroyFireBalls()
+    {
+        for(int i = 0; i < transform.childCount; i++){
+            this.transform.GetChild(i).GetComponent<FireBall>().SendDestroy();
+        }
     }
 }

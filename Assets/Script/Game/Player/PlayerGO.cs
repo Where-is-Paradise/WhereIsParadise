@@ -90,8 +90,10 @@ public class PlayerGO : MonoBehaviour
     public bool wantToChangeBoss = false;
 
     public bool isTouchByFireBall = false;
+    public int rankTouchBall = 0;
 
     public GameObject chatPanel;
+
 
     private void Awake()
     {
@@ -174,11 +176,12 @@ public class PlayerGO : MonoBehaviour
 
         if (GameObject.Find("SquareResolution"))
             resolution = GameObject.Find("SquareResolution").GetComponent<ResolutionManagement>();
-
+        
         if (GameObject.Find("GameManager"))
         {
 
             gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
 
             // change isBoss and isImpostor of all gameObject player
             foreach (PlayerDun player in gameManager.game.list_player)
@@ -838,6 +841,12 @@ public class PlayerGO : MonoBehaviour
     public void DisplayCharacter(bool display)
     {
         GetComponent<PlayerNetwork>().SendDisplayCharacter(display);
+
+        if (display)
+        {
+            transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+            return;
+        }
         transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
     }
 

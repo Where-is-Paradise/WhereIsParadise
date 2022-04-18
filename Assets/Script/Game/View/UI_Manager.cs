@@ -973,7 +973,7 @@ setting_button_echapMenu.SetActive(false);
     {
         if (display)
         {
-            if (gameManager.game.currentRoom.chestIsOpen)
+            if (gameManager.game.currentRoom.speciallyPowerIsUsed)
             {
                 return;
             }
@@ -1065,6 +1065,12 @@ setting_button_echapMenu.SetActive(false);
 
 
     }
+
+    public void DisplayFireBallRoom(bool display)
+    {
+        MainRoomGraphic.transform.Find("Special").transform.Find("FireBallRoom").gameObject.SetActive(display);
+    }
+
 
     public void SetDistanceTextAwardChest(int indexChest)
     {
