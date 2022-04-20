@@ -13,16 +13,7 @@ public class Turret : MonoBehaviourPun
     // Start is called before the first frame update
     void Start()
     {
-
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            return;
-        }
-        frequency = Random.Range(5, 15);
-
-        SendFrequency(frequency);
-
-
+        //LaunchTurret(true);
     }
 
     // Update is called once per frame
@@ -39,6 +30,17 @@ public class Turret : MonoBehaviourPun
         }
         
 
+    }
+
+    public void LaunchTurret()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+        
+        frequency = Random.Range(5, 15);
+        SendFrequency(frequency);
     }
 
     public void ShotFireBall()

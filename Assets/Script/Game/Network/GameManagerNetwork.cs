@@ -618,7 +618,6 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
         else
         {
-            //Debug.Log("exiiiit broo");
             door.GetComponent<Door>().counterPlayerInDoorZone = newCounter;
             player.transform.GetChild(2).GetChild(0).gameObject.GetComponent<Text>().enabled = false;
             door.transform.GetChild(4).GetChild(0).gameObject.GetComponent<SpriteRenderer>().gameObject.SetActive(true);
@@ -1062,5 +1061,45 @@ public class GameManagerNetwork : MonoBehaviourPun
        
     }
 
-    
+    public void SendLaunchFireBallRoom()
+    {
+        photonView.RPC("SetLaunchFireBallRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchFireBallRoom()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+        GameObject[] turrets = GameObject.FindGameObjectsWithTag("Turret");
+        foreach(GameObject turret in turrets)
+        {
+            turret.GetComponent<Turret>().LaunchTurret();
+        }
+    }
+
+    public void SendDisplayMainLevers()
+    {
+        photonView.RPC("SetDisplayMainLevers", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetDisplayMainLevers()
+    {
+        gameManager.ui_Manager.DisplayMainLevers(true);
+    }
+
+    public void SendDisplayNuVoteSacrificeForAllPlayer()
+    {
+        photonView.RPC("SetDisplayNuVoteSacrificeForAllPlayer", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetDisplayNuVoteSacrificeForAllPlayer()
+    {
+        gameManager.ui_Manager.DisplayNuVoteSacrificeForAllPlayer();
+    }
+
 }

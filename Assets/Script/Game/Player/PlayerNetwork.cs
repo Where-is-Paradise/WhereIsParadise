@@ -97,6 +97,26 @@ public class PlayerNetwork : MonoBehaviourPun
 
     }
 
+    public void SendVoteToSacrifice(bool hasVote)
+    {
+        photonView.RPC("SetVoteToSacrifice", RpcTarget.All, hasVote);
+    }
+
+    [PunRPC]
+    public void SetVoteToSacrifice(bool hasVote)
+    {
+        if (hasVote)
+        {
+            player.nbVoteSacrifice++;
+        }
+        else
+        {
+            player.nbVoteSacrifice--;
+        }
+        
+        player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").GetComponent<Text>().text = player.nbVoteSacrifice.ToString();   
+    }
+
     public IEnumerator DisplayTurorialWhenExpeditionCouroutine()
     {
         yield return new WaitForSeconds(0.4f);
@@ -232,12 +252,55 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetDisplayCharacter(bool display)
     {
 
-         player.isTouchByFireBall = !display;
+        player.isTouchByFireBall = !display;
 
         for(int i = 0; i < player.transform.childCount; i++)
         {
             player.transform.GetChild(i).gameObject.SetActive(display);
         }
        
+    }
+
+
+    public void SendDeathSacrifice()
+    {
+        photonView.RPC("SetDeathSacrifice", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetDeathSacrifice()
+    {
+        if (player.GetComponent<PhotonView>().IsMine)
+        {
+            player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+            player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
+        }
+        else
+        {
+            for (int i = 0; i < player.transform.childCount; i++)
+            {
+                player.transform.GetChild(i).gameObject.SetActive(false);
+            }
+
+        }
+       
+    }
+    public void SendResetVoteSacrifice()
+    {
+        photonView.RPC("SetResetVoteSacrifice", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetResetVoteSacrifice()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject player in players)
+        {
+            player.GetComponent<PlayerGO>().nbVoteSacrifice = 0;
+            player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
+        }
+
+
     }
 }

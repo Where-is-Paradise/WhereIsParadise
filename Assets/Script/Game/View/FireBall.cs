@@ -80,7 +80,8 @@ public class FireBall : MonoBehaviourPun
                 collision.gameObject.GetComponent<PlayerGO>().DisplayCharacter(true);
                 collision.gameObject.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.SendDisplayFireBallRoom(false);
                 collision.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedition();
-                collision.gameObject.GetComponent<PlayerGO>().isBoss = true;
+                collision.gameObject.GetComponent<PlayerGO>().hasWinFireBallRoom = true;
+                collision.gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
             }
             
             SendDestroy();
@@ -134,6 +135,7 @@ public class FireBall : MonoBehaviourPun
         {
             player.GetComponent<PlayerGO>().isTouchByFireBall = false;
             player.GetComponent<PlayerGO>().DisplayCharacter(true);
+            player.GetComponent<PlayerGO>().hasWinFireBallRoom = false;
         }
     }
 

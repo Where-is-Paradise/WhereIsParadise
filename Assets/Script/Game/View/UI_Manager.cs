@@ -227,7 +227,7 @@ setting_button_echapMenu.SetActive(false);
             if(door.GetComponent<Door>().index  == indexDoor)
             {
                 door.transform.GetChild(0).GetChild(1).gameObject.SetActive(active);
-                door.GetComponent<Door>().barricade = active ;
+                door.GetComponent<Door>().barricade = active;
             }
         }
         
@@ -991,6 +991,8 @@ setting_button_echapMenu.SetActive(false);
             }
         }
         MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject.SetActive(display);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").gameObject.SetActive(display);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").Find("Chest").gameObject.SetActive(display);
         DisplayAwardAndPenaltyForImpostor(display);
     }
     public void DisplayAwardAndPenaltyForImpostor(bool display)
@@ -1062,13 +1064,36 @@ setting_button_echapMenu.SetActive(false);
         }
 
         DisplayAwardAndPenaltyForImpostor(false);
-
+        DisplayMainLevers(true);
 
     }
 
     public void DisplayFireBallRoom(bool display)
     {
         MainRoomGraphic.transform.Find("Special").transform.Find("FireBallRoom").gameObject.SetActive(display);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").gameObject.SetActive(display);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").Find("FireBall").gameObject.SetActive(display);
+    }
+    public void DisplaySacrificeRoom(bool display)
+    {
+        MainRoomGraphic.transform.Find("Special").transform.Find("SacrificeRoom").gameObject.SetActive(display);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").gameObject.SetActive(display);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").Find("Sacrifice").gameObject.SetActive(display);
+    }
+
+    public void ResetLevers()
+    {
+        for(int i = 0; i< MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").childCount; i++)
+        {
+            MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").GetChild(i).gameObject.SetActive(false);
+        }
+        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").gameObject.SetActive(false);
+
+    }
+    public void DisplayMainLevers(bool display)
+    {
+        MainRoomGraphic.transform.Find("Levers").transform.Find("Exploration_lever").gameObject.SetActive(display);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("OpenDoor_lever").gameObject.SetActive(display);
     }
 
 
@@ -1162,6 +1187,16 @@ setting_button_echapMenu.SetActive(false);
         }
         player.GetComponent<PlayerGO>().GetPlayerMineGO().GetComponent<PlayerGO>().DisplayChat(false);
     }
+
+    public void DisplayNuVoteSacrificeForAllPlayer()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach(GameObject player in players)
+        {
+            player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(true);
+        }
+    }
+
 
 }
 

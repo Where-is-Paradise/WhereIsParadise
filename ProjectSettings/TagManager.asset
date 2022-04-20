@@ -18,6 +18,7 @@ TagManager:
   - Chest
   - FireBall
   - Turret
+  - Lever
   layers:
   - Default
   - TransparentFX

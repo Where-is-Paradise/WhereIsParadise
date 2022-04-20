@@ -90,8 +90,9 @@ public class Game : ScriptableObject
         if(setting.RANDOM_ROOM_ADDKEYS)
             dungeon.InserKeyInRandomRoom();
 
-       //dungeon.InsertRandomChestRoom();
-       dungeon.InsertRandomFireBallRoom();
+        //dungeon.InsertRandomChestRoom();
+        //dungeon.InsertRandomFireBallRoom();
+        dungeon.InsertRandomSacrificeRoom();
     }
 
     public void SetKeyCounter()
@@ -144,7 +145,7 @@ public class Game : ScriptableObject
         {
             if (player.GetIsBoss())
             {
-                if(counter+1 >= list_player.Count)
+                if(counter+1 >= list_player.Count) 
                 {
                     list_player[0].SetIsBoss(true);
                     player.SetIsBoss(false);

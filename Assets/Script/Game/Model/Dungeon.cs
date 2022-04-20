@@ -438,6 +438,21 @@ public class Dungeon : ScriptableObject
         }
     }
 
+    public void InsertRandomSacrificeRoom()
+    {
+        foreach (Room room in rooms)
+        {
+            if (!room.IsObstacle && !room.IsInitiale && (room.DistancePathFinding - 1) > 0)
+            {
+                int randomInt = Random.Range(0, 1);
+                if (randomInt == 0)
+                {
+                    room.isSacrifice = true;
+                }
+            }
+        }
+    }
+
     public void InsertRandomChestRoom()
     {
         foreach (Room room in rooms)

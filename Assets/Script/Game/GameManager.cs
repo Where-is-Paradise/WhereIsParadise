@@ -197,6 +197,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayKeyAndTorch(true);
             alreadyPass = false;
             SetAlreadyHideForAllPlayers();
+            ui_Manager.DisplayMainLevers(true);
             //ui_Manager.display
 
             if (game.dungeon.initialRoom.HasSameLocation(game.currentRoom))
@@ -210,55 +211,7 @@ public class GameManager : MonoBehaviourPun
         }
 
         // vote expedition
-        if (AllPlayerHasVoted() && !endGame && !alreaydyExpeditionHadPropose && !isLoading)
-        {
-            timer.ResetTimer();
-            ui_Manager.HideZoneVote();
-            if (VerifyVote())
-            {
-                if (setting.LIMITED_TORCH)
-                    SetNbTorch(game.current_expedition.Count);
-                if (SamePositionAtBoss())
-                    OpenDoorsToExpedition();
-                alreaydyExpeditionHadPropose = true;
-                SetPlayersHaveTogoToExpeditionBool();
-                if (setting.displayTutorial)
-                {
-                    if (!ui_Manager.listTutorialBool[8])
-                    {
-                        ui_Manager.tutorial_parent.SetActive(true);
-                        ui_Manager.tutorial[8].SetActive(true);
-                        ui_Manager.listTutorialBool[8] = true;
-                    }
-
-
-                }
-
-            }
-            else
-            {
-                ui_Manager.DisplayAllGost(false);
-                ChangeBoss();
-                ClearExpedition();
-                ClearDoor();
-                expeditionHasproposed = false;
-            }
-            ResetVoteCP();
-            ui_Manager.DisplayKeyAndTorch(true);
-
-            if (game.dungeon.initialRoom.X == game.currentRoom.X)
-            {
-                if (game.dungeon.initialRoom.Y == game.currentRoom.Y)
-                {
-                    ui_Manager.SetDistanceRoom(game.dungeon.initialRoom.DistancePathFinding, null);
-                }
-
-            }
-            CloseDoorWhenVote(false);
-            alreadyPass = false;
-            SetAlreadyHideForAllPlayers();
-            canResetTimerBoss = true;
-        }
+        LaunchExploration(AllPlayerHasVoted(), VerifyVote());
 
 
         if (timer.timerFinish && isLoading)
@@ -293,6 +246,61 @@ public class GameManager : MonoBehaviourPun
                     gameManagerNetwork.SendTutorialN11();
                 }
             }
+        }
+    }
+
+
+    public void LaunchExploration(bool AllPlayerHasVoted, bool VerifyVote)
+    {
+        if (AllPlayerHasVoted && !endGame && !alreaydyExpeditionHadPropose && !isLoading)
+        {
+            timer.ResetTimer();
+            ui_Manager.HideZoneVote();
+            if (VerifyVote)
+            {
+                if (setting.LIMITED_TORCH)
+                    SetNbTorch(game.current_expedition.Count);
+                if (SamePositionAtBoss())
+                    OpenDoorsToExpedition();
+                alreaydyExpeditionHadPropose = true;
+                SetPlayersHaveTogoToExpeditionBool();
+                if (setting.displayTutorial)
+                {
+                    if (!ui_Manager.listTutorialBool[8])
+                    {
+                        ui_Manager.tutorial_parent.SetActive(true);
+                        ui_Manager.tutorial[8].SetActive(true);
+                        ui_Manager.listTutorialBool[8] = true;
+                    }
+
+
+                }
+
+            }
+            else
+            {
+                ui_Manager.DisplayAllGost(false);
+                ChangeBoss();
+                ClearExpedition();
+                ClearDoor();
+                expeditionHasproposed = false;
+                ui_Manager.DisplayMainLevers(true);
+            }
+            ResetVoteCP();
+            ui_Manager.DisplayKeyAndTorch(true);
+
+            if (game.dungeon.initialRoom.X == game.currentRoom.X)
+            {
+                if (game.dungeon.initialRoom.Y == game.currentRoom.Y)
+                {
+                    ui_Manager.SetDistanceRoom(game.dungeon.initialRoom.DistancePathFinding, null);
+                }
+
+            }
+            CloseDoorWhenVote(false);
+            alreadyPass = false;
+            SetAlreadyHideForAllPlayers();
+            canResetTimerBoss = true;
         }
     }
 
@@ -617,12 +625,34 @@ public class GameManager : MonoBehaviourPun
 
     public void ProposeExpedition(Dictionary<int, int> door_idPlayer)
     {
-
+        bool playerWinAward = false;
         foreach (KeyValuePair<int, int> dic in door_idPlayer)
         {
             SendExpedition(dic.Value, dic.Key);
+            if (GetPlayer(dic.Value).GetComponent<PlayerGO>().hasWinFireBallRoom)
+            {
+                playerWinAward = true;
+            }
         }
-        gameManagerNetwork.LaunchTimerExpedition();
+        if (playerWinAward)
+        {
+            timer.timerLaunch = true;
+            expeditionHasproposed = true;
+            ui_Manager.DisplayAllGost(true);
+            StartCoroutine(CoroutineLaunchExploration());
+        }
+        else
+        {
+            gameManagerNetwork.LaunchTimerExpedition();
+        }
+
+        
+    }
+
+    public IEnumerator CoroutineLaunchExploration()
+    {
+        yield return new WaitForSeconds(0.2f);
+        LaunchExploration(true, true);
     }
 
     public bool VerificationExpedition(Dictionary<int, int> door_idPlayer)
@@ -1084,6 +1114,11 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.HideHell();
 
         GetPlayerMineGO().GetComponent<PlayerGO>().isGoInExpeditionOneTime = true;
+
+        if (!OnePlayerHaveToGoToExpedition())
+        {
+            gameManagerNetwork.SendDisplayMainLevers();
+        }
     }
 
     public void ChangePositionPlayerWhenTakeDoor(GameObject player, GameObject doorEnter)
@@ -1343,7 +1378,17 @@ public class GameManager : MonoBehaviourPun
         ResetTimerBoss(true);
         if (PhotonNetwork.IsMasterClient)
         {
-            PlayerDun boss = game.ChangeBoss();
+            PlayerDun boss = null;
+            int counter = 0;
+            do
+            {
+                boss = game.ChangeBoss();
+                counter++;
+            } while (GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isSacrifice && counter < 20);
+            if(boss == null)
+            {
+                boss = game.ChangeBoss();
+            }
             gameManagerNetwork.SendBoss(boss.GetId());
         }
     }
@@ -1944,15 +1989,24 @@ public class GameManager : MonoBehaviourPun
         if (room.chest && !room.speciallyPowerIsUsed)
         {
             ui_Manager.DisplayChestRoom(true);
+            ui_Manager.DisplayMainLevers(false);
             return;
         }
         if(room.fireBall && !room.speciallyPowerIsUsed)
         {
             ui_Manager.DisplayFireBallRoom(true);
+            ui_Manager.DisplayMainLevers(false);
+            return;
+        }
+        if(room.isSacrifice && !room.speciallyPowerIsUsed)
+        {
+            ui_Manager.DisplaySacrificeRoom(true);
+            ui_Manager.DisplayMainLevers(false);
             return;
         }
 
         ui_Manager.ClearSpecialRoom();
+        ui_Manager.ResetLevers();
     }
 
 
@@ -2026,8 +2080,8 @@ public class GameManager : MonoBehaviourPun
         voteChestHasProposed = false;
         ui_Manager.DisplayAwardAndPenaltyForImpostor(false);
         ui_Manager.ResetAllPlayerLightAround();
-        ui_Manager.ActiveZoneVoteChest(false);
         GameObject chest = CalculVoteChest();
+        ui_Manager.ActiveZoneVoteChest(false);
         ChestManagement(chest);
         StartCoroutine(CoroutineHideChest());
         game.currentRoom.speciallyPowerIsUsed = true;
@@ -2164,7 +2218,7 @@ public class GameManager : MonoBehaviourPun
         GameObject[] turrets = GameObject.FindGameObjectsWithTag("Turret");
         foreach(GameObject turret in turrets)
         {
-            turret.GetComponent<Turret>().canFire = true;
+            //turret.GetComponent<Turret>().canFire = true;
             turret.GetComponent<Turret>().DestroyFireBalls();
         }
     }

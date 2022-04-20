@@ -91,9 +91,19 @@ public class PlayerGO : MonoBehaviour
 
     public bool isTouchByFireBall = false;
     public int rankTouchBall = 0;
+    public bool hasWinFireBallRoom = false;
+
+    public int nbVoteSacrifice = 0;
+    public bool hasVoteSacrifice = false;
+    public bool isSacrifice = false;
+    public int lastPlayerIndexVote = -1;
 
     public GameObject chatPanel;
 
+    public bool canLaunchExplorationLever = false;
+    public bool canLaunchDoorVoteLever = false;
+    public bool canLaunchSpeciallyRoomPower = false;
+    
 
     private void Awake()
     {
@@ -212,7 +222,7 @@ public class PlayerGO : MonoBehaviour
 
         gameObject.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = playerName;
 
-        if (GetComponent<PhotonView>().IsMine && isBoss && gameManager)
+        if (GetComponent<PhotonView>().IsMine && (isBoss || hasWinFireBallRoom) && gameManager)
         {
             /*            ui_isOpen = gameManager.ui_Manager.echap_menu.activeSelf;
                         if (ui_isOpen)
@@ -239,6 +249,7 @@ public class PlayerGO : MonoBehaviour
                         if (gameManager.VerificationExpedition(door_idPlayer))
                         {
                             gameManager.ProposeExpedition(door_idPlayer);
+                            gameManager.ui_Manager.DisplayMainLevers(false);
 
                         }
                         else
@@ -257,7 +268,11 @@ public class PlayerGO : MonoBehaviour
             if (!gameManager.voteDoorHasProposed)
             {
                 if (!gameManager.paradiseIsFind && !gameManager.hellIsFind)
+                {
                     InputVoteDoorAnimation();
+                    LaunchRoomSpeciallyPower();
+                }
+                    
             }
             // Input Vote  Door
             if (launchVoteDoorMobile || gameManager.launchVote_inputButton)
@@ -269,6 +284,7 @@ public class PlayerGO : MonoBehaviour
                         if (!gameManager.OnePlayerHaveToGoToExpedition())
                         {
                             gameManager.ActiveZoneDoor();
+                            gameManager.ui_Manager.DisplayMainLevers(false);
                         }
                         else
                         {
@@ -453,7 +469,6 @@ public class PlayerGO : MonoBehaviour
 
         SetZIndexByPositionY();
         ActionnWantToChangeBoss();
-        LaunchVoteChest();
 
     }
 
@@ -693,120 +708,73 @@ public class PlayerGO : MonoBehaviour
             }
         }
 
-
-
+        if (collision.gameObject.tag == "Lever")
+        {
+            CanLaunchExplorationLever(collision.gameObject , true); ;
+            CanLaunchVoterDoorLever(collision.gameObject, true);
+            CanLaunchSpeciallyRoomPower(collision.gameObject, true);
+        }
     }
-
-
 
     public void InputExplorationAnimation()
-    {
-        if (InputManager.GetButtonDown("Exploration"))
-        {
-            timeStayTouch = 0;
-        }
-        if (InputManager.GetButton("Exploration"))
-        {
-            timeStayTouch += Time.deltaTime;
-
-            if (timeStayTouch > 0.5f)
-            {
-                canMove = false;
-                gameManager.ui_Manager.zoneX_startAnmation.SetActive(true);
-                gameManager.ui_Manager.zoneX_startAnmation.GetComponent<Animator>().Play("animation_zone_circle_tomobile");
-                gameManager.ui_Manager.zoneX_startAnmation.GetComponent<Animator>().speed = 6f;
-                gameManager.ui_Manager.Display_identificationExpedition(true);
-                gameManager.ui_Manager.DisplayKeyAndTorch(false);
-                gameManager.ui_Manager.HideDistanceRoom();
-            }
-            if (timeStayTouch > 1.5f)
-            {
-                gameManager.ui_Manager.zoneX_startAnmation.SetActive(false);
-                launchExpeditionWithAnimation = true;
-                timeStayTouch = 0;
-                canMove = true;
-                gameManager.ui_Manager.Display_identificationExpedition(false);
-                gameManager.ui_Manager.DisplayKeyAndTorch(true);
-                if (gameManager.SamePositionAtInitialRoom())
-                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
-            }
-        }
-        if (InputManager.GetButtonUp("Exploration"))
-        {
-            gameManager.ui_Manager.zoneX_startAnmation.SetActive(false);
-            timeStayTouch = 0;
-            //isFirstTouch = false;
-            //canMove = true;
-            canMove = true;
-            canMove = true;
-            gameManager.ui_Manager.Display_identificationExpedition(false);
-            gameManager.ui_Manager.DisplayKeyAndTorch(true);
-            if (gameManager.SamePositionAtInitialRoom())
-                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
-        }
-
-
-    }
-
-    public void InputVoteDoorAnimation()
-    {
-        if (InputManager.GetButtonDown("VoteDoor"))
-        {
-            timeStayTouch = 0;
-        }
-        if (InputManager.GetButton("VoteDoor"))
-        {
-            timeStayTouch += Time.deltaTime;
-
-            if (timeStayTouch > 0.5f)
-            {
-                canMove = false;
-                gameManager.ui_Manager.zoneX_startAnmation.SetActive(true);
-                gameManager.ui_Manager.zoneX_startAnmation.GetComponent<Animator>().Play("animation_zone_circle_tomobile");
-                gameManager.ui_Manager.zoneX_startAnmation.GetComponent<Animator>().speed = 6f;
-                gameManager.ui_Manager.Display_identificationVoteDoor(true);
-                gameManager.ui_Manager.DisplayKeyAndTorch(false);
-                gameManager.ui_Manager.HideDistanceRoom();
-            }
-            if (timeStayTouch > 1.5f)
-            {
-                gameManager.ui_Manager.zoneX_startAnmation.SetActive(false);
-                launchVoteDoorMobile = true;
-                timeStayTouch = 0;
-                canMove = true;
-                gameManager.ui_Manager.Display_identificationVoteDoor(false);
-                gameManager.ui_Manager.DisplayKeyAndTorch(true);
-                if (gameManager.SamePositionAtInitialRoom())
-                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
-            }
-        }
-        if (InputManager.GetButtonUp("VoteDoor"))
-        {
-            gameManager.ui_Manager.zoneX_startAnmation.SetActive(false);
-            timeStayTouch = 0;
-            //isFirstTouch = false;
-            //canMove = true;
-            canMove = true;
-            gameManager.ui_Manager.Display_identificationVoteDoor(false);
-            gameManager.ui_Manager.DisplayKeyAndTorch(true);
-            if (gameManager.SamePositionAtInitialRoom())
-                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
-        }
-    }
-
-    public void LaunchVoteChest()
     {
         if (!GetComponent<PhotonView>().IsMine)
         {
             return;
         }
-        if (!Input.GetKeyUp(KeyCode.G))
+        if (!InputManager.GetButtonDown("Exploration") || !canLaunchExplorationLever)
         {
             return;
         }
-        gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
-       
+
+
+        launchExpeditionWithAnimation = true;
+
+  
     }
+
+    public void InputVoteDoorAnimation()
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!InputManager.GetButtonDown("Exploration") || !canLaunchDoorVoteLever)
+        {
+            return;
+        }
+
+        launchVoteDoorMobile = true;
+
+
+    }
+
+    public void LaunchRoomSpeciallyPower()
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!InputManager.GetButtonDown("Exploration") || !canLaunchSpeciallyRoomPower)
+        {
+            return;
+        }
+        if(gameManager.game.currentRoom.chest)
+            gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
+        if (gameManager.game.currentRoom.fireBall)
+            gameManager.gameManagerNetwork.SendLaunchFireBallRoom();
+        if (gameManager.game.currentRoom.isSacrifice)
+        {
+            gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer();
+            GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
+        } 
+
+
+        gameManager.ui_Manager.ResetLevers();
+    }
+
+
+
 
 
     public void OnTriggerExit2D(Collider2D collision)
@@ -816,13 +784,17 @@ public class PlayerGO : MonoBehaviour
             this.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
             vote_cp = 0;
         }
-
         if (collision.CompareTag("Door"))
         {
             collisionInDoorIndex = -1;
             GetComponent<PlayerNetwork>().SendCollisionDoorIndex(-1);
         }
-
+        if (collision.gameObject.tag == "Lever")
+        {
+            CanLaunchExplorationLever(collision.gameObject, false);
+            CanLaunchVoterDoorLever(collision.gameObject, false);
+            CanLaunchSpeciallyRoomPower(collision.gameObject, false);
+        }
     }
 
 
@@ -925,41 +897,82 @@ public class PlayerGO : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (!gameManager)
-            {
-                return;
-            }
-            if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            {
-                return;
-            }
-            if (this.GetComponent<PhotonView>().IsMine)
-            {
-                return;
-            }
-
-            if (gameManager.timer.timerLaunch)
-            {
-                return;
-            }
-            if (gameManager.expeditionHasproposed)
-            {
-                // afficher panel explication comme quoi on peut pas echainer les explorations
-                return;
-            }
-
-            if (gameManager.ui_Manager.map.activeSelf)
-            {
-                return;
-            }
-            if (!gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
-            {
-                return;
-            }
-
-            GetComponent<PlayerNetwork>().SendOnclickToExpedition();
+            ClicktoExploration();
+            ClickToVoteSacrifice();
+            
         }
 
+    }
+
+    public void ClicktoExploration()
+    {
+        if (!gameManager)
+        {
+            return;
+        }
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            return;
+        }
+        if (this.GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+
+        if (gameManager.timer.timerLaunch)
+        {
+            return;
+        }
+        if (gameManager.expeditionHasproposed)
+        {
+            // afficher panel explication comme quoi on peut pas echainer les explorations
+            return;
+        }
+
+        if (gameManager.ui_Manager.map.activeSelf)
+        {
+            return;
+        }
+        if (!gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
+        {
+            return;
+        }
+
+        GetComponent<PlayerNetwork>().SendOnclickToExpedition();
+    }
+
+    public void ClickToVoteSacrifice()
+    {
+        if (!gameManager)
+        {
+            return;
+        }
+        if (this.GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+
+        if (gameManager.ui_Manager.map.activeSelf)
+        {
+            return;
+        }
+        if (!gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
+        {
+            return;
+        }
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lastPlayerIndexVote != this.GetComponent<PhotonView>().ViewID)
+        {
+            return;
+        }
+        if (!GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch)
+        {
+            return;
+        }
+
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice = !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice;
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lastPlayerIndexVote = this.GetComponent<PhotonView>().ViewID;
+        GetComponent<PlayerNetwork>().SendVoteToSacrifice(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice);
+        transform.Find("Perso").Find("Light_red").gameObject.SetActive(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice);
     }
 
     public void DisplayChat(bool display)
@@ -1103,6 +1116,78 @@ public class PlayerGO : MonoBehaviour
         }
         return null;
     }
+
+    public void CanLaunchExplorationLever(GameObject collision,  bool isEnter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!isBoss) {
+            return;
+        }
+        if (gameManager.expeditionHasproposed || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed)
+        {
+            canLaunchExplorationLever = false;
+            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            return;
+        }
+        if(collision.name != "Exploration_lever")
+        {
+            return;
+        }
+        canLaunchExplorationLever = isEnter;
+        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+    }
+
+    public void CanLaunchVoterDoorLever(GameObject collision, bool isEnter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!isBoss)
+        {
+            return;
+        }
+        if ((gameManager.expeditionHasproposed && gameManager.timer.timerLaunch) || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed)
+        {
+            canLaunchDoorVoteLever = false;
+            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            return;
+        }
+        if (collision.name != "OpenDoor_lever")
+        {
+            return;
+        }
+        canLaunchDoorVoteLever = isEnter;
+        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+    }
+
+    public void CanLaunchSpeciallyRoomPower(GameObject collision, bool isEnter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!isBoss)
+        {
+            return;
+        }
+        if (gameManager.voteChestHasProposed)
+        {
+            canLaunchSpeciallyRoomPower = false;
+            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            return;
+        }
+        if (collision.name != "SpeciallyRoom_lever")
+        {
+            return;
+        }
+        canLaunchSpeciallyRoomPower = isEnter;
+        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+    }
+
 
 
 }
