@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UI_Manager : MonoBehaviour
 {
@@ -991,8 +991,7 @@ setting_button_echapMenu.SetActive(false);
             }
         }
         MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject.SetActive(display);
-        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").gameObject.SetActive(display);
-        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").Find("Chest").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display,0);
         DisplayAwardAndPenaltyForImpostor(display);
     }
     public void DisplayAwardAndPenaltyForImpostor(bool display)
@@ -1071,25 +1070,25 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayFireBallRoom(bool display)
     {
         MainRoomGraphic.transform.Find("Special").transform.Find("FireBallRoom").gameObject.SetActive(display);
-        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").gameObject.SetActive(display);
-        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").Find("FireBall").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display,1);
     }
     public void DisplaySacrificeRoom(bool display)
     {
         MainRoomGraphic.transform.Find("Special").transform.Find("SacrificeRoom").gameObject.SetActive(display);
-        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").gameObject.SetActive(display);
-        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").Find("Sacrifice").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display,2);
     }
 
-    public void ResetLevers()
+    
+    public void DisplaySpeciallyLevers(bool display, int indexSpecially)
     {
-        for(int i = 0; i< MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").childCount; i++)
+        for (int i = 0; i < MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").childCount; i++)
         {
             MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").GetChild(i).gameObject.SetActive(false);
         }
-        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").gameObject.SetActive(false);
-
+        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").GetChild(indexSpecially).gameObject.SetActive(display);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").gameObject.SetActive(display);
     }
+
     public void DisplayMainLevers(bool display)
     {
         MainRoomGraphic.transform.Find("Levers").transform.Find("Exploration_lever").gameObject.SetActive(display);

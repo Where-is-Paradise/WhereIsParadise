@@ -21,28 +21,71 @@ public class ZoneDoorCollider : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine &&  gameManager.timer.timerLaunch)
+        if (!collision.CompareTag("Player"))
         {
-            int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
-            gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, true, false);
+            return;
         }
+        if (collision.GetComponent<PlayerGO>().isSacrifice)
+        {
+            return;
+        }
+        if (!collision.GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!gameManager.timer.timerLaunch)
+        {
+            return;
+        }
+
+        int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
+        gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, true, false);
+ 
     }
     public void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine && gameManager.timer.timerLaunch)
+        if (!collision.CompareTag("Player"))
         {
-            int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
-            gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, false, false);
+            return;
         }
+        if (collision.GetComponent<PlayerGO>().isSacrifice)
+        {
+            return;
+        }
+        if (!collision.GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!gameManager.timer.timerLaunch)
+        {
+            return;
+        }
+        int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
+        gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, false, false);
+
     }
 
     public void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine &&  gameManager.timer.timerLaunch)
+        if (!collision.CompareTag("Player"))
         {
-            int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
-            gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, false, true);
+            return;
         }
+        if (collision.GetComponent<PlayerGO>().isSacrifice)
+        {
+            return;
+        }
+        if (!collision.GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!gameManager.timer.timerLaunch)
+        {
+            return;
+        }
+        int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
+        gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, false, true);
+
     }
 
 }

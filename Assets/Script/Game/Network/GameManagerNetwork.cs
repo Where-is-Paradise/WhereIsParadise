@@ -799,8 +799,9 @@ public class GameManagerNetwork : MonoBehaviourPun
             //door.GetComponent<Door>().isOpenForAll = true;
             Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
             roomInPlayer.door_isOpen[indexDoor] = true;
+           
             //gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam).IsTraversed = true;
-            
+
         }
 
        
@@ -1027,6 +1028,17 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.rooms[indexRoom].fireBall = isFireBall;
     }
 
+    public void SendSacrificeData(int indexRoom, bool isSacrifice)
+    {
+        photonView.RPC("SetSacrificeData", RpcTarget.All, indexRoom, isSacrifice);
+    }
+
+    [PunRPC]
+    public void SetSacrificeData(int indexRoom, bool isSacrifice)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isSacrifice = isSacrifice;
+    }
+
     public void SendNewParadise(int index)
     {
         photonView.RPC("SetNewParadise", RpcTarget.Others, index);
@@ -1080,15 +1092,15 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
     }
 
-    public void SendDisplayMainLevers()
+    public void SendDisplayMainLevers(bool display)
     {
-        photonView.RPC("SetDisplayMainLevers", RpcTarget.All);
+        photonView.RPC("SetDisplayMainLevers", RpcTarget.All, display);
     }
 
     [PunRPC]
-    public void SetDisplayMainLevers()
+    public void SetDisplayMainLevers(bool display)
     {
-        gameManager.ui_Manager.DisplayMainLevers(true);
+        gameManager.ui_Manager.DisplayMainLevers(display);
     }
 
     public void SendDisplayNuVoteSacrificeForAllPlayer()
@@ -1100,6 +1112,42 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetDisplayNuVoteSacrificeForAllPlayer()
     {
         gameManager.ui_Manager.DisplayNuVoteSacrificeForAllPlayer();
+    }
+
+    public void  SendSacrificeVoteIsLaunch(bool isLaunch)
+    {
+        photonView.RPC("SetSacrificeVoteIsLaunch", RpcTarget.All, isLaunch);
+    }
+
+    [PunRPC]
+    public void SetSacrificeVoteIsLaunch(bool isLaunch)
+    {
+        GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch = isLaunch;
+    }
+    public void SendUpdateNeighbourSpeciality(int indexRoom , int indexSpeciality)
+    {
+        photonView.RPC("SetUpdateNeighbourSpeciality", RpcTarget.All, indexRoom, indexSpeciality);
+    }
+
+    [PunRPC]
+    public void SetUpdateNeighbourSpeciality(int indexRoom, int indexSpeciality)
+    {
+
+        switch (indexSpeciality)
+        {
+            case 0: gameManager.game.dungeon.GetRoomByIndex(indexRoom).chest = true;
+                break;
+            case 1: gameManager.game.dungeon.GetRoomByIndex(indexRoom).fireBall = true;
+                break;
+            case 2: gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSacrifice = true;
+                break;
+            case 3: gameManager.game.dungeon.GetRoomByIndex(indexRoom).IsFoggy = true;
+                break;
+            case 4: gameManager.game.dungeon.GetRoomByIndex(indexRoom).IsVirus = true;
+                break;
+        }
+
+        
     }
 
 }

@@ -270,10 +270,16 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetDeathSacrifice()
     {
+        player.GetComponent<PlayerGO>().isSacrifice = true;
+        if (player.GetComponent<PlayerGO>().isBoss)
+        {
+            player.GetComponent<PlayerGO>().gameManager.ChangeBoss();
+        }
         if (player.GetComponent<PhotonView>().IsMine)
         {
             player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
             player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
+            player.transform.Find("Collision").gameObject.SetActive(false);
         }
         else
         {
@@ -299,8 +305,12 @@ public class PlayerNetwork : MonoBehaviourPun
         {
             player.GetComponent<PlayerGO>().nbVoteSacrifice = 0;
             player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
+           
         }
-
+        player.GetComponent<PlayerGO>().gameManager.game.currentRoom.speciallyPowerIsUsed = true;
+        player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayMainLevers(true);
+        player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplaySpeciallyLevers(false,0);
+        player.GetComponent<PlayerGO>().gameManager.CloseAllDoor(player.GetComponent<PlayerGO>().gameManager.game.currentRoom, false);
 
     }
 }

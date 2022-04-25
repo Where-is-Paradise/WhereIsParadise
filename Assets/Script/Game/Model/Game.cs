@@ -92,7 +92,7 @@ public class Game : ScriptableObject
 
         //dungeon.InsertRandomChestRoom();
         //dungeon.InsertRandomFireBallRoom();
-        dungeon.InsertRandomSacrificeRoom();
+        //dungeon.InsertRandomSacrificeRoom();
     }
 
     public void SetKeyCounter()

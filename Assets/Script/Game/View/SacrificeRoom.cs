@@ -27,19 +27,12 @@ public class SacrificeRoom : MonoBehaviour
 
     public IEnumerator CouroutineTimerVote()
     {
-        sacrificeVoteIsLaunch = true;
-        yield return new WaitForSeconds(2f);
+        GameObject.Find("GameManager").GetComponent<GameManager>().gameManagerNetwork.SendSacrificeVoteIsLaunch(true);
+        yield return new WaitForSeconds(10f);
         GameObject player = GetPlayerWithMaxVote();
-        if (player.GetComponent<PlayerGO>().isBoss)
-        {
-            player.GetComponent<PlayerGO>().isSacrifice = true;
-            //player.GetComponent<PlayerGO>().gameManager.ChangeBoss();
-            
-        }
         player.GetComponent<PlayerNetwork>().SendDeathSacrifice();
         player.GetComponent<PlayerNetwork>().SendResetVoteSacrifice();
-
-        sacrificeVoteIsLaunch = false;
+        GameObject.Find("GameManager").GetComponent<GameManager>().gameManagerNetwork.SendSacrificeVoteIsLaunch(false);
     }
 
     public GameObject GetPlayerWithMaxVote()

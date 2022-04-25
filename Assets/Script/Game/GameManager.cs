@@ -75,7 +75,6 @@ public class GameManager : MonoBehaviourPun
 
     public int nbReceiveWidthAndHeightMap = 0;
 
-
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -132,6 +131,7 @@ public class GameManager : MonoBehaviourPun
         game.ChangeBoss();
         game.AssignRole();
         SendRole();
+        InsertSpeciallyRoom(game.currentRoom);
         SendMap();
         ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
         if (setting.LIMITED_TORCH)
@@ -577,6 +577,8 @@ public class GameManager : MonoBehaviourPun
 
         }
 
+        InsertSpeciallyRoom(roomTeam);
+
         gameManagerNetwork.SendOpenDoor(indexDoor, game.currentRoom.X, game.currentRoom.Y, isExpedition, roomTeam.GetIndex());
 
 
@@ -729,6 +731,10 @@ public class GameManager : MonoBehaviourPun
             if (room.fireBall)
             {
                 gameManagerNetwork.SendFireBallData(room.GetIndex(), room.fireBall);
+            }
+            if (room.isSacrifice)
+            {
+                gameManagerNetwork.SendSacrificeData(room.GetIndex(), room.isSacrifice);
             }
             counter++;
         }
@@ -1117,7 +1123,7 @@ public class GameManager : MonoBehaviourPun
 
         if (!OnePlayerHaveToGoToExpedition())
         {
-            gameManagerNetwork.SendDisplayMainLevers();
+            gameManagerNetwork.SendDisplayMainLevers(true);
         }
     }
 
@@ -1538,7 +1544,7 @@ public class GameManager : MonoBehaviourPun
             if (player.GetComponent<PhotonView>().ViewID != GetPlayerMineGO().GetComponent<PhotonView>().ViewID)
             {
                 PlayerGO other_player = player.GetComponent<PlayerGO>();
-                if (myPlayer.position_X == other_player.position_X && myPlayer.position_Y == other_player.position_Y)
+                if (myPlayer.position_X == other_player.position_X && myPlayer.position_Y == other_player.position_Y && !other_player.isSacrifice)
                 {
                     player.transform.GetChild(0).gameObject.SetActive(true);
                     player.transform.GetChild(1).gameObject.SetActive(true);
@@ -1986,27 +1992,46 @@ public class GameManager : MonoBehaviourPun
 
     public void UpdateSpecialsRooms(Room room)
     {
-        if (room.chest && !room.speciallyPowerIsUsed)
+      
+       
+        if (room.chest)
         {
             ui_Manager.DisplayChestRoom(true);
             ui_Manager.DisplayMainLevers(false);
+            if (room.speciallyPowerIsUsed)
+            {
+                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplayMainLevers(true);
+            }
             return;
         }
-        if(room.fireBall && !room.speciallyPowerIsUsed)
+        if(room.fireBall)
         {
             ui_Manager.DisplayFireBallRoom(true);
             ui_Manager.DisplayMainLevers(false);
+            if (room.speciallyPowerIsUsed)
+            {
+                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplayMainLevers(true);
+            }
             return;
         }
-        if(room.isSacrifice && !room.speciallyPowerIsUsed)
+        if(room.isSacrifice )
         {
             ui_Manager.DisplaySacrificeRoom(true);
             ui_Manager.DisplayMainLevers(false);
+            if (room.speciallyPowerIsUsed)
+            {
+                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplayMainLevers(true);
+            }
             return;
         }
+       
 
         ui_Manager.ClearSpecialRoom();
-        ui_Manager.ResetLevers();
+        ui_Manager.DisplaySpeciallyLevers(false,0);
+        ui_Manager.DisplayMainLevers(true);
     }
 
 
@@ -2222,7 +2247,57 @@ public class GameManager : MonoBehaviourPun
             turret.GetComponent<Turret>().DestroyFireBalls();
         }
     }
+    public void InsertSpeciallyRoom(Room room)
+    {
+        foreach ( Room roomNeighbour in room.listNeighbour)
+        {
+          
+            if (roomNeighbour.IsTraversed || roomNeighbour.IsObstacle || roomNeighbour.IsExit || roomNeighbour.IsHell)
+            {
+                continue;
+            }
+           
+            int indexSpeciality = InsertRandomSpeciallity(roomNeighbour);
+            Debug.Log(indexSpeciality + " " + roomNeighbour.Index);
+            if (indexSpeciality  > -1)
+                gameManagerNetwork.SendUpdateNeighbourSpeciality(roomNeighbour.Index, indexSpeciality);
+        }
+    }
 
+    public int InsertRandomSpeciallity(Room room)
+    {
+        int randomMain = Random.Range(1, 101);
+
+        if(randomMain <= 60)
+        {
+            if(randomMain <= 10)
+            {
+                game.dungeon.InsertChestRoom(room.Index);
+                return 0;
+            }
+            if (randomMain <= 20)
+            {
+                room.fireBall = true;
+                return 1;
+            }
+            if(randomMain <= 30)
+            {
+                room.isSacrifice = true;
+                return 2;
+            }
+            if(randomMain <= 40)
+            {
+                room.IsFoggy = true;
+                return 3;
+            }
+            if(randomMain <= 50)
+            {
+                room.IsVirus = true;
+                return 4;
+            }
+        }
+        return -1;
+    }
 
 
 }

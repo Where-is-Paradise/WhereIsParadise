@@ -250,6 +250,7 @@ public class PlayerGO : MonoBehaviour
                         {
                             gameManager.ProposeExpedition(door_idPlayer);
                             gameManager.ui_Manager.DisplayMainLevers(false);
+                            gameManager.gameManagerNetwork.SendDisplayMainLevers(false);
 
                         }
                         else
@@ -284,7 +285,7 @@ public class PlayerGO : MonoBehaviour
                         if (!gameManager.OnePlayerHaveToGoToExpedition())
                         {
                             gameManager.ActiveZoneDoor();
-                            gameManager.ui_Manager.DisplayMainLevers(false);
+                            gameManager.gameManagerNetwork.SendDisplayMainLevers(false);
                         }
                         else
                         {
@@ -767,10 +768,11 @@ public class PlayerGO : MonoBehaviour
         {
             gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer();
             GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
+            gameManager.gameManagerNetwork.SendCloseDoorWhenVote();
         } 
 
 
-        gameManager.ui_Manager.ResetLevers();
+        gameManager.ui_Manager.DisplaySpeciallyLevers(false,0);
     }
 
 
@@ -937,6 +939,10 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (isSacrifice)
+        {
+            return;
+        }
 
         GetComponent<PlayerNetwork>().SendOnclickToExpedition();
     }
@@ -951,7 +957,6 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-
         if (gameManager.ui_Manager.map.activeSelf)
         {
             return;
@@ -965,6 +970,10 @@ public class PlayerGO : MonoBehaviour
             return;
         }
         if (!GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch)
+        {
+            return;
+        }
+        if (isSacrifice)
         {
             return;
         }

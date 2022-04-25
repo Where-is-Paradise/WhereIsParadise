@@ -453,22 +453,19 @@ public class Dungeon : ScriptableObject
         }
     }
 
-    public void InsertRandomChestRoom()
+    public void InsertChestRoom(int indexRoom)
     {
         foreach (Room room in rooms)
         {
-            if (!room.IsObstacle && !room.IsInitiale && (room.DistancePathFinding - 1) > 0)
+            if (room.Index == indexRoom)
             {
-                int randomInt = Random.Range(0, 1);
-                if (randomInt == 0)
-                {
-                    room.chest = true;
-                    SetUpChests(room);
-                }
+                room.chest = true;
+                SetUpChests(room);
             }
         }
     }
     
+
     public void SetUpChests(Room room)
     {
         int randomAward = Random.Range(0, 3);
