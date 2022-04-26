@@ -314,6 +314,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInExpedition)
         {
             GameObject door = gameManager.GetDoorGo(indexDoor);
+            Debug.Log(indexDoor);
             gameManager.ui_Manager.DisplayGostPlayer(indexDoor, false,0);
             door.GetComponent<Door>().old_player = null;
             door.GetComponent<Door>().player = null;
@@ -354,7 +355,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     public IEnumerator CoroutineActiveZoneDoor()
     {
         yield return new WaitForSeconds(0.15f);
-        gameManager.ui_Manager.ActiveZoneDoor(gameManager.SamePositionAtBoss());
+        if(!gameManager.game.currentRoom.IsVirus)
+            gameManager.ui_Manager.ActiveZoneDoor(gameManager.SamePositionAtBoss());
     }
 
 
@@ -804,8 +806,32 @@ public class GameManagerNetwork : MonoBehaviourPun
 
         }
 
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInJail)
+        {
+            Room roomTeam = gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam);
+            if (roomTeam.X == gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().position_X && roomTeam.Y == gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().position_Y)
+            {
+                int indexDoorInJail = gameManager.GetIndexDoorAfterCrosse(indexDoor);
+                gameManager.GetDoorGo(indexDoorInJail).transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
+                gameManager.GetDoorGo(indexDoorInJail).GetComponent<Door>().isOpenForAll = true;
+                gameManager.game.currentRoom.door_isOpen[gameManager.GetDoorGo(indexDoorInJail).GetComponent<Door>().index] = true;
+                gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInJail = false;
+                SendIsInJail(false, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+            }
+        }
+
        
 
+    }
+    public void SendIsInJail(bool isInJail, int indexPlayer)
+    {
+        photonView.RPC("SetIsInJail", RpcTarget.All, isInJail, indexPlayer);
+    }
+
+    [PunRPC]
+    public void SetIsInJail(bool isInJail, int indexPlayer)
+    {
+        gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isInJail = isInJail;
     }
 
     public IEnumerator AllShortPathWithKeyCoroutine()
@@ -1038,6 +1064,17 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.game.dungeon.rooms[indexRoom].isSacrifice = isSacrifice;
     }
+    public void SendJailRoom(int indexRoom , bool isJail)
+    {
+        photonView.RPC("SetJailRoom", RpcTarget.All, indexRoom, isJail);
+    }
+
+    [PunRPC]
+    public void SetJailRoom(int indexRoom , bool isJail)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isJail = isJail;
+    }
+
 
     public void SendNewParadise(int index)
     {
@@ -1100,6 +1137,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetDisplayMainLevers(bool display)
     {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInJail)
+            return;
         gameManager.ui_Manager.DisplayMainLevers(display);
     }
 
@@ -1132,22 +1171,53 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetUpdateNeighbourSpeciality(int indexRoom, int indexSpeciality)
     {
-
+        Room room = gameManager.game.dungeon.GetRoomByIndex(indexRoom);
         switch (indexSpeciality)
         {
-            case 0: gameManager.game.dungeon.GetRoomByIndex(indexRoom).chest = true;
+            case 0:
+                room.chest = true;
+                for (int i = 0; i < 2; i++)
+                {
+                    SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                }
                 break;
-            case 1: gameManager.game.dungeon.GetRoomByIndex(indexRoom).fireBall = true;
+            case 1:
+                room.fireBall = true;
                 break;
-            case 2: gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSacrifice = true;
+            case 2:
+                room.isSacrifice = true;
                 break;
-            case 3: gameManager.game.dungeon.GetRoomByIndex(indexRoom).IsFoggy = true;
+            case 3:
+                room.isJail = true;
                 break;
-            case 4: gameManager.game.dungeon.GetRoomByIndex(indexRoom).IsVirus = true;
+            case 4:
+                room.IsFoggy = true;
+                break;
+            case 5:
+                room.IsVirus = true;
                 break;
         }
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;
 
-        
+    }
+
+    public void SendCatchInJailRoom(int indexDoorExpedition)
+    {
+        photonView.RPC("SetCatchInJailRoom", RpcTarget.Others, indexDoorExpedition);
+    }
+
+    [PunRPC]
+    public void SetCatchInJailRoom(int indexDoorExpedition)
+    {
+
+        int indexDoor = gameManager.GetIndexDoorAfterCrosse(indexDoorExpedition);
+        GameObject door = gameManager.GetDoorGo(indexDoor);
+        door.transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
+        door.GetComponent<Door>().old_player = null;
+        door.GetComponent<Door>().player = null;
+        door.GetComponent<Door>().isOpen = false;
+        door.GetComponent<Door>().counterPlayerInDoorZone = 0;
+        door.GetComponent<Door>().letter_displayed = false;
     }
 
 }

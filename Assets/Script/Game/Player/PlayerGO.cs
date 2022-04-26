@@ -103,7 +103,8 @@ public class PlayerGO : MonoBehaviour
     public bool canLaunchExplorationLever = false;
     public bool canLaunchDoorVoteLever = false;
     public bool canLaunchSpeciallyRoomPower = false;
-    
+
+    public bool isInJail = false;
 
     private void Awake()
     {
@@ -471,6 +472,26 @@ public class PlayerGO : MonoBehaviour
         SetZIndexByPositionY();
         ActionnWantToChangeBoss();
 
+
+        if (gameManager)
+        {
+            if (!gameManager.game)
+            {
+                return;
+            }
+            if (!gameManager.game.currentRoom)
+            {
+                return;
+            }
+            if (gameManager.game.currentRoom.IsFoggy)
+            {
+                DisplayNamePlayer(false);
+            }
+            else
+            {
+                DisplayNamePlayer(true);
+            }
+        }
     }
 
     public void SetZIndexByPositionY()
@@ -484,6 +505,11 @@ public class PlayerGO : MonoBehaviour
         }
     }
 
+
+    public void DisplayNamePlayer(bool display)
+    {
+        this.transform.Find("InfoCanvas").Find("PlayerName").gameObject.SetActive(display);
+    }
 
     public static bool IsDoubleTap()
     {
@@ -943,6 +969,10 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (gameManager.isActuallySpecialityTime)
+        {
+            return;
+        }
 
         GetComponent<PlayerNetwork>().SendOnclickToExpedition();
     }
@@ -969,7 +999,7 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (!GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch)
+        if (!GameObject.Find("SacrificeRoom") || !GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch)
         {
             return;
         }
@@ -977,6 +1007,7 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        
 
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice = !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lastPlayerIndexVote = this.GetComponent<PhotonView>().ViewID;

@@ -83,16 +83,16 @@ public class Game : ScriptableObject
             
         } while (dungeon.initialRoom.DistancePathFinding == -1 || !correctExit);
 
-        if (setting.FOGGY_ROOM)
-            dungeon.InsertRandomFoggyRoom();
-        if(setting.VIRUS_ROOM)
-            dungeon.InsertRandomVirusRoom();
-        if(setting.RANDOM_ROOM_ADDKEYS)
-            dungeon.InserKeyInRandomRoom();
+/*        if(setting.RANDOM_ROOM_ADDKEYS)
+            dungeon.InserKeyInRandomRoom();*/
 
         //dungeon.InsertRandomChestRoom();
         //dungeon.InsertRandomFireBallRoom();
         //dungeon.InsertRandomSacrificeRoom();
+        //dungeon.InsertRandomJailRoom();
+        //dungeon.InsertRandomFoggyRoom();
+        dungeon.InsertRandomVirusRoom();
+
     }
 
     public void SetKeyCounter()

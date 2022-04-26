@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviourPun
     public List<string> listNamePlayerImpostor = new List<string>();
 
     public int nbReceiveWidthAndHeightMap = 0;
+    public bool isActuallySpecialityTime = false;
 
     private void Awake()
     {
@@ -736,6 +737,10 @@ public class GameManager : MonoBehaviourPun
             {
                 gameManagerNetwork.SendSacrificeData(room.GetIndex(), room.isSacrifice);
             }
+            if (room.isJail)
+            {
+                gameManagerNetwork.SendJailRoom(room.GetIndex(), room.isJail);
+            }
             counter++;
         }
     }
@@ -1055,6 +1060,27 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.listTutorialBool[9] = true;
             }
 
+        }
+        if (roomExpedition.isJail)
+        {
+            door.transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
+            door.GetComponent<Door>().isOpen = false;
+            door.GetComponent<Door>().old_player = null;
+            ui_Manager.DisplayJailRoom(true);
+           
+            GetPlayerMineGO().GetComponent<PlayerGO>().haveToGoToExpedition = false;
+            gameManagerNetwork.SendCatchInJailRoom(door.GetComponent<Door>().index);
+            GetPlayerMine().SetIsInExpedition(false);
+            gameManagerNetwork.SendHavetoGoToExpedition(false, GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+            gameManagerNetwork.SendDoorToClose(expe.indexNeigbour);
+            GetPlayerMineGO().GetComponent<PlayerGO>().isGoInExpeditionOneTime = true;
+            GetPlayerMineGO().GetComponent<PlayerGO>().isInExpedition = false;
+            gameManagerNetwork.SendIsInJail(true, GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+            game.currentRoom = roomExpedition;
+            if (!OnePlayerHaveToGoToExpedition())
+            {
+                gameManagerNetwork.SendDisplayMainLevers(true);
+            }
         }
     }
 
@@ -1390,7 +1416,7 @@ public class GameManager : MonoBehaviourPun
             {
                 boss = game.ChangeBoss();
                 counter++;
-            } while (GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isSacrifice && counter < 20);
+            } while ((GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isSacrifice|| GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isInJail) && counter < 20 );
             if(boss == null)
             {
                 boss = game.ChangeBoss();
@@ -1992,16 +2018,18 @@ public class GameManager : MonoBehaviourPun
 
     public void UpdateSpecialsRooms(Room room)
     {
-      
-       
+          
         if (room.chest)
         {
             ui_Manager.DisplayChestRoom(true);
             ui_Manager.DisplayMainLevers(false);
+            isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 ui_Manager.DisplayMainLevers(true);
+                ui_Manager.DisplayChestRoom(false);
+                isActuallySpecialityTime = false;
             }
             return;
         }
@@ -2009,10 +2037,13 @@ public class GameManager : MonoBehaviourPun
         {
             ui_Manager.DisplayFireBallRoom(true);
             ui_Manager.DisplayMainLevers(false);
+            isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 ui_Manager.DisplayMainLevers(true);
+                //ui_Manager.DisplayFireBallRoom(false);
+                isActuallySpecialityTime = false;
             }
             return;
         }
@@ -2020,15 +2051,38 @@ public class GameManager : MonoBehaviourPun
         {
             ui_Manager.DisplaySacrificeRoom(true);
             ui_Manager.DisplayMainLevers(false);
+            isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 ui_Manager.DisplayMainLevers(true);
+                //ui_Manager.DisplaySacrificeRoom(false);
+                isActuallySpecialityTime = false;
+
             }
             return;
         }
-       
+        if (room.isJail)
+        {
+            ui_Manager.DisplayJailRoom(true);
+            return;
+        }
+        if (room.IsFoggy)
+        {
+            ui_Manager.DisplayFoggyRoom(true);
+            ui_Manager.DisplayLeverExploration(false);
+            ui_Manager.DisplayLeverVoteDoor(true);
+            return;
+        }
+        if (room.IsVirus)
+        {
+            ui_Manager.DisplayVirusRoom(true);
+            ui_Manager.DisplayLeverExploration(false);
+            ui_Manager.DisplayLeverVoteDoor(true);
+            return;
+        }
 
+        isActuallySpecialityTime = false;
         ui_Manager.ClearSpecialRoom();
         ui_Manager.DisplaySpeciallyLevers(false,0);
         ui_Manager.DisplayMainLevers(true);
@@ -2249,19 +2303,29 @@ public class GameManager : MonoBehaviourPun
     }
     public void InsertSpeciallyRoom(Room room)
     {
-        foreach ( Room roomNeighbour in room.listNeighbour)
+/*        foreach (Room roomNeighbour in room.listNeighbour)
         {
-          
-            if (roomNeighbour.IsTraversed || roomNeighbour.IsObstacle || roomNeighbour.IsExit || roomNeighbour.IsHell)
+
+            if (roomNeighbour.isNotSpecial || roomNeighbour.isSpecial || roomNeighbour.IsTraversed || roomNeighbour.IsObstacle)
             {
                 continue;
             }
-           
+            if (roomNeighbour.IsExit || roomNeighbour.IsHell)
+            {
+                continue;
+            }
             int indexSpeciality = InsertRandomSpeciallity(roomNeighbour);
             Debug.Log(indexSpeciality + " " + roomNeighbour.Index);
-            if (indexSpeciality  > -1)
+            if (indexSpeciality > -1)
+            {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(roomNeighbour.Index, indexSpeciality);
-        }
+            }
+            else
+            {
+                roomNeighbour.isNotSpecial = true;
+            }
+                
+        }*/
     }
 
     public int InsertRandomSpeciallity(Room room)
@@ -2287,13 +2351,18 @@ public class GameManager : MonoBehaviourPun
             }
             if(randomMain <= 40)
             {
-                room.IsFoggy = true;
+                room.isJail = true;
                 return 3;
             }
             if(randomMain <= 50)
             {
-                room.IsVirus = true;
+                room.IsFoggy = true;
                 return 4;
+            }
+            if(randomMain <= 60)
+            {
+                room.IsVirus = true;
+                return 5;
             }
         }
         return -1;

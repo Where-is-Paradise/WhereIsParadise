@@ -264,11 +264,9 @@ setting_button_echapMenu.SetActive(false);
     public void ActiveZoneDoor(bool samePositionAtBoss)
     {
         GameObject[] zonesDoors = GameObject.FindGameObjectsWithTag("Zone_Door");
-       
         foreach (GameObject zoneDoor in zonesDoors)
         {
             GameObject doorParent = zoneDoor.transform.parent.gameObject;
-
             if (!doorParent.GetComponent<Door>().isOpenForAll && !doorParent.GetComponent<Door>().barricade )
             {
                 if (samePositionAtBoss)
@@ -276,15 +274,13 @@ setting_button_echapMenu.SetActive(false);
                     zoneDoor.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1);
                     zoneDoor.transform.GetChild(0).GetComponent<BoxCollider2D>().enabled = true;
                 }
-            }
-               
-           
+            } 
         }
-
-        zones_X.SetActive(true);
-
-        zones_X.GetComponent<Animator>().SetBool("zone_x", true);
-
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInJail)
+        {
+            zones_X.SetActive(true);
+            zones_X.GetComponent<Animator>().SetBool("zone_x", true);
+        }
         soundChrono.Play();
     }
 
@@ -993,6 +989,10 @@ setting_button_echapMenu.SetActive(false);
         MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject.SetActive(display);
         DisplaySpeciallyLevers(display,0);
         DisplayAwardAndPenaltyForImpostor(display);
+        if (!display)
+        {
+            ResetChestRoom();
+        }
     }
     public void DisplayAwardAndPenaltyForImpostor(bool display)
     {
@@ -1091,7 +1091,17 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayMainLevers(bool display)
     {
+        DisplayLeverExploration(display);
+        DisplayLeverVoteDoor(display);
+       
+    }
+
+    public void DisplayLeverExploration(bool display)
+    {
         MainRoomGraphic.transform.Find("Levers").transform.Find("Exploration_lever").gameObject.SetActive(display);
+    }
+    public void DisplayLeverVoteDoor(bool display)
+    {
         MainRoomGraphic.transform.Find("Levers").transform.Find("OpenDoor_lever").gameObject.SetActive(display);
     }
 
@@ -1196,6 +1206,18 @@ setting_button_echapMenu.SetActive(false);
         }
     }
 
+    public void DisplayJailRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("JailRoom").gameObject.SetActive(display);
+    }
+    public void DisplayFoggyRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("FoggyRoom").gameObject.SetActive(display);
+    }
+    public void DisplayVirusRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("VirusRoom").gameObject.SetActive(display);
+    }
 
 }
 

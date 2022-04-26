@@ -1151,6 +1151,7 @@ MonoBehaviour:
   canLaunchExplorationLever: 0
   canLaunchDoorVoteLever: 0
   canLaunchSpeciallyRoomPower: 0
+  isInJail: 0
 --- !u!114 &7384524027293410437
 MonoBehaviour:
   m_ObjectHideFlags: 0

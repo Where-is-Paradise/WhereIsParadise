@@ -382,7 +382,7 @@ public class Dungeon : ScriptableObject
         {
             if (!room.IsObstacle && !room.IsInitiale && !room.IsExit)
             {
-                int randomInt = Random.Range(0, 8);
+                int randomInt = Random.Range(0, 1);
                 if (randomInt == 0)
                 {
                     room.IsFoggy = true;
@@ -414,7 +414,7 @@ public class Dungeon : ScriptableObject
         {
             if (!room.IsObstacle && !room.IsInitiale && (room.DistancePathFinding - 1) > 0)
             {
-                int randomInt = Random.Range(0, 25);
+                int randomInt = Random.Range(0, 1);
                 if (randomInt == 0)
                 {
                     room.IsVirus = true;
@@ -452,6 +452,21 @@ public class Dungeon : ScriptableObject
             }
         }
     }
+    public void InsertRandomJailRoom()
+    {
+        foreach (Room room in rooms)
+        {
+            if (!room.IsObstacle && !room.IsInitiale && (room.DistancePathFinding - 1) > 0)
+            {
+                int randomInt = Random.Range(0, 1);
+                if (randomInt == 0)
+                {
+                    room.isJail = true;
+                }
+            }
+        }
+    }
+
 
     public void InsertChestRoom(int indexRoom)
     {
@@ -464,7 +479,25 @@ public class Dungeon : ScriptableObject
             }
         }
     }
+
+    public void InsertRandomChestRoom()
+    {
+        foreach (Room room in rooms)
+        {
+            if (!room.IsObstacle && !room.IsInitiale && (room.DistancePathFinding - 1) > 0)
+            {
+                int randomInt = Random.Range(0, 1);
+                if (randomInt == 0)
+                {
+                    room.chest = true;
+                    SetUpChests(room);
+                }
+            }
+        }
+    }
+
     
+
 
     public void SetUpChests(Room room)
     {

@@ -63,6 +63,9 @@ public class Room : ScriptableObject
     public bool speciallyPowerIsUsed = false;
     public bool fireBall = false;
     public bool isSacrifice = false;
+    public bool isSpecial = false;
+    public bool isNotSpecial = false;
+    public bool isJail = false;
 
     public List<Chest> chestList = null;
 
