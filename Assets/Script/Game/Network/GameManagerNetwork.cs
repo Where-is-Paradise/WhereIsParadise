@@ -1106,6 +1106,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
         gameManager.ui_Manager.DisplayFireBallRoom(display);
         gameManager.game.currentRoom.speciallyPowerIsUsed = !display;
+        gameManager.CloseAllDoor(gameManager.game.currentRoom, false);
 
        
     }
@@ -1178,7 +1179,8 @@ public class GameManagerNetwork : MonoBehaviourPun
                 room.chest = true;
                 for (int i = 0; i < 2; i++)
                 {
-                    SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                    if(room.chestList.Count > 0)
+                        SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
                 }
                 break;
             case 1:

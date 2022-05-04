@@ -19,6 +19,8 @@ TagManager:
   - FireBall
   - Turret
   - Lever
+  - InteractionObject
+  - SpecialRoom_UI_Mobile
   layers:
   - Default
   - TransparentFX

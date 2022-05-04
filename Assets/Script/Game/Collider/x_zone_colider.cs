@@ -26,24 +26,70 @@ public class x_zone_colider : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine && gameManager.timer.timerLaunch)
+
+        if (!collision.CompareTag("Player"))
         {
-            gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(collision.GetComponent<PhotonView>().ViewID, true, false);
+            return;
         }
+        if (collision.GetComponent<PlayerGO>().isSacrifice)
+        {
+            return;
+        }
+        if (!collision.GetComponent<PhotonView>())
+        {
+            return;
+        }
+        if (!gameManager.timer.timerLaunch)
+        {
+            return;
+        }
+
+        gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(collision.GetComponent<PhotonView>().ViewID, true, false);
+
     }
     public void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine && gameManager.timer.timerLaunch) 
+        if (!collision.CompareTag("Player"))
         {
-            gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(collision.GetComponent<PhotonView>().ViewID, false, false);
+            return;
         }
+        if (collision.GetComponent<PlayerGO>().isSacrifice)
+        {
+            return;
+        }
+        if (!collision.GetComponent<PhotonView>())
+        {
+            return;
+        }
+        if (!gameManager.timer.timerLaunch)
+        {
+            return;
+        }
+        gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(collision.GetComponent<PhotonView>().ViewID, false, false);
+
     }
 
     public void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine && gameManager.timer.timerLaunch)
+
+        if (!collision.CompareTag("Player"))
         {
-            gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(collision.GetComponent<PhotonView>().ViewID, false, true);
+            return;
         }
+        if (collision.GetComponent<PlayerGO>().isSacrifice)
+        {
+            return;
+        }
+        if (!collision.GetComponent<PhotonView>())
+        {
+            return;
+        }
+        if (!gameManager.timer.timerLaunch)
+        {
+            return;
+        }
+
+        gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(collision.GetComponent<PhotonView>().ViewID, false, true);
+
     }
 }

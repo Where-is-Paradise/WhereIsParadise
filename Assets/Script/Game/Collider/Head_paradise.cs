@@ -66,7 +66,6 @@ public class Head_paradise : MonoBehaviour
 
         ui_manager.gameManager.GetPlayerMineGO().transform.GetChild(1).GetChild(7).gameObject.SetActive(false);
         ui_manager.OpenDoorParadiseAnimation();
-        ui_manager.DisabledWallBehindParadiseDoor();
         paradiseIsOpen = true;
     }
 

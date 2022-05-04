@@ -18,18 +18,53 @@ public class Button_mobile : MonoBehaviour
         
     }
 
-    public void OnMouseOver()
+/*    public void OnMouseOver()
     {
-        if(this.name == "Exploration_button")
+
+    }*/
+
+
+
+    public void OnMouseDown()
+    {
+        if (this.name == "Exploration_button")
         {
-            InputExplorationAnimation(Input.GetMouseButtonDown(0), Input.GetMouseButton(0), Input.GetMouseButtonUp(0));
+            //InputExplorationAnimation(Input.GetMouseButtonDown(0), Input.GetMouseButton(0), Input.GetMouseButtonUp(0));
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchExpeditionWithAnimation = true;
         }
-        else
+        if (this.name == "Door_panel")
         {
-            InputVoteDoorAnimation(Input.GetMouseButtonDown(0), Input.GetMouseButton(0), Input.GetMouseButtonUp(0));
+            //InputVoteDoorAnimation(Input.GetMouseButtonDown(0), Input.GetMouseButton(0), Input.GetMouseButtonUp(0));
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchVoteDoorMobile = true;
+        }
+        if (this.name == "Map_panel")
+        {
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().displayMap = true;
+        }
+        if(this.tag == "SpecialRoom_UI_Mobile")
+        {
+            if (gameManager.game.currentRoom.chest)
+            {
+                gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
+
+            }
+
+            if (gameManager.game.currentRoom.fireBall)
+            {
+                gameManager.gameManagerNetwork.SendLaunchFireBallRoom();
+
+            }
+
+            if (gameManager.game.currentRoom.isSacrifice)
+            {
+                gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer();
+                GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
+            }
+            gameManager.gameManagerNetwork.SendCloseDoorWhenVote();
+
+            gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
         }
     }
-
 
 
 

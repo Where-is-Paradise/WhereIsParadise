@@ -313,4 +313,5 @@ public class PlayerNetwork : MonoBehaviourPun
         player.GetComponent<PlayerGO>().gameManager.CloseAllDoor(player.GetComponent<PlayerGO>().gameManager.game.currentRoom, false);
 
     }
+
 }

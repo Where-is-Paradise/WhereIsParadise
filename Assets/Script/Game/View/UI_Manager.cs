@@ -82,6 +82,9 @@ public class UI_Manager : MonoBehaviour
 
     public GameObject chatPanelInputParent;
 
+
+    public GameObject mobileCanvas;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -597,10 +600,6 @@ setting_button_echapMenu.SetActive(false);
 
         }
         
-    }
-    public void DisabledWallBehindParadiseDoor()
-    {
-        wallEight.SetActive(false);
     }
 
     public void DisplayKeyPlusOne( bool display)
@@ -1160,7 +1159,6 @@ setting_button_echapMenu.SetActive(false);
     {
         gameManager.GetPlayerMineGO().transform.GetChild(1).GetChild(7).gameObject.SetActive(false);
         OpenDoorParadiseAnimation();
-        DisabledWallBehindParadiseDoor();
     }
 
     public void DisplayPanelOneExplorationTuto()
@@ -1217,6 +1215,18 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayVirusRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("VirusRoom").gameObject.SetActive(display);
+    }
+
+    public void DisplayUI_Mobile_SpecialRoom(bool display)
+    {
+        if (gameManager.game.currentRoom.chest)
+            mobileCanvas.transform.Find("Chest_panel").gameObject.SetActive(display);
+        if (gameManager.game.currentRoom.isSacrifice)
+            mobileCanvas.transform.Find("Sacrifice_panel").gameObject.SetActive(display);
+        if (gameManager.game.currentRoom.fireBall)
+            mobileCanvas.transform.Find("FireBall_panel").gameObject.SetActive(display);
+        if (gameManager.game.currentRoom.IsVirus)
+            mobileCanvas.transform.Find("Damned_panel").gameObject.SetActive(display);
     }
 
 }

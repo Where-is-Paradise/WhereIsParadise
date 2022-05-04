@@ -56,9 +56,10 @@ public class Game : ScriptableObject
         setting.NB_IMPOSTOR = CalculNbImpostor();
 
         bool correctExit;
-        int randomPercentageRatioObatacle = Random.Range(30, 35);
-        int randomPercentagePropagation = Random.Range(10, 15);
+        int randomPercentageRatioObatacle = Random.Range(40, 50);
+        int randomPercentagePropagation = Random.Range(5, 10);
         int randomPercentageInitialPropagation = Random.Range(10, 20);
+        int limit = 0; 
         do
         {
             Debug.Log("creation map");
@@ -68,20 +69,27 @@ public class Game : ScriptableObject
             dungeon.SetDistanceAllRoom();
             dungeon.SetPathFindingDistanceInitiateRoom();
             dungeon.SetDistanceReelInitialRoom();
-            //int distanceExit = Random.Range(5, 9);
-            int distanceExit = 5;
+            int distanceExit = setting.DISTANCE_EXIT_DOOR_MAX;
+            //int distanceExit = 5;
             correctExit = dungeon.AssignRandomExit(distanceExit);
             if (correctExit)
             {
                 dungeon.SetPathFindingDistanceAllRoom();
                 int nbOfPossiblity = dungeon.GetNumberOfPossiblityOfExit();
-                if(nbOfPossiblity < 2)
+                if(nbOfPossiblity < 6)
                 {
                     correctExit = false;
                 }
             }
-            
-        } while (dungeon.initialRoom.DistancePathFinding == -1 || !correctExit);
+            limit++;
+        } while ((dungeon.initialRoom.DistancePathFinding == -1 || !correctExit) &&  limit < 50  );
+
+        if(dungeon.initialRoom.DistancePathFinding == -1)
+        {
+            CreationMap();
+        }
+
+            dungeon.RemoveAllRoomTooFarAway();
 
 /*        if(setting.RANDOM_ROOM_ADDKEYS)
             dungeon.InserKeyInRandomRoom();*/
@@ -91,14 +99,60 @@ public class Game : ScriptableObject
         //dungeon.InsertRandomSacrificeRoom();
         //dungeon.InsertRandomJailRoom();
         //dungeon.InsertRandomFoggyRoom();
-        dungeon.InsertRandomVirusRoom();
+        //dungeon.InsertRandomVirusRoom();
 
     }
 
+/*    public void CreationMapMinimize()
+    {
+        dungeon.SetInitialRoom();
+        currentRoom = dungeon.initialRoom;
+        setting.NB_IMPOSTOR = CalculNbImpostor();
+
+        bool correctExit;
+        int randomPercentageRatioObatacle = Random.Range(30, 40);
+        int randomPercentagePropagation = Random.Range(5, 10);
+        int randomPercentageInitialPropagation = Random.Range(10, 20);
+        int limit = 0;
+        do
+        {
+            Debug.Log("creation map");
+            //dungeon.AddObstacles();
+            dungeon.AddObstacles_two(randomPercentageRatioObatacle);
+            dungeon.PropagationObstacle(randomPercentageInitialPropagation, randomPercentagePropagation);
+            dungeon.SetDistanceAllRoom();
+            dungeon.SetPathFindingDistanceInitiateRoom();
+            dungeon.SetDistanceReelInitialRoom();
+            int distanceExit = setting.DISTANCE_EXIT_DOOR_MAX;
+            //int distanceExit = 5;
+            correctExit = dungeon.AssignRandomExit(distanceExit);
+            if (correctExit)
+            {
+                dungeon.SetPathFindingDistanceAllRoom();
+                int nbOfPossiblity = dungeon.GetNumberOfPossiblityOfExit();
+                if (nbOfPossiblity < 6)
+                {
+                    correctExit = false;
+                }
+            }
+            limit++;
+        } while ((dungeon.initialRoom.DistancePathFinding == -1 || !correctExit) && limit < 50);
+    }*/
+
     public void SetKeyCounter()
     {
-        key_counter = (currentRoom.DistancePathFinding + setting.KEY_ADDITIONAL);
-        //key_counter = 25;
+/*        if(dungeon.GetNumberOfPossiblityOfExit() < 5)
+        {
+            key_counter = currentRoom.DistancePathFinding;
+                return;
+        }
+        if(dungeon.GetNumberOfPossiblityOfExit() < 8)
+        {
+            key_counter = currentRoom.DistancePathFinding + 1;
+            return;
+        }
+        key_counter = currentRoom.DistancePathFinding + 2;*/
+        key_counter = 25;
     }
 
     public int CalculNbImpostor()
@@ -410,4 +464,5 @@ public class Game : ScriptableObject
         return indexDoor;
     }
 
+  
 }

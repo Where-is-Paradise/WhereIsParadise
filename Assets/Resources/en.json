@@ -14,9 +14,9 @@
   "menu_join":"Join",
 
   "menu_placeholder_enterCode":"Enter code..",
-  "menu_difficulty_easy":"Easy",
-  "menu_difficulty_medium":"Medium",
-  "menu_difficulty_hard":"Hard",
+  "menu_difficulty_easy":"Fast",
+  "menu_difficulty_medium":"Normal",
+  "menu_difficulty_hard":"Long",
   "menu_foggyRoom":"Foggy room",
   "menu_virusRoom":"Virus room",
   "menu_hellRoom":"Hell room",

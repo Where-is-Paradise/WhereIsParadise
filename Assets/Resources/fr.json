@@ -14,9 +14,9 @@
   "menu_join":"Rejoindre",
 
   "menu_placeholder_enterCode":"Entrer le code",
-  "menu_difficulty_easy":"Facile",
-  "menu_difficulty_medium":"Moyen",
-  "menu_difficulty_hard":"Difficile",
+  "menu_difficulty_easy":"Rapide",
+  "menu_difficulty_medium":"Normal",
+  "menu_difficulty_hard":"Long",
   "menu_foggyRoom":"Salles embrumées",
   "menu_virusRoom":"Salles contaminées",
   "menu_hellRoom":"Salle de l'Enfer",

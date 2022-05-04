@@ -35,6 +35,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         matchmaking = false;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         ConnectToMaster();
+        
     }
 
     // Update is called once per frame
@@ -65,10 +66,12 @@ public class Lobby : MonoBehaviourPunCallbacks
                 isBackToWaitingRoom = true;
                 oldCode = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().codeRoom;
                 oldPlayerName = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().playerName;
+                matchmaking = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().isMatchmaking;
                 CreateRoomBack();
 
             }
         }
+        //Debug.LogError(PhotonNetwork.CloudRegion);
     }
 
 
@@ -86,8 +89,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     public void Matchmaking()
     {
         matchmaking = true;
-        PhotonNetwork.JoinRandomRoom();
-      
+        PhotonNetwork.JoinRandomRoom();   
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -100,6 +102,8 @@ public class Lobby : MonoBehaviourPunCallbacks
         code = GenerateCodeRoom(5);
         Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
         maxPlayer = maxPlayerParam;
+        if (matchmaking)
+            maxPlayer = 6;
         PhotonNetwork.CreateRoom(code, new RoomOptions { MaxPlayers = (byte) maxPlayer , PublishUserId = true, IsVisible = isVisible });
         ui_management.SetNbPlayerUI(1, maxPlayer);
         code2 = GenerateCodeRoom(5);
@@ -109,15 +113,18 @@ public class Lobby : MonoBehaviourPunCallbacks
     public void CreateRoomBack()
     {
         maxPlayer = 8;
-        PhotonNetwork.CreateRoom(oldCode, new RoomOptions { MaxPlayers = (byte)maxPlayer, PublishUserId = true, IsVisible = false });
+        PhotonNetwork.CreateRoom(oldCode, new RoomOptions { MaxPlayers = (byte)maxPlayer, PublishUserId = true, IsVisible = true });
         ui_management.SetNbPlayerUI(1, maxPlayer);
         ui_management.LauchWaitingRoom();
+        //matchmaking = true;
+        ui_management.SetLabelSearchPlayer(matchmaking);
         Destroy(GameObject.Find("Setting_backWaitingRoom").gameObject);
         code2 = GenerateCodeRoom(5);
         Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
         setting.codeRoom = code2;
         code = oldCode;
         ui_management.SetCodeText();
+        //GetPlayerMineGO().GetComponent<PlayerNetwork>().SendNamePlayer(oldPlayerName);
     }
 
     public void SendCode(string code , string code2)
@@ -140,6 +147,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         Debug.Log(returnCode);
         if(returnCode == 32766 && isBackToWaitingRoom)
         {
+            matchmaking = true;
             ConnectToRoom(oldCode);
             if(GameObject.Find("Setting_backWaitingRoom"))
                 Destroy(GameObject.Find("Setting_backWaitingRoom").gameObject);
@@ -151,7 +159,7 @@ public class Lobby : MonoBehaviourPunCallbacks
             matchmaking = false;
             
         }
-       
+        //GetPlayerMineGO().GetComponent<PlayerNetwork>().SendNamePlayer(oldPlayerName);
     }
 
     public void ConnectToRoom(string code)
@@ -163,6 +171,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         }
         PhotonNetwork.JoinRoom(code);
         ui_management.LauchWaitingRoom();
+        ui_management.SetLabelSearchPlayer(matchmaking);
     }
 
 
@@ -179,22 +188,39 @@ public class Lobby : MonoBehaviourPunCallbacks
         int index_skin = Random.Range(0,7);
 
         newPlayer.GetComponent<PlayerNetwork>().SendindexSkin(index_skin);
-
+        //
+        GameObject.Find("Setting").GetComponent<Setting>().isMatchmaking = matchmaking;
         if (matchmaking)
         {
             ui_management.SetPlayerNameMatchmaking(newPlayer);
+            ui_management.DisplaySettingButton(false);
+            ui_management.DisplayOpenRoomButton(false);
+            ui_management.DisplayStartButton(false);
+            ui_management.DisplayReadyButtonOnly(true);
+            //ui_management.SetPlayerName(newPlayer);
         }
         else
         {
             ui_management.SetPlayerName(newPlayer);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                ui_management.DisplayOpenRoomButton(true);
+                ui_management.DisplayStartButton(true);
+            }
+            ui_management.DisplayReadyButtonOnly(false);
+            ui_management.DisplaySettingButton(true);
         }
         
+        if(isBackToWaitingRoom)
+            newPlayer.GetComponent<PlayerNetwork>().SendNamePlayer(oldPlayerName);
 
+
+        ui_management.SetLabelSearchPlayer(matchmaking);
         ui_management.SetNbPlayerUI(nbPlayer, maxPlayer);
         //ui_management.SetSkin(newPlayer);
         newPlayer.GetComponent<PlayerGO>().SetPlayerNameServer();
-        
 
+        isBackToWaitingRoom = false;
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -233,6 +259,17 @@ public class Lobby : MonoBehaviourPunCallbacks
 
         //ui_management.SetGameSettingFirstTime();
         ui_management.SetSettingInWaitingRoom();
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            Debug.Log(players.Length + " " + matchmaking);
+            if(players.Length+1 == 6 && matchmaking)
+            {
+                ui_management.SendDisplayReadyButton(false);
+                StartCoroutine(CouroutineStartGame());
+            }
+        }
     }
 
 
@@ -310,4 +347,88 @@ public class Lobby : MonoBehaviourPunCallbacks
         return null;
     }
 
+    public GameObject GetPlayer(int indexPlayer)
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject player in players)
+        {
+            if (player.GetComponent<PhotonView>().ViewID == indexPlayer)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
+
+
+    public void SetVisibleRoom(GameObject button)
+    {
+        if(button.transform.GetChild(0).GetComponent<Text>().text == "Open Room")
+        {
+            PhotonNetwork.CurrentRoom.IsVisible = true;
+            button.transform.GetChild(0).GetComponent<Text>().text = "Close Room";
+            ui_management.SetLabelSearchPlayer(true);
+            return;
+        }
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+        button.transform.GetChild(0).GetComponent<Text>().text = "Open Room";
+        ui_management.SetLabelSearchPlayer(false);
+    }
+
+    public void OnClickPlayerReady()
+    {
+        bool mineIsReady = GetPlayerMineGO().GetComponent<PlayerGO>().isReady;
+        photonView.RPC("SetIsReady", RpcTarget.All, !mineIsReady , GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+
+    }
+
+    public bool CheckAllPlayerAreReady()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach(GameObject player in players)
+        {
+            if (!player.GetComponent<PlayerGO>().isReady)
+            {
+                return false;
+            }
+        }
+/*        if (players.Length < 4)
+        {
+            return false;
+        }*/
+        return true;
+    }
+
+    [PunRPC]
+    public void SetIsReady(bool isReady , int indexPlayer)
+    {
+        GetPlayer(indexPlayer).GetComponent<PlayerGO>().isReady = isReady;
+        GetPlayer(indexPlayer).transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(isReady);
+        if (CheckAllPlayerAreReady())
+                StartCoroutine(CouroutineStartGame());
+    }
+
+    public IEnumerator CouroutineStartGame()
+    {
+        ui_management.DisplayReadyButton(false);
+        ui_management.DisabledBackButton();
+        ResetAllPlayerReady();
+        yield return new WaitForSeconds(5);
+        OnclikStartGame();
+    }
+
+    public void ResetAllPlayerReady()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            player.GetComponent<PlayerGO>().isReady = false;
+            player.transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(false);
+        }
+    }
+
+    
+    
 }

@@ -106,6 +106,14 @@ public class UI_Managment : MonoBehaviourPun
     public GameObject ArrowLeftSkin;
     public GameObject ArrowRightSkin;
 
+    public GameObject readyButton;
+    public GameObject launcGameInfoText;
+
+    public GameObject openRoomButton;
+    public GameObject settingButton;
+
+    public GameObject backButtonInDoor;
+
     float k = -1;
     // Start is called before the first frame update
     void Start()
@@ -123,18 +131,18 @@ public class UI_Managment : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        if (PhotonNetwork.IsMasterClient)
+/*        if (PhotonNetwork.IsMasterClient)
         {
             if (buttonStartGame)
             {
-/*                if ((lobby.nbPlayer > 3 && lobby.nbPlayer < 9) || GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerGO>().playerName == "Homertimes   ")
+*//*                if ((lobby.nbPlayer > 3 && lobby.nbPlayer < 9) || GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerGO>().playerName == "Homertimes   ")
                 {
                     buttonStartGame.SetActive(true);
                 }
                 else
                 {
                     buttonStartGame.SetActive(false);
-                }*/
+                }*//*
 
                 buttonStartGame.SetActive(true);
 
@@ -148,20 +156,8 @@ public class UI_Managment : MonoBehaviourPun
             buttonStartGame.SetActive(false);
             ActivateAllFormSetting(false);
             canChange = false;
-        }
-        if (!lobby.matchmaking)
-        {
-            label_text.SetActive(true);
-            //code_Text.text = lobby.code;
-            //label_text.GetComponent<Text>().text = "Code :";
-            labelSearch.SetActive(false);
-        }
-        else
-        {
-            label_text.SetActive(false);
-            labelSearch.SetActive(true);
-
-        }
+        }*/
+       
 
         if (isLoadingConnection)
         {
@@ -417,25 +413,21 @@ public class UI_Managment : MonoBehaviourPun
     {
         Dropdown difficulty_dp = difficulty_var.GetComponent<Dropdown>();
 
-        int randomKey = 0;
-        int randomTorch = 0;
+        int distanceParadise = 0;
         if(difficulty_dp.value == 0)
         {
-            randomKey = UnityEngine.Random.Range(4, 6);
-            randomTorch = UnityEngine.Random.Range(4, 7);
+            distanceParadise = UnityEngine.Random.Range(4, 8);
         }
         if(difficulty_dp.value == 1)
         {
-            randomKey = UnityEngine.Random.Range(2, 5);
-            randomTorch = UnityEngine.Random.Range(2, 5);
+            distanceParadise = UnityEngine.Random.Range(8, 12);
         }
-        if(difficulty_dp.value == 2)
+/*        if(difficulty_dp.value == 2)
         {
-            randomKey = UnityEngine.Random.Range(0, 2);
-            randomTorch = UnityEngine.Random.Range(1, 3);
-        }
-        setting.KEY_ADDITIONAL = randomKey;
-        setting.TORCH_ADDITIONAL = randomTorch;
+            distanceParadise = UnityEngine.Random.Range(8, 11);
+        }*/
+        setting.DISTANCE_EXIT_DOOR_MAX = distanceParadise;
+        //setting.TORCH_ADDITIONAL = randomTorch;
     }
 
     public void OnClickJoinLobby()
@@ -555,6 +547,14 @@ public class UI_Managment : MonoBehaviourPun
     public void SetNbPlayerUI(int nbPlayer , int nbPlayerMax)
     {
         textNbPlayer.text = nbPlayer + " / " + nbPlayerMax;
+        if(nbPlayer < 4)
+        {
+            textNbPlayer.color = new Color(255, 0, 0);
+        }
+        else
+        {
+            textNbPlayer.color = new Color(255, 255, 255);
+        }
     }
 
     public void DisplayLoadingPage()
@@ -674,9 +674,9 @@ public class UI_Managment : MonoBehaviourPun
     {
         yield return new WaitForSeconds(2);
         setting = GameObject.Find("Setting").GetComponent<Setting>();
-        string easyResult = "Easy";
+/*        string easyResult = "Easy";
         QuickSaveReader.Create(setting.langage)
-                .Read<string>("menu_difficulty_easy", (r) => { easyResult = r; });
+                .Read<string>("menu_difficulty_easy", (r) => { easyResult = r; });*/
         string meadiumResult = "Medium";
         QuickSaveReader.Create(setting.langage)
                 .Read<string>("menu_difficulty_medium", (r) => { meadiumResult = r; });
@@ -685,20 +685,20 @@ public class UI_Managment : MonoBehaviourPun
                 .Read<string>("menu_difficulty_hard", (r) => { hardResult = r; });
 
 
-        Dropdown.OptionData easy = new Dropdown.OptionData();
-        easy.text = easyResult;
+/*        Dropdown.OptionData easy = new Dropdown.OptionData();
+        easy.text = easyResult;*/
         Dropdown.OptionData meadium = new Dropdown.OptionData();
         meadium.text = meadiumResult;
         Dropdown.OptionData hard = new Dropdown.OptionData();
         hard.text = hardResult;
 
-        difficulty.GetComponent<Dropdown>().options[0] = easy;
-        difficulty.GetComponent<Dropdown>().options[1] = meadium;
-        difficulty.GetComponent<Dropdown>().options[2] = hard;
+        //difficulty.GetComponent<Dropdown>().options[0] = easy;
+        difficulty.GetComponent<Dropdown>().options[0] = meadium;
+        difficulty.GetComponent<Dropdown>().options[1] = hard;
 
-        difficulty2.GetComponent<Dropdown>().options[0] = easy;
-        difficulty2.GetComponent<Dropdown>().options[1] = meadium;
-        difficulty2.GetComponent<Dropdown>().options[2] = hard;
+        //difficulty2.GetComponent<Dropdown>().options[0] = easy;
+        difficulty2.GetComponent<Dropdown>().options[0] = meadium;
+        difficulty2.GetComponent<Dropdown>().options[1] = hard;
 
 
     }
@@ -765,6 +765,23 @@ public class UI_Managment : MonoBehaviourPun
         }
     }
 
+    public void SetLabelSearchPlayer(bool displaySearchPlayer)
+    {
+        if (!displaySearchPlayer)
+        {
+            label_text.SetActive(true);
+            //code_Text.text = lobby.code;
+            //label_text.GetComponent<Text>().text = "Code :";
+            labelSearch.SetActive(false);
+        }
+        else
+        {
+            label_text.SetActive(false);
+            labelSearch.SetActive(true);
+
+        }
+    }
+
     public void SetIndexSkin(bool isRight)
     {
         int oldIndexSkin = indexSkinUI;
@@ -793,6 +810,42 @@ public class UI_Managment : MonoBehaviourPun
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void SendDisplayReadyButton(bool display)
+    {
+
+        photonView.RPC("DisplayReadyButton", RpcTarget.All, display);
+    }
+
+    [PunRPC]
+    public void DisplayReadyButton(bool display)
+    {
+        readyButton.SetActive(display);
+        launcGameInfoText.SetActive(!display);
+    } 
+
+    public void DisplayReadyButtonOnly(bool display)
+    {
+        readyButton.SetActive(display);
+    }
+
+    public void DisplayOpenRoomButton(bool display)
+    {
+        openRoomButton.SetActive(display);
+    }
+    public void DisplayStartButton(bool display)
+    {
+        buttonStartGame.SetActive(display);
+    }
+    public void DisplaySettingButton(bool display)
+    {
+        settingButton.SetActive(display);
+    }
+
+    public void DisabledBackButton()
+    {
+        backButtonInDoor.GetComponent<Button>().interactable = false;
     }
 
 }

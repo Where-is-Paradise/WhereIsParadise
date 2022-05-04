@@ -8,10 +8,13 @@ public class BackWaitingRoom : MonoBehaviour
     public bool isBackToWaitingRoom;
     public string playerName;
     public GameManager gameManager;
+    public bool isMatchmaking = false;
+
     // Start is called before the first frame update
     void Start()
     {
         codeRoom = GameObject.Find("Setting").GetComponent<Setting>().codeRoom;
+        isMatchmaking = GameObject.Find("Setting").GetComponent<Setting>().isMatchmaking ;
         isBackToWaitingRoom = true;
         DontDestroyOnLoad(this.gameObject);
 

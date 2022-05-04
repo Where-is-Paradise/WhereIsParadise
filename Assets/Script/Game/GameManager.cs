@@ -94,7 +94,7 @@ public class GameManager : MonoBehaviourPun
         SetTABToList(listPlayerTab, listPlayer);
         setting = GameObject.FindGameObjectWithTag("Setting").GetComponent<Setting>();
         game.setting = setting;
-        game.Launch(15, 15);
+        game.Launch(20, 20);
         MasterClientCreateMap();
         /*        if (PhotonNetwork.IsMasterClient)
                 {
@@ -135,12 +135,12 @@ public class GameManager : MonoBehaviourPun
         InsertSpeciallyRoom(game.currentRoom);
         SendMap();
         ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
-        if (setting.LIMITED_TORCH)
-        {
-            game.nbTorch = game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) + setting.TORCH_ADDITIONAL;
-            gameManagerNetwork.SendTorchNumber(game.nbTorch);
-            ui_Manager.SetTorchNumber();
-        }
+
+        game.nbTorch = Mathf.CeilToInt((game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) + listPlayerTab.Length)/2) - 2;
+        game.nbTorch = 25;
+        gameManagerNetwork.SendTorchNumber(game.nbTorch);
+        ui_Manager.SetTorchNumber();
+
         GenerateHexagone(-7, 3.5f);
         GenerateObstacle();
         SetDoorObstacle(game.currentRoom);
@@ -1558,6 +1558,7 @@ public class GameManager : MonoBehaviourPun
 
         }
 
+        Debug.Log(game.currentRoom.Index + " " +  game.currentRoom.chest);
     }
 
 
@@ -2018,7 +2019,12 @@ public class GameManager : MonoBehaviourPun
 
     public void UpdateSpecialsRooms(Room room)
     {
-          
+
+        isActuallySpecialityTime = false;
+        ui_Manager.ClearSpecialRoom();
+        ui_Manager.DisplaySpeciallyLevers(false, 0);
+        ui_Manager.DisplayMainLevers(true);
+
         if (room.chest)
         {
             ui_Manager.DisplayChestRoom(true);
@@ -2082,10 +2088,13 @@ public class GameManager : MonoBehaviourPun
             return;
         }
 
-        isActuallySpecialityTime = false;
-        ui_Manager.ClearSpecialRoom();
-        ui_Manager.DisplaySpeciallyLevers(false,0);
-        ui_Manager.DisplayMainLevers(true);
+        if(room.IsExit || room.IsHell)
+        {
+            ui_Manager.DisplaySpeciallyLevers(false, 0);
+            ui_Manager.DisplayMainLevers(false);
+        }
+
+       
     }
 
 
@@ -2265,6 +2274,7 @@ public class GameManager : MonoBehaviourPun
 
         ui_Manager.ResetChestRoom();
         ui_Manager.DisplayChestRoom(false);
+        CloseAllDoor(game.currentRoom, false);
     }
 
     public void ChangePositionParadise()
@@ -2303,29 +2313,30 @@ public class GameManager : MonoBehaviourPun
     }
     public void InsertSpeciallyRoom(Room room)
     {
-/*        foreach (Room roomNeighbour in room.listNeighbour)
+        
+        foreach (Room roomNeighbour in room.listNeighbour)
         {
 
-            if (roomNeighbour.isNotSpecial || roomNeighbour.isSpecial || roomNeighbour.IsTraversed || roomNeighbour.IsObstacle)
+            if (roomNeighbour.isNotSpecial || roomNeighbour.isSpecial || roomNeighbour.IsTraversed || roomNeighbour.IsObstacle )
             {
                 continue;
             }
-            if (roomNeighbour.IsExit || roomNeighbour.IsHell)
+            if (roomNeighbour.IsExit || roomNeighbour.IsHell || roomNeighbour.IsInitiale)
             {
                 continue;
             }
             int indexSpeciality = InsertRandomSpeciallity(roomNeighbour);
-            Debug.Log(indexSpeciality + " " + roomNeighbour.Index);
             if (indexSpeciality > -1)
             {
+                Debug.Log(roomNeighbour.Index + " " + indexSpeciality);
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(roomNeighbour.Index, indexSpeciality);
             }
             else
             {
                 roomNeighbour.isNotSpecial = true;
             }
-                
-        }*/
+
+        }
     }
 
     public int InsertRandomSpeciallity(Room room)
@@ -2337,6 +2348,7 @@ public class GameManager : MonoBehaviourPun
             if(randomMain <= 10)
             {
                 game.dungeon.InsertChestRoom(room.Index);
+                room.chest = true;
                 return 0;
             }
             if (randomMain <= 20)

@@ -579,6 +579,17 @@ public class Dungeon : ScriptableObject
 
     }
 
+    public void RemoveAllRoomTooFarAway()
+    {
+        foreach (Room room in rooms)
+        {
+            if(room.distance_pathFinding_initialRoom > (exit.distance_pathFinding_initialRoom + 3))
+            {
+                room.IsObstacle = true;
+            }
+        }
+    }
+
     public int getWidth()
     {
         return height;
