@@ -233,7 +233,7 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetTextChatToImpostor(int indexPlayer, string message)
     {
-        if (!GetComponent<PlayerGO>().isImpostor)
+        if (!player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
         {
             return;
         }

@@ -57,6 +57,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.setting.RANDOM_ROOM_ADDKEYS = randomRoomKey;
         gameManager.setting.LIMITED_TORCH = limitedTorch;
         gameManager.setting.TORCH_ADDITIONAL = additionalTorch;
+
+        gameManager.ui_Manager.SetDescriptionLoadPage("Syncronisation des paramètres..", 0.1f);
     }
 
     public void SendBoss( int indexNewBoss)
@@ -74,10 +76,10 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
        
         gameManager.game.SetBoss(indexNewBoss);
-        
+
         //gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().isBoss = true ;
         //gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().LaunchTimerBoss();
-        
+        gameManager.ui_Manager.SetDescriptionLoadPage("Choix du chef..", 0.1f);
     }
 
 
@@ -94,6 +96,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
             //gameManager.ui_Manager.DisplayRole();
         }
+        gameManager.ui_Manager.SetDescriptionLoadPage("Création des rôles.." , 0.1f);
     }
 
     public void SendWidthHeightMap(int width , int height)
@@ -172,7 +175,9 @@ public class GameManagerNetwork : MonoBehaviourPun
             gameManager.distanceInitial = gameManager.game.currentRoom.DistancePathFinding;
             gameManager.SetInitialPositionPlayers();
         }
-       
+        
+        //gameManager.ui_Manager.SetDescriptionLoadPage("Création des Salles " + indexRoom + ".." , 0.1f + (indexRoom / 100));
+
     }
 
     public void SendExpedition(int playerIndex, int roomIndex)
@@ -280,6 +285,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.game.key_counter = nbKey;
         gameManager.ui_Manager.SetNBKey();
+        gameManager.ui_Manager.SetDescriptionLoadPage("Initialisation des clefs et des torches..", 0.1f);
     }
 
 

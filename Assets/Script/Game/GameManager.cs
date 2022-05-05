@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviourPun
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         ui_Manager.DisplayLoadPage(true);
-        timer.LaunchTimer(2, false);
+        timer.LaunchTimer(10, false);
         //Camera.main.aspect = 1920 / 1080f;
         door_idPlayer = new Dictionary<int, int>();
         game = Game.CreateInstance(listPlayer);
@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviourPun
         setting = GameObject.FindGameObjectWithTag("Setting").GetComponent<Setting>();
         game.setting = setting;
         game.Launch(20, 20);
-        MasterClientCreateMap();
+        StartCoroutine(MasterClientCreateMap());
         /*        if (PhotonNetwork.IsMasterClient)
                 {
                     int randomWidth = Random.Range(15, 16);
@@ -117,39 +117,42 @@ public class GameManager : MonoBehaviourPun
     }
 
 
-    public void MasterClientCreateMap()
+    public IEnumerator MasterClientCreateMap()
     {
-        if (!PhotonNetwork.IsMasterClient) {
-            return;
+        yield return new WaitForSeconds(3);
+        if (PhotonNetwork.IsMasterClient) {
+            gameManagerNetwork.SendSetting(setting.NUMBER_EXPEDTION_MAX, setting.DISPLAY_MINI_MAP,
+           setting.DISPLAY_OBSTACLE_MAP, setting.DISPLAY_KEY_MAP, setting.RANDOM_ROOM_ADDKEYS,
+           setting.LIMITED_TORCH, setting.TORCH_ADDITIONAL);
+
+            game.CreationMap();
+            game.ChangeBoss();
+            game.AssignRole();
+            ui_Manager.SetDescriptionLoadPage("Assignation des rôles.." , 0.1f);
+            SendRole();
+            InsertSpeciallyRoom(game.currentRoom);
+            SendMap();
+
+            ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
+
+            game.nbTorch = Mathf.CeilToInt((game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) + listPlayerTab.Length) / 2) - 2;
+            game.nbTorch = 25;
+            gameManagerNetwork.SendTorchNumber(game.nbTorch);
+            ui_Manager.SetTorchNumber();
+
+            GenerateHexagone(-7, 3.5f);
+            GenerateObstacle();
+            SetDoorObstacle(game.currentRoom);
+            SetPositionHexagone();
+            SendBoss();
+            game.SetKeyCounter();
+            gameManagerNetwork.SendKey(game.key_counter);
+            ui_Manager.SetNBKey();
+            SetInitialPositionPlayers();
         }
         
 
-        gameManagerNetwork.SendSetting(setting.NUMBER_EXPEDTION_MAX, setting.DISPLAY_MINI_MAP,
-            setting.DISPLAY_OBSTACLE_MAP, setting.DISPLAY_KEY_MAP, setting.RANDOM_ROOM_ADDKEYS,
-            setting.LIMITED_TORCH, setting.TORCH_ADDITIONAL);
-
-        game.CreationMap();
-        game.ChangeBoss();
-        game.AssignRole();
-        SendRole();
-        InsertSpeciallyRoom(game.currentRoom);
-        SendMap();
-        ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
-
-        game.nbTorch = Mathf.CeilToInt((game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) + listPlayerTab.Length)/2) - 2;
-        game.nbTorch = 25;
-        gameManagerNetwork.SendTorchNumber(game.nbTorch);
-        ui_Manager.SetTorchNumber();
-
-        GenerateHexagone(-7, 3.5f);
-        GenerateObstacle();
-        SetDoorObstacle(game.currentRoom);
-        SetPositionHexagone();
-        SendBoss();
-        game.SetKeyCounter();
-        gameManagerNetwork.SendKey(game.key_counter);
-        ui_Manager.SetNBKey();
-        SetInitialPositionPlayers();
+       
     }
 
     // Update is called once per frame
@@ -356,8 +359,8 @@ public class GameManager : MonoBehaviourPun
         if (room.IsInitiale)
         {
             hex.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
-/*            if (!room.IsExit)
-                room.IsTraversed = true;*/
+            if (!room.IsExit)
+                room.IsTraversed = true;
             hexagone_current = hex;
         }
         if (room.HasKey)

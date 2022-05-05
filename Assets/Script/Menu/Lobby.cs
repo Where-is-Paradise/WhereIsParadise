@@ -297,6 +297,12 @@ public class Lobby : MonoBehaviourPunCallbacks
     {
         ui_management.DisplayLoadingPage();
         photonView.RPC("SetLoadingPage", RpcTarget.Others);
+        StartCoroutine(CoroutineLoadLevel());
+    }
+
+    public IEnumerator CoroutineLoadLevel()
+    {
+        yield return new WaitForSeconds(3);
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.LoadLevel("Game");

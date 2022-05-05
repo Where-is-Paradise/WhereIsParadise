@@ -69,6 +69,10 @@ public class FireBall : MonoBehaviourPun
             {
                 return;
             }
+            if (collision.gameObject.GetComponent<PlayerGO>().isSacrifice)
+            {
+                return;
+            }
 
             collision.gameObject.GetComponent<PlayerGO>().DisplayCharacter(false);
             collision.gameObject.GetComponent<PlayerGO>().rankTouchBall = GameObject.FindGameObjectsWithTag("Player").Length -  GetAllPlayerTouchByFireBall();

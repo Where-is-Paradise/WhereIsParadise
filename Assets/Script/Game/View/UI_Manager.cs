@@ -413,7 +413,7 @@ setting_button_echapMenu.SetActive(false);
             roleInformation.transform.GetChild(0).gameObject.SetActive(true);
         }
         StartCoroutine(HideRoleInformation());
-            
+
     }
 
     public IEnumerator HideRoleInformation()
@@ -1227,6 +1227,18 @@ setting_button_echapMenu.SetActive(false);
             mobileCanvas.transform.Find("FireBall_panel").gameObject.SetActive(display);
         if (gameManager.game.currentRoom.IsVirus)
             mobileCanvas.transform.Find("Damned_panel").gameObject.SetActive(display);
+    }
+
+    public void SetDescriptionLoadPage(string description , float secondes)
+    {
+       //LoadPage.transform.Find("text_description").GetComponent<Text>().text = description;
+        StartCoroutine(CouroutineSetText(LoadPage.transform.Find("text_description").GetComponent<Text>(), description, secondes));
+    }
+
+    public IEnumerator CouroutineSetText(Text textObj , string newText , float secondes)
+    {
+        yield return new WaitForSeconds(secondes);
+        textObj.text = newText;
     }
 
 }

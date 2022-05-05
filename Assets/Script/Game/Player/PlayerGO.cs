@@ -314,7 +314,7 @@ public class PlayerGO : MonoBehaviour
             displayChatInput = !displayChatInput;
             if (!displayChatInput)
             {
-                SetTextChat(chatPanel.transform.GetChild(1).GetComponent<InputField>().text);
+                SetTextChat(chatPanel.transform.GetChild(0).GetChild(0).GetComponent<InputField>().text);
             }
             DisplayChat(displayChatInput);
 
@@ -1060,10 +1060,10 @@ public class PlayerGO : MonoBehaviour
         }
         else
         {
-            chatPanel.transform.GetChild(1).GetComponent<InputField>().text = "";
+            chatPanel.transform.GetChild(0).GetChild(0).GetComponent<InputField>().text = "";
         }
         chatPanel.SetActive(display);
-        chatPanel.transform.GetChild(1).GetComponent<InputField>().ActivateInputField();
+        chatPanel.transform.GetChild(0).GetChild(0).GetComponent<InputField>().ActivateInputField();
 
     }
 
