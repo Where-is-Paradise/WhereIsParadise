@@ -689,18 +689,10 @@ setting_button_echapMenu.SetActive(false);
     public IEnumerator CoroutineWaitToTransition()
     {
         yield return new WaitForSeconds(2);
-/*        blackWallPaper.transform.GetChild(0).gameObject.SetActive(true);
-        blackWallPaper.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);*/
         resumePanel.SetActive(true);
-        map.transform.parent = map_resumePanel.transform;
-        map.SetActive(true);
-        map.transform.localScale = new Vector3(70, 70, 0);
-        map.transform.position = new Vector2(-10, 10);
-        map.GetComponent<SpriteMask>().enabled = false;
-        DesactiveUIInhexagone();
+        //DesactiveUIInhexagone();
         ResumeImpostor();
         ResumeDataKeyAndTorch();
-        //PhotonNetwork.LeaveRoom();
     }
 
     public void DisplayBlackScreenToNoneImpostor()
@@ -712,18 +704,10 @@ setting_button_echapMenu.SetActive(false);
     public IEnumerator CoroutineWaitToTransition2()
     {
         yield return new WaitForSeconds(3f);
-        /*        blackWallPaper.transform.GetChild(0).gameObject.SetActive(true);
-                blackWallPaper.transform.GetChild(0).GetChild(1).gameObject.SetActive(true);*/
         resumePanel.SetActive(true);
-        map.transform.parent = map_resumePanel.transform;
-        map.SetActive(true);
-        map.transform.localScale = new Vector3(70, 70, 0);
-        map.transform.position = new Vector2(-2, 8);
-        map.GetComponent<SpriteMask>().enabled = false;
-        DesactiveUIInhexagone();
+        //DesactiveUIInhexagone();
         ResumeImpostor();
         ResumeDataKeyAndTorch();
-        //PhotonNetwork.LeaveRoom();
 
     }
     public void DesactiveUIInhexagone()
@@ -743,27 +727,27 @@ setting_button_echapMenu.SetActive(false);
         List<string> listImpostorsName = gameManager.listNamePlayerImpostor;
         if (gameManager.numberPlayer < 5)
         {
-            resumePanel.transform.GetChild(0).gameObject.SetActive(false);
-            resumePanel.transform.GetChild(1).gameObject.SetActive(false);
-            resumePanel.transform.GetChild(3).gameObject.SetActive(true);
-            resumePanel.transform.GetChild(3).GetChild(1).GetComponent<Text>().text = listImpostorsName[0];
+            resumePanel.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
+            resumePanel.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
+            resumePanel.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
+            resumePanel.transform.GetChild(0).GetChild(3).GetChild(1).GetComponent<Text>().text = listImpostorsName[0];
 
         }
         else
         {
             if (gameManager.numberPlayer > 6)
             {
-                resumePanel.transform.GetChild(2).gameObject.SetActive(true);
+                resumePanel.transform.GetChild(0).GetChild(2).gameObject.SetActive(true);
                 for (int i = 0; i < 3; i++)
                 {
-                    resumePanel.transform.GetChild(i).GetChild(1).GetComponent<Text>().text = listImpostorsName[i];
+                    resumePanel.transform.GetChild(0).GetChild(i).GetChild(1).GetComponent<Text>().text = listImpostorsName[i];
                 }
             }
             else
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    resumePanel.transform.GetChild(i).GetChild(1).GetComponent<Text>().text = listImpostorsName[i];
+                    resumePanel.transform.GetChild(0).GetChild(i).GetChild(1).GetComponent<Text>().text = listImpostorsName[i];
                 }
             }
         }
@@ -771,10 +755,10 @@ setting_button_echapMenu.SetActive(false);
 
     public void  ResumeDataKeyAndTorch()
     {
-        resumePanel.transform.GetChild(4).GetChild(1).GetComponent<Text>().text = gameManager.game.key_counter.ToString();
-        resumePanel.transform.GetChild(7).GetChild(1).GetComponent<Text>().text = gameManager.nbKeyBroken.ToString();
-        resumePanel.transform.GetChild(5).GetChild(1).GetComponent<Text>().text = gameManager.game.nbTorch.ToString();
-        resumePanel.transform.GetChild(6).GetChild(1).GetComponent<Text>().text = gameManager.nbTorchOff.ToString();
+        resumePanel.transform.Find("Key").GetChild(1).GetComponent<Text>().text = gameManager.game.key_counter.ToString();
+        resumePanel.transform.Find("Key_Broken").GetChild(1).GetComponent<Text>().text = gameManager.nbKeyBroken.ToString();
+        resumePanel.transform.Find("Torch").GetChild(1).GetComponent<Text>().text = gameManager.game.nbTorch.ToString();
+        resumePanel.transform.Find("Torch_off").GetChild(1).GetComponent<Text>().text = gameManager.nbTorchOff.ToString();
 
     }
 
@@ -980,7 +964,7 @@ setting_button_echapMenu.SetActive(false);
             {
                 return;
             }
-            if (!gameManager.NbKeySufficient())
+            if (gameManager.game.key_counter == 0)
             {
                 return;
             }
@@ -1182,7 +1166,7 @@ setting_button_echapMenu.SetActive(false);
         player.GetComponent<PlayerGO>().DisplayChat(false);
         player.GetComponent<PlayerGO>().GetPlayerMineGO().GetComponent<PlayerGO>().displayChatInput = false;
 
-        player.GetComponent<PlayerGO>().SetTextChat(player.GetComponent<PlayerGO>().chatPanel.transform.GetChild(1).GetComponent<InputField>().text);
+        player.GetComponent<PlayerGO>().SetTextChat(player.GetComponent<PlayerGO>().chatPanel.transform.Find("Panel_background").Find("Chat").GetComponent<InputField>().text);
     }
     public void OnClickBackChat()
     {
@@ -1239,6 +1223,11 @@ setting_button_echapMenu.SetActive(false);
     {
         yield return new WaitForSeconds(secondes);
         textObj.text = newText;
+    }
+
+    public void OnClickChatButton()
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().OnClickChat();
     }
 
 }

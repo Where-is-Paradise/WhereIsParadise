@@ -501,8 +501,10 @@ public class Dungeon : ScriptableObject
 
     public void SetUpChests(Room room)
     {
-        int randomAward = Random.Range(0, 3);
+        //int randomAward = Random.Range(0, 3);
         int randomIndex = Random.Range(0, 2);
+
+        int randomAward = 2;
 
         if(randomIndex == 0)
         {

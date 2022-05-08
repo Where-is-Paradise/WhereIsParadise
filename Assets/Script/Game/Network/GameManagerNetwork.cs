@@ -168,8 +168,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (isLast)
         {
             gameManager.GenerateHexagone(-7, 3.5f);
-            gameManager.GenerateObstacle();
-            gameManager.SetPositionHexagone();
+            Hexagone initialHexa = gameManager.GenerateObstacle();
+            gameManager.SetPositionHexagone(initialHexa);
             gameManager.SetDoorObstacle(gameManager.game.currentRoom);
             gameManager.game.SetKeyCounter();
             gameManager.distanceInitial = gameManager.game.currentRoom.DistancePathFinding;
@@ -285,7 +285,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.game.key_counter = nbKey;
         gameManager.ui_Manager.SetNBKey();
-        gameManager.ui_Manager.SetDescriptionLoadPage("Initialisation des clefs et des torches..", 0.1f);
+        gameManager.ui_Manager.SetDescriptionLoadPage("Initialisation des objets..", 0.1f);
     }
 
 
@@ -840,7 +840,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isInJail = isInJail;
     }
 
-    public IEnumerator AllShortPathWithKeyCoroutine()
+/*    public IEnumerator AllShortPathWithKeyCoroutine()
     {
         yield return new WaitForSeconds(0.8f);
         if (!gameManager.NbKeySufficient())
@@ -850,7 +850,7 @@ public class GameManagerNetwork : MonoBehaviourPun
             
         }
     }
-
+*/
     public void SendKeyNumber()
     {
         photonView.RPC("SetKeyNumber", RpcTarget.All);
@@ -870,7 +870,7 @@ public class GameManagerNetwork : MonoBehaviourPun
 
 
 
-        StartCoroutine(AllShortPathWithKeyCoroutine());
+        //StartCoroutine(AllShortPathWithKeyCoroutine());
 
 
     }
@@ -1090,6 +1090,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetNewParadise(int index)
     {
+        gameManager.game.dungeon.exit.isOldParadise = true;
         gameManager.game.dungeon.exit.IsExit = false;
         Room newParadise = gameManager.game.dungeon.GetRoomByIndex(index);
         gameManager.game.dungeon.exit = newParadise;

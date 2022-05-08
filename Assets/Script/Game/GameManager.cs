@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviourPun
 
     public Setting setting;
     public GameObject map;
+    public GameObject map2;
 
     public GameManagerNetwork gameManagerNetwork;
 
@@ -76,6 +77,9 @@ public class GameManager : MonoBehaviourPun
     public int nbReceiveWidthAndHeightMap = 0;
     public bool isActuallySpecialityTime = false;
 
+    public Hexagone initialHexagone;
+
+    public Room old_Paradise;
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -141,9 +145,10 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.SetTorchNumber();
 
             GenerateHexagone(-7, 3.5f);
-            GenerateObstacle();
+            Hexagone InitialHexa = GenerateObstacle();
             SetDoorObstacle(game.currentRoom);
-            SetPositionHexagone();
+            SetPositionHexagone(InitialHexa);
+            initialHexagone = InitialHexa;
             SendBoss();
             game.SetKeyCounter();
             gameManagerNetwork.SendKey(game.key_counter);
@@ -326,16 +331,24 @@ public class GameManager : MonoBehaviourPun
             newHexagone.GetComponent<Hexagone>().index_text.text = room.GetIndex().ToString();
             newHexagone.transform.parent = map.transform;
             dungeon.Add(newHexagone);
+
+
         }
 
     }
 
-    public void GenerateObstacle()
+    public Hexagone GenerateObstacle()
     {
+        Hexagone hexaReturn = null;
         foreach (Hexagone hex in dungeon)
         {
             SetHexagoneColor(hex);
+            if (hex.Room.IsInitiale)
+            {
+                hexaReturn = hex;
+            }
         }
+        return hexaReturn;
     }
 
     public void SetHexagoneColor(Hexagone hex)
@@ -359,6 +372,7 @@ public class GameManager : MonoBehaviourPun
         if (room.IsInitiale)
         {
             hex.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
+            map.transform.position += new Vector3(-hex.transform.position.x, -hex.transform.position.y);
             if (!room.IsExit)
                 room.IsTraversed = true;
             hexagone_current = hex;
@@ -501,10 +515,12 @@ public class GameManager : MonoBehaviourPun
     }
 
 
-    public void SetPositionHexagone()
+    public void SetPositionHexagone(Hexagone initial)
     {
-        map.transform.position = new Vector3(-2.7f, 4.8f, -1);
-        map.transform.localScale = new Vector3(0.48f, 0.5f, 1);
+        Debug.Log(initial.transform.localPosition.x + " " + initial.transform.localPosition.y);
+        map.transform.position = new Vector3(-2.7f - (initial.transform.localPosition.x / 6), 4.8f - (initial.transform.localPosition.y /6), -1);
+        map.transform.localScale = new Vector3(0.48f , 0.5f, 1);
+
     }
 
     public void SetInitialPositionPlayers()
@@ -1561,7 +1577,6 @@ public class GameManager : MonoBehaviourPun
 
         }
 
-        Debug.Log(game.currentRoom.Index + " " +  game.currentRoom.chest);
     }
 
 
@@ -1748,12 +1763,14 @@ public class GameManager : MonoBehaviourPun
         {
             if (room.IsTraversed)
             {
+                Debug.Log(game.dungeon.GetPathFindingDistance(room, game.dungeon.exit) + " " + game.key_counter);
                 if (game.dungeon.GetPathFindingDistance(room, game.dungeon.exit) <= (game.key_counter))
                 {
                     return true;
                 }
             }
         }
+        Debug.Log(game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) + " " + game.key_counter);
         if (game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) <= (game.key_counter))
         {
             Debug.Log(game.currentRoom + " " + game.key_counter);
@@ -2169,6 +2186,7 @@ public class GameManager : MonoBehaviourPun
     {
         yield return new WaitForSeconds(5);
         voteChestHasProposed = false;
+        isActuallySpecialityTime = false;
         ui_Manager.DisplayAwardAndPenaltyForImpostor(false);
         ui_Manager.ResetAllPlayerLightAround();
         GameObject chest = CalculVoteChest();
@@ -2286,6 +2304,7 @@ public class GameManager : MonoBehaviourPun
         {
             return;
         }
+        game.dungeon.exit.isOldParadise = true;
         game.dungeon.exit.IsExit = false;
         int distanceParadiseCurrentRoom = game.currentRoom.DistancePathFinding;
         List<Room> listRoomWithCorrectDistance = game.dungeon.GetListRoomByDistance(game.currentRoom, distanceParadiseCurrentRoom);
@@ -2317,7 +2336,7 @@ public class GameManager : MonoBehaviourPun
     public void InsertSpeciallyRoom(Room room)
     {
         
-        foreach (Room roomNeighbour in room.listNeighbour)
+/*        foreach (Room roomNeighbour in room.listNeighbour)
         {
 
             if (roomNeighbour.isNotSpecial || roomNeighbour.isSpecial || roomNeighbour.IsTraversed || roomNeighbour.IsObstacle )
@@ -2339,13 +2358,16 @@ public class GameManager : MonoBehaviourPun
                 roomNeighbour.isNotSpecial = true;
             }
 
-        }
+        }*/
     }
 
     public int InsertRandomSpeciallity(Room room)
     {
+        if (room.HaveOneNeighbour())
+        {
+            return -1;
+        }
         int randomMain = Random.Range(1, 101);
-
         if(randomMain <= 60)
         {
             if(randomMain <= 10)
@@ -2381,6 +2403,73 @@ public class GameManager : MonoBehaviourPun
             }
         }
         return -1;
+    }
+
+    public int GetWitdhOfAllHexagone()
+    {
+        int X_max = -1;
+        int X_min = 1000;
+
+        int index_x_max = 0;
+        int inde_x_min = 0;
+
+        foreach(Hexagone hexagone in dungeon)
+        {
+            if (hexagone.Room.IsObstacle)
+            {
+                continue;
+            }
+            if(hexagone.Room.distance_pathFinding_initialRoom == -1)
+            {
+                continue;
+            }
+            if(hexagone.Room.X > X_max)
+            {
+                index_x_max = hexagone.Room.Index;
+                X_max = hexagone.Room.X;
+            }
+            if(hexagone.Room.X < X_min)
+            {
+                inde_x_min = hexagone.Room.Index;
+                X_min = hexagone.Room.X;
+            }
+        }
+        return (game.dungeon.GetRoomByIndex(index_x_max).X 
+            - game.dungeon.GetRoomByIndex(inde_x_min).X);
+
+    }
+
+    public int GetHeightOfAllHexagone()
+    {
+        int y_max = 0;
+        int y_min = 1000;
+
+        int index_y_max = 0;
+        int index_y_min = 0;
+
+        foreach (Hexagone hexagone in dungeon)
+        {
+            if (hexagone.Room.IsObstacle)
+            {
+                continue;
+            }
+            if (hexagone.Room.distance_pathFinding_initialRoom == -1)
+            {
+                continue;
+            }
+            if (hexagone.Room.Y > y_max)
+            {
+                y_max = hexagone.Room.Y;
+                index_y_max = hexagone.Room.Index;
+            }
+            if (hexagone.Room.Y < y_min)
+            {
+                y_min = hexagone.Room.Y;
+                index_y_min = hexagone.Room.Index;
+            }
+        }
+
+        return (game.dungeon.GetRoomByIndex(index_y_max).Y - game.dungeon.GetRoomByIndex(index_y_min).Y);
     }
 
 

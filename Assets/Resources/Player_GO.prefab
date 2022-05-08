@@ -1060,7 +1060,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2672510705023225238}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.5, z: -5}
+  m_LocalPosition: {x: 22.53, y: -1.5, z: -5}
   m_LocalScale: {x: 0.775, y: 0.775, z: 0}
   m_Children:
   - {fileID: 5389266394685035406}
@@ -1107,6 +1107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementlControlSpeed: 4
   playerName: 
+  isMovingAutomaticaly: 1
   isBoss: 0
   isImpostor: 0
   isReady: 0
@@ -1513,7 +1514,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2250047312554281117
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1531,7 +1532,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -262.6, y: 182.6}
+  m_AnchoredPosition: {x: 561, y: 182.6}
   m_SizeDelta: {x: -2155.9, y: -868.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2643028188071579140
@@ -1555,7 +1556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.6745098}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

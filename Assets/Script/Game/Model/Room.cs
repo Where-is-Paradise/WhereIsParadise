@@ -71,6 +71,8 @@ public class Room : ScriptableObject
 
     public int nbKeyInPath = 0;
 
+    public bool isOldParadise = false;
+
     public void Init(int pos_X, int pos_Y)
     {
         this.x = pos_X;
@@ -308,6 +310,11 @@ public class Room : ScriptableObject
             return door_isOpen[i] + " ";
         }
         return "";
+    }
+
+    public bool HaveOneNeighbour()
+    {
+        return listNeighbour.Count == 1;
     }
 }
 

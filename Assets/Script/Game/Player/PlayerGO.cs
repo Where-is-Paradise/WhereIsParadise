@@ -10,6 +10,7 @@ public class PlayerGO : MonoBehaviour
 
     public float movementlControlSpeed = 1;
     public string playerName;
+    public bool isMovingAutomaticaly = true;
 
     private PlayerNetwork playerNetwork;
 
@@ -109,11 +110,15 @@ public class PlayerGO : MonoBehaviour
 
     public bool isInJail = false;
 
+    
+
     private void Awake()
     {
         displayChatInput = false;
         playerNetwork = gameObject.GetComponent<PlayerNetwork>();
         currentlyMessageDisplay = new List<string>();
+
+        isMovingAutomaticaly = true;
     }
 
     void Start()
@@ -159,7 +164,29 @@ public class PlayerGO : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // prevent update if chat input is displayed
+        if (animateEyes)
+        {
+            this.transform.GetChild(1).GetChild(0).GetComponent<Animator>().SetBool("OpenEyes", true); ;
+            animateEyes = false;
+        }
+        gameObject.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = playerName;
+        if (isMovingAutomaticaly && GetComponent<PhotonView>().IsMine)
+        {
+            this.GetComponent<BoxCollider2D>().enabled = false;
+            this.transform.position += new Vector3(-3f * Time.deltaTime, 0, 0);
+            if (this.transform.position.x < 5)
+            {
+                isMovingAutomaticaly = false;
+            }
+            return;
+        }
+        else
+        {
+            this.GetComponent<BoxCollider2D>().enabled = true;
+        }
+
+       
+            // prevent update if chat input is displayed
         if (displayChatInput)
         {
             return;
@@ -174,6 +201,12 @@ public class PlayerGO : MonoBehaviour
 
     void Update()
     {
+        if (isMovingAutomaticaly)
+        {
+            return;
+        }
+
+
         if (GameObject.Find("UI_Management"))
         {
             chatPanel = GameObject.Find("UI_Management").GetComponent<UI_Managment>().chatPanelInputParent;
@@ -224,7 +257,7 @@ public class PlayerGO : MonoBehaviour
                         }*/
         }
 
-        gameObject.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = playerName;
+     
 
         if (GetComponent<PhotonView>().IsMine && (isBoss || hasWinFireBallRoom) && gameManager)
         {
@@ -311,13 +344,7 @@ public class PlayerGO : MonoBehaviour
 
         if (InputManager.GetButtonDown("Enter") && GetComponent<PhotonView>().IsMine)
         {
-            displayChatInput = !displayChatInput;
-            if (!displayChatInput)
-            {
-                SetTextChat(chatPanel.transform.GetChild(0).GetChild(0).GetComponent<InputField>().text);
-            }
-            DisplayChat(displayChatInput);
-
+            OnClickChat();
         }
 
         if (gameManager)
@@ -438,11 +465,7 @@ public class PlayerGO : MonoBehaviour
         }
 
 
-        if (animateEyes)
-        {
-            this.transform.GetChild(1).GetChild(0).GetComponent<Animator>().SetBool("OpenEyes", true); ;
-            animateEyes = false;
-        }
+      
 
         if (gameManager)
         {
@@ -513,6 +536,16 @@ public class PlayerGO : MonoBehaviour
     }
 
 
+    public void OnClickChat()
+    {
+        displayChatInput = !displayChatInput;
+        if (!displayChatInput)
+        {
+            SetTextChat(chatPanel.transform.GetChild(0).GetChild(0).GetComponent<InputField>().text);
+        }
+        DisplayChat(displayChatInput);
+    }
+
     public void DisplayNamePlayer(bool display)
     {
         this.transform.Find("InfoCanvas").Find("PlayerName").gameObject.SetActive(display);
@@ -573,7 +606,7 @@ public class PlayerGO : MonoBehaviour
     private void handleDesktopMove()
     {
         turnPlayer();
-
+        TurnChat();
         this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, -1);
 
         this.transform.Translate(
@@ -626,6 +659,24 @@ public class PlayerGO : MonoBehaviour
         }
     }
 
+    public void TurnChat()
+    {
+        Transform chat = transform.Find("InfoCanvas").Find("ChatPanel");
+        if (chat.gameObject.activeSelf)
+            return;
+        Transform perso = transform.Find("Perso");
+        if (perso.localScale.x < 0)
+        {
+            chat.localPosition = new Vector3(561, 182);
+        }
+        else
+        {
+            
+            chat.localPosition = new Vector3(-223, 182);
+        }
+        
+    }
+
     private void turnLeft()
     {
         Transform perso = transform.Find("Perso");
@@ -633,6 +684,7 @@ public class PlayerGO : MonoBehaviour
             Mathf.Abs(perso.localScale.x),
             perso.localScale.y
         );
+       
     }
 
     private void turnRight()
@@ -1200,13 +1252,11 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (gameManager.expeditionHasproposed || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed)
+        if (gameManager.timer.timerLaunch)
         {
-            canDisplayMap = false;
-            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
-            gameManager.ui_Manager.mobileCanvas.transform.Find("Map_panel").gameObject.SetActive(false);
             return;
         }
+
         canDisplayMap = isEnter;
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Map_panel").gameObject.SetActive(isEnter);

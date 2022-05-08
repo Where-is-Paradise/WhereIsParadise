@@ -13,6 +13,8 @@ public class Hexagone : MonoBehaviour
     public Text distanceText;
     public Text index_text;
 
+    public bool isGenerate = false;
+
     public Hexagone(Room room) {
         this.room = room;
     }
@@ -36,18 +38,44 @@ public class Hexagone : MonoBehaviour
         {
             this.gameObject.SetActive(false);
         }
+        /*
+                if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionParadise || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionHell)
+                {
+                    if (this.transform.position.x > -1.9f && this.transform.position.x < 7.4f && this.transform.position.y < 3.8f && this.transform.position.y > -3.8f)
+                    {
+                        DisplayTextAndImage(true);
+                    }
+                    else
+                    {
+                        DisplayTextAndImage(false);
+                    }
+                }*/
 
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionParadise || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionHell)
         {
-            if (this.transform.position.x > -1.9f && this.transform.position.x < 7.4f && this.transform.position.y < 3.8f && this.transform.position.y > -3.8f)
+            if (room.isOldParadise)
             {
-                DisplayTextAndImage(true);
-            }
-            else
-            {
-                DisplayTextAndImage(false);
+                if (!room.IsHell)
+                    this.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
             }
         }
+
+        if (room.isOldParadise && !room.IsExit && !room.IsHell)
+        {
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            {
+                this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(true);
+                this.GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241/255f);
+            }
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionParadise || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionHell)
+            {
+                this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(true);
+                this.GetComponent<SpriteRenderer>().color = new Color(58/255f, 187/255f, 241/255f);
+            }
+        }
+
+        this.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(gameManager.game.currentRoom.Index == this.room.Index);
+
 
     }
 

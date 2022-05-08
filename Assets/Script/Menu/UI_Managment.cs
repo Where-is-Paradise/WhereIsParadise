@@ -726,7 +726,7 @@ public class UI_Managment : MonoBehaviourPun
         player.GetComponent<PlayerGO>().DisplayChat(false);
         player.GetComponent<PlayerGO>().GetPlayerMineGO().GetComponent<PlayerGO>().displayChatInput = false;
 
-        player.GetComponent<PlayerGO>().SetTextChat(player.GetComponent<PlayerGO>().chatPanel.transform.GetChild(1).GetComponent<InputField>().text);
+        player.GetComponent<PlayerGO>().SetTextChat(player.GetComponent<PlayerGO>().chatPanel.transform.Find("Panel_background").Find("Chat").GetComponent<InputField>().text);
     }
     public void OnClickBackChat()
     {
