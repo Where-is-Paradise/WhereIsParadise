@@ -203,7 +203,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetlaunchTimerExpedition()
     {
-        if (gameManager.setting.displayTutorial && !gameManager.ui_Manager.listTutorialBool[7])
+/*        if (gameManager.setting.displayTutorial && !gameManager.ui_Manager.listTutorialBool[7])
         {
             gameManager.ui_Manager.tutorial_parent.SetActive(true);
             gameManager.ui_Manager.tutorial[7].SetActive(true);
@@ -213,7 +213,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (gameManager.setting.displayTutorial && !gameManager.AllPlayerHasQuitTutorielN7())
         {
             return;
-        }
+        }*/
 
         gameManager.timer.LaunchTimer(5, false);
 
@@ -1011,7 +1011,7 @@ public class GameManagerNetwork : MonoBehaviourPun
        
     }
 
-    public void SendTutorialN11()
+/*    public void SendTutorialN11()
     {
         photonView.RPC("SetTutorialN11", RpcTarget.All);
     }
@@ -1022,7 +1022,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.tutorial_parent.SetActive(true);
         gameManager.ui_Manager.tutorial[11].SetActive(true);
         gameManager.ui_Manager.listTutorialBool[11] = true;
-    }
+    }*/
 
 
     public void SendActiveZoneVoteChest()

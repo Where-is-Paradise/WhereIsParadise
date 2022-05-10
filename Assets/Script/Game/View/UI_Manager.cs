@@ -85,6 +85,9 @@ public class UI_Manager : MonoBehaviour
 
     public GameObject mobileCanvas;
 
+    public GameObject autelTutorial;
+    public GameObject autelTutorialSpeciallyRoom;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -823,12 +826,6 @@ setting_button_echapMenu.SetActive(false);
             hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
             room.IsTraversed = true;
         }
-        if (room.HasKey)
-        {
-            hexagone.transform.GetChild(0).GetChild(2).gameObject.SetActive(true);
-            hexagone.GetComponent<Hexagone>().distanceText.text = "";
-            hexagone.GetComponent<Hexagone>().index_text.text = "";
-        }
         if (room.IsFoggy)
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color(87 / 255f, 89 / 255f, 96 / 255f);
@@ -840,33 +837,28 @@ setting_button_echapMenu.SetActive(false);
         if (room.IsExit)
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
-            hexagone.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
+            hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
 
-            if (room.HasKey)
-            {
-                hexagone.transform.GetChild(0).GetChild(2).gameObject.SetActive(false);
-                hexagone.transform.GetChild(0).GetChild(5).gameObject.SetActive(true);
-            }
         }
         if (room.IsTraversed)
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
+        }
+        if (room.isOldParadise)
+        {
+            hexagone.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(true);
+            hexagone.transform.GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
         }
         if (gameManager.hell)
         {
             if (room.X == gameManager.hell.X && room.Y == gameManager.hell.Y)
             {
                 hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(255 / 255f), (float)0f / 255f, (float)0f / 255f, 1);
-                hexagone.transform.GetChild(0).GetChild(4).gameObject.SetActive(true);
-
-                if (gameManager.hell.HasKey)
-                {
-                    hexagone.transform.GetChild(0).GetChild(2).gameObject.SetActive(false);
-                    hexagone.transform.GetChild(0).GetChild(5).gameObject.SetActive(true);
-                }
+                hexagone.transform.Find("Canvas").Find("Hell").gameObject.SetActive(true);
 
             }
         }
+       
         
     }
 
@@ -1228,6 +1220,15 @@ setting_button_echapMenu.SetActive(false);
     public void OnClickChatButton()
     {
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().OnClickChat();
+    }
+
+    public void DisplayTutorialAutel(bool display)
+    {
+        autelTutorial.SetActive(display);
+    }
+    public void DisplayAutelTutorialSpeciallyRoom(bool display)
+    {
+        autelTutorialSpeciallyRoom.SetActive(display);
     }
 
 }

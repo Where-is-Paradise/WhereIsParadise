@@ -121,8 +121,8 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         yield return new WaitForSeconds(0.4f);
         player.gameManager.ui_Manager.tutorial_parent.SetActive(true);
-        player.gameManager.ui_Manager.tutorial[4].SetActive(true);
-        player.gameManager.ui_Manager.listTutorialBool[4] = true;
+        player.gameManager.ui_Manager.tutorial[5].SetActive(true);
+        player.gameManager.ui_Manager.listTutorialBool[5] = true;
     }
 
     public void ResetIsChooseForExpedtion()
@@ -312,6 +312,17 @@ public class PlayerNetwork : MonoBehaviourPun
         player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplaySpeciallyLevers(false,0);
         player.GetComponent<PlayerGO>().gameManager.CloseAllDoor(player.GetComponent<PlayerGO>().gameManager.game.currentRoom, false);
 
+    }
+
+    public void SendDisplayMessage(bool displayMessage)
+    {
+        photonView.RPC("SetDisplayMessage", RpcTarget.All, displayMessage);
+    }
+
+    [PunRPC]
+    public void SetDisplayMessage(bool displayMessage)
+    {
+        player.displayMessage = displayMessage;
     }
 
 }

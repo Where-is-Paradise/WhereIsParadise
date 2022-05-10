@@ -556,6 +556,10 @@ public class Dungeon : ScriptableObject
             {
                 continue;
             }
+            if (roomIndex.IsTraversed)
+            {
+                continue;
+            }
             int distanceIndex = GetPathFindingDistance(roomIndex, room);
             if(distanceIndex != distance)
             {

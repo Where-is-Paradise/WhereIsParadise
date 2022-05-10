@@ -114,6 +114,9 @@ public class UI_Managment : MonoBehaviourPun
 
     public GameObject backButtonInDoor;
 
+    public GameObject CanvasChatInput;
+    public GameObject ButtonChatInputMobile;
+
     float k = -1;
     // Start is called before the first frame update
     void Start()
@@ -124,7 +127,7 @@ public class UI_Managment : MonoBehaviourPun
             backToMenu = true;
         StartCoroutine(TranslateDropdown());
         StartCoroutine(HideSkipTextTrailer());
-
+       
 
     }
 
@@ -193,7 +196,7 @@ public class UI_Managment : MonoBehaviourPun
         }
 
         CheckIndexSkinOutOfBounds();
-
+        HideButtonForNoMobile();
     }
 
 
@@ -405,7 +408,9 @@ public class UI_Managment : MonoBehaviourPun
         backgroundImage.SetActive(false);
         Canvas.SetActive(false);
         waitingMap.SetActive(true);
-        
+        StartCoroutine(CoroutineDisplayChatInputMobile(true));
+
+
     }
 
    
@@ -508,6 +513,7 @@ public class UI_Managment : MonoBehaviourPun
         Canvas.SetActive(true);
         joinLobby_panel.SetActive(true);
         createLobby_panel.SetActive(false);
+        DisplayChatInputMobile(false);
     }
     public void OnClickHidePanelError()
     {
@@ -653,6 +659,7 @@ public class UI_Managment : MonoBehaviourPun
         createLobby_panel.SetActive(false);
         joinLobby_panel.SetActive(false);
         matchmakingPanel.SetActive(false);
+        DisplayChatInputMobile(false);
         lobby.matchmaking = false;
         canChange = false;
         PhotonNetwork.LeaveRoom();
@@ -846,6 +853,41 @@ public class UI_Managment : MonoBehaviourPun
     public void DisabledBackButton()
     {
         backButtonInDoor.GetComponent<Button>().interactable = false;
+    }
+
+    public void OnClickChatButton()
+    {
+        lobby.GetPlayerMineGO().GetComponent<PlayerGO>().OnClickChat();
+    }
+
+    public void DisplayChatInputMobile(bool display)
+    {
+
+         CanvasChatInput.SetActive(display);
+
+
+    }
+
+    public IEnumerator CoroutineDisplayChatInputMobile(bool display)
+    {
+    
+            yield return new WaitForSeconds(3);
+
+          if (GameObject.FindGameObjectsWithTag("Player").Length == 0)
+        {
+            display = false;
+        }
+        CanvasChatInput.SetActive(display);
+
+
+    }
+
+    public void HideButtonForNoMobile()
+    {
+
+#if !UNITY_IOS && !UNITY_ANDROID
+        ButtonChatInputMobile.SetActive(false);
+#endif
     }
 
 }

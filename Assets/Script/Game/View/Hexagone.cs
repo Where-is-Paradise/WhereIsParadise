@@ -51,14 +51,6 @@ public class Hexagone : MonoBehaviour
                     }
                 }*/
 
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionParadise || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionHell)
-        {
-            if (room.isOldParadise)
-            {
-                if (!room.IsHell)
-                    this.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
-            }
-        }
 
         if (room.isOldParadise && !room.IsExit && !room.IsHell)
         {
@@ -72,6 +64,10 @@ public class Hexagone : MonoBehaviour
                 this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(true);
                 this.GetComponent<SpriteRenderer>().color = new Color(58/255f, 187/255f, 241/255f);
             }
+        }
+        if (room.IsHell)
+        {
+            this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(false);
         }
 
         this.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(gameManager.game.currentRoom.Index == this.room.Index);

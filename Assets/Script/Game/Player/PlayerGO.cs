@@ -51,27 +51,23 @@ public class PlayerGO : MonoBehaviour
     public bool collisionParadise = false;
     public bool collisionHell = false;
 
+    public bool isMoving = false;
+
     private bool takeDoorBackExpedition = false;
     private bool takeDoorExpededition = false;
     private GameObject doorCollision = null;
 
-    private bool isMoving = false;
     public bool animateEyes = false;
-    private bool isFirstTouch = false;
-    private int TapCount;
     public bool comeToParadise = false;
     public int indexSkin = 0;
     public bool ui_isOpen = false;
-
-    private float horizontalInput = 0;
-    private float verticalInput = 0;
 
     public bool isChooseForExpedition = false;
     public bool isAlreadyHide = false;
 
     public bool displayChatInput = false;
 
-    private bool displayMessage = false;
+    public bool displayMessage = false;
     private List<string> currentlyMessageDisplay;
 
     public ResolutionManagement resolution;
@@ -107,6 +103,8 @@ public class PlayerGO : MonoBehaviour
     public bool canLaunchSpeciallyRoomPower = false;
     public bool canDisplayMap = false;
     public bool displayMap = false;
+    public bool canDisplayTutorial = false;
+    public bool displayTutorial = false;
 
     public bool isInJail = false;
 
@@ -132,7 +130,6 @@ public class PlayerGO : MonoBehaviour
         setCollider();
 
         // Used to prevent multi tap on mobile
-        TapCount = 0;
 
         enhanceOwners();
 
@@ -183,6 +180,7 @@ public class PlayerGO : MonoBehaviour
         else
         {
             this.GetComponent<BoxCollider2D>().enabled = true;
+            isMovingAutomaticaly = false;
         }
 
        
@@ -206,6 +204,15 @@ public class PlayerGO : MonoBehaviour
             return;
         }
 
+        TurnChat();
+        if (displayMessage)
+        {
+            this.transform.GetChild(0).GetChild(1).gameObject.SetActive(true);
+        }
+        else
+        {
+            this.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
+        }
 
         if (GameObject.Find("UI_Management"))
         {
@@ -342,7 +349,7 @@ public class PlayerGO : MonoBehaviour
 
         }
 
-        if (InputManager.GetButtonDown("Enter") && GetComponent<PhotonView>().IsMine)
+        if ((InputManager.GetButtonDown("Enter") || Input.GetKeyDown(KeyCode.KeypadEnter)) && GetComponent<PhotonView>().IsMine)
         {
             OnClickChat();
         }
@@ -373,6 +380,18 @@ public class PlayerGO : MonoBehaviour
                         displayMap = false;
                     }
                 }
+            }
+            if (displayTutorial)
+            {
+                if (gameManager.game.currentRoom.isSpecial)
+                {
+                    DisplayTutorialSpecial();
+                }
+                else
+                {
+                    DisplayTutorial(15, true);
+                }
+                displayTutorial = false;
             }
 
 
@@ -488,16 +507,12 @@ public class PlayerGO : MonoBehaviour
         }
 
         InputDisplayMap();
+        InputDisplayTutorial();
 
 
-        if (displayMessage)
-        {
-            this.transform.GetChild(0).GetChild(1).gameObject.SetActive(true);
-        }
-        else
-        {
-            this.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
-        }
+
+
+
 
         SetZIndexByPositionY();
         ActionnWantToChangeBoss();
@@ -606,7 +621,7 @@ public class PlayerGO : MonoBehaviour
     private void handleDesktopMove()
     {
         turnPlayer();
-        TurnChat();
+        
         this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, -1);
 
         this.transform.Translate(
@@ -616,6 +631,7 @@ public class PlayerGO : MonoBehaviour
                 0
             )
         );
+        
     }
 
     private void handleMobileMove()
@@ -802,7 +818,13 @@ public class PlayerGO : MonoBehaviour
         }
         if(collision.gameObject.tag == "InteractionObject")
         {
-            CanDisplayMap(collision.gameObject, true);
+            if(collision.gameObject.name == "Map")
+                CanDisplayMap(collision.gameObject, true);
+            if (collision.gameObject.name == "Tutorial")
+                CanDisplayTutorialAutel(collision.gameObject, true);
+            if (collision.gameObject.name == "TutorialSpeciallyRoom")
+                CanDisplayTutorialAutel(collision.gameObject, true);
+
         }
     }
 
@@ -835,6 +857,20 @@ public class PlayerGO : MonoBehaviour
         }
 
         displayMap = true;
+    }
+
+    public void InputDisplayTutorial()
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!InputManager.GetButtonDown("Exploration") || !canDisplayTutorial)
+        {
+            return;
+        }
+
+        displayTutorial = true;
     }
 
     public void InputVoteDoorAnimation()
@@ -910,7 +946,13 @@ public class PlayerGO : MonoBehaviour
 
         if (collision.gameObject.tag == "InteractionObject")
         {
-            CanDisplayMap(collision.gameObject, false);
+            if (collision.gameObject.name == "Map")
+                CanDisplayMap(collision.gameObject, false);
+            if (collision.gameObject.name == "Tutorial")
+                CanDisplayTutorialAutel(collision.gameObject, false);
+            if (collision.gameObject.name == "TutorialSpeciallyRoom")
+                CanDisplayTutorialAutel(collision.gameObject, false);
+
         }
     }
 
@@ -1173,12 +1215,15 @@ public class PlayerGO : MonoBehaviour
 
     public IEnumerator CouroutineTextChat(int index, int count)
     {
+        //GetComponent<PlayerNetwork>().SendDisplayMessage(true);
         displayMessage = true;
         yield return new WaitForSeconds(3);
         currentlyMessageDisplay.RemoveAt(index - (count - 1));
         if (currentlyMessageDisplay.Count == 0)
+            //GetComponent<PlayerNetwork>().SendDisplayMessage(false);
             displayMessage = false;
     }
+
 
     public IEnumerator CoroutineIsChooseForExpedition()
     {
@@ -1261,8 +1306,60 @@ public class PlayerGO : MonoBehaviour
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Map_panel").gameObject.SetActive(isEnter);
 
+        if (isEnter)
+        {
+            DisplayTutorial(12);
+        }
 
     }
+    public void CanDisplayTutorialAutel(GameObject collision, bool isEnter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (gameManager.timer.timerLaunch)
+        {
+            return;
+        }
+        canDisplayTutorial = isEnter;
+        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+        gameManager.ui_Manager.mobileCanvas.transform.Find("Map_panel").gameObject.SetActive(isEnter);
+
+
+    }
+
+
+    public void DisplayTutorial(int indexPanel, bool force = false)
+    {
+        if (gameManager.setting.displayTutorial || force)
+        {
+           
+            if (!gameManager.ui_Manager.listTutorialBool[indexPanel])
+            {
+                gameManager.ui_Manager.tutorial_parent.SetActive(true);
+                gameManager.ui_Manager.tutorial[indexPanel].SetActive(true);
+                if(!force)
+                    gameManager.ui_Manager.listTutorialBool[indexPanel] = true;
+            }
+        }
+    }
+
+    public void DisplayTutorialSpecial()
+    {
+        if (gameManager.game.currentRoom.chest)
+            DisplayTutorial(16, true);
+        if (gameManager.game.currentRoom.isSacrifice)
+            DisplayTutorial(17, true);
+        if (gameManager.game.currentRoom.IsVirus)
+            DisplayTutorial(18, true);
+        if (gameManager.game.currentRoom.fireBall)
+            DisplayTutorial(19, true);
+        if (gameManager.game.currentRoom.isJail)
+            DisplayTutorial(20, true);
+
+    }
+
 
     public void CanLaunchExplorationLever(GameObject collision,  bool isEnter)
     {
@@ -1271,6 +1368,7 @@ public class PlayerGO : MonoBehaviour
             return;
         }
         if (!isBoss) {
+            DisplayTutorial(2);
             return;
         }
         if (gameManager.expeditionHasproposed || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed)
@@ -1287,6 +1385,11 @@ public class PlayerGO : MonoBehaviour
         canLaunchExplorationLever = isEnter;
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(isEnter);
+
+        if (isEnter)
+        {
+            DisplayTutorial(3);
+        }
     }
 
     public void CanLaunchVoterDoorLever(GameObject collision, bool isEnter)
@@ -1297,6 +1400,7 @@ public class PlayerGO : MonoBehaviour
         }
         if (!isBoss)
         {
+            DisplayTutorial(2);
             return;
         }
         if ((gameManager.expeditionHasproposed && gameManager.timer.timerLaunch) || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed)
@@ -1313,6 +1417,11 @@ public class PlayerGO : MonoBehaviour
         canLaunchDoorVoteLever = isEnter;
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Door_panel").gameObject.SetActive(isEnter);
+
+        if (isEnter)
+        {
+            DisplayTutorial(11);
+        }
     }
 
     public void CanLaunchSpeciallyRoomPower(GameObject collision, bool isEnter)
@@ -1323,6 +1432,7 @@ public class PlayerGO : MonoBehaviour
         }
         if (!isBoss)
         {
+            DisplayTutorial(2);
             return;
         }
         if (gameManager.voteChestHasProposed)

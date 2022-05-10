@@ -246,7 +246,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayEchapMenu();
         }
 
-        if (OnePlayerisGoInExpeditionOneTime())
+/*        if (OnePlayerisGoInExpeditionOneTime())
         {
             if (!OnePlayerHaveToGoToExpedition())
             {
@@ -255,7 +255,7 @@ public class GameManager : MonoBehaviourPun
                     gameManagerNetwork.SendTutorialN11();
                 }
             }
-        }
+        }*/
     }
 
 
@@ -273,7 +273,7 @@ public class GameManager : MonoBehaviourPun
                     OpenDoorsToExpedition();
                 alreaydyExpeditionHadPropose = true;
                 SetPlayersHaveTogoToExpeditionBool();
-                if (setting.displayTutorial)
+/*                if (setting.displayTutorial)
                 {
                     if (!ui_Manager.listTutorialBool[8])
                     {
@@ -283,7 +283,7 @@ public class GameManager : MonoBehaviourPun
                     }
 
 
-                }
+                }*/
 
             }
             else
@@ -355,8 +355,8 @@ public class GameManager : MonoBehaviourPun
     {
         Room room = hex.Room;
         //hex.GetComponent<Hexagone>().distanceText.text = room.distance_pathFinding_initialRoom.ToString();
-        hex.GetComponent<Hexagone>().distanceText.text = game.dungeon.GetPathFindingDistance(room, game.currentRoom).ToString();
 
+        hex.GetComponent<Hexagone>().distanceText.text = game.dungeon.GetPathFindingDistance(room, game.currentRoom).ToString();
 
         if (room.IsObstacle)
         {
@@ -397,12 +397,7 @@ public class GameManager : MonoBehaviourPun
         if (room.IsExit && GetPlayerMine().GetIsImpostor())
         {
             hex.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
-            hex.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
-            if (room.HasKey)
-            {
-                hex.transform.GetChild(0).GetChild(2).gameObject.SetActive(false);
-                hex.transform.GetChild(0).GetChild(5).gameObject.SetActive(true);
-            }
+            hex.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
         }
         if (room.chest)
         {
@@ -412,6 +407,7 @@ public class GameManager : MonoBehaviourPun
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
         }
+       
     }
 
     public void SpawnPlayer()
@@ -432,7 +428,7 @@ public class GameManager : MonoBehaviourPun
         foreach (Hexagone hexagone in dungeon)
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            hexagone.transform.GetChild(0).GetChild(3).gameObject.SetActive(false);
+            hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(false);
 
             if (hexagone.GetComponent<Hexagone>().Room.Index == game.currentRoom.GetIndex())
             {
@@ -454,19 +450,13 @@ public class GameManager : MonoBehaviourPun
                 if (hexagone.GetComponent<Hexagone>().Room.X == hell.X && hexagone.GetComponent<Hexagone>().Room.Y == hell.Y)
                 {
                     hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(255 / 255f), (float)0f / 255f, (float)0f / 255f, 1);
-                    hexagone.transform.GetChild(0).GetChild(4).gameObject.SetActive(true);
-
-                    if (hexagone.GetComponent<Hexagone>().Room.HasKey)
-                    {
-                        hexagone.transform.GetChild(0).GetChild(2).gameObject.SetActive(false);
-                        hexagone.transform.GetChild(0).GetChild(5).gameObject.SetActive(true);
-                    }
+                    hexagone.transform.Find("Canvas").Find("Hell").gameObject.SetActive(true);
                 }
             }
             if (hexagone.GetComponent<Hexagone>().Room.IsExit && GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             {
                 hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
-                hexagone.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
+                hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
             }
             if (hexagone.GetComponent<Hexagone>().Room.IsObstacle)
             {
@@ -517,7 +507,6 @@ public class GameManager : MonoBehaviourPun
 
     public void SetPositionHexagone(Hexagone initial)
     {
-        Debug.Log(initial.transform.localPosition.x + " " + initial.transform.localPosition.y);
         map.transform.position = new Vector3(-2.7f - (initial.transform.localPosition.x / 6), 4.8f - (initial.transform.localPosition.y /6), -1);
         map.transform.localScale = new Vector3(0.48f , 0.5f, 1);
 
@@ -1062,6 +1051,7 @@ public class GameManager : MonoBehaviourPun
         door.GetComponent<Door>().old_player = player;
 
         CloseAllDoor(roomExpedition, true, door);
+        ui_Manager.DisplayTutorialAutel(false);
 
         gameManagerNetwork.SendPositionPlayer(GetPlayerMineGO().GetComponent<PhotonView>().ViewID, roomExpedition.X, roomExpedition.Y);
         ui_Manager.DisplayBlackScreen(false, true);
@@ -1100,6 +1090,7 @@ public class GameManager : MonoBehaviourPun
             {
                 gameManagerNetwork.SendDisplayMainLevers(true);
             }
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
         }
     }
 
@@ -1492,7 +1483,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
         SetDoorNoneObstacle(game.currentRoom);
         SetDoorObstacle(game.currentRoom);
-        GenerateObstacle();
+        //GenerateObstacle();
         SetCurrentRoomColor();
         ui_Manager.HideDistanceRoom();
 
@@ -1533,11 +1524,13 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.LaunchAnimationAddKey();
         }
 
+        ui_Manager.DisplayTutorialAutel(false);
         if (game.dungeon.initialRoom.X == game.currentRoom.X)
         {
             if (game.dungeon.initialRoom.Y == game.currentRoom.Y)
             {
                 ui_Manager.SetDistanceRoom(game.dungeon.initialRoom.DistancePathFinding, null);
+                ui_Manager.DisplayTutorialAutel(true);
             }
 
         }
@@ -1566,16 +1559,6 @@ public class GameManager : MonoBehaviourPun
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendOnclickToExpedition();
         }
 
-        if (setting.displayTutorial)
-        {
-            if (!ui_Manager.listTutorialBool[12])
-            {
-                ui_Manager.tutorial_parent.SetActive(true);
-                ui_Manager.tutorial[12].SetActive(true);
-                ui_Manager.listTutorialBool[12] = true;
-            }
-
-        }
 
     }
 
@@ -2044,11 +2027,13 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.ClearSpecialRoom();
         ui_Manager.DisplaySpeciallyLevers(false, 0);
         ui_Manager.DisplayMainLevers(true);
+        ui_Manager.DisplayAutelTutorialSpeciallyRoom(false);
 
         if (room.chest)
         {
             ui_Manager.DisplayChestRoom(true);
             ui_Manager.DisplayMainLevers(false);
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
@@ -2063,6 +2048,7 @@ public class GameManager : MonoBehaviourPun
         {
             ui_Manager.DisplayFireBallRoom(true);
             ui_Manager.DisplayMainLevers(false);
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
@@ -2077,6 +2063,7 @@ public class GameManager : MonoBehaviourPun
         {
             ui_Manager.DisplaySacrificeRoom(true);
             ui_Manager.DisplayMainLevers(false);
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
@@ -2105,6 +2092,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayVirusRoom(true);
             ui_Manager.DisplayLeverExploration(false);
             ui_Manager.DisplayLeverVoteDoor(true);
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             return;
         }
 
@@ -2194,6 +2182,7 @@ public class GameManager : MonoBehaviourPun
         ChestManagement(chest);
         StartCoroutine(CoroutineHideChest());
         game.currentRoom.speciallyPowerIsUsed = true;
+        CloseDoorWhenVote(false);
     }
 
     public GameObject CalculVoteChest()
@@ -2319,7 +2308,6 @@ public class GameManager : MonoBehaviourPun
         gameManagerNetwork.SendNewParadise(newParadise.Index);
         SetCurrentRoomColor();
         game.dungeon.SetPathFindingDistanceAllRoom();
-        Debug.Log(randomIndex);
         ui_Manager.SetDistanceTextAwardChest(0);
         ui_Manager.SetDistanceTextAwardChest(1);
     }
@@ -2335,11 +2323,11 @@ public class GameManager : MonoBehaviourPun
     }
     public void InsertSpeciallyRoom(Room room)
     {
-        
-/*        foreach (Room roomNeighbour in room.listNeighbour)
+
+        foreach (Room roomNeighbour in room.listNeighbour)
         {
 
-            if (roomNeighbour.isNotSpecial || roomNeighbour.isSpecial || roomNeighbour.IsTraversed || roomNeighbour.IsObstacle )
+            if (roomNeighbour.isNotSpecial || roomNeighbour.isSpecial || roomNeighbour.IsTraversed || roomNeighbour.IsObstacle)
             {
                 continue;
             }
@@ -2358,7 +2346,7 @@ public class GameManager : MonoBehaviourPun
                 roomNeighbour.isNotSpecial = true;
             }
 
-        }*/
+        }
     }
 
     public int InsertRandomSpeciallity(Room room)

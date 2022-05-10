@@ -101,7 +101,7 @@
 
   "tutorial_initial_RandomBoss" : "Un chef d'équipe est désigné aléatoirement en début de partie.",
   "tutorial_initial_BossChoosePlayer" : "Le chef d'équipe doit sélectionner un ou plusieurs joueurs afin de les envoyer en exploration, vous devez cliquer ( ou tapoter ) sur le(s) future(s) explorateur(s).",
-  "tutorial_initial_PlayerSelectionedGoToDoorZone" : "Le ou les joueurs sélectionnés doivent se rendre dans la zone de la porte jusqu'à ce que la lettre s'affiche au-dessus du personnage. Le joueur qui a par exemple la lettre A pourra explorer la salle derrière la porte A  (si le chef lance l'exploration et que l'équipe l'accepte).",
+
   "tutorial_initial_PlayerSelectionedGoToDoorZone_2" : "Le chef d'équipe peut lancer une exploration en restant appuyé sur la touche \"E\" (par défaut):",
 
   "tutorial_initial_VoteExploration_0" : "l'exploration est soumise au vote de l'équipe, la majorité l'emporte, la zone \"V\" permet d'accepter l'exploration et la zone \"X\" de la refuser.",
@@ -109,13 +109,13 @@
   "tutorial_initial_Exploration_spectre" : "Les portes soumises a l'exploration s'ouvrent.. les explorateurs peuvent accéder aux portes associées à leurs âmes.",
   "tutorial_initial_Exploration_distance" : "Lorsqu'un joueur explore une salle, il a la capacité de voir le nombre de salle qu'il le sépare du Paradis.",
 
-  "tutorial_initial_BossVoteDoor_0" : "Le chef d'équipe doit lancer un vote pour ouvrir une porte, restez appuyé(e) sur F ( par défaut).",
-  "tutorial_initial_BossVoteDoor_1" : "Chaque ouverture de porte utilise une clef, vous et votre équipe possèdez un nombre de clefs limités.",
-  "tutorial_initial_BossVoteDoor_2" : "La porte avec le plus de vote ( joueurs dans la zone) s'ouvre..",
+
+
+
   "tutorial_initial_BossVoteDoor_3" : "Annulation du vote",
   "tutorial_initial_BossVoteDoor_4" : "Vote pour la porte F",
 
-  "tutorial_initial_Map_0" : "Vous pouvez acceder à la map du donjon, en utilisant la touche \"M\"",
+
   "tutorial_initial_Map_1" : "Ce nombre permet d'identifier la salle.",
   "tutorial_initial_Map_2" : "Ce nombre donne la distance par rapport à la salle de départ.",
 
@@ -127,5 +127,39 @@
 
   "tutorial_oneExploration_possible" : "Félicitations, vous venez de faire votre première exploration en équipe.\n Attention vous ne pouvez pas enchaîner les explorations, après chaque exploration vous devez obligatoirement ouvrir une porte.",
   "tutorial_button_quit" : "Ok",
+
+
+
+
+
+"tutorial_initial_PlayerSelectionedGoToDoorZone" : "Ensuite Le ou les joueurs sélectionnés doivent se rendre dans la zone de la porte jusqu'à ce que la lettre s'affiche au-dessus du personnage. Le joueur qui a par exemple la lettre A pourra explorer la salle derrière la porte A.",
+"tutorial_autel_0" : "Seule le chef d'équipe peut utiliser les leviers",
+"tutorial_autel_1" : "Avant d'activer ce levier, vous devez sélectionner un ou plusieurs joueurs",
+"tutorial_autel_2" : "Vous avez été sélectionner par le chef d'équipe pour aller en exploration, veuillez vous rendre dans la zone de la porte du choix de votre chef d'équipe ( la lettre de la porte doit s'afficher au dessus de votre personnage).",
+
+"tutorial_initial_BossVoteDoor_0" : "Ce levier permet de lancer un vote pour ouvrir une porte",
+"tutorial_initial_BossVoteDoor_2" : "La porte avec le plus de vote ( joueurs dans la zone) s'ouvre..",
+"tutorial_initial_BossVoteDoor_1" : "Chaque ouverture de porte utilise une clef.",
+  "tutorial_initial_Map_0" : "La carte vous permet de visualiser le donjon et de savoir où vous vous trouvez.",
+"tutorial_autel_3" : "Correspond à la distance du Paradis.",
+"tutorial_autel_4" : "Correspond aux nombre de clefs restantes.",
+"tutorial_autel_5" : "Correspond aux nombre de torches restantes..",
+
+"tutorial_autel_chest_0" : "Vous devez choisir un coffre à ouvrir,",
+"tutorial_autel_chest_1" : "\n mais attention un des coffres est piégé !",
+"tutorial_autel_chest_1" : "Les imposteurs connaissent le coffre piégé.",
+
+"tutorial_autel_sacrifice_0" : "Vous devez sacrifié une personne de votre équipe.",
+"tutorial_autel_sacrifice_1" : "Le joueur ayant le plus de vote sera sacrifé",
+
+"tutorial_autel_cursed_0" : "Une porte sera ouverte aléatoirement.",
+
+"tutorial_autel_fireball_0" : "Vous ne devez toucher les boules de feu.",
+"tutorial_autel_fireball_1" : "Le dernier survivant de cette épreuve sera récompenser par une exploration de son choix.",
+
+"tutorial_autel_jail_0" : "Vous êtes emprisoné(e).",
+"tutorial_autel_jall_1" : "Votre équipe peut venir vous libérer si elle ouvre une des portes adjacentes à votre salle.",
+
+
 
   }

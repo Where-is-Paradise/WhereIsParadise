@@ -94,7 +94,7 @@ public class Game : ScriptableObject
 /*        if(setting.RANDOM_ROOM_ADDKEYS)
             dungeon.InserKeyInRandomRoom();*/
 
-        dungeon.InsertRandomChestRoom();
+        //dungeon.InsertRandomChestRoom();
         //dungeon.InsertRandomFireBallRoom();
         //dungeon.InsertRandomSacrificeRoom();
         //dungeon.InsertRandomJailRoom();
@@ -105,18 +105,18 @@ public class Game : ScriptableObject
 
     public void SetKeyCounter()
     {
-/*        if(dungeon.GetNumberOfPossiblityOfExit() < 5)
+        if (dungeon.GetNumberOfPossiblityOfExit() < 5)
         {
             key_counter = currentRoom.DistancePathFinding;
-                return;
+            return;
         }
-        if(dungeon.GetNumberOfPossiblityOfExit() < 10)
+        if (dungeon.GetNumberOfPossiblityOfExit() < 10)
         {
             key_counter = currentRoom.DistancePathFinding + 1;
             return;
         }
-        key_counter = currentRoom.DistancePathFinding + 2;*/
-        key_counter = 10;
+        key_counter = currentRoom.DistancePathFinding + 2;
+        //key_counter = 10;
 
     }
 
