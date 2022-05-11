@@ -826,14 +826,14 @@ setting_button_echapMenu.SetActive(false);
             hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
             room.IsTraversed = true;
         }
-        if (room.IsFoggy)
+/*        if (room.IsFoggy)
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color(87 / 255f, 89 / 255f, 96 / 255f);
         }
         if (room.IsVirus )
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color(66 / 255f, 0 / 255f, 117 / 255f);
-        }
+        }*/
         if (room.IsExit)
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);

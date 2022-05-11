@@ -330,6 +330,8 @@ public class PlayerGO : MonoBehaviour
                         {
                             gameManager.ActiveZoneDoor();
                             gameManager.gameManagerNetwork.SendDisplayMainLevers(false);
+                           
+
                         }
                         else
                         {
@@ -351,7 +353,8 @@ public class PlayerGO : MonoBehaviour
 
         if ((InputManager.GetButtonDown("Enter") || Input.GetKeyDown(KeyCode.KeypadEnter)) && GetComponent<PhotonView>().IsMine)
         {
-            OnClickChat();
+            if (!this.isSacrifice)
+                OnClickChat();
         }
 
         if (gameManager)
@@ -404,7 +407,7 @@ public class PlayerGO : MonoBehaviour
                 {
                     gameManager.VoteCP(vote_cp);
                     gameManager.GetPlayerMine().SetHasVoted_CP(true);
-                    vote_cp = 0;
+                    //vote_cp = 0;
                 }
             }
         }
@@ -480,7 +483,7 @@ public class PlayerGO : MonoBehaviour
             }
 
 
-
+           
         }
 
 
@@ -594,20 +597,24 @@ public class PlayerGO : MonoBehaviour
 
     public void OnTriggerStay2D(Collider2D collision)
     {
-
-        if (collision.CompareTag("Zone_vote"))
+        if (!GetComponent<PhotonView>().IsMine)
         {
-            this.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
-
-            if (collision.name == "vote_X")
-            {
-                vote_cp = -1;
-            }
-            else if (collision.name == "vote_V")
-            {
-                vote_cp = 1;
-            }
+            return;
         }
+
+        if (!collision.CompareTag("Zone_vote"))
+        {
+            return;
+        }
+        if (collision.name == "vote_X")
+        {
+            GetComponent<PlayerNetwork>().SendVoteExplorationDisplay(false);
+        }
+        else if (collision.name == "vote_V")
+        {
+            GetComponent<PlayerNetwork>().SendVoteExplorationDisplay(true);
+        }
+        this.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
     }
 
 
@@ -795,11 +802,11 @@ public class PlayerGO : MonoBehaviour
                 this.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
                 if (collision.name == "vote_X")
                 {
-                    vote_cp = -1;
+                    GetComponent<PlayerNetwork>().SendVoteExplorationDisplay(false);
                 }
                 else if (collision.name == "vote_V")
                 {
-                    vote_cp = 1;
+                    GetComponent<PlayerNetwork>().SendVoteExplorationDisplay(true);
                 }
 
             }
@@ -927,10 +934,15 @@ public class PlayerGO : MonoBehaviour
 
     public void OnTriggerExit2D(Collider2D collision)
     {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+
         if (collision.CompareTag("Zone_vote"))
         {
             this.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
-            vote_cp = 0;
+            GetComponent<PlayerNetwork>().SendHideVoteExplorationDisplay();
         }
         if (collision.CompareTag("Door"))
         {
@@ -1299,6 +1311,7 @@ public class PlayerGO : MonoBehaviour
         }
         if (gameManager.timer.timerLaunch)
         {
+            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
             return;
         }
 

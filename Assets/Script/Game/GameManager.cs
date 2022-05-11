@@ -206,7 +206,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayKeyAndTorch(true);
             alreadyPass = false;
             SetAlreadyHideForAllPlayers();
-            ui_Manager.DisplayMainLevers(true);
+            UpdateSpecialsRooms(game.currentRoom);
             //ui_Manager.display
 
             if (game.dungeon.initialRoom.HasSameLocation(game.currentRoom))
@@ -220,7 +220,7 @@ public class GameManager : MonoBehaviourPun
         }
 
         // vote expedition
-        LaunchExploration(AllPlayerHasVoted(), VerifyVote());
+        LaunchExploration(AllPlayerHasVoted(), false);
 
 
         if (timer.timerFinish && isLoading)
@@ -259,13 +259,13 @@ public class GameManager : MonoBehaviourPun
     }
 
 
-    public void LaunchExploration(bool AllPlayerHasVoted, bool VerifyVote)
+    public void LaunchExploration(bool AllPlayerHasVoted, bool VerifyVote_p)
     {
         if (AllPlayerHasVoted && !endGame && !alreaydyExpeditionHadPropose && !isLoading)
         {
             timer.ResetTimer();
-            ui_Manager.HideZoneVote();
-            if (VerifyVote)
+           
+            if (VerifyVote() || VerifyVote_p)
             {
                 if (setting.LIMITED_TORCH)
                     SetNbTorch(game.current_expedition.Count);
@@ -273,18 +273,6 @@ public class GameManager : MonoBehaviourPun
                     OpenDoorsToExpedition();
                 alreaydyExpeditionHadPropose = true;
                 SetPlayersHaveTogoToExpeditionBool();
-/*                if (setting.displayTutorial)
-                {
-                    if (!ui_Manager.listTutorialBool[8])
-                    {
-                        ui_Manager.tutorial_parent.SetActive(true);
-                        ui_Manager.tutorial[8].SetActive(true);
-                        ui_Manager.listTutorialBool[8] = true;
-                    }
-
-
-                }*/
-
             }
             else
             {
@@ -295,6 +283,7 @@ public class GameManager : MonoBehaviourPun
                 expeditionHasproposed = false;
                 ui_Manager.DisplayMainLevers(true);
             }
+            ui_Manager.HideZoneVote();
             ResetVoteCP();
             ui_Manager.DisplayKeyAndTorch(true);
 
@@ -306,6 +295,7 @@ public class GameManager : MonoBehaviourPun
                 }
 
             }
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHideVoteExplorationDisplay();
             CloseDoorWhenVote(false);
             alreadyPass = false;
             SetAlreadyHideForAllPlayers();
@@ -358,6 +348,7 @@ public class GameManager : MonoBehaviourPun
 
         hex.GetComponent<Hexagone>().distanceText.text = game.dungeon.GetPathFindingDistance(room, game.currentRoom).ToString();
 
+        
         if (room.IsObstacle)
         {
             if (setting.DISPLAY_OBSTACLE_MAP || GetPlayerMine().GetIsImpostor())
@@ -373,6 +364,7 @@ public class GameManager : MonoBehaviourPun
         {
             hex.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
             map.transform.position += new Vector3(-hex.transform.position.x, -hex.transform.position.y);
+            hex.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(true);
             if (!room.IsExit)
                 room.IsTraversed = true;
             hexagone_current = hex;
@@ -386,22 +378,18 @@ public class GameManager : MonoBehaviourPun
                                 room.GetComponent<Hexagone>().index_text.text = "";*/
             }
         }
-        if (room.IsFoggy && GetPlayerMine().GetIsImpostor())
+/*        if (room.IsFoggy && GetPlayerMine().GetIsImpostor())
         {
             hex.GetComponent<SpriteRenderer>().color = new Color(87 / 255f, 89 / 255f, 96 / 255f);
-        }
-        if (room.IsVirus && GetPlayerMine().GetIsImpostor())
+        }*/
+/*        if (room.IsVirus && GetPlayerMine().GetIsImpostor())
         {
             hex.GetComponent<SpriteRenderer>().color = new Color(66 / 255f, 0 / 255f, 117 / 255f);
-        }
+        }*/
         if (room.IsExit && GetPlayerMine().GetIsImpostor())
         {
             hex.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
             hex.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
-        }
-        if (room.chest)
-        {
-            //hex.GetComponent<SpriteRenderer>().color = new Color(15 / 255f, 15 / 255f, 15 / 255f);
         }
         if (room.IsTraversed)
         {
@@ -429,13 +417,16 @@ public class GameManager : MonoBehaviourPun
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
             hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(false);
-
+            hexagone.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(false);
             if (hexagone.GetComponent<Hexagone>().Room.Index == game.currentRoom.GetIndex())
             {
                 hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
                 if (!hexagone.GetComponent<Hexagone>().Room.IsExit)
                     hexagone.GetComponent<Hexagone>().Room.IsTraversed = true;
-
+                if(!MineIsInExpedition())
+                    hexagone.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(game.currentRoom.Index == hexagone.GetComponent<Hexagone>().Room.Index);
+                else
+                    hexagone.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(GetDoorExpedition(GetPlayerMine().GetId()).Index == hexagone.GetComponent<Hexagone>().Room.Index);
             }
             else
             {
@@ -474,12 +465,21 @@ public class GameManager : MonoBehaviourPun
                 if (inExpedition)
                 {
                     hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(241f / 255f), (float)130f / 255f, (float)70f / 255f, 1);
+                    hexagone.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(true);
                 }
                 else
                 {
                     hexagone.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                    //hexagone.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(false);
                 }
 
+            }
+
+            if (inExpedition)
+            {
+                if ( hexagone.GetComponent<Hexagone>().Room.Index == game.currentRoom.GetIndex()){
+                    hexagone.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(false);
+                }
             }
         }
     }
@@ -946,17 +946,20 @@ public class GameManager : MonoBehaviourPun
     {
         int counterYes = 0;
         int counterNo = 0;
-        foreach (PlayerDun player in game.list_player)
+
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
         {
-            if (player.GetVote_CP() == 1)
+            if (player.GetComponent<PlayerGO>().vote_cp == 1)
             {
                 counterYes++;
             }
-            if (player.GetVote_CP() == -1)
+            if (player.GetComponent<PlayerGO>().vote_cp == -1)
             {
-                counterYes--;
+                counterNo++;
             }
+            Debug.Log(player.GetComponent<PhotonView>().ViewID + " " +  player.GetComponent<PlayerGO>().vote_cp );
         }
+        Debug.Log(counterYes + " " + counterNo);
         if (counterYes >= counterNo)
         {
             if (counterYes == 0)
@@ -1112,6 +1115,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplayKeyPlusOne(false);
         ui_Manager.DisplayKeyAndTorch(true);
         SetRoomColor(roomInExpe, false);
+        SetCurrentRoomColor();
         ui_Manager.HideDistanceRoom();
         //gameManagerNetwork.SendBackToExpe(GetPlayerMine().GetId());
         GetPlayerMineGO().GetComponent<PlayerGO>().isInExpedition = false;
@@ -1161,6 +1165,8 @@ public class GameManager : MonoBehaviourPun
         {
             gameManagerNetwork.SendDisplayMainLevers(true);
         }
+
+        UpdateSpecialsRooms(game.currentRoom);
     }
 
     public void ChangePositionPlayerWhenTakeDoor(GameObject player, GameObject doorEnter)

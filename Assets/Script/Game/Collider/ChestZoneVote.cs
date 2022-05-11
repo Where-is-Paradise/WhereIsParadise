@@ -23,24 +23,65 @@ public class ChestZoneVote : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine && gameManager.voteChestHasProposed)
+        if (!collision.CompareTag("Player"))
         {
-            gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, true, false);
+            return;
         }
+        if (!collision.GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!gameManager.voteChestHasProposed)
+        {
+            return;
+        }
+        if (collision.gameObject.GetComponent<PlayerGO>().isSacrifice)
+        {
+            return;
+        }
+
+        gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, true, false);
+
     }
     public void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine && gameManager.voteChestHasProposed)
+        if (!collision.CompareTag("Player"))
         {
-            gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, false, false);
+            return;
         }
+        if (!collision.GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!gameManager.voteChestHasProposed)
+        {
+            return;
+        }
+        if (collision.gameObject.GetComponent<PlayerGO>().isSacrifice)
+        {
+            return;
+        }
+        gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, false, false);
     }
 
     public void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.GetComponent<PhotonView>().IsMine && gameManager.voteChestHasProposed)
+        if (!collision.CompareTag("Player"))
         {
-            gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, false, true);
+            return;
         }
+        if (!collision.GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!gameManager.voteChestHasProposed)
+        {
+            return;
+        }
+        if (collision.gameObject.GetComponent<PlayerGO>().isSacrifice)
+        {
+            return;
+        }
+        gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, false, true);
     }
 }

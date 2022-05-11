@@ -70,7 +70,13 @@ public class Hexagone : MonoBehaviour
             this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(false);
         }
 
-        this.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(gameManager.game.currentRoom.Index == this.room.Index);
+        /*if (gameManager.MineIsInExpedition())
+        {
+            if(gameManager.game.currentRoom.Index == this.room.Index)
+                this.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(false);
+            this.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(gameManager.GetDoorExpedition(gameManager.GetPlayerMine().GetId()).Index == this.room.Index);
+            return;
+        }*/
 
 
     }

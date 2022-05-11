@@ -113,6 +113,8 @@ public class Lobby : MonoBehaviourPunCallbacks
     public void CreateRoomBack()
     {
         maxPlayer = 8;
+        if (matchmaking)
+            maxPlayer = 6;
         PhotonNetwork.CreateRoom(oldCode, new RoomOptions { MaxPlayers = (byte)maxPlayer, PublishUserId = true, IsVisible = true });
         ui_management.SetNbPlayerUI(1, maxPlayer);
         ui_management.LauchWaitingRoom();
@@ -303,6 +305,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     public IEnumerator CoroutineLoadLevel()
     {
         yield return new WaitForSeconds(3);
+        GetPlayerMineGO().GetComponent<PlayerGO>().displayChatInput = false;
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.LoadLevel("Game");
@@ -312,6 +315,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetLoadingPage()
     {
+        ResetAllPlayerReady();
         ui_management.DisplayLoadingPage();
     }
 
@@ -422,6 +426,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         ui_management.DisabledBackButton();
         ResetAllPlayerReady();
         yield return new WaitForSeconds(5);
+        ResetAllPlayerReady();
         OnclikStartGame();
     }
 

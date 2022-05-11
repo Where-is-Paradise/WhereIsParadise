@@ -203,18 +203,6 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetlaunchTimerExpedition()
     {
-/*        if (gameManager.setting.displayTutorial && !gameManager.ui_Manager.listTutorialBool[7])
-        {
-            gameManager.ui_Manager.tutorial_parent.SetActive(true);
-            gameManager.ui_Manager.tutorial[7].SetActive(true);
-            gameManager.ui_Manager.listTutorialBool[7] = true;
-            return;
-        }
-        if (gameManager.setting.displayTutorial && !gameManager.AllPlayerHasQuitTutorielN7())
-        {
-            return;
-        }*/
-
         gameManager.timer.LaunchTimer(5, false);
 
         if (gameManager.SamePositionAtBoss())
@@ -223,11 +211,19 @@ public class GameManagerNetwork : MonoBehaviourPun
             gameManager.ui_Manager.DisplayAllGost(true);
         }
 
-        //gameManager.ui_Manager.DisplayGostPlayer(gameManager.GetDoorGo(roomIndex));
         gameManager.expeditionHasproposed = true;
         gameManager.ui_Manager.HideDistanceRoom();
         gameManager.ui_Manager.DisplayKeyAndTorch(false);
         gameManager.CloseDoorWhenVote(true);
+
+        if (gameManager.ui_Manager.map.activeSelf)
+        {
+            gameManager.ui_Manager.DisplayMap();
+           
+        }
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canDisplayMap = false;
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+
 
     }
 
@@ -353,7 +349,16 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.timer.LaunchTimer(5, false);
         gameManager.voteDoorHasProposed = true;
 
+        if (gameManager.ui_Manager.map.activeSelf)
+        {
+            gameManager.ui_Manager.DisplayMap();
+           
+        }
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canDisplayMap = false;
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+
         StartCoroutine(CoroutineActiveZoneDoor());
+
 
 
     }
@@ -621,12 +626,12 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (enter ) 
         {
 
-            door.GetComponent<Door>().counterPlayerInDoorZone = newCounter;
+            door.GetComponent<Door>().counterPlayerInDoorZone++;
 
         }
         else
         {
-            door.GetComponent<Door>().counterPlayerInDoorZone = newCounter;
+            door.GetComponent<Door>().counterPlayerInDoorZone--;
             player.transform.GetChild(2).GetChild(0).gameObject.GetComponent<Text>().enabled = false;
             door.transform.GetChild(4).GetChild(0).gameObject.GetComponent<SpriteRenderer>().gameObject.SetActive(true);
 

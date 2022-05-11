@@ -134,8 +134,6 @@ public class Door : MonoBehaviour
                     if (transform.GetChild(6).GetComponent<Animator>().GetBool("open"))
                     {
                         Physics2D.IgnoreCollision(collision.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>());
-  /*                      GetComponent<BoxCollider2D>().enabled = false;
-                        Debug.Log("sa passe");*/
                     }
                     else
                     {
@@ -162,8 +160,7 @@ public class Door : MonoBehaviour
             if ((!collision.transform.parent.GetComponent<PlayerGO>().isBoss || collision.transform.parent.GetComponent<PlayerGO>().hasWinFireBallRoom) && !player.GetComponent<PlayerGO>().gameManager.expeditionHasproposed && !barricade)
             {
                 if (counterPlayerInDoorZone == 0)
-                    player.GetComponent<PlayerGO>().firstAtDoorToExploration = true;
-                counterPlayerInDoorZone++;
+                    collision.transform.parent.GetComponent<PlayerNetwork>().SendFirstAtDoorToExploration(true);
                 gameManager.gameManagerNetwork.SendCollisionExpeditionLetter(player.GetComponent<PhotonView>().ViewID, this.index, true , counterPlayerInDoorZone);
             }
         }
@@ -216,23 +213,16 @@ public class Door : MonoBehaviour
                     {
                         if (collision.transform.parent.GetComponent<PlayerGO>().firstAtDoorToExploration)
                         {
-
                             gameManager.gameManagerNetwork.SendCollisionExpeditionLetterStay(collision.transform.parent.GetComponent<PhotonView>().ViewID, this.index);
                         }
 
-                        if(counterPlayerInDoorZone == 1)
+                        if (counterPlayerInDoorZone == 1)
                         {
                             collision.transform.parent.GetComponent<PlayerGO>().firstAtDoorToExploration = false;
                             gameManager.gameManagerNetwork.SendCollisionExpeditionLetterStay(collision.transform.parent.GetComponent<PhotonView>().ViewID, this.index);
                         }
                        
                     }
-/*                    else
-                    {
-                        *//*                        Debug.Log("else " + counterPlayerInDoorZone);
-                                                if (counterPlayerInDoorZone > 1)
-                                                    gameManager.gameManagerNetwork.SendCollisionExpeditionLetter(collision.GetComponent<PhotonView>().ViewID, this.index, false, counterPlayerInDoorZone+1);*//*
-                    }*/
 
                 }
             }
@@ -247,8 +237,7 @@ public class Door : MonoBehaviour
         {
             if ((!collision.transform.parent.GetComponent<PlayerGO>().isBoss || collision.transform.parent.GetComponent<PlayerGO>().hasWinFireBallRoom) && !barricade && !gameManager.paradiseIsFind && !gameManager.hellIsFind  )
             {
-                counterPlayerInDoorZone--;
-                collision.transform.parent.GetComponent<PlayerGO>().firstAtDoorToExploration = false;
+                collision.transform.parent.GetComponent<PlayerNetwork>().SendFirstAtDoorToExploration(false);
                 gameManager.gameManagerNetwork.SendCollisionExpeditionLetter(collision.transform.parent.GetComponent<PhotonView>().ViewID, this.index, false, counterPlayerInDoorZone);
             }
 

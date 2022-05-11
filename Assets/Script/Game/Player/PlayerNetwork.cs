@@ -325,4 +325,44 @@ public class PlayerNetwork : MonoBehaviourPun
         player.displayMessage = displayMessage;
     }
 
+    public void SendVoteExplorationDisplay(bool vote_V)
+    {
+        photonView.RPC("SetVoteExplorationDisplay", RpcTarget.All, vote_V);
+    }
+
+    [PunRPC]
+    public void SetVoteExplorationDisplay(bool vote_V)
+    {
+        this.transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(vote_V);
+        this.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(!vote_V);
+        if (!vote_V) 
+            player.vote_cp = -1;
+        else
+            player.vote_cp = 1;
+    }
+
+    public void SendHideVoteExplorationDisplay()
+    {
+        photonView.RPC("SetHideVoteExplorationDisplay", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetHideVoteExplorationDisplay()
+    {
+        this.transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(false);
+        this.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(false);
+        player.vote_cp = 0;
+    }
+
+    public void SendFirstAtDoorToExploration(bool firstAtDoorToExploration) 
+    {
+        photonView.RPC("SetFirstAtDoorToExploration", RpcTarget.All, firstAtDoorToExploration);
+    }
+
+    [PunRPC]
+    public void SetFirstAtDoorToExploration(bool firstAtDoorToExploration)
+    {
+        player.GetComponent<PlayerGO>().firstAtDoorToExploration = firstAtDoorToExploration;
+    }
+
 }
