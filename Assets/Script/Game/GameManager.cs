@@ -154,6 +154,7 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendKey(game.key_counter);
             ui_Manager.SetNBKey();
             SetInitialPositionPlayers();
+            AssignPowerOfImposter();
         }
         
 
@@ -163,66 +164,6 @@ public class GameManager : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        // vote doorr
-        // in if( timer.timerFinish && MajorityHasVotedDoor())
-        if (timer.timerFinish && voteDoorHasProposed)
-        {
-            ui_Manager.DesactivateLightAroundPlayers();
-
-            GameObject door = GetDoorWithMajority();
-
-            if (SamePositionAtBoss() && VerifyVoteVD(door.GetComponent<Door>().nbVote))
-            {
-                if (door.GetComponent<Door>().nbVote == 0 || game.currentRoom.IsVirus)
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        List<GameObject> listDoorAvailable = GetDoorAvailable();
-                        int indexDoorCurrent = Random.Range(0, listDoorAvailable.Count);
-                        gameManagerNetwork.SendRandomIndexDoor(listDoorAvailable[indexDoorCurrent].GetComponent<Door>().index);
-                    }
-                }
-                else
-                {
-                    ui_Manager.SetNBKey();
-                    ui_Manager.LaunchAnimationBrokenKey();
-                    if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-                        gameManagerNetwork.SendKeyNumber();
-
-                    if (SamePositionAtBoss())
-                        OpenDoor(door, false);
-                    expeditionHasproposed = false;
-                    //game.key_counter--;
-                    alreaydyExpeditionHadPropose = false;
-                }
-            }
-            StartCoroutine(ChangeBossCoroutine(0.5f));
-            ui_Manager.ResetNbVote();
-            ui_Manager.DesactiveZoneDoor();
-            voteDoorHasProposed = false;
-            timer.ResetTimer();
-            ClearDoor();
-            ClearExpedition();
-            ui_Manager.DisplayKeyAndTorch(true);
-            alreadyPass = false;
-            SetAlreadyHideForAllPlayers();
-            UpdateSpecialsRooms(game.currentRoom);
-            //ui_Manager.display
-
-            if (game.dungeon.initialRoom.HasSameLocation(game.currentRoom))
-            {
-                ui_Manager.SetDistanceRoom(game.dungeon.initialRoom.DistancePathFinding, null);
-
-            }
-
-            CloseDoorWhenVote(false);
-            ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = 0;
-        }
-
-        // vote expedition
-        LaunchExploration(AllPlayerHasVoted(), false);
-
-
         if (timer.timerFinish && isLoading)
         {
             timer.ResetTimer();
@@ -231,8 +172,6 @@ public class GameManager : MonoBehaviourPun
             ResetVoteCP();
             gameManagerNetwork.SendLoadingFinish();
         }
-
-
         if (nbPlayerFinishLoading == listPlayerTab.Length && !alreadyPasseLoading)
         {
             ui_Manager.DisplayLoadPage(false);
@@ -240,67 +179,118 @@ public class GameManager : MonoBehaviourPun
             alreadyPasseLoading = true;
             GetImpostorName();
         }
-
         if (InputManager.GetButtonDown("Escape") || Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
         {
             ui_Manager.DisplayEchapMenu();
         }
-
-/*        if (OnePlayerisGoInExpeditionOneTime())
-        {
-            if (!OnePlayerHaveToGoToExpedition())
-            {
-                if (setting.displayTutorial && !ui_Manager.listTutorialBool[11])
-                {
-                    gameManagerNetwork.SendTutorialN11();
-                }
-            }
-        }*/
     }
 
 
-    public void LaunchExploration(bool AllPlayerHasVoted, bool VerifyVote_p)
+    public IEnumerator LauchVoteDoorCoroutine()
     {
-        if (AllPlayerHasVoted && !endGame && !alreaydyExpeditionHadPropose && !isLoading)
+        yield return new WaitForSeconds(5.1f);
+        ui_Manager.DesactivateLightAroundPlayers();
+        GameObject door = GetDoorWithMajority();
+        if (SamePositionAtBoss() && VerifyVoteVD(door.GetComponent<Door>().nbVote))
         {
-            timer.ResetTimer();
-           
-            if (VerifyVote() || VerifyVote_p)
+            if (door.GetComponent<Door>().nbVote == 0 || game.currentRoom.IsVirus)
             {
-                if (setting.LIMITED_TORCH)
-                    SetNbTorch(game.current_expedition.Count);
-                if (SamePositionAtBoss())
-                    OpenDoorsToExpedition();
-                alreaydyExpeditionHadPropose = true;
-                SetPlayersHaveTogoToExpeditionBool();
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    List<GameObject> listDoorAvailable = GetDoorAvailable();
+                    int indexDoorCurrent = Random.Range(0, listDoorAvailable.Count);
+                    gameManagerNetwork.SendRandomIndexDoor(listDoorAvailable[indexDoorCurrent].GetComponent<Door>().index);
+                }
             }
             else
             {
-                ui_Manager.DisplayAllGost(false);
-                ChangeBoss();
-                ClearExpedition();
-                ClearDoor();
+                ui_Manager.SetNBKey();
+                ui_Manager.LaunchAnimationBrokenKey();
+                if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                    gameManagerNetwork.SendKeyNumber();
+
+                if (SamePositionAtBoss())
+                    OpenDoor(door, false);
                 expeditionHasproposed = false;
-                ui_Manager.DisplayMainLevers(true);
+                alreaydyExpeditionHadPropose = false;
             }
-            ui_Manager.HideZoneVote();
-            ResetVoteCP();
-            ui_Manager.DisplayKeyAndTorch(true);
-
-            if (game.dungeon.initialRoom.X == game.currentRoom.X)
-            {
-                if (game.dungeon.initialRoom.Y == game.currentRoom.Y)
-                {
-                    ui_Manager.SetDistanceRoom(game.dungeon.initialRoom.DistancePathFinding, null);
-                }
-
-            }
-            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHideVoteExplorationDisplay();
-            CloseDoorWhenVote(false);
-            alreadyPass = false;
-            SetAlreadyHideForAllPlayers();
-            canResetTimerBoss = true;
         }
+        StartCoroutine(ChangeBossCoroutine(0.1f));
+        ui_Manager.ResetNbVote();
+        ui_Manager.DesactiveZoneDoor();
+        voteDoorHasProposed = false;
+        timer.ResetTimer();
+        ClearDoor();
+        ClearExpedition();
+        ui_Manager.DisplayKeyAndTorch(true);
+        alreadyPass = false;
+        SetAlreadyHideForAllPlayers();
+        UpdateSpecialsRooms(game.currentRoom);
+        if (game.dungeon.initialRoom.HasSameLocation(game.currentRoom))
+        {
+            ui_Manager.SetDistanceRoom(game.dungeon.initialRoom.DistancePathFinding, null);
+
+        }
+        CloseDoorWhenVote(false);
+        ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = 0;
+    }
+
+
+    public IEnumerator LaunchExploration(bool AllPlayerHasVoted, bool VerifyVote_p)
+    {
+        //if (AllPlayerHasVoted && !endGame && !alreaydyExpeditionHadPropose && !isLoading)
+        //{
+        yield return new WaitForSeconds(5.1f);
+        timer.ResetTimer();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (VerifyVote() || VerifyVote_p)
+            {
+                gameManagerNetwork.SendVoteYesToExploration();
+            }
+            else
+            {
+                gameManagerNetwork.SendVoteNoToExploration();
+            }
+        }
+       
+    }
+
+
+    public void AssignPowerOfImposter()
+    {
+        List<int> listIndexPower = new List<int>();
+        listIndexPower.Add(0);
+        listIndexPower.Add(1);
+        listIndexPower.Add(2);
+        foreach (GameObject player in GetAllImpostor())
+        {
+            int randomInt = Random.Range(0, listIndexPower.Count);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(randomInt);
+            listIndexPower.Remove(randomInt);
+        }
+
+    }
+
+    public void ResetVoteExploration()
+    {
+        ui_Manager.HideZoneVote();
+        ResetVoteCP();
+        ui_Manager.DisplayKeyAndTorch(true);
+
+        if (game.dungeon.initialRoom.X == game.currentRoom.X)
+        {
+            if (game.dungeon.initialRoom.Y == game.currentRoom.Y)
+            {
+                ui_Manager.SetDistanceRoom(game.dungeon.initialRoom.DistancePathFinding, null);
+            }
+
+        }
+        GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHideVoteExplorationDisplay();
+        CloseDoorWhenVote(false);
+        alreadyPass = false;
+        SetAlreadyHideForAllPlayers();
+        canResetTimerBoss = true;
     }
 
     public void GenerateHexagone(float initial_X, float initial_Y)
@@ -325,6 +315,19 @@ public class GameManager : MonoBehaviourPun
 
         }
 
+    }
+
+    public Hexagone GetHexagone(int index)
+    {
+
+        foreach (Hexagone hexagone in dungeon)
+        {
+            if (hexagone.Room.Index == index)
+            {
+                return hexagone;
+            }         
+        }
+        return null;
     }
 
     public Hexagone GenerateObstacle()
@@ -583,7 +586,6 @@ public class GameManager : MonoBehaviourPun
                 gameManagerNetwork.SendParadiseOrHellFind(roomTeam.IsExit, roomTeam.IsHell);
 
             }
-
         }
 
         InsertSpeciallyRoom(roomTeam);
@@ -976,7 +978,6 @@ public class GameManager : MonoBehaviourPun
         {
             return true;
         }
-        //Debug.Log(" X vote : " + x_zone.GetComponent<x_zone_colider>().nbVote + "  VoteDoorMax : " + voteDoorMax);
         if (x_zone.GetComponent<x_zone_colider>().nbVote > voteDoorMax)
         {
             return false;
@@ -1073,7 +1074,8 @@ public class GameManager : MonoBehaviourPun
             }
 
         }
-        if (roomExpedition.isJail)
+        Debug.Log(roomExpedition.isJail + " " + roomExpedition.speciallyPowerIsUsed);
+        if (roomExpedition.isJail && !roomExpedition.speciallyPowerIsUsed)
         {
             door.transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
             door.GetComponent<Door>().isOpen = false;
@@ -1094,6 +1096,7 @@ public class GameManager : MonoBehaviourPun
                 gameManagerNetwork.SendDisplayMainLevers(true);
             }
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            CloseDoorOveride();
         }
     }
 
@@ -2330,7 +2333,7 @@ public class GameManager : MonoBehaviourPun
     public void InsertSpeciallyRoom(Room room)
     {
 
-        foreach (Room roomNeighbour in room.listNeighbour)
+/*        foreach (Room roomNeighbour in room.listNeighbour)
         {
 
             if (roomNeighbour.isNotSpecial || roomNeighbour.isSpecial || roomNeighbour.IsTraversed || roomNeighbour.IsObstacle)
@@ -2344,7 +2347,6 @@ public class GameManager : MonoBehaviourPun
             int indexSpeciality = InsertRandomSpeciallity(roomNeighbour);
             if (indexSpeciality > -1)
             {
-                Debug.Log(roomNeighbour.Index + " " + indexSpeciality);
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(roomNeighbour.Index, indexSpeciality);
             }
             else
@@ -2352,7 +2354,7 @@ public class GameManager : MonoBehaviourPun
                 roomNeighbour.isNotSpecial = true;
             }
 
-        }
+        }*/
     }
 
     public int InsertRandomSpeciallity(Room room)

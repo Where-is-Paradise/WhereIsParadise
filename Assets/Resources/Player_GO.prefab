@@ -1245,6 +1245,9 @@ MonoBehaviour:
   canDisplayTutorial: 0
   displayTutorial: 0
   isInJail: 0
+  indexPower: -1
+  hasClickInPowerImposter: 0
+  hasValidPowerImposter: 0
 --- !u!114 &7384524027293410437
 MonoBehaviour:
   m_ObjectHideFlags: 0

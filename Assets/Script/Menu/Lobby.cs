@@ -156,6 +156,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         }
         else
         {
+            Debug.Log(returnCode);
             ui_management.HideLoadingConnectionPanel();
             ui_management.DisplayErrorPanel(message);
             matchmaking = false;
@@ -227,10 +228,19 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        
+        Debug.Log(returnCode);
+        matchmaking = false;
+        Debug.Log(isBackToWaitingRoom);
+        if (returnCode == 32764 && isBackToWaitingRoom)
+        {
+            Debug.Log("sa passe");
+            ui_management.OnClickBackInWaitingRoom();
+            return;
+        }
+        //ui_management.
         ui_management.DisplayErroCodeRoom();
         ui_management.HideLoadingConnectionPanel();
-        matchmaking = false;
+       
     }
 
     public GameObject SpawnPlayer( int indexPlayer)
@@ -265,7 +275,6 @@ public class Lobby : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            Debug.Log(players.Length + " " + matchmaking);
             if(players.Length+1 == 6 && matchmaking)
             {
                 ui_management.SendDisplayReadyButton(false);

@@ -62,7 +62,6 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.indexSkin = indexSkin;
         player.DesactivateAllSkin();
-        Debug.Log("sendSkin : " + indexSkin);
         player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).gameObject.SetActive(true);
     }
 
@@ -365,4 +364,15 @@ public class PlayerNetwork : MonoBehaviourPun
         player.GetComponent<PlayerGO>().firstAtDoorToExploration = firstAtDoorToExploration;
     }
 
+
+    public void SendIndexPower(int indexPower)
+    {
+        photonView.RPC("SetIndexPower", RpcTarget.All, indexPower);
+    }
+
+    [PunRPC]
+    public void SetIndexPower(int indexPower)
+    {
+        player.GetComponent<PlayerGO>().indexPower = indexPower;
+    }
 }

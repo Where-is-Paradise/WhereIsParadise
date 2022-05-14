@@ -108,7 +108,10 @@ public class PlayerGO : MonoBehaviour
 
     public bool isInJail = false;
 
-    
+    public int indexPower = -1;
+
+    public bool hasClickInPowerImposter = false;
+    public bool hasValidPowerImposter = false;
 
     private void Awake()
     {
@@ -233,20 +236,7 @@ public class PlayerGO : MonoBehaviour
         
         if (GameObject.Find("GameManager"))
         {
-
             gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-
-
-            // change isBoss and isImpostor of all gameObject player
-            foreach (PlayerDun player in gameManager.game.list_player)
-            {
-                if (player.GetId() == this.GetComponent<PhotonView>().ViewID)
-                {
-                    isBoss = player.GetIsBoss();
-                    isImpostor = player.GetIsImpostor();
-                }
-            }
-
             SetSkinBoss(isBoss);
             SetSkinImpostor(isImpostor);
 
@@ -257,31 +247,14 @@ public class PlayerGO : MonoBehaviour
                 StartCoroutine(CoroutineIsChooseForExpedition());
 
             }
-
-            /*            if (!isChooseForExpedition)
-                        {
-                            transform.GetChild(2).GetChild(0).gameObject.GetComponent<Text>().text = "";
-                        }*/
         }
-
-     
-
         if (GetComponent<PhotonView>().IsMine && (isBoss || hasWinFireBallRoom) && gameManager)
         {
-            /*            ui_isOpen = gameManager.ui_Manager.echap_menu.activeSelf;
-                        if (ui_isOpen)
-                        {
-                            return;
-                        }*/
-
             if (!gameManager.expeditionHasproposed && !gameManager.voteDoorHasProposed)
             {
                 if (!gameManager.paradiseIsFind && !gameManager.hellIsFind)
                     InputExplorationAnimation();
             }
-
-            // Input Exploration
-            // ||  IsDoubleTap()
             if (launchExpeditionWithAnimation || gameManager.launchExpedtion_inputButton)
             {
                 if (!gameManager.paradiseIsFind && !gameManager.hellIsFind)
@@ -309,15 +282,13 @@ public class PlayerGO : MonoBehaviour
                 }
                 launchExpeditionWithAnimation = false;
             }
-
             if (!gameManager.voteDoorHasProposed)
             {
                 if (!gameManager.paradiseIsFind && !gameManager.hellIsFind)
                 {
                     InputVoteDoorAnimation();
                     LaunchRoomSpeciallyPower();
-                }
-                    
+                }  
             }
             // Input Vote  Door
             if (launchVoteDoorMobile || gameManager.launchVote_inputButton)
@@ -346,16 +317,27 @@ public class PlayerGO : MonoBehaviour
                 }
                 launchVoteDoorMobile = false;
             }
-
-
-
         }
 
-        if ((InputManager.GetButtonDown("Enter") || Input.GetKeyDown(KeyCode.KeypadEnter)) && GetComponent<PhotonView>().IsMine)
+        if (gameManager)
         {
-            if (!this.isSacrifice)
-                OnClickChat();
+
+            if ((InputManager.GetButtonDown("Enter") || Input.GetKeyDown(KeyCode.KeypadEnter)) && GetComponent<PhotonView>().IsMine && !gameManager.ui_Manager.map.activeSelf)
+            {
+                if (!this.isSacrifice)
+                    OnClickChat();
+            }
+            
         }
+        else
+        {
+            if ((InputManager.GetButtonDown("Enter") || Input.GetKeyDown(KeyCode.KeypadEnter)) && GetComponent<PhotonView>().IsMine)
+            {
+                if (!this.isSacrifice)
+                    OnClickChat();
+            }
+        }
+        
 
         if (gameManager)
         {
@@ -397,7 +379,7 @@ public class PlayerGO : MonoBehaviour
                 displayTutorial = false;
             }
 
-
+          
 
 
 
@@ -734,7 +716,6 @@ public class PlayerGO : MonoBehaviour
         {
             if (GetComponent<PhotonView>().IsMine)
             {
-
                 if (collision.transform.parent.GetComponent<Door>().isOpenForAll && !haveToGoToExpedition)
                 {
                     if (!gameManager.timer.timerLaunch)
@@ -760,12 +741,16 @@ public class PlayerGO : MonoBehaviour
                     }
                     else
                     {
-                        gameManager.timer.LaunchTimer(1f, false);
-                        isCollisionInDoorExpedition = true;
-                        doorCollision = collision.gameObject;
-                        canMove = false;
-                        gameManager.ui_Manager.DisplayBlackScreen(true, true);
-                        collisionToGost = false;
+                        if (haveToGoToExpedition)
+                        {
+                            gameManager.timer.LaunchTimer(1f, false);
+                            isCollisionInDoorExpedition = true;
+                            doorCollision = collision.gameObject;
+                            canMove = false;
+                            gameManager.ui_Manager.DisplayBlackScreen(true, true);
+                            collisionToGost = false;
+                        }
+                       
                     }
                 }
             }
@@ -858,7 +843,7 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (!InputManager.GetButtonDown("Exploration") || !canDisplayMap)
+        if (!InputManager.GetButtonDown("Exploration") || !canDisplayMap || displayChatInput)
         {
             return;
         }
@@ -1239,7 +1224,7 @@ public class PlayerGO : MonoBehaviour
 
     public IEnumerator CoroutineIsChooseForExpedition()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         GetComponent<PlayerNetwork>().ResetIsChooseForExpedtion();
 
     }
@@ -1411,7 +1396,7 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (!isBoss)
+        if (!isBoss && isEnter)
         {
             DisplayTutorial(2);
             return;

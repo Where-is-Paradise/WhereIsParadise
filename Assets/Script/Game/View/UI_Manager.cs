@@ -81,12 +81,12 @@ public class UI_Manager : MonoBehaviour
     public List<bool> listTutorialBool = new List<bool>();
 
     public GameObject chatPanelInputParent;
-
-
     public GameObject mobileCanvas;
 
     public GameObject autelTutorial;
     public GameObject autelTutorialSpeciallyRoom;
+
+    public List<GameObject> listButtonPowerImpostor;
 
     // Start is called before the first frame update
     void Start()
@@ -152,9 +152,6 @@ setting_button_echapMenu.SetActive(false);
     }
 
 
-
-
-
     public void DisplayMap()
     {
         if (blueWallPaper.activeSelf)
@@ -169,8 +166,15 @@ setting_button_echapMenu.SetActive(false);
 
         }
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = !map.activeSelf;
+
+        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            DisplayPowerButton(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower, map.activeSelf);
     }
 
+    public void DisplayPowerButton(int indexPower, bool display)
+    {
+        listButtonPowerImpostor[indexPower].SetActive(display);
+    }
 
     public void HidePlayer(bool hide, bool hidePlayerInExpedition)
     {
@@ -1231,6 +1235,11 @@ setting_button_echapMenu.SetActive(false);
         autelTutorialSpeciallyRoom.SetActive(display);
     }
 
+
+    public void OnClickHexagonePowerImpostor()
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter = !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter;
+    }
 }
 
 

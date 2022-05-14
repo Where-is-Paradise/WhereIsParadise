@@ -35,7 +35,7 @@ public class x_zone_colider : MonoBehaviour
         {
             return;
         }
-        if (!collision.GetComponent<PhotonView>())
+        if (!collision.GetComponent<PhotonView>().IsMine)
         {
             return;
         }
@@ -57,7 +57,7 @@ public class x_zone_colider : MonoBehaviour
         {
             return;
         }
-        if (!collision.GetComponent<PhotonView>())
+        if (!collision.GetComponent<PhotonView>().IsMine)
         {
             return;
         }
@@ -80,7 +80,7 @@ public class x_zone_colider : MonoBehaviour
         {
             return;
         }
-        if (!collision.GetComponent<PhotonView>())
+        if (!collision.GetComponent<PhotonView>().IsMine)
         {
             return;
         }

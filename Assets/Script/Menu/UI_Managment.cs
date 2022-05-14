@@ -660,6 +660,7 @@ public class UI_Managment : MonoBehaviourPun
         joinLobby_panel.SetActive(false);
         matchmakingPanel.SetActive(false);
         DisplayChatInputMobile(false);
+        panelErrorCode.SetActive(false);
         lobby.matchmaking = false;
         canChange = false;
         PhotonNetwork.LeaveRoom();

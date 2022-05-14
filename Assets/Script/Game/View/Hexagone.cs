@@ -38,20 +38,6 @@ public class Hexagone : MonoBehaviour
         {
             this.gameObject.SetActive(false);
         }
-        /*
-                if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionParadise || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionHell)
-                {
-                    if (this.transform.position.x > -1.9f && this.transform.position.x < 7.4f && this.transform.position.y < 3.8f && this.transform.position.y > -3.8f)
-                    {
-                        DisplayTextAndImage(true);
-                    }
-                    else
-                    {
-                        DisplayTextAndImage(false);
-                    }
-                }*/
-
-
         if (room.isOldParadise && !room.IsExit && !room.IsHell)
         {
             if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
@@ -69,51 +55,48 @@ public class Hexagone : MonoBehaviour
         {
             this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(false);
         }
-
-        /*if (gameManager.MineIsInExpedition())
-        {
-            if(gameManager.game.currentRoom.Index == this.room.Index)
-                this.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(false);
-            this.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(gameManager.GetDoorExpedition(gameManager.GetPlayerMine().GetId()).Index == this.room.Index);
-            return;
-        }*/
-
-
     }
-
-
-    public void DisplayTextAndImage(bool display)
+    void OnMouseOver()
     {
-        this.transform.GetChild(0).GetChild(0).gameObject.SetActive(display);
-        this.transform.GetChild(0).GetChild(1).gameObject.SetActive(display);
-
-        if (room.HasKey)
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter)
         {
-            this.transform.GetChild(0).GetChild(2).gameObject.SetActive(display);
-            this.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = room.DistancePathFinding.ToString();
-            this.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = room.Index.ToString();
+            return;
         }
-
-        if (room.IsExit)
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter)
         {
-            this.transform.GetChild(0).GetChild(3).gameObject.SetActive(display);
-            if (room.HasKey)
-            {
-                this.transform.transform.GetChild(0).GetChild(2).gameObject.SetActive(false);
-                this.transform.transform.GetChild(0).GetChild(5).gameObject.SetActive(display);
-            }
-          
+            return;
         }
-
-        if (gameManager.hell && room.IsHell)
+        if (room.IsObstacle || room.IsExit || room.IsInitiale)
         {
-            if (room.HasKey)
-            {
-                this.transform.transform.GetChild(0).GetChild(2).gameObject.SetActive(false);
-                this.transform.transform.GetChild(0).GetChild(5).gameObject.SetActive(display);
-            }
+            return;
         }
-       
-        this.transform.GetChild(0).GetComponent<Canvas>().overrideSorting = true;
+        int indexPower = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower;
+        this.transform.Find("Canvas").Find("ImpostorPower").GetChild(indexPower).gameObject.SetActive(true);
+        if (!Input.GetMouseButtonDown(0)){
+            // Whatever you want it to do.
+            return;
+        }
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter = true;
+        gameManager.gameManagerNetwork.SendHexagoneNewPower(this.room.Index, indexPower);
     }
+
+    void OnMouseExit()
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter)
+        {
+            return;
+        }
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter)
+        {
+            return;
+        }
+        if (room.IsObstacle || room.IsExit || room.IsInitiale)
+        {
+            return;
+        }
+        int indexPower = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower;
+        this.transform.Find("Canvas").Find("ImpostorPower").GetChild(indexPower).gameObject.SetActive(false);
+    }
+
+
 }
