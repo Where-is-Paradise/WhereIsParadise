@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
 
             game.nbTorch = Mathf.CeilToInt((game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) + listPlayerTab.Length) / 2) - 2;
-            game.nbTorch = 25;
+            //game.nbTorch = 25;
             gameManagerNetwork.SendTorchNumber(game.nbTorch);
             ui_Manager.SetTorchNumber();
 
@@ -195,7 +195,7 @@ public class GameManager : MonoBehaviourPun
         {
             if (door.GetComponent<Door>().nbVote == 0 || game.currentRoom.IsVirus)
             {
-                if (PhotonNetwork.IsMasterClient)
+                if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
                 {
                     List<GameObject> listDoorAvailable = GetDoorAvailable();
                     int indexDoorCurrent = Random.Range(0, listDoorAvailable.Count);
@@ -978,12 +978,36 @@ public class GameManager : MonoBehaviourPun
         {
             return true;
         }
+        if (game.currentRoom.IsVirus)
+        {
+            if (x_zone.GetComponent<x_zone_colider>().nbVote > CountPlayerNoneSacrifice() / 2)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
         if (x_zone.GetComponent<x_zone_colider>().nbVote > voteDoorMax)
         {
             return false;
         }
-
         return true;
+    }
+
+    public int CountPlayerNoneSacrifice()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int count = 0;
+        foreach(GameObject player in players)
+        {
+            if (!player.GetComponent<PlayerGO>().isSacrifice)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     public bool NobodyHasVoted()
@@ -2326,35 +2350,25 @@ public class GameManager : MonoBehaviourPun
         GameObject[] turrets = GameObject.FindGameObjectsWithTag("Turret");
         foreach(GameObject turret in turrets)
         {
-            //turret.GetComponent<Turret>().canFire = true;
             turret.GetComponent<Turret>().DestroyFireBalls();
         }
     }
     public void InsertSpeciallyRoom(Room room)
     {
-
-/*        foreach (Room roomNeighbour in room.listNeighbour)
+        if (room.IsExit || room.IsHell || room.isSpecial || room.IsInitiale)
         {
-
-            if (roomNeighbour.isNotSpecial || roomNeighbour.isSpecial || roomNeighbour.IsTraversed || roomNeighbour.IsObstacle)
-            {
-                continue;
-            }
-            if (roomNeighbour.IsExit || roomNeighbour.IsHell || roomNeighbour.IsInitiale)
-            {
-                continue;
-            }
-            int indexSpeciality = InsertRandomSpeciallity(roomNeighbour);
-            if (indexSpeciality > -1)
-            {
-                gameManagerNetwork.SendUpdateNeighbourSpeciality(roomNeighbour.Index, indexSpeciality);
-            }
-            else
-            {
-                roomNeighbour.isNotSpecial = true;
-            }
-
-        }*/
+            return ;
+        }
+        int indexSpeciality = InsertRandomSpeciallity(room);
+        Debug.Log(room.Index + " " + indexSpeciality);
+        if (indexSpeciality > -1)
+        {
+            gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, indexSpeciality);
+        }
+        else
+        {
+            room.isNotSpecial = true;
+        }
     }
 
     public int InsertRandomSpeciallity(Room room)
@@ -2364,38 +2378,24 @@ public class GameManager : MonoBehaviourPun
             return -1;
         }
         int randomMain = Random.Range(1, 101);
-        if(randomMain <= 60)
+        Debug.Log(randomMain);
+        if(randomMain <= 70)
         {
-            if(randomMain <= 10)
+            if(randomMain <= 23)
             {
                 game.dungeon.InsertChestRoom(room.Index);
                 room.chest = true;
                 return 0;
             }
-            if (randomMain <= 20)
+            if (randomMain <= 46)
             {
                 room.fireBall = true;
                 return 1;
             }
-            if(randomMain <= 30)
+            if(randomMain <= 70)
             {
                 room.isSacrifice = true;
                 return 2;
-            }
-            if(randomMain <= 40)
-            {
-                room.isJail = true;
-                return 3;
-            }
-            if(randomMain <= 50)
-            {
-                room.IsFoggy = true;
-                return 4;
-            }
-            if(randomMain <= 60)
-            {
-                room.IsVirus = true;
-                return 5;
             }
         }
         return -1;

@@ -88,6 +88,8 @@ public class UI_Manager : MonoBehaviour
 
     public List<GameObject> listButtonPowerImpostor;
 
+    public GameObject waitingPage_PowerImpostor;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -169,6 +171,13 @@ setting_button_echapMenu.SetActive(false);
 
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             DisplayPowerButton(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower, map.activeSelf);
+    }
+
+    public void DisplayTimerInMap(bool active)
+    {
+        blueWallPaper.transform.Find("Canvas").Find("Back").GetComponent<Button>().interactable = !active;
+        //blueWallPaper.transform.Find("Canvas").Find("TimerText").GetComponent<Text>().text = gameManager.timer.timeLeft.ToString();
+        //waitingPage_PowerImpostor.transform.Find("timer").GetComponent<Text>().text = gameManager.timer.timeLeft.ToString();
     }
 
     public void DisplayPowerButton(int indexPower, bool display)
@@ -308,7 +317,11 @@ setting_button_echapMenu.SetActive(false);
         zones_X.GetComponent<Animator>().SetBool("zone_x", false);
     }
 
-
+    public void ActiveXzone(bool active)
+    {
+        zones_X.SetActive(active);
+        zones_X.GetComponent<Animator>().SetBool("zone_x", active);
+    }
 
     public void ResetNbVote()
     {
@@ -427,9 +440,33 @@ setting_button_echapMenu.SetActive(false);
     {
         yield return new WaitForSeconds(2);
         roleInformation.SetActive(false);
+        //waitingPage_PowerImpostor.SetActive(true);
+        DisplayPowerImpostor(true);
+        gameManager.timer.LaunchTimer(30, false);
+        yield return new WaitForSeconds(30);
+        DisplayPowerImpostor(false);
         yield return new WaitForSeconds(0.5f);
         DisplayTutorial();
     }
+
+
+    public void DisplayPowerImpostor(bool display)
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            waitingPage_PowerImpostor.SetActive(display);
+        else
+        {
+            DisplayMap();
+            DisplayTimerInMap(display);
+            listButtonPowerImpostor[gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower].GetComponent<Button>().interactable = display;
+            if(!display)
+                gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter = true;
+        }
+
+        blueWallPaper.transform.Find("Canvas").Find("Text_timer").gameObject.SetActive(display);
+        
+    }
+
 
     public void MixLetterDoorUI()
     {
@@ -818,7 +855,6 @@ setting_button_echapMenu.SetActive(false);
     public void ShowDataMapInOneRoom(Hexagone hexagone)
     {
         Room room = hexagone.Room;
-        //room.GetComponent<Hexagone>().distanceText.text = room.GetComponent<Hexagone>().distance_pathFinding.ToString();
         if (room.IsObstacle)
         {
                 hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
@@ -830,14 +866,6 @@ setting_button_echapMenu.SetActive(false);
             hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
             room.IsTraversed = true;
         }
-/*        if (room.IsFoggy)
-        {
-            hexagone.GetComponent<SpriteRenderer>().color = new Color(87 / 255f, 89 / 255f, 96 / 255f);
-        }
-        if (room.IsVirus )
-        {
-            hexagone.GetComponent<SpriteRenderer>().color = new Color(66 / 255f, 0 / 255f, 117 / 255f);
-        }*/
         if (room.IsExit)
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);

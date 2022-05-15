@@ -394,9 +394,12 @@ public class GameManagerNetwork : MonoBehaviourPun
     public IEnumerator CoroutineActiveZoneDoor()
     {
         yield return new WaitForSeconds(0.15f);
-        if(!gameManager.game.currentRoom.IsVirus)
+        if (!gameManager.game.currentRoom.IsVirus)
             gameManager.ui_Manager.ActiveZoneDoor(gameManager.SamePositionAtBoss());
+        else
+            gameManager.ui_Manager.ActiveXzone(true);
     }
+
 
 
     public void SendCloseDoorWhenVote()
@@ -1232,6 +1235,8 @@ public class GameManagerNetwork : MonoBehaviourPun
             gameManager.GetHexagone(indexHexagone).Room.IsVirus = true;
         if (indexPower == 2)
             gameManager.GetHexagone(indexHexagone).Room.isJail = true;
+
+        gameManager.GetHexagone(indexHexagone).Room.isSpecial = true;
     }
 
 }

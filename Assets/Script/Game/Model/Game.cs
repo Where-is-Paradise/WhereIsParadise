@@ -76,7 +76,7 @@ public class Game : ScriptableObject
             {
                 dungeon.SetPathFindingDistanceAllRoom();
                 int nbOfPossiblity = dungeon.GetNumberOfPossiblityOfExit();
-                if(nbOfPossiblity < 3)
+                if(nbOfPossiblity < 5)
                 {
                     correctExit = false;
                 }
@@ -105,11 +105,11 @@ public class Game : ScriptableObject
 
     public void SetKeyCounter()
     {
-        if (dungeon.GetNumberOfPossiblityOfExit() < 5)
+/*        if (dungeon.GetNumberOfPossiblityOfExit() < 5)
         {
             key_counter = currentRoom.DistancePathFinding;
             return;
-        }
+        }*/
         if (dungeon.GetNumberOfPossiblityOfExit() < 10)
         {
             key_counter = currentRoom.DistancePathFinding + 1;
