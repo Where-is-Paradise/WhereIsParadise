@@ -242,6 +242,8 @@ public class Game : ScriptableObject
     public Room GetRoomById(int roomID)
     {
         Room room = null;
+ /*       if (currentRoom == null)
+            return;*/
         switch (roomID)
         {
             case 0 :

@@ -314,7 +314,13 @@ public class Room : ScriptableObject
 
     public bool HaveOneNeighbour()
     {
-        return listNeighbour.Count == 1;
+        int counter = 0;
+        foreach(Room roomNeigbour in listNeighbour)
+        {
+            if (!roomNeigbour.IsObstacle)
+                counter++;
+        }
+        return counter == 1;
     }
 }
 

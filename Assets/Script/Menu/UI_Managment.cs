@@ -418,21 +418,30 @@ public class UI_Managment : MonoBehaviourPun
     {
         Dropdown difficulty_dp = difficulty_var.GetComponent<Dropdown>();
 
+
+        SetDifficultyValue(difficulty_dp.value);
+
+        /*        if(difficulty_dp.value == 2)
+                {
+                    distanceParadise = UnityEngine.Random.Range(8, 11);
+                }*/
+        
+        //setting.TORCH_ADDITIONAL = randomTorch;
+    }
+
+    public void SetDifficultyValue(int value)
+    {
         int distanceParadise = 0;
-        if(difficulty_dp.value == 0)
+        if (value == 0)
         {
             distanceParadise = UnityEngine.Random.Range(4, 8);
         }
-        if(difficulty_dp.value == 1)
+        if (value == 1)
         {
             distanceParadise = UnityEngine.Random.Range(8, 12);
         }
-/*        if(difficulty_dp.value == 2)
-        {
-            distanceParadise = UnityEngine.Random.Range(8, 11);
-        }*/
+
         setting.DISTANCE_EXIT_DOOR_MAX = distanceParadise;
-        //setting.TORCH_ADDITIONAL = randomTorch;
     }
 
     public void OnClickJoinLobby()

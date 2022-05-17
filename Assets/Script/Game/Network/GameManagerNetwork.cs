@@ -202,7 +202,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetlaunchTimerExpedition()
     {
         gameManager.timer.LaunchTimer(5, false);
-        StartCoroutine(gameManager.LaunchExploration(false , false));
+        StartCoroutine(gameManager.LaunchExploration());
         if (gameManager.SamePositionAtBoss())
         {
             gameManager.ui_Manager.DisplayZoneVote();
@@ -233,13 +233,15 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetVoteYesToExploration()
     {
-        if (gameManager.setting.LIMITED_TORCH)
+        if (gameManager.setting.LIMITED_TORCH && !gameManager.game.currentRoom.fireBall)
             gameManager.SetNbTorch(gameManager.game.current_expedition.Count);
         if (gameManager.SamePositionAtBoss())
             gameManager.OpenDoorsToExpedition();
         gameManager.alreaydyExpeditionHadPropose = true;
         gameManager.SetPlayersHaveTogoToExpeditionBool();
         gameManager.ResetVoteExploration();
+        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
+        //gameManager.game.currentRoom
     }
 
     public void SendVoteNoToExploration()
@@ -750,6 +752,10 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
             return;
         }
+        if (!gameManager.SamePositionAtBoss())
+        {
+            return;
+        }
         GameObject chest = null;
         for (int i = 0; i < GameObject.FindGameObjectsWithTag("Chest").Length; i++)
         {
@@ -770,6 +776,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
             if (enter)
             {
+                
                 chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote++;
                 player.transform.GetChild(1).GetChild(9).gameObject.SetActive(true);
                 if (indexChest == 1)
@@ -1140,6 +1147,19 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.DisplayMainLevers(display);
     }
 
+    public void SendDisplayExplorationLever(bool display)
+    {
+        photonView.RPC("SetDisplayDoorLever", RpcTarget.All, display);
+    }
+
+    [PunRPC]
+    public void SetDisplayDoorLever(bool display)
+    {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInJail)
+            return;
+        gameManager.ui_Manager.DisplayLeverVoteDoor(display);
+    }
+
     public void SendDisplayNuVoteSacrificeForAllPlayer()
     {
         photonView.RPC("SetDisplayNuVoteSacrificeForAllPlayer", RpcTarget.All);
@@ -1185,15 +1205,6 @@ public class GameManagerNetwork : MonoBehaviourPun
                 break;
             case 2:
                 room.isSacrifice = true;
-                break;
-            case 3:
-                room.isJail = true;
-                break;
-            case 4:
-                room.IsFoggy = true;
-                break;
-            case 5:
-                room.IsVirus = true;
                 break;
         }
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;

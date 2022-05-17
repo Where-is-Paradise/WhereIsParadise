@@ -9,6 +9,8 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
 {
 
     public GameManager gameManager;
+    public bool quit = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +26,10 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        MainReconnect();
+        //base.OnDisconnected(cause);
+        //MainReconnect();
+        Debug.Log("sa passe");
+        //StartCoroutine(MainReconnect());
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -52,7 +57,6 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
 
     public void QuitLobby()
     {
-        
         PhotonNetwork.LeaveRoom();
         //SceneManager.LoadScene("Menu");
     }
@@ -77,7 +81,8 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.LeaveRoom();
+
+        //PhotonNetwork.LeaveRoom();
     }
 
 

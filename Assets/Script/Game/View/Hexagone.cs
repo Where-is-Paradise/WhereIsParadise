@@ -65,12 +65,16 @@ public class Hexagone : MonoBehaviour
         {
             if (!gameManager.ui_Manager.blueWallPaper.transform.Find("Canvas").Find("Text_timer").gameObject.activeSelf)
             {
-                this.transform.Find("Canvas").Find("ImpostorPower").gameObject.SetActive(false);
-                this.transform.Find("Canvas").Find("Distance_text").gameObject.SetActive(true);
-                if (this.room.IsExit)
-                    this.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(false);
-                if (this.room.IsHell)
-                    this.transform.Find("Canvas").Find("Hell").gameObject.SetActive(false);
+                if (this.room.isJail || this.room.IsFoggy || this.room.IsVirus || this.room.IsExit || this.room.IsHell)
+                {
+                    this.transform.Find("Canvas").Find("ImpostorPower").gameObject.SetActive(false);
+                    this.transform.Find("Canvas").Find("Distance_text").gameObject.SetActive(true);
+                    if (this.room.IsExit)
+                        this.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(false);
+                    if (this.room.IsHell)
+                        this.transform.Find("Canvas").Find("Hell").gameObject.SetActive(false);
+                }
+               
             }
         }
 
@@ -83,6 +87,10 @@ public class Hexagone : MonoBehaviour
             return;
         }
         if (room.IsObstacle || room.IsExit || room.IsInitiale)
+        {
+            return;
+        }
+        if(room.DistanceExit == 1)
         {
             return;
         }
@@ -103,16 +111,23 @@ public class Hexagone : MonoBehaviour
         {
             if (!gameManager.ui_Manager.blueWallPaper.transform.Find("Canvas").Find("Text_timer").gameObject.activeSelf)
             {
-                this.transform.Find("Canvas").Find("ImpostorPower").gameObject.SetActive(true);
-                this.transform.Find("Canvas").Find("Distance_text").gameObject.SetActive(false);
-                if(this.room.IsExit)
-                    this.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
-                if(this.room.IsHell)
-                    this.transform.Find("Canvas").Find("Hell").gameObject.SetActive(true);
+                if (this.room.isJail || this.room.IsFoggy || this.room.IsVirus || this.room.IsExit || this.room.IsHell)
+                {
+                    this.transform.Find("Canvas").Find("ImpostorPower").gameObject.SetActive(true);
+                    this.transform.Find("Canvas").Find("Distance_text").gameObject.SetActive(false);
+                    if (this.room.IsExit)
+                        this.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
+                    if (this.room.IsHell)
+                        this.transform.Find("Canvas").Find("Hell").gameObject.SetActive(true);
+                }
             }
           
         }
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        {
+            return;
+        }
+        if (room.DistanceExit == 1)
         {
             return;
         }
@@ -141,6 +156,10 @@ public class Hexagone : MonoBehaviour
         //int indexPower = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower;
         this.transform.Find("Canvas").Find("ImpostorPower").GetChild(indexPower).gameObject.SetActive(false);
         SetSpecalityPower(indexPower, false);
+
+
+        this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(room.isOldParadise && gameManager.game.currentRoom.Index != room.Index);
+
     }
 
 

@@ -442,8 +442,8 @@ setting_button_echapMenu.SetActive(false);
         roleInformation.SetActive(false);
         //waitingPage_PowerImpostor.SetActive(true);
         DisplayPowerImpostor(true);
-        gameManager.timer.LaunchTimer(30, false);
-        yield return new WaitForSeconds(30);
+        gameManager.timer.LaunchTimer(5, false);
+        yield return new WaitForSeconds(5);
         DisplayPowerImpostor(false);
         yield return new WaitForSeconds(0.5f);
         DisplayTutorial();
@@ -496,8 +496,8 @@ setting_button_echapMenu.SetActive(false);
     }
     public void ResetLetterDoor()
     {
-        GameObject[] doors = gameManager.TreeDoorById();
-
+        //GameObject[] doors = gameManager.TreeDoorById();
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
         foreach (GameObject door in doors)
         {
             int indexDoor = door.GetComponent<Door>().index;
@@ -1223,6 +1223,7 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayVirusRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("VirusRoom").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display, 3);
     }
 
     public void DisplayUI_Mobile_SpecialRoom(bool display)

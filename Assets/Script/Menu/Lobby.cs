@@ -49,8 +49,11 @@ public class Lobby : MonoBehaviourPunCallbacks
     public void ConnectToMaster()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
-        
+       
+        //PhotonNetwork.LocalCleanPhotonView()
+        PhotonNetwork.MaxResendsBeforeDisconnect = 10;
         PhotonNetwork.ConnectUsingSettings();
+        
         
     }
 
@@ -79,12 +82,48 @@ public class Lobby : MonoBehaviourPunCallbacks
     {
         base.OnDisconnected(cause);
         print("Disconnected : " + cause.ToString());
-        matchmaking = false;
-        ui_management.DisplayErrorPanel(cause.ToString());
-        ui_management.canChange = false;
+        if (cause.ToString().Equals("DnsExceptionOnConnect"))
+        {
+            Debug.Log(" sa passe");
+            MainReconnect();
+            ui_management.DisplayErrorPanel("Vous avez été déconnecté");
+        }
+        else
+        {
+            matchmaking = false;
+            // 
+            ui_management.canChange = false;
 
-        ConnectToMaster();
+            ConnectToMaster();
+        }
+        
+        
+       
     }
+    private IEnumerator MainReconnect()
+    {
+        while (PhotonNetwork.NetworkingClient.LoadBalancingPeer.PeerState != ExitGames.Client.Photon.PeerStateValue.Disconnected)
+        {
+            Debug.Log("Waiting for client to be fully disconnected..", this);
+
+            yield return new WaitForSeconds(5f);
+        }
+
+        Debug.Log("Client is disconnected!", this);
+
+        if (!PhotonNetwork.ReconnectAndRejoin())
+        {
+            if (PhotonNetwork.Reconnect())
+            {
+                Debug.Log("Successful reconnected!", this);
+            }
+        }
+        else
+        {
+            Debug.Log("Successful reconnected and joined!", this);
+        }
+    }
+
 
     public void Matchmaking()
     {
@@ -104,7 +143,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         maxPlayer = maxPlayerParam;
         if (matchmaking)
             maxPlayer = 6;
-        PhotonNetwork.CreateRoom(code, new RoomOptions { MaxPlayers = (byte) maxPlayer , PublishUserId = true, IsVisible = isVisible });
+        PhotonNetwork.CreateRoom(code, new RoomOptions { MaxPlayers = (byte) maxPlayer , PlayerTtl = -1 , EmptyRoomTtl = -1, PublishUserId = true, IsVisible = isVisible, CleanupCacheOnLeave = true});
         ui_management.SetNbPlayerUI(1, maxPlayer);
         code2 = GenerateCodeRoom(5);
         setting.codeRoom = code2;
@@ -115,7 +154,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         maxPlayer = 8;
         if (matchmaking)
             maxPlayer = 6;
-        PhotonNetwork.CreateRoom(oldCode, new RoomOptions { MaxPlayers = (byte)maxPlayer, PublishUserId = true, IsVisible = true });
+        PhotonNetwork.CreateRoom(oldCode, new RoomOptions { MaxPlayers = (byte)maxPlayer, PublishUserId = true, PlayerTtl = -1, EmptyRoomTtl = -1, IsVisible = true, CleanupCacheOnLeave = true });
         ui_management.SetNbPlayerUI(1, maxPlayer);
         ui_management.LauchWaitingRoom();
         //matchmaking = true;
@@ -200,6 +239,7 @@ public class Lobby : MonoBehaviourPunCallbacks
             ui_management.DisplayOpenRoomButton(false);
             ui_management.DisplayStartButton(false);
             ui_management.DisplayReadyButtonOnly(true);
+            ui_management.SetDifficultyValue(0);
             //ui_management.SetPlayerName(newPlayer);
         }
         else

@@ -68,6 +68,10 @@ public class Turret : MonoBehaviourPun
     [PunRPC]
     public void SetFrequency(float frequency)
     {
+        if (!GameObject.Find("GameManager").GetComponent<GameManager>().SamePositionAtBoss())
+        {
+            return;
+        }
         StartCoroutine(CoroutineFrequency(frequency));
     }
 

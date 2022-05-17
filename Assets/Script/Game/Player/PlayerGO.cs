@@ -86,6 +86,7 @@ public class PlayerGO : MonoBehaviour
 
     public bool quitTutorialN7 = true;
     public bool wantToChangeBoss = false;
+    public bool changeBoss = false;
 
     public bool isTouchByFireBall = false;
     public int rankTouchBall = 0;
@@ -101,6 +102,7 @@ public class PlayerGO : MonoBehaviour
     public bool canLaunchExplorationLever = false;
     public bool canLaunchDoorVoteLever = false;
     public bool canLaunchSpeciallyRoomPower = false;
+    public bool canLaunchChangeBoss = false;
     public bool canDisplayMap = false;
     public bool displayMap = false;
     public bool canDisplayTutorial = false;
@@ -112,7 +114,7 @@ public class PlayerGO : MonoBehaviour
 
     public bool hasClickInPowerImposter = false;
     public bool hasValidPowerImposter = false;
-
+    
     private void Awake()
     {
         displayChatInput = false;
@@ -493,7 +495,7 @@ public class PlayerGO : MonoBehaviour
 
         InputDisplayMap();
         InputDisplayTutorial();
-
+        InputChangeBoss();
 
 
 
@@ -816,6 +818,9 @@ public class PlayerGO : MonoBehaviour
                 CanDisplayTutorialAutel(collision.gameObject, true);
             if (collision.gameObject.name == "TutorialSpeciallyRoom")
                 CanDisplayTutorialAutel(collision.gameObject, true);
+            if (collision.gameObject.name == "Boss")
+                CanChangeBoss(collision.gameObject, true);
+
 
         }
     }
@@ -849,6 +854,19 @@ public class PlayerGO : MonoBehaviour
         }
 
         displayMap = true;
+    }
+    public void InputChangeBoss()
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!InputManager.GetButtonDown("Exploration") || !canLaunchChangeBoss)
+        {
+            return;
+        }
+        changeBoss = true;
+        
     }
 
     public void InputDisplayTutorial()
@@ -896,21 +914,24 @@ public class PlayerGO : MonoBehaviour
             gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
             
         }
-            
         if (gameManager.game.currentRoom.fireBall)
         {
             gameManager.gameManagerNetwork.SendLaunchFireBallRoom();
 
-        }
-           
+        } 
         if (gameManager.game.currentRoom.isSacrifice)
         {
             gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer();
             GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
         }
+        if (gameManager.game.currentRoom.IsVirus)
+        {
+            launchVoteDoorMobile = true;
+        }
+
         gameManager.gameManagerNetwork.SendCloseDoorWhenVote();
 
-        gameManager.ui_Manager.DisplaySpeciallyLevers(false,0);
+        gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
     }
 
 
@@ -949,6 +970,8 @@ public class PlayerGO : MonoBehaviour
                 CanDisplayTutorialAutel(collision.gameObject, false);
             if (collision.gameObject.name == "TutorialSpeciallyRoom")
                 CanDisplayTutorialAutel(collision.gameObject, false);
+            if (collision.gameObject.name == "Boss")
+                CanChangeBoss(collision.gameObject, false);
 
         }
     }
@@ -972,10 +995,12 @@ public class PlayerGO : MonoBehaviour
 
         if (display)
         {
-            transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+            if (gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
+                transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             return;
         }
-        transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+        if (gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
+            transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
     }
 
     public void SetPlayerNameServer()
@@ -1135,6 +1160,11 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (GetPlayerMineGO().GetComponent<PlayerGO>().isSacrifice)
+        {
+            //transform.Find("Perso").Find("Light_red").gameObject.SetActive(false);
+            return;
+        }
         
 
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice = !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice;
@@ -1242,6 +1272,12 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (gameManager && ((gameManager.expeditionHasproposed && gameManager.timer.timerLaunch) || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed))
+        {
+            playerNetwork.SendResetWantToChangeBoss();
+            changeBoss = false;
+            return;
+        }
         if (displayChatInput)
         {
             return;
@@ -1249,13 +1285,17 @@ public class PlayerGO : MonoBehaviour
         if (isBoss)
         {
             playerNetwork.SendResetWantToChangeBoss();
+            changeBoss = false;
             return;
         }
-        if (!Input.GetKeyDown(KeyCode.T))
+        if (!changeBoss)
         {
             return;
         }
+        
+        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
         playerNetwork.SendWantToChangeBoss();
+        changeBoss = false;
 
     }
 
@@ -1449,6 +1489,31 @@ public class PlayerGO : MonoBehaviour
         gameManager.ui_Manager.DisplayUI_Mobile_SpecialRoom(isEnter);
     }
 
+    public void CanChangeBoss(GameObject collision, bool isEnter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (wantToChangeBoss)
+        {
+            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            return;
+        }
+        if (isBoss)
+        {
+            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            return;
+        }
+        if ((gameManager.expeditionHasproposed && gameManager.timer.timerLaunch) || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed){
+            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            return;
+        }
+       
+       
+        canLaunchChangeBoss = isEnter;
+        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
 
+    }
 
 }

@@ -96,6 +96,17 @@ public class PlayerNetwork : MonoBehaviourPun
 
     }
 
+    public void SendHasWinFireBallRoom(bool hasWinFireBall)
+    {
+        photonView.RPC("SetHasWinFireBallRoom", RpcTarget.All , hasWinFireBall);
+    }
+
+    [PunRPC]
+    public void SetHasWinFireBallRoom(bool hasWinFireBall)
+    {
+        player.hasWinFireBallRoom = hasWinFireBall;
+    }
+
     public void SendVoteToSacrifice(bool hasVote)
     {
         photonView.RPC("SetVoteToSacrifice", RpcTarget.All, hasVote);
@@ -183,13 +194,11 @@ public class PlayerNetwork : MonoBehaviourPun
                 return;
             }
         }
-        StartCoroutine(player.gameManager.ChangeBossCoroutine(0.5f));
+        StartCoroutine(player.gameManager.ChangeBossCoroutine(0.2f));
         foreach (GameObject player in listPlayer)
         {
             StartCoroutine(player.GetComponent<PlayerNetwork>().CouroutineResetWantToChangeBoss());
         }
-
-
     }
     public IEnumerator CouroutineResetWantToChangeBoss()
     {
@@ -255,7 +264,8 @@ public class PlayerNetwork : MonoBehaviourPun
 
         for(int i = 0; i < player.transform.childCount; i++)
         {
-            player.transform.GetChild(i).gameObject.SetActive(display);
+            if (player.gameManager.SamePositionAtBoss())
+                player.transform.GetChild(i).gameObject.SetActive(display);
         }
        
     }
@@ -288,7 +298,10 @@ public class PlayerNetwork : MonoBehaviourPun
             }
 
         }
-       
+        player.GetComponent<PlayerGO>().gameManager.game.key_counter++;
+        player.gameManager.ui_Manager.AniamtionAddKey();
+
+
     }
     public void SendResetVoteSacrifice()
     {
@@ -300,16 +313,18 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-        foreach (GameObject player in players)
+        foreach (GameObject playeritem in players)
         {
-            player.GetComponent<PlayerGO>().nbVoteSacrifice = 0;
-            player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
-           
+            playeritem.GetComponent<PlayerGO>().nbVoteSacrifice = 0;
+            playeritem.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").GetComponent<Text>().text = playeritem.GetComponent<PlayerGO>().nbVoteSacrifice.ToString();
+            playeritem.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
+            playeritem.transform.Find("Perso").Find("Light_red").gameObject.SetActive(false);
         }
         player.GetComponent<PlayerGO>().gameManager.game.currentRoom.speciallyPowerIsUsed = true;
         player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayMainLevers(true);
         player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplaySpeciallyLevers(false,0);
-        player.GetComponent<PlayerGO>().gameManager.CloseAllDoor(player.GetComponent<PlayerGO>().gameManager.game.currentRoom, false);
+        player.GetComponent<PlayerGO>().gameManager.CloseDoorWhenVote(false);
+        player.GetComponent<PlayerGO>().hasVoteSacrifice = false;
 
     }
 

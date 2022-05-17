@@ -1229,6 +1229,7 @@ MonoBehaviour:
   additionalSizeTextToMobile: 1.4
   quitTutorialN7: 0
   wantToChangeBoss: 0
+  changeBoss: 0
   isTouchByFireBall: 0
   rankTouchBall: 0
   hasWinFireBallRoom: 0
@@ -1240,6 +1241,7 @@ MonoBehaviour:
   canLaunchExplorationLever: 0
   canLaunchDoorVoteLever: 0
   canLaunchSpeciallyRoomPower: 0
+  canLaunchChangeBoss: 0
   canDisplayMap: 0
   displayMap: 0
   canDisplayTutorial: 0

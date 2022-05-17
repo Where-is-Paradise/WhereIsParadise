@@ -33,6 +33,8 @@ public class SacrificeRoom : MonoBehaviour
         player.GetComponent<PlayerNetwork>().SendDeathSacrifice();
         player.GetComponent<PlayerNetwork>().SendResetVoteSacrifice();
         GameObject.Find("GameManager").GetComponent<GameManager>().gameManagerNetwork.SendSacrificeVoteIsLaunch(false);
+        //player.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.SendKey();
+  
     }
 
     public GameObject GetPlayerWithMaxVote()
