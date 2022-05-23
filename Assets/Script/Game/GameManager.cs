@@ -83,6 +83,10 @@ public class GameManager : MonoBehaviourPun
 
     public List<GameObject> listDoor = new List<GameObject>();
 
+    public bool fireBallIsLaunch = false;
+
+    public bool gameIsReady = false;
+
     public List<float> listProbalitySpecialyRoom = new List<float>();
     private void Awake()
     {
@@ -102,7 +106,7 @@ public class GameManager : MonoBehaviourPun
         SetTABToList(listPlayerTab, listPlayer);
         setting = GameObject.FindGameObjectWithTag("Setting").GetComponent<Setting>();
         game.setting = setting;
-        game.Launch(20, 20);
+        game.Launch(25, 25);
         StartCoroutine(MasterClientCreateMap());
         /*        if (PhotonNetwork.IsMasterClient)
                 {
@@ -120,10 +124,13 @@ public class GameManager : MonoBehaviourPun
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendQuitTutorialN7(false);
         }
-        listProbalitySpecialyRoom.Add(30);
+        listProbalitySpecialyRoom.Add(1);
         listProbalitySpecialyRoom.Add(20);
-        listProbalitySpecialyRoom.Add(10);
+        listProbalitySpecialyRoom.Add(60);
 
+/*        listProbalitySpecialyRoom.Add(30);
+        listProbalitySpecialyRoom.Add(40);
+        listProbalitySpecialyRoom.Add(60);*/
     }
 
 
@@ -145,18 +152,18 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
 
 
-            //game.nbTorch = Mathf.CeilToInt(game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) + listPlayerTab.Length / 2);
-            game.nbTorch = listPlayerTab.Length;
+            game.nbTorch = Mathf.CeilToInt((game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) + listPlayerTab.Length) / 2);
+            //game.nbTorch = listPlayerTab.Length;
             if (game.dungeon.GetNumberOfPossiblityOfExit() < 7)
             {
                 game.nbTorch = game.nbTorch - 2;
             }
             else
             {
-                    game.nbTorch = game.nbTorch - 1;
+                game.nbTorch = game.nbTorch - 1;
             }
             
-            //game.nbTorch = 25;
+            //sgame.nbTorch = 25;
             gameManagerNetwork.SendTorchNumber(game.nbTorch);
             ui_Manager.SetTorchNumber();
 
@@ -197,7 +204,10 @@ public class GameManager : MonoBehaviourPun
         }
         if (InputManager.GetButtonDown("Escape") || Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
         {
-            ui_Manager.DisplayEchapMenu();
+            if(ui_Manager.map.activeSelf && gameIsReady)
+                ui_Manager.DisplayMap();
+            else
+                ui_Manager.DisplayEchapMenu();
         }
     }
 
@@ -549,14 +559,14 @@ public class GameManager : MonoBehaviourPun
      */
     public Dictionary<int, int> SetPlayerNearOfDoor()
     {
-        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        //GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        GameObject[] doors = TreeDoorById();
 
         ClearDictionnaryPlayerNearDoor();
         foreach (GameObject door in doors)
         {
             if (door.gameObject.GetComponent<Door>().player)
             {
-
                 door_idPlayer[door.GetComponent<Door>().index] = door.gameObject.GetComponent<Door>().player.GetComponent<PhotonView>().ViewID;
             }
 
@@ -671,17 +681,11 @@ public class GameManager : MonoBehaviourPun
 
     public bool VerificationExpedition(Dictionary<int, int> door_idPlayer)
     {
-        if (door_idPlayer.Count == 0 && !game.currentRoom.fireBall)
+        if (door_idPlayer.Count == 0)
             return false;
-
-        if (setting.LIMITED_TORCH && game.nbTorch > 0 && door_idPlayer.Count <= game.nbTorch)
+        if ((setting.LIMITED_TORCH && (game.nbTorch > 0 || GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom) && door_idPlayer.Count <= game.nbTorch))
             return true;
-
-        if (door_idPlayer.Count == game.NumberExpeditionAvailable() && !setting.LIMITED_TORCH)
-            return true;
-
         return false;
-
     }
 
     public void SetNbTorch(int nbExpedition)
@@ -1206,6 +1210,16 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendDisplayExplorationLever(true);
         }
 
+        if (game.dungeon.initialRoom.X == game.currentRoom.X)
+        {
+            if (game.dungeon.initialRoom.Y == game.currentRoom.Y)
+            {
+                ui_Manager.SetDistanceRoom(game.dungeon.initialRoom.DistancePathFinding, null);
+                ui_Manager.DisplayTutorialAutel(true);
+            }
+
+        }
+
         UpdateSpecialsRooms(game.currentRoom);
     }
 
@@ -1218,8 +1232,8 @@ public class GameManager : MonoBehaviourPun
 
     public void CloseAllDoor(Room room, bool isInExepedtion, GameObject doorReverse = null)
     {
-        //GameObject[] doors = TreeDoorById();
-        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        GameObject[] doors = TreeDoorById();
+        //GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
         int i = 0;
         foreach (GameObject door in doors)
         {
@@ -1274,11 +1288,11 @@ public class GameManager : MonoBehaviourPun
     public GameObject[] TreeDoorById()
     {
         GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
-        GameObject[] NexListDoors = new GameObject[doors.Length];
+        GameObject[] NexListDoors = new GameObject[6];
         List<int> blackList = new List<int>();
-        /*      int i = 0;
-              int j = 0;*/
-        /*while (i < doors.Length)
+        int i = 0;
+        int j = 0;
+        while (i < 6)
         {
 
             if (doors[j].GetComponent<Door>().index == i)
@@ -1287,13 +1301,13 @@ public class GameManager : MonoBehaviourPun
                 i++;
             }
             j++;
-            if (j == doors.Length)
+            if (j == 6)
             {
                 j = 0;
             }
-        }*/
+        }
 
-        for (int i =0; i< doors.Length; i++)
+/*        for (int i =0; i< doors.Length; i++)
         {
             int min = 100;
             for (int j =0; j < doors.Length; j++)
@@ -1308,7 +1322,7 @@ public class GameManager : MonoBehaviourPun
             }
             NexListDoors[i] = GetDoorGo(min);
         }
-        Debug.Log(NexListDoors.Length);
+        Debug.Log(NexListDoors.Length);*/
         return NexListDoors;
     }
 
@@ -1695,8 +1709,8 @@ public class GameManager : MonoBehaviourPun
     {
         int voteMax = 0;
         int indexDoorCurrent = -1;
-        //GameObject[] listDoor = TreeDoorById();
-        GameObject[] listDoor = GameObject.FindGameObjectsWithTag("Door");
+        GameObject[] listDoor = TreeDoorById();
+        //GameObject[] listDoor = GameObject.FindGameObjectsWithTag("Door");
         foreach (GameObject door in listDoor)
         {
             if (door.GetComponent<Door>().nbVote >= voteMax)
@@ -1741,7 +1755,11 @@ public class GameManager : MonoBehaviourPun
             {
                 if (player.GetComponent<PlayerGO>().position_Y == GetPlayer(indexPlayer).GetComponent<PlayerGO>().position_Y)
                 {
-                    listReturn.Add(player);
+                    if (!player.GetComponent<PlayerGO>().isSacrifice)
+                    {
+                        listReturn.Add(player);
+                    }
+                  
                 }
             }
         }
@@ -1767,7 +1785,7 @@ public class GameManager : MonoBehaviourPun
         listPlayerTab = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayerTab)
         {
-            if (!player.GetComponent<PlayerGO>().hellIsFind)
+            if (!player.GetComponent<PlayerGO>().hellIsFind && !player.GetComponent<PlayerGO>().isInJail && !player.GetComponent<PlayerGO>().isSacrifice)
             {
                 return false;
             }
@@ -1941,7 +1959,7 @@ public class GameManager : MonoBehaviourPun
 
         foreach (GameObject player in players)
         {
-            if (!player.GetComponent<PlayerGO>().isImpostor)
+            if (!player.GetComponent<PlayerGO>().isImpostor && !player.GetComponent<PlayerGO>().isInJail && !player.GetComponent<PlayerGO>().isSacrifice)
             {
                 if (!player.GetComponent<PlayerGO>().paradiseIsFind)
                 {
@@ -1961,14 +1979,14 @@ public class GameManager : MonoBehaviourPun
 
         if (players.Length == 3)
         {
-            if (nbPlayerInParadise == players.Length - 1)
+            if (nbPlayerInParadise == players.Length - 1 - GetNbPlayerSacrifice())
             {
                 return true;
             }
         }
         else
         {
-            if (nbPlayerInParadise == players.Length - 2)
+            if (nbPlayerInParadise == players.Length - 2 - GetNbPlayerSacrifice())
             {
                 return true;
             }
@@ -1985,14 +2003,14 @@ public class GameManager : MonoBehaviourPun
 
         if (players.Length == 3)
         {
-            if (nbPlayerInHell == players.Length - 1)
+            if (nbPlayerInHell == (players.Length - 1) - GetNbPlayerSacrifice())
             {
                 return true;
             }
         }
         else
         {
-            if (nbPlayerInHell == players.Length - 2)
+            if (nbPlayerInHell == players.Length - 2 - GetNbPlayerSacrifice())
             {
                 return true;
             }
@@ -2000,6 +2018,19 @@ public class GameManager : MonoBehaviourPun
         }
 
         return false;
+    }
+
+    public int GetNbPlayerSacrifice()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        foreach(GameObject player in players)
+        {
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                counter++;
+        }
+
+        return counter;
     }
 
     public void CloseDoorWhenVote(bool close)
@@ -2013,6 +2044,11 @@ public class GameManager : MonoBehaviourPun
                 door.GetComponent<Door>().IsCloseNotPermantly = close;
             }
         }
+    }
+    public IEnumerator CloseDoorWhenVoteCoroutine(bool close)
+    {
+        yield return new WaitForSeconds(2);
+        CloseDoorWhenVote(close);
     }
 
     public GameObject GetBoss()
@@ -2346,31 +2382,41 @@ public class GameManager : MonoBehaviourPun
     }
     public void AddBonusAndPenaltyChest(int indexChest, int indexAward, bool isAward)
     {
+        if (!GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            return;
+        }
+
         switch (indexAward)
         {
             case 0:
                 if (isAward)
                 {
                     game.key_counter++;
+                    gameManagerNetwork.SendAnimationAddKey();
                     ui_Manager.LaunchAnimationAddKey();
-                    ui_Manager.SetNBKey();
                 }
                 else
                 {
                     game.key_counter--;
+                    gameManagerNetwork.SendAnimationBrokenKey();
                     ui_Manager.LaunchAnimationBrokenKey();
-                    ui_Manager.SetNBKey();
                 }
+                gameManagerNetwork.SendKey(game.key_counter);
+                ui_Manager.SetNBKey();
                 return;
             case 1:
                 if (isAward)
                 {
+                 
                     game.nbTorch++;
+                    
                 }
                 else
                 {
                     game.nbTorch--;
                 }
+                gameManagerNetwork.SendTorchNumber(game.nbTorch);
                 ui_Manager.SetTorchNumber();
                 return;
             case 2:
@@ -2398,7 +2444,7 @@ public class GameManager : MonoBehaviourPun
 
     public void ChangePositionParadise()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (!GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
         }
@@ -2460,10 +2506,8 @@ public class GameManager : MonoBehaviourPun
         int randomMain = Random.Range(1, 101);
         if(randomMain <= 60)
         {
-            Debug.Log(randomMain + " " + listProbalitySpecialyRoom[0]);
             if(randomMain <= listProbalitySpecialyRoom[0])
             {
-                Debug.Log(randomMain + " " + listProbalitySpecialyRoom[0]);
                 game.dungeon.InsertChestRoom(room.Index);
                 room.chest = true;
                 listProbalitySpecialyRoom[0] = listProbalitySpecialyRoom[0] - (listProbalitySpecialyRoom[0] / 2);
@@ -2471,14 +2515,12 @@ public class GameManager : MonoBehaviourPun
             }
             if (randomMain <= listProbalitySpecialyRoom[1])
             {
-                Debug.Log(randomMain + " " + listProbalitySpecialyRoom[1]);
                 room.fireBall = true;
                 listProbalitySpecialyRoom[1] = listProbalitySpecialyRoom[1] - (listProbalitySpecialyRoom[1] / 2);
                 return 1;
             }
             if(randomMain <= listProbalitySpecialyRoom[2])
             {
-                Debug.Log(randomMain + " " + listProbalitySpecialyRoom[2]);
                 room.isSacrifice = true;
                 listProbalitySpecialyRoom[2] = listProbalitySpecialyRoom[2] - (listProbalitySpecialyRoom[2] / 2);
                 return 2;
@@ -2566,6 +2608,16 @@ public class GameManager : MonoBehaviourPun
         }
 
         return null;
+    }
+
+    public void HideReadAllPlayer()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach(GameObject player in players)
+        {
+            player.gameObject.transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(false);
+            player.gameObject.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(false);
+        }
     }
 
 }

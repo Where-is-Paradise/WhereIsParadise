@@ -114,7 +114,8 @@ public class PlayerGO : MonoBehaviour
 
     public bool hasClickInPowerImposter = false;
     public bool hasValidPowerImposter = false;
-    
+
+    public bool hideImpostorInformation = false;
     private void Awake()
     {
         displayChatInput = false;
@@ -158,6 +159,7 @@ public class PlayerGO : MonoBehaviour
 
     private void setCollider()
     {
+        
         if (!GetComponent<PhotonView>().IsMine)
         {
             GetComponent<BoxCollider2D>().isTrigger = true;
@@ -261,6 +263,7 @@ public class PlayerGO : MonoBehaviour
             {
                 if (!gameManager.paradiseIsFind && !gameManager.hellIsFind)
                 {
+                   
                     if (!gameManager.alreaydyExpeditionHadPropose && gameManager.game.key_counter > 0 && !gameManager.DoorParadiseOrHellisOpen)
                     {
                         Dictionary<int, int> door_idPlayer = gameManager.SetPlayerNearOfDoor();
@@ -326,7 +329,7 @@ public class PlayerGO : MonoBehaviour
 
             if ((InputManager.GetButtonDown("Enter") || Input.GetKeyDown(KeyCode.KeypadEnter)) && GetComponent<PhotonView>().IsMine && !gameManager.ui_Manager.map.activeSelf)
             {
-                if (!this.isSacrifice)
+                if (!this.isSacrifice && gameManager.gameIsReady)
                     OnClickChat();
             }
             
@@ -352,7 +355,7 @@ public class PlayerGO : MonoBehaviour
 
                     if (gameManager.ui_Manager.map.activeSelf)
                     {
-                        Camera.main.orthographicSize = 5.1f;
+                        Camera.main.orthographicSize = 3f;
                     }
                     else
                     {
@@ -471,7 +474,13 @@ public class PlayerGO : MonoBehaviour
         }
 
 
-      
+
+        if (IsDoubleTap())
+        {
+            hideImpostorInformation = !hideImpostorInformation;
+            gameManager.ui_Manager.HideAllImpostorInformation(hideImpostorInformation);
+        }
+
 
         if (gameManager)
         {
@@ -590,6 +599,11 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (this.isSacrifice)
+        {
+            return;
+        }
+
         if (collision.name == "vote_X")
         {
             GetComponent<PlayerNetwork>().SendVoteExplorationDisplay(false);
@@ -707,9 +721,36 @@ public class PlayerGO : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            if (gameManager && gameManager.fireBallIsLaunch)
+            {
+                Physics2D.IgnoreCollision(collision.transform.GetComponent<BoxCollider2D>(), this.GetComponent<BoxCollider2D>(), false);
+                return;
+            }
             Physics2D.IgnoreCollision(collision.transform.GetComponent<BoxCollider2D>(), this.GetComponent<BoxCollider2D>());
         }
 
+    }
+
+    public void IgnoreCollisionAllPlayer(bool ignore)
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach(GameObject player in players)
+        {
+            if(GetPlayerMineGO().GetComponent<PhotonView>().IsMine  )
+            {
+                if (player.GetComponent<PhotonView>().ViewID != this.GetComponent<PhotonView>().ViewID)
+                {
+                    Debug.Log(player.GetComponent<PhotonView>().ViewID + " " + this.GetComponent<PhotonView>().ViewID);
+                    if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isSacrifice)
+                    {
+                        player.GetComponent<BoxCollider2D>().isTrigger = ignore;
+                        Physics2D.IgnoreCollision(player.transform.GetComponent<BoxCollider2D>(), this.GetComponent<BoxCollider2D>(), ignore);
+                    }
+                }
+             
+            }    
+        }
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -917,6 +958,7 @@ public class PlayerGO : MonoBehaviour
         if (gameManager.game.currentRoom.fireBall)
         {
             gameManager.gameManagerNetwork.SendLaunchFireBallRoom();
+           
 
         } 
         if (gameManager.game.currentRoom.isSacrifice)
@@ -930,8 +972,8 @@ public class PlayerGO : MonoBehaviour
         }
 
         gameManager.gameManagerNetwork.SendCloseDoorWhenVote();
-
-        gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
+        gameManager.gameManagerNetwork.SendDisplaySpeciallyLevers(false, 0);
+        //gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
     }
 
 
@@ -1234,17 +1276,17 @@ public class PlayerGO : MonoBehaviour
     }
 
 
-    public void SendMessagePlayerInTimes()
+    public void SendMessagePlayerInTimes(int time)
     {
         currentlyMessageDisplay.Add("tkt");
-        StartCoroutine(CouroutineTextChat(currentlyMessageDisplay.Count - 1, currentlyMessageDisplay.Count));
+        StartCoroutine(CouroutineTextChat(currentlyMessageDisplay.Count - 1, currentlyMessageDisplay.Count, time));
     }
 
-    public IEnumerator CouroutineTextChat(int index, int count)
+    public IEnumerator CouroutineTextChat(int index, int count ,int time)
     {
         //GetComponent<PlayerNetwork>().SendDisplayMessage(true);
         displayMessage = true;
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(time);
         currentlyMessageDisplay.RemoveAt(index - (count - 1));
         if (currentlyMessageDisplay.Count == 0)
             //GetComponent<PlayerNetwork>().SendDisplayMessage(false);
@@ -1272,10 +1314,14 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (gameManager && ((gameManager.expeditionHasproposed && gameManager.timer.timerLaunch) || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed))
+        if (gameManager && (gameManager.expeditionHasproposed || gameManager.timer.timerLaunch || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed))
         {
             playerNetwork.SendResetWantToChangeBoss();
             changeBoss = false;
+            return;
+        }
+        if (gameManager && gameManager.fireBallIsLaunch)
+        {
             return;
         }
         if (displayChatInput)
@@ -1292,7 +1338,12 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        
+        if (GameObject.Find("SacrificeRoom") && GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch)
+        {
+            return;
+        }
+
+
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
         playerNetwork.SendWantToChangeBoss();
         changeBoss = false;
@@ -1339,6 +1390,10 @@ public class PlayerGO : MonoBehaviour
             transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
             return;
         }
+        if (hasWinFireBallRoom)
+        {
+            return;
+        }
 
         canDisplayMap = isEnter;
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
@@ -1360,9 +1415,13 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (hasWinFireBallRoom)
+        {
+            return;
+        }
         canDisplayTutorial = isEnter;
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
-        gameManager.ui_Manager.mobileCanvas.transform.Find("Map_panel").gameObject.SetActive(isEnter);
+        gameManager.ui_Manager.mobileCanvas.transform.Find("Tuto_panel").gameObject.SetActive(isEnter);
 
 
     }
@@ -1452,6 +1511,10 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (hasWinFireBallRoom)
+        {
+            return;
+        }
         canLaunchDoorVoteLever = isEnter;
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Door_panel").gameObject.SetActive(isEnter);
@@ -1460,6 +1523,7 @@ public class PlayerGO : MonoBehaviour
         {
             DisplayTutorial(11);
         }
+
     }
 
     public void CanLaunchSpeciallyRoomPower(GameObject collision, bool isEnter)
@@ -1484,6 +1548,10 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (hasWinFireBallRoom)
+        {
+            return;
+        }
         canLaunchSpeciallyRoomPower = isEnter;
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.DisplayUI_Mobile_SpecialRoom(isEnter);
@@ -1495,24 +1563,24 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (wantToChangeBoss)
-        {
-            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
-            return;
-        }
         if (isBoss)
         {
             transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
             return;
         }
-        if ((gameManager.expeditionHasproposed && gameManager.timer.timerLaunch) || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed){
+        if (gameManager.expeditionHasproposed || gameManager.timer.timerLaunch || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed){
             transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            gameManager.ui_Manager.mobileCanvas.transform.Find("Change_Boss").gameObject.SetActive(false);
+            return;
+        }
+        if (hasWinFireBallRoom)
+        {
             return;
         }
        
-       
         canLaunchChangeBoss = isEnter;
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+        gameManager.ui_Manager.mobileCanvas.transform.Find("Change_Boss").gameObject.SetActive(isEnter);
 
     }
 

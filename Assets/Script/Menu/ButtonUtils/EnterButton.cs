@@ -17,7 +17,7 @@ public class EnterButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (InputManager.GetButtonDown("Enter"))
+        if (InputManager.GetButtonDown("Enter") || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             if(FormNamePlayer.text.Length > 0)
             {

@@ -314,9 +314,8 @@ public class Dungeon : ScriptableObject
 
     private Room GetInitialRoom()
     {
-        int X_reference = Random.Range(0, width);
-        int X_referen = Random.Range(0, width);
-        int Y_reference = Random.Range(0, height);
+        int X_reference = Random.Range(width/5, width - (width / 5));
+        int Y_reference = Random.Range( height/5, height - (height /5));
 
         foreach (Room room in rooms)
         {
@@ -501,10 +500,10 @@ public class Dungeon : ScriptableObject
 
     public void SetUpChests(Room room)
     {
-        //int randomAward = Random.Range(0, 3);
+        int randomAward = Random.Range(0, 3);
         int randomIndex = Random.Range(0, 2);
 
-        int randomAward = 2;
+        //int randomAward = 2;
 
         if(randomIndex == 0)
         {

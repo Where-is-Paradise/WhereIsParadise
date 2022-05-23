@@ -101,7 +101,6 @@ public class UI_Manager : MonoBehaviour
 
 #else
 
-OutsideMap.SetActive(false);
 setting_button_echapMenu.SetActive(false);
 
 #endif
@@ -167,7 +166,8 @@ setting_button_echapMenu.SetActive(false);
             blueWallPaper.SetActive(!blueWallPaper.activeSelf);
 
         }
-        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = !map.activeSelf;
+        if(gameManager.gameIsReady)
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = !map.activeSelf;
 
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             DisplayPowerButton(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower, map.activeSelf);
@@ -442,11 +442,14 @@ setting_button_echapMenu.SetActive(false);
         roleInformation.SetActive(false);
         //waitingPage_PowerImpostor.SetActive(true);
         DisplayPowerImpostor(true);
+        Camera.main.orthographicSize = 4f;
         gameManager.timer.LaunchTimer(5, false);
         yield return new WaitForSeconds(5);
         DisplayPowerImpostor(false);
+        Camera.main.orthographicSize = 5.1f;
         yield return new WaitForSeconds(0.5f);
         DisplayTutorial();
+        gameManager.gameIsReady = true;
     }
 
 
@@ -848,11 +851,11 @@ setting_button_echapMenu.SetActive(false);
     {
         foreach (Hexagone hexagone in gameManager.dungeon)
         {
-            ShowDataMapInOneRoom(hexagone);
+            ShowDataMapInOneRoom(hexagone, true);
         }
     }
 
-    public void ShowDataMapInOneRoom(Hexagone hexagone)
+    public void ShowDataMapInOneRoom(Hexagone hexagone , bool display)
     {
         Room room = hexagone.Room;
         if (room.IsObstacle)
@@ -868,8 +871,12 @@ setting_button_echapMenu.SetActive(false);
         }
         if (room.IsExit)
         {
-            hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
-            hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
+            if(!display)
+                hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
+            else
+                hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
+
+            hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(display);
 
         }
         if (room.IsTraversed)
@@ -878,15 +885,21 @@ setting_button_echapMenu.SetActive(false);
         }
         if (room.isOldParadise)
         {
-            hexagone.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(true);
-            hexagone.transform.GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
+            hexagone.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(display);
+            if(!display)
+                hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
+            else
+                hexagone.transform.GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
         }
         if (gameManager.hell)
         {
             if (room.X == gameManager.hell.X && room.Y == gameManager.hell.Y)
             {
-                hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(255 / 255f), (float)0f / 255f, (float)0f / 255f, 1);
-                hexagone.transform.Find("Canvas").Find("Hell").gameObject.SetActive(true);
+                if(!display)
+                    hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
+                else
+                    hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(255 / 255f), (float)0f / 255f, (float)0f / 255f, 1);
+                hexagone.transform.Find("Canvas").Find("Hell").gameObject.SetActive(display);
 
             }
         }
@@ -995,7 +1008,18 @@ setting_button_echapMenu.SetActive(false);
         }
         MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject.SetActive(display);
         DisplaySpeciallyLevers(display,0);
-        DisplayAwardAndPenaltyForImpostor(display);
+        if (display)
+        {
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
+            {
+                DisplayAwardAndPenaltyForImpostor(display);
+            }
+        }
+        else
+        {
+            DisplayAwardAndPenaltyForImpostor(display);
+        }
+      
         if (!display)
         {
             ResetChestRoom();
@@ -1205,9 +1229,17 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayNuVoteSacrificeForAllPlayer()
     {
+        if (!gameManager.SamePositionAtBoss())
+        {
+            return;
+        }
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach(GameObject player in players)
         {
+            if (!gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
+            {
+                continue;
+            }
             player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(true);
         }
     }
@@ -1268,6 +1300,23 @@ setting_button_echapMenu.SetActive(false);
     public void OnClickHexagonePowerImpostor()
     {
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter = !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter;
+    }
+
+    public void HideAllImpostorInformation(bool hide)
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach(GameObject player in players)
+        {
+            if (player.GetComponent<PlayerGO>().isImpostor)
+            {
+                player.gameObject.transform.Find("Perso").Find("Horns").gameObject.SetActive(hide);
+            }
+        }
+
+        foreach (Hexagone hexagone in gameManager.dungeon)
+        {
+            ShowDataMapInOneRoom(hexagone, hide);
+        }
     }
 }
 

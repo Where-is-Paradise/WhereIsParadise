@@ -8,12 +8,13 @@ public class Turret : MonoBehaviourPun
     public int index;
     public float frequency;
     public GameObject fireBall;
-
+    public GameManager gameManager;
     public bool canFire = false;
     // Start is called before the first frame update
     void Start()
     {
         //LaunchTurret(true);
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -23,7 +24,7 @@ public class Turret : MonoBehaviourPun
         {
             return;
         }
-        if (canFire)
+        if (canFire && gameManager.fireBallIsLaunch)
         {
             ShotFireBall();
             canFire = false;

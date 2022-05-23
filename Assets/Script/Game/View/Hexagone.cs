@@ -55,12 +55,16 @@ public class Hexagone : MonoBehaviour
         {
             this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(false);
         }
-
+        TouchHexagoneForPower();
         //this.transform.Find("Canvas").Find("ImpostorPower").gameObject.SetActive(!(room.Index == gameManager.game.currentRoom.Index));
 
     }
     void OnMouseOver()
     {
+
+#if UNITY_IOS || UNITY_ANDROID
+        return;
+#endif
         if ((this.room.isSpecial || this.room.IsExit || this.room.IsHell ) && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
         {
             if (!gameManager.ui_Manager.blueWallPaper.transform.Find("Canvas").Find("Text_timer").gameObject.activeSelf)
@@ -90,7 +94,7 @@ public class Hexagone : MonoBehaviour
         {
             return;
         }
-        if(room.DistanceExit == 1)
+        if(room.DistancePathFinding == 1)
         {
             return;
         }
@@ -107,6 +111,11 @@ public class Hexagone : MonoBehaviour
 
     void OnMouseExit()
     {
+
+#if UNITY_IOS || UNITY_ANDROID
+        return;
+#endif
+
         if ((this.room.isSpecial || this.room.IsExit || this.room.IsHell) && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
         {
             if (!gameManager.ui_Manager.blueWallPaper.transform.Find("Canvas").Find("Text_timer").gameObject.activeSelf)
@@ -127,7 +136,7 @@ public class Hexagone : MonoBehaviour
         {
             return;
         }
-        if (room.DistanceExit == 1)
+        if (room.DistancePathFinding == 1)
         {
             return;
         }
@@ -159,6 +168,55 @@ public class Hexagone : MonoBehaviour
 
 
         this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(room.isOldParadise && gameManager.game.currentRoom.Index != room.Index);
+
+    }
+
+    public void TouchHexagoneForPower()
+    {
+#if !UNITY_IOS && !UNITY_ANDROID
+        return;
+#endif
+
+        if(Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
+            RaycastHit hit;
+            if(Physics.Raycast(ray,out hit))
+            {
+                if (hit.collider != null)
+                {
+                    if (hit.transform.gameObject.GetComponent<Hexagone>())
+                    {
+                        if ( hit.transform.gameObject.GetComponent<Hexagone>().room.Index == this.room.Index)
+                        {
+                            if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter)
+                            {
+                                return;
+                            }
+                          
+                            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter)
+                            {
+                                return;
+                            }
+                            if (room.IsObstacle || room.IsExit || room.IsInitiale)
+                            {
+                                return;
+                            }
+                            if (room.DistancePathFinding == 1)
+                            {
+                                return;
+                            }
+                            int indexPower = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower;
+                            this.transform.Find("Canvas").Find("ImpostorPower").GetChild(indexPower).gameObject.SetActive(true);
+                            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter = true;
+                            gameManager.gameManagerNetwork.SendHexagoneNewPower(this.room.Index, indexPower);
+                            gameManager.ui_Manager.listButtonPowerImpostor[indexPower].GetComponent<Button>().interactable = false;
+                        }
+    
+                    }
+                }
+            }
+        }
 
     }
 

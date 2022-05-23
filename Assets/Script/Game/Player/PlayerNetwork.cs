@@ -87,7 +87,7 @@ public class PlayerNetwork : MonoBehaviourPun
 
         if (player.gameManager.setting.displayTutorial)
         {
-            if (!player.gameManager.ui_Manager.listTutorialBool[4])
+            if (!player.gameManager.ui_Manager.listTutorialBool[5])
             {
                 StartCoroutine(DisplayTurorialWhenExpeditionCouroutine());
             }
@@ -189,7 +189,7 @@ public class PlayerNetwork : MonoBehaviourPun
         foreach(GameObject player in listPlayer)
         {
             PlayerGO playerGo = player.GetComponent<PlayerGO>();
-            if (!playerGo.isBoss && !playerGo.wantToChangeBoss)
+            if (!playerGo.isBoss && !playerGo.wantToChangeBoss && !playerGo.isSacrifice)
             {
                 return;
             }
@@ -227,10 +227,28 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetTextChat(int indexPlayer, string message)
     {
-        player.GetPlayer(indexPlayer).transform.GetChild(0).GetChild(1).gameObject.SetActive(true);
-        player.GetPlayer(indexPlayer).transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().text = message;
-        player.GetPlayer(indexPlayer).transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().color = new Color(0, 0, 0);
-        player.GetPlayer(indexPlayer).GetComponent<PlayerGO>().SendMessagePlayerInTimes();
+        player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").gameObject.SetActive(true);
+
+        if (message.Length < 40)
+        {
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").gameObject.SetActive(false);
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").gameObject.SetActive(true);
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").Find("ChatText").GetComponent<Text>().text = message;
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").Find("ChatText").GetComponent<Text>().color = new Color(0, 0, 0);
+            player.GetPlayer(indexPlayer).GetComponent<PlayerGO>().SendMessagePlayerInTimes(4);
+        }
+        else
+        {
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").gameObject.SetActive(false);
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").gameObject.SetActive(true);
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").Find("ChatText").GetComponent<Text>().text = message;
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").Find("ChatText").GetComponent<Text>().color = new Color(0, 0, 0);
+            player.GetPlayer(indexPlayer).GetComponent<PlayerGO>().SendMessagePlayerInTimes(6);
+        }
+
+
+        
+        
     }
 
     public void SendTextChatToImpostor(int indexPlayer, string message)
@@ -245,10 +263,27 @@ public class PlayerNetwork : MonoBehaviourPun
         {
             return;
         }
-        player.GetPlayer(indexPlayer).transform.GetChild(0).GetChild(1).gameObject.SetActive(true);
-        player.GetPlayer(indexPlayer).transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().text = message;
-        player.GetPlayer(indexPlayer).transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().color = new Color(255, 0, 0);
-        player.GetPlayer(indexPlayer).GetComponent<PlayerGO>().SendMessagePlayerInTimes();
+        player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").gameObject.SetActive(true);
+
+        if (message.Length < 40)
+        {
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").gameObject.SetActive(false);
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").gameObject.SetActive(true);
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").Find("ChatText").GetComponent<Text>().text = message;
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").Find("ChatText").GetComponent<Text>().color = new Color(255, 0, 0);
+            player.GetPlayer(indexPlayer).GetComponent<PlayerGO>().SendMessagePlayerInTimes(4);
+        }
+        else
+        {
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").gameObject.SetActive(false);
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").gameObject.SetActive(true);
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").Find("ChatText").GetComponent<Text>().text = message;
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").Find("ChatText").GetComponent<Text>().color = new Color(255, 0, 0);
+            player.GetPlayer(indexPlayer).GetComponent<PlayerGO>().SendMessagePlayerInTimes(6);
+        }
+        /*player.GetPlayer(indexPlayer).transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().text = message;
+        player.GetPlayer(indexPlayer).transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().color = new Color(255, 0, 0);*/
+       
     }
 
     public void SendDisplayCharacter(bool display)
@@ -265,9 +300,14 @@ public class PlayerNetwork : MonoBehaviourPun
         for(int i = 0; i < player.transform.childCount; i++)
         {
             if (player.gameManager.SamePositionAtBoss())
+            {
                 player.transform.GetChild(i).gameObject.SetActive(display);
+               
+            }
+                
         }
-       
+        //player.GetComponent<BoxCollider2D>().isTrigger = true;
+
     }
 
 
@@ -347,12 +387,17 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetVoteExplorationDisplay(bool vote_V)
     {
-        this.transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(vote_V);
-        this.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(!vote_V);
-        if (!vote_V) 
+        if (!vote_V)
             player.vote_cp = -1;
         else
             player.vote_cp = 1;
+        if (!player.gameManager.SamePositionAtBoss())
+        {
+            return;
+        }
+        this.transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(vote_V);
+        this.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(!vote_V);
+       
     }
 
     public void SendHideVoteExplorationDisplay()

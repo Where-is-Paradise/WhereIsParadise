@@ -84,8 +84,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         print("Disconnected : " + cause.ToString());
         if (cause.ToString().Equals("DnsExceptionOnConnect"))
         {
-            Debug.Log(" sa passe");
-            MainReconnect();
+            StartCoroutine(reconnect());
             ui_management.DisplayErrorPanel("Vous avez été déconnecté");
         }
         else
@@ -93,13 +92,20 @@ public class Lobby : MonoBehaviourPunCallbacks
             matchmaking = false;
             // 
             ui_management.canChange = false;
-
-            ConnectToMaster();
+            
+             ConnectToMaster();
         }
         
         
        
     }
+
+    public IEnumerator reconnect()
+    {
+        yield return new WaitForSeconds(4f);
+        ConnectToMaster();
+    }
+
     private IEnumerator MainReconnect()
     {
         while (PhotonNetwork.NetworkingClient.LoadBalancingPeer.PeerState != ExitGames.Client.Photon.PeerStateValue.Disconnected)
@@ -143,7 +149,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         maxPlayer = maxPlayerParam;
         if (matchmaking)
             maxPlayer = 6;
-        PhotonNetwork.CreateRoom(code, new RoomOptions { MaxPlayers = (byte) maxPlayer , PlayerTtl = -1 , EmptyRoomTtl = -1, PublishUserId = true, IsVisible = isVisible, CleanupCacheOnLeave = true});
+        PhotonNetwork.CreateRoom(code, new RoomOptions { MaxPlayers = (byte) maxPlayer , PublishUserId = true, IsVisible = isVisible});
         ui_management.SetNbPlayerUI(1, maxPlayer);
         code2 = GenerateCodeRoom(5);
         setting.codeRoom = code2;
@@ -154,7 +160,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         maxPlayer = 8;
         if (matchmaking)
             maxPlayer = 6;
-        PhotonNetwork.CreateRoom(oldCode, new RoomOptions { MaxPlayers = (byte)maxPlayer, PublishUserId = true, PlayerTtl = -1, EmptyRoomTtl = -1, IsVisible = true, CleanupCacheOnLeave = true });
+        PhotonNetwork.CreateRoom(oldCode, new RoomOptions { MaxPlayers = (byte)maxPlayer, PublishUserId = true, IsVisible = true });
         ui_management.SetNbPlayerUI(1, maxPlayer);
         ui_management.LauchWaitingRoom();
         //matchmaking = true;

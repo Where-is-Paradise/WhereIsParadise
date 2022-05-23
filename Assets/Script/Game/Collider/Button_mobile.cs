@@ -15,7 +15,13 @@ public class Button_mobile : MonoBehaviour
 
     void Update()
     {
-        
+        if(this.name == "Map_panel")
+        {
+            if (gameManager.ui_Manager.map.activeSelf)
+            {
+                this.gameObject.SetActive(false);
+            }
+        }
     }
 
 /*    public void OnMouseOver()
@@ -31,6 +37,10 @@ public class Button_mobile : MonoBehaviour
         {
             //InputExplorationAnimation(Input.GetMouseButtonDown(0), Input.GetMouseButton(0), Input.GetMouseButtonUp(0));
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchExpeditionWithAnimation = true;
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
+            {
+               this.gameObject.SetActive(false);
+            }
         }
         if (this.name == "Door_panel")
         {
@@ -64,99 +74,18 @@ public class Button_mobile : MonoBehaviour
 
             gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
         }
+        if (this.name == "Tuto_panel")
+        {
+            PlayerGO playerMine = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
+            playerMine.displayTutorial = true;
+        }
+        if (this.name == "Change_Boss")
+        {
+            PlayerGO playerMine = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
+            playerMine.changeBoss = true;
+        }
+
     }
 
 
-
-    public void InputExplorationAnimation(bool down , bool stay, bool up)
-    {
-        if (down)
-        {
-            timeStayTouch = 0;
-        }
-        if (stay)
-        {
-            timeStayTouch += Time.deltaTime;
-
-            if (timeStayTouch > 0.5f)
-            {
-                gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = false;
-                gameManager.ui_Manager.zoneX_startAnmation.SetActive(true);
-                gameManager.ui_Manager.zoneX_startAnmation.GetComponent<Animator>().Play("animation_zone_circle_tomobile");
-                gameManager.ui_Manager.zoneX_startAnmation.GetComponent<Animator>().speed = 6f;
-                gameManager.ui_Manager.Display_identificationExpedition(true);
-                gameManager.ui_Manager.DisplayKeyAndTorch(false);
-                gameManager.ui_Manager.HideDistanceRoom();
-            }
-            if (timeStayTouch > 1.5f)
-            {
-                gameManager.ui_Manager.zoneX_startAnmation.SetActive(false);
-                gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchExpeditionWithAnimation = true;
-                timeStayTouch = 0;
-                gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
-                gameManager.ui_Manager.Display_identificationExpedition(false);
-                gameManager.ui_Manager.DisplayKeyAndTorch(true);
-                if (gameManager.SamePositionAtInitialRoom())
-                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
-            }
-        }
-        if (up)
-        {
-            gameManager.ui_Manager.zoneX_startAnmation.SetActive(false);
-            timeStayTouch = 0;
-            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
-            gameManager.ui_Manager.Display_identificationExpedition(false);
-            gameManager.ui_Manager.DisplayKeyAndTorch(true);
-            if (gameManager.SamePositionAtInitialRoom())
-                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
-        }
-
-
-    }
-
-    public void InputVoteDoorAnimation(bool down, bool stay, bool up)
-    {
-        if (down)
-        {
-            timeStayTouch = 0;
-        }
-        if (stay)
-        {
-            timeStayTouch += Time.deltaTime;
-
-            if (timeStayTouch > 0.5f)
-            {
-                gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = false;
-                gameManager.ui_Manager.zoneX_startAnmation.SetActive(true);
-                gameManager.ui_Manager.zoneX_startAnmation.GetComponent<Animator>().Play("animation_zone_circle_tomobile");
-                gameManager.ui_Manager.zoneX_startAnmation.GetComponent<Animator>().speed = 6f;
-                gameManager.ui_Manager.Display_identificationVoteDoor(true);
-                gameManager.ui_Manager.DisplayKeyAndTorch(false);
-                gameManager.ui_Manager.HideDistanceRoom();
-            }
-            if (timeStayTouch > 1.5f)
-            {
-                gameManager.ui_Manager.zoneX_startAnmation.SetActive(false);
-                gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchVoteDoorMobile = true;
-                timeStayTouch = 0;
-                gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
-                gameManager.ui_Manager.Display_identificationVoteDoor(false);
-                //gameManager.ui_Manager.DisplayKeyAndTorch(true);
-/*                if (gameManager.SamePositionAtInitialRoom())
-                    gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);*/
-            }
-        }
-        if (up)
-        {
-            gameManager.ui_Manager.zoneX_startAnmation.SetActive(false);
-            timeStayTouch = 0;
-            //isFirstTouch = false;
-            //canMove = true;
-            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
-            gameManager.ui_Manager.Display_identificationVoteDoor(false);
-/*            gameManager.ui_Manager.DisplayKeyAndTorch(true);
-            if (gameManager.SamePositionAtInitialRoom())
-                gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);*/
-        }
-    }
 }

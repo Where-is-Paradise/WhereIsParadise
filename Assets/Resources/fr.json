@@ -35,11 +35,10 @@
 
 
   "menu_setting_controls":"Controles",
-  "menu_setting_controls_moveForward":"Avancer",
-  "menu_setting_controls_moveBackward":"Reculer",
+
   "menu_setting_controls_moveRight":"Droite",
   "menu_setting_controls_moveLeft":"Gauche",
-  "menu_setting_controls_exploration":"Exploration",
+
   "menu_setting_controls_voteDoor":"Vote de Porte",
   "menu_setting_controls_Map":"Carte",
 
@@ -160,6 +159,9 @@
 "tutorial_autel_jail_0" : "Vous êtes emprisoné(e).",
 "tutorial_autel_jall_1" : "Votre équipe peut venir vous libérer si elle ouvre une des portes adjacentes à votre salle.",
 
+  "menu_setting_controls_exploration":"Interagir",
 
+  "menu_setting_controls_moveForward":"Haut",
+  "menu_setting_controls_moveBackward":"Bas",
 
   }

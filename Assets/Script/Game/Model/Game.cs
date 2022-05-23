@@ -56,8 +56,8 @@ public class Game : ScriptableObject
         setting.NB_IMPOSTOR = CalculNbImpostor();
 
         bool correctExit;
-        int randomPercentageRatioObatacle = Random.Range(40, 50);
-        int randomPercentagePropagation = Random.Range(5, 10);
+        int randomPercentageRatioObatacle = Random.Range(30, 40);
+        int randomPercentagePropagation = Random.Range(15, 30);
         int randomPercentageInitialPropagation = Random.Range(10, 20);
         int limit = 0; 
         do
@@ -76,7 +76,7 @@ public class Game : ScriptableObject
             {
                 dungeon.SetPathFindingDistanceAllRoom();
                 int nbOfPossiblity = dungeon.GetNumberOfPossiblityOfExit();
-                if(nbOfPossiblity < 5)
+                if(nbOfPossiblity < Random.Range(5,11))
                 {
                     correctExit = false;
                 }

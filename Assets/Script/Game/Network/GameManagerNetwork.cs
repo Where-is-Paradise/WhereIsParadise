@@ -212,7 +212,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.expeditionHasproposed = true;
         gameManager.ui_Manager.HideDistanceRoom();
         gameManager.ui_Manager.DisplayKeyAndTorch(false);
-        gameManager.CloseDoorWhenVote(true);
+        StartCoroutine(gameManager.CloseDoorWhenVoteCoroutine(true));
+        
 
         if (gameManager.ui_Manager.map.activeSelf)
         {
@@ -320,7 +321,29 @@ public class GameManagerNetwork : MonoBehaviourPun
     }
 
 
+    public void SendAnimationAddKey()
+    {
+        photonView.RPC("SetAnimationAddKey", RpcTarget.Others);
+    }
 
+    [PunRPC]
+    public void SetAnimationAddKey()
+    {
+        gameManager.ui_Manager.LaunchAnimationAddKey();
+        gameManager.ui_Manager.SetNBKey();
+    }
+
+    public void SendAnimationBrokenKey()
+    {
+        photonView.RPC("SetAnimationBrokenKey", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetAnimationBrokenKey()
+    {
+        gameManager.ui_Manager.LaunchAnimationBrokenKey();
+        gameManager.ui_Manager.SetNBKey();
+    }
 
     public void SendBackToExpe(int indexPlayer)
     {
@@ -412,7 +435,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetCloseDoorWhenVote()
     {
-        gameManager.CloseDoorWhenVote(true);
+        StartCoroutine(gameManager.CloseDoorWhenVoteCoroutine(true));
+        
     }
 
     public void SendHidePlayerTakeDoor()
@@ -599,7 +623,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetComeToHell()
     {
-        if (gameManager.AllPlayerGoneToHell() && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        if (gameManager.AllPlayerGoneToHell() && (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isSacrifice))
         {
             gameManager.ui_Manager.DisplayBlackScreenToDemonWhenAllGone();
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionHell = true;
@@ -660,7 +684,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
 
             door.GetComponent<Door>().counterPlayerInDoorZone++;
-
+            door.GetComponent<Door>().player = player;
         }
         else
         {
@@ -1111,8 +1135,10 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.DisplayFireBallRoom(display);
         gameManager.game.currentRoom.speciallyPowerIsUsed = !display;
         gameManager.CloseAllDoor(gameManager.game.currentRoom, false);
+        gameManager.fireBallIsLaunch = false;
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
 
-       
+
     }
 
     public void SendLaunchFireBallRoom()
@@ -1123,6 +1149,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetLaunchFireBallRoom()
     {
+        gameManager.fireBallIsLaunch = true;
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
         if (!PhotonNetwork.IsMasterClient)
         {
             return;
@@ -1158,7 +1186,23 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInJail)
             return;
         gameManager.ui_Manager.DisplayLeverVoteDoor(display);
+        gameManager.expeditionHasproposed = false;
     }
+
+    public void SendDisplaySpeciallyLevers(bool display , int indexSpecially)
+    {
+        photonView.RPC("SetDisplaySpeciallyLevers", RpcTarget.All, display, indexSpecially);
+    }
+
+    [PunRPC]
+    public void SetDisplaySpeciallyLevers(bool display, int indexSpecially)
+    {
+        if (!gameManager.SamePositionAtBoss())
+            return;
+        gameManager.ui_Manager.DisplaySpeciallyLevers(display , indexSpecially);
+    }
+
+
 
     public void SendDisplayNuVoteSacrificeForAllPlayer()
     {
@@ -1249,5 +1293,4 @@ public class GameManagerNetwork : MonoBehaviourPun
 
         gameManager.GetHexagone(indexHexagone).Room.isSpecial = true;
     }
-
 }

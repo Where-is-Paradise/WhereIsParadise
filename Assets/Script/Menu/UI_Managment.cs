@@ -117,6 +117,9 @@ public class UI_Managment : MonoBehaviourPun
     public GameObject CanvasChatInput;
     public GameObject ButtonChatInputMobile;
 
+
+    public GameObject video_settingButton;
+    public GameObject controle_settingButton;
     float k = -1;
     // Start is called before the first frame update
     void Start()
@@ -128,6 +131,7 @@ public class UI_Managment : MonoBehaviourPun
         StartCoroutine(TranslateDropdown());
         StartCoroutine(HideSkipTextTrailer());
        
+
 
     }
 
@@ -898,6 +902,16 @@ public class UI_Managment : MonoBehaviourPun
 #if !UNITY_IOS && !UNITY_ANDROID
         ButtonChatInputMobile.SetActive(false);
 #endif
+    }
+
+   public void HideSettingForMobile()
+    {
+#if UNITY_IOS || UNITY_ANDROID
+    video_settingButton.SetActive(false);
+    controle_settingButton.SetActive(false);
+#endif
+
+
     }
 
 }

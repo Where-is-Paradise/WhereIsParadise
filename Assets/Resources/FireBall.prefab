@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7147936335874410783}
   - component: {fileID: 7448022917705746506}
   - component: {fileID: 9204883003503271746}
+  - component: {fileID: -4181317554110286454}
   m_Layer: 0
   m_Name: FireBall
   m_TagString: FireBall
@@ -78,7 +79,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3a9334dad825561448ebc39e72d413ee, type: 3}
-  m_Color: {r: 1, g: 0.6602483, b: 0.3726415, a: 1}
+  m_Color: {r: 1, g: 0.83841395, b: 0.7028302, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -152,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizePosition: 1
-  m_SynchronizeRotation: 0
+  m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
 --- !u!114 &9204883003503271746
@@ -178,3 +179,16 @@ MonoBehaviour:
   sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &-4181317554110286454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7147936335874410778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b9451ce359f69b45a8810638866d5e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 120

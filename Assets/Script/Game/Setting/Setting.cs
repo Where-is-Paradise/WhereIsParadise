@@ -30,6 +30,7 @@ public class Setting : MonoBehaviour
     // server
     public string codeRoom;
     public bool isMatchmaking = false;
+    public float version = 0.48f;
 
     // Player controller
     public KeyCode INPUT_MOVE_FORWARD = KeyCode.Z;

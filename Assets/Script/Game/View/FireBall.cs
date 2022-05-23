@@ -85,7 +85,10 @@ public class FireBall : MonoBehaviourPun
             collision.gameObject.GetComponent<PlayerGO>().DisplayCharacter(false);
             collision.gameObject.GetComponent<PlayerGO>().rankTouchBall = gameManager.GetPlayerSameRoom(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID) .Count -  GetAllPlayerTouchByFireBall();
             collision.gameObject.GetComponent<PlayerGO>().isTouchByFireBall = true;
-           
+            collision.gameObject.GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
+            
+
+
             if (collision.gameObject.GetComponent<PlayerGO>().rankTouchBall == 1)
             {
                 photonView.RPC("ResetIsTouchFireBall", RpcTarget.All);
@@ -94,6 +97,7 @@ public class FireBall : MonoBehaviourPun
                 collision.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedition();
                 collision.gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
                 collision.gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
+                collision.gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
             }
             
             SendDestroy();

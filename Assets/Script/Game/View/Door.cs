@@ -56,7 +56,7 @@ public class Door : MonoBehaviour
             }
 
         }
-        if (!gameManager.expeditionHasproposed &&  timer.timerFinish)
+/*        if (!gameManager.expeditionHasproposed &&  timer.timerFinish)
         {
             if (counterPlayerInDoorZone == 1)
             {
@@ -66,7 +66,7 @@ public class Door : MonoBehaviour
             {
                 counterPlayerInDoorZone = 0;
             }
-        }
+        }*/
 
 
         if (counterPlayerInDoorZone < 0)
