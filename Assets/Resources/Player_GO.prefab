@@ -385,6 +385,7 @@ GameObject:
   - component: {fileID: 1037524500003434157}
   - component: {fileID: 7493958424526068340}
   - component: {fileID: 2592965583490973438}
+  - component: {fileID: 1768926764541101544}
   m_Layer: 5
   m_Name: ChatText
   m_TagString: Untagged
@@ -523,6 +524,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 0
+--- !u!114 &1768926764541101544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587498857660648623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0.14150941, g: 0.12749197, b: 0.12749197, a: 0.5}
+  m_EffectDistance: {x: 1.61, y: -1.88}
+  m_UseGraphicAlpha: 1
 --- !u!1 &616205042176975563
 GameObject:
   m_ObjectHideFlags: 0
@@ -854,6 +870,7 @@ GameObject:
   - component: {fileID: 8300612721520200235}
   - component: {fileID: 9094595034164402761}
   - component: {fileID: 7904873479154193027}
+  - component: {fileID: 5852131333963805155}
   m_Layer: 5
   m_Name: ChatText
   m_TagString: Untagged
@@ -901,7 +918,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.8584906, g: 0.21487056, b: 0.14173192, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -993,6 +1010,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 0
+--- !u!114 &5852131333963805155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359139251831883454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1.61, y: -1.88}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1468771904862135625
 GameObject:
   m_ObjectHideFlags: 0
@@ -1394,6 +1426,8 @@ GameObject:
   - component: {fileID: 2678157950679896979}
   - component: {fileID: 980846869625766064}
   - component: {fileID: 7463834410242310785}
+  - component: {fileID: -3756451342725869009}
+  - component: {fileID: 7349149619588218411}
   m_Layer: 0
   m_Name: Player_GO
   m_TagString: Player
@@ -1439,6 +1473,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 7463834410242310785}
+  - {fileID: -3756451342725869009}
   sceneViewId: 4
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -1457,6 +1492,7 @@ MonoBehaviour:
   movementlControlSpeed: 4
   playerName: 
   isMovingAutomaticaly: 1
+  oldPosition: {x: 0, y: 0, z: 0}
   isBoss: 0
   isImpostor: 0
   isReady: 0
@@ -1515,6 +1551,8 @@ MonoBehaviour:
   indexPower: -1
   hasClickInPowerImposter: 0
   hasValidPowerImposter: 0
+  hideImpostorInformation: 0
+  movement: {x: 0, y: 0, z: 0}
 --- !u!114 &7384524027293410437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1535,7 +1573,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2672510705023225238}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -1592,7 +1630,7 @@ MonoBehaviour:
     TeleportEnabled: 1
     TeleportIfDistanceGreaterThan: 3
     InterpolateOption: 2
-    InterpolateMoveTowardsSpeed: 1
+    InterpolateMoveTowardsSpeed: 5.2
     InterpolateLerpSpeed: 1
     ExtrapolateOption: 0
     ExtrapolateSpeed: 1
@@ -1608,6 +1646,36 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 1.1
+--- !u!114 &-3756451342725869009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2672510705023225238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 501ed4f03eaec714b810bc9c722e1e6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkPosition: {x: 0, y: 0, z: 0}
+  rigidbody: {fileID: 0}
+--- !u!70 &7349149619588218411
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2672510705023225238}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.04, y: -0.17}
+  m_Size: {x: 0.76, y: 1.12}
+  m_Direction: 0
 --- !u!1 &4211760565073054817
 GameObject:
   m_ObjectHideFlags: 0

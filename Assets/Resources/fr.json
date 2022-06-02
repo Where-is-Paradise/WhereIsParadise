@@ -44,7 +44,7 @@
 
   "menu_setting_video":"Video",
   "menu_setting_video_resolution":"Résolution",
-  "menu_setting_video_fullscreen":"Fullscreen",
+  "menu_setting_video_fullscreen":"Pleine écran",
   "menu_setting_video_apply":"Appliquer",
 
   "menu_setting_audio":"Audio",
@@ -132,23 +132,29 @@
 
 
 "tutorial_initial_PlayerSelectionedGoToDoorZone" : "Ensuite Le ou les joueurs sélectionnés doivent se rendre dans la zone de la porte jusqu'à ce que la lettre s'affiche au-dessus du personnage. Le joueur qui a par exemple la lettre A pourra explorer la salle derrière la porte A.",
-"tutorial_autel_0" : "Seule le chef d'équipe peut utiliser les leviers",
-"tutorial_autel_1" : "Avant d'activer ce levier, vous devez sélectionner un ou plusieurs joueurs",
-"tutorial_autel_2" : "Vous avez été sélectionner par le chef d'équipe pour aller en exploration, veuillez vous rendre dans la zone de la porte du choix de votre chef d'équipe ( la lettre de la porte doit s'afficher au dessus de votre personnage).",
+"tutorial_autel_0" : "Seule le chef d'équipe peut utiliser cet objet",
+"tutorial_autel_1" : "Avant de pouvoir utiliser cet objet, vous devez sélectionner un ou plusieurs joueurs",
+"tutorial_autel_2" : "Vous avez été sélectionner par le chef d'équipe pour aller en exploration, veuillez vous rendre dans la zone de l'une des portes ( la lettre de la porte doit s'afficher au dessus de votre personnage).",
 
-"tutorial_initial_BossVoteDoor_0" : "Ce levier permet de lancer un vote pour ouvrir une porte",
+"tutorial_initial_BossVoteDoor_0" : "Cet objet permet de lancer un vote pour ouvrir une porte",
 "tutorial_initial_BossVoteDoor_2" : "La porte avec le plus de vote ( joueurs dans la zone) s'ouvre..",
 "tutorial_initial_BossVoteDoor_1" : "Chaque ouverture de porte utilise une clef.",
-  "tutorial_initial_Map_0" : "La carte vous permet de visualiser le donjon et de savoir où vous vous trouvez.",
+
+"tutorial_initial_NoBossExploration_0" : "Cet objet permet au chef d'équipe de lancer une exploration.",
+"tutorial_initial_NoBossExploration_1" : "Le chef d'équipe doit tout d'abord choisir les futures  explorateurs.",
+
+"tutorial_initial_BossExploration_0" : "Avant de pouvoir interagir avec cet objet, vous devez sélectionner un ou plusieurs joueurs.",
+
+"tutorial_initial_Map_0" : "La carte vous permet de visualiser le donjon et de savoir où vous vous trouvez.",
 "tutorial_autel_3" : "Correspond à la distance du Paradis.",
 "tutorial_autel_4" : "Correspond aux nombre de clefs restantes.",
 "tutorial_autel_5" : "Correspond aux nombre de torches restantes..",
 
 "tutorial_autel_chest_0" : "Vous devez choisir un coffre à ouvrir,",
 "tutorial_autel_chest_1" : "\n mais attention un des coffres est piégé !",
-"tutorial_autel_chest_1" : "Les imposteurs connaissent le coffre piégé.",
+"tutorial_autel_chest_2" : "Les imposteurs connaissent le coffre piégé.",
 
-"tutorial_autel_sacrifice_0" : "Vous devez sacrifié une personne de votre équipe.",
+"tutorial_autel_sacrifice_0" : "Sacrifié une personne de votre équipe et vous serez récompenser par une clef supplémentaire.",
 "tutorial_autel_sacrifice_1" : "Le joueur ayant le plus de vote sera sacrifé",
 
 "tutorial_autel_cursed_0" : "Une porte sera ouverte aléatoirement.",
@@ -159,9 +165,39 @@
 "tutorial_autel_jail_0" : "Vous êtes emprisoné(e).",
 "tutorial_autel_jall_1" : "Votre équipe peut venir vous libérer si elle ouvre une des portes adjacentes à votre salle.",
 
-  "menu_setting_controls_exploration":"Interagir",
+"menu_setting_controls_exploration":"Interagir",
 
-  "menu_setting_controls_moveForward":"Haut",
-  "menu_setting_controls_moveBackward":"Bas",
+"menu_setting_controls_moveForward":"Haut",
+"menu_setting_controls_moveBackward":"Bas",
+
+"menu_setting_video_fullscreenMode0":"Fenêtre exclusive",
+"menu_setting_video_fullscreenMode1":"Fenêtré pleine écran",
+"menu_setting_video_fullscreenMode2":"Fenêtré maximisé",
+"menu_setting_video_fullscreenMode3":"Fenêtré",
+
+
+"waitingRoom_Skin_button" : "Personnage",
+"waitingRomm_Ready_button" : "Prêt",
+"waitingRomm_OpenRoom_button" : "Ouvrir le salon",
+"waitingRomm_CopyCode_button" : "Copier",
+"waitingRomm_Start_button" : "Commencer",
+"waitingRomm_Start_text" : "La partie commence..",
+
+"LoadingPage_menu_description0" : "Initialisation des paramètres..",
+"LoadingPage_game_description0" : "Création du donjon..",
+"SkinPage_title" : "Choisissez votre couleur",
+"SkinPage_save_button" : "Appliquer",
+
+"tutorial_powerImpostor_0" : "Pour utiliser votre pouvoir, selectionez ce bouton",
+"tutorial_powerImpostor_1" : "Ensuite choisissez la salle que vous voulez modifier.",
+
+"menu_credit_3" : "Site web",
+"menu_credit_6" : "L'équipe",
+"menu_credit_team_0" : "Chef de projet / Programmeur / Game designer",
+"menu_credit_team_1" : "Graphiste principal",
+"menu_credit_team_2" : "Graphiste  / Monteur / Animateur",
+"menu_credit_team_3" : "Community manager  / Développeur web",
+
+
 
   }

@@ -26,7 +26,7 @@ public class Turret : MonoBehaviourPun
         }
         if (canFire && gameManager.fireBallIsLaunch)
         {
-            ShotFireBall();
+            //ShotFireBall();
             canFire = false;
         }
         
@@ -40,14 +40,14 @@ public class Turret : MonoBehaviourPun
             return;
         }
         
-        frequency = Random.Range(5, 15);
+        frequency = Random.Range(1, 10);
         SendFrequency(frequency);
     }
 
     public void ShotFireBall()
     {
-        GameObject fireball = PhotonNetwork.Instantiate("FireBall", this.transform.position, Quaternion.identity);
-        fireball.GetComponent<FireBall>().direction = this.transform.right;
+        GameObject fireball = PhotonNetwork.Instantiate("FireBall", this.transform.Find("SpawnFireball").position, Quaternion.identity);
+        fireball.GetComponent<FireBall>().direction = -this.transform.up;
         fireball.transform.parent = this.gameObject.transform;
         fireball.GetComponent<FireBall>().SendParent(fireball.transform.parent.GetComponent<Turret>().index);
         frequency = Random.Range(5, 15);
@@ -79,7 +79,8 @@ public class Turret : MonoBehaviourPun
     public void DestroyFireBalls()
     {
         for(int i = 0; i < transform.childCount; i++){
-            this.transform.GetChild(i).GetComponent<FireBall>().SendDestroy();
+            if(this.transform.GetChild(i).GetComponent<FireBall>())
+                this.transform.GetChild(i).GetComponent<FireBall>().SendDestroy();
         }
     }
 }

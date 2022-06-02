@@ -19,6 +19,8 @@ public class Settin_management : MonoBehaviour
     // Video
     public GameObject resolution;
     public GameObject fullscren;
+    public int current_index_fullscreenMode = 0;
+    public List<GameObject> fullScreeMode;
 
     // Audio
     public Scrollbar globalVolum_scrollbar;
@@ -37,6 +39,8 @@ public class Settin_management : MonoBehaviour
     private bool inputIsPress = false;
 
     public GameObject panelLanguageReset;
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -57,6 +61,11 @@ public class Settin_management : MonoBehaviour
         LoadLanguage();
         LoadTutorial();
 
+        SetFullScreenModeListView();
+        SetLanguageDropdown();
+
+        SetGlobalVolume();
+        SetMusicVolume();
     }
 
     // Update is called once per frame
@@ -88,7 +97,25 @@ public class Settin_management : MonoBehaviour
 
         m_Dropdown.ClearOptions();
         m_Dropdown.AddOptions(resolution_string);
+
+     
     }
+
+    public void SetFullScreenModeListView()
+    {
+        for (int i = 0; i < fullScreeMode.Count; i++)
+        {
+            if (i == setting.fullscreenMode)
+            {
+                fullScreeMode[i].SetActive(true);
+            }
+            else
+            {
+                fullScreeMode[i].SetActive(false);
+            }
+        }
+    }
+
     public void OnClickApplySetResolution()
     {
         Dropdown resolution_dropdown = resolution.GetComponent<Dropdown>();
@@ -100,7 +127,9 @@ public class Settin_management : MonoBehaviour
         Screen.SetResolution(resolutions[resolution_int].width, resolutions[resolution_int].height,
             setting.fullscreen);
         Camera.main.orthographicSize = 5.1f;
+        SetFullScreenMode(current_index_fullscreenMode);
         SaveVideo();
+        
     }
 
     public void OnClickApplyLanguage()
@@ -111,6 +140,28 @@ public class Settin_management : MonoBehaviour
         SaveLanguage(setting.langage);
 
         StartCoroutine(CoroutineReset(1));
+    }
+
+    public void SetLanguageDropdown()
+    {
+        if (!language)
+        {
+            return;
+        }
+        Dropdown language_dropdown = language.GetComponent<Dropdown>();
+
+        if( setting.langage == "en")
+        {
+            language_dropdown.value = 0;
+        }
+        else if (setting.langage == "fr")
+        {
+            language_dropdown.value = 1;
+        }
+        else
+        {
+            language_dropdown.value = 2;
+        }
     }
 
     public IEnumerator CoroutineReset(float seconde)
@@ -124,29 +175,25 @@ public class Settin_management : MonoBehaviour
 
     public void SetMusicVolume()
     {
-        music.volume = (musicVolum_scrollbar.value / 20);
-        int volume_int = (int) (music.volume * 1000);
+        music.volume = (musicVolum_scrollbar.value /8 );
+        int volume_int = (int) (music.volume * 800);
         textVolume.text = volume_int  + "";
         music.mute = mute.transform.GetChild(0).GetComponent<Image>().enabled;
-
-        setting.volume_music = musicVolum_scrollbar.value /20;        
+        setting.volume_music = musicVolum_scrollbar.value;
         SaveAudio();
-
     }
 
 
     public void SetGlobalVolume()
     {
-     
         foreach (AudioSource sound in allSound)
         {
-            sound.volume = (globalVolum_scrollbar.value /10);
-            int volume_int = (int)(sound.volume * 500);
-            textGlobalVolume.text = volume_int + "";
+            sound.volume = (globalVolum_scrollbar.value /8);
             sound.mute = mute.transform.GetChild(0).GetComponent<Image>().enabled;
         }
-
-        setting.volume_global = (globalVolum_scrollbar.value /10);
+        int volume_int = (int)(globalVolum_scrollbar.value  * 100);
+        textGlobalVolume.text = volume_int + "";
+        setting.volume_global = globalVolum_scrollbar.value;
         SaveAudio();
     }
 
@@ -272,22 +319,22 @@ public class Settin_management : MonoBehaviour
             SaveAudio();
             setting.mute = false;
         }
-      
 
-        music.volume = setting.volume_music;
-        musicVolum_scrollbar.value = music.volume * 20;
-        int volume_int = (int)(music.volume * 1000 );
 
+        music.volume = (setting.volume_music );
+        musicVolum_scrollbar.value = music.volume;
+        int volume_int = (int)(music.volume * 800 );
+        
         textVolume.text = volume_int + "";
 
         foreach(AudioSource sound in allSound)
         {
             sound.volume = setting.volume_global;
-            globalVolum_scrollbar.value = sound.volume * 10;
-            int volume_int2 = (int)(sound.volume * 500);
-            textGlobalVolume.text = volume_int2 + "";
+            globalVolum_scrollbar.value = sound.volume;
             sound.mute = setting.mute;
         }
+        int volume_int2 = (int)(setting.volume_global * 100);
+        textGlobalVolume.text = volume_int2 + "";
 
         mute.transform.GetChild(0).GetComponent<Image>().enabled = setting.mute;
         music.mute = setting.mute;
@@ -301,6 +348,7 @@ public class Settin_management : MonoBehaviour
                         .Write("Index_width", setting.resolution_width_index)
                         .Write("Index_height", setting.resolution_height_index)
                         .Write("Fullscreen", setting.fullscreen)
+                        .Write("FullscreenMode" , setting.fullscreenMode)
                         .Commit();
 
     }
@@ -326,7 +374,8 @@ public class Settin_management : MonoBehaviour
             QuickSaveReader.Create("Video")
                            .Read<int>("Index_width", (r) => { setting.resolution_width_index = r; })
                            .Read<int>("Index_height", (r) => { setting.resolution_height_index = r; })
-                           .Read<bool>("Fullscreen", (r) => { setting.fullscreen = r; });
+                           .Read<bool>("Fullscreen", (r) => { setting.fullscreen = r; })
+                           .Read<int>("FullscreenMode", (r) => { setting.fullscreenMode = r; }) ;
             Resolution[] resolutions = Screen.resolutions;
             Screen.SetResolution(resolutions[setting.resolution_width_index].width, resolutions[setting.resolution_height_index].height, setting.fullscreen);
         } catch (Exception e)
@@ -337,6 +386,7 @@ public class Settin_management : MonoBehaviour
         fullscren.transform.GetChild(0).GetComponent<Image>().enabled = setting.fullscreen;
         Dropdown resolution_dropdown = resolution.GetComponent<Dropdown>();
         resolution_dropdown.value = setting.resolution_width_index;
+        current_index_fullscreenMode = setting.fullscreenMode;
     }
 
     public void SaveLanguage(string index)
@@ -404,5 +454,29 @@ public class Settin_management : MonoBehaviour
         SaveTutorial(false);
     }
 
+
+    public void SetFullScreenMode(int index)
+    {
+        switch (index)
+        {
+            case 0: Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+                break;
+            case 1:
+                Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+                break;
+            case 2:
+                Screen.fullScreenMode = FullScreenMode.MaximizedWindow;
+                break;
+            case 3:
+                Screen.fullScreenMode = FullScreenMode.Windowed;
+                break;
+        }
+    }
+
+    public void OnclickFullScreenModeArrow(int index)
+    {
+        current_index_fullscreenMode = index;
+        setting.fullscreenMode = current_index_fullscreenMode;
+    }
 
 }

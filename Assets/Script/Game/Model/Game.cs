@@ -95,7 +95,7 @@ public class Game : ScriptableObject
             dungeon.InserKeyInRandomRoom();*/
 
         //dungeon.InsertRandomChestRoom();
-        //dungeon.InsertRandomFireBallRoom();
+        dungeon.InsertRandomFireBallRoom();
         //dungeon.InsertRandomSacrificeRoom();
         //dungeon.InsertRandomJailRoom();
         //dungeon.InsertRandomFoggyRoom();

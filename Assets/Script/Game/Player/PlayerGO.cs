@@ -11,7 +11,7 @@ public class PlayerGO : MonoBehaviour
     public float movementlControlSpeed = 1;
     public string playerName;
     public bool isMovingAutomaticaly = true;
-
+    public Vector3 oldPosition;
     private PlayerNetwork playerNetwork;
 
     public bool isBoss = false;
@@ -35,6 +35,7 @@ public class PlayerGO : MonoBehaviour
 
     private Vector2 pointA;
     private Vector2 pointB;
+    private Vector2 oldPointB;
     private bool touchStart = false;
 
     public bool launchVoteDoorMobile = false;
@@ -116,6 +117,7 @@ public class PlayerGO : MonoBehaviour
     public bool hasValidPowerImposter = false;
 
     public bool hideImpostorInformation = false;
+    public Vector3 movement = new Vector3(0,0,0);
     private void Awake()
     {
         displayChatInput = false;
@@ -162,7 +164,8 @@ public class PlayerGO : MonoBehaviour
         
         if (!GetComponent<PhotonView>().IsMine)
         {
-            GetComponent<BoxCollider2D>().isTrigger = true;
+            GetComponent<CapsuleCollider2D>().isTrigger = true;
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
         }
     }
 
@@ -176,7 +179,7 @@ public class PlayerGO : MonoBehaviour
         gameObject.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = playerName;
         if (isMovingAutomaticaly && GetComponent<PhotonView>().IsMine)
         {
-            this.GetComponent<BoxCollider2D>().enabled = false;
+            this.GetComponent<CapsuleCollider2D>().enabled = false;
             this.transform.position += new Vector3(-3f * Time.deltaTime, 0, 0);
             if (this.transform.position.x < 5)
             {
@@ -186,7 +189,7 @@ public class PlayerGO : MonoBehaviour
         }
         else
         {
-            this.GetComponent<BoxCollider2D>().enabled = true;
+            this.GetComponent<CapsuleCollider2D>().enabled = true;
             isMovingAutomaticaly = false;
         }
 
@@ -201,6 +204,8 @@ public class PlayerGO : MonoBehaviour
         {
             handlePlayerMove();
         }
+
+        
     }
 
 
@@ -210,7 +215,6 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-
         TurnChat();
         if (displayMessage)
         {
@@ -242,7 +246,10 @@ public class PlayerGO : MonoBehaviour
         {
             gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
             SetSkinBoss(isBoss);
-            SetSkinImpostor(isImpostor);
+            if (!hideImpostorInformation)
+                SetSkinImpostor(isImpostor);
+            else
+                SetSkinImpostor(false);
 
             if (gameManager.timer.timerFinish && !gameManager.alreadyPass)
             {
@@ -353,14 +360,14 @@ public class PlayerGO : MonoBehaviour
                     gameManager.ui_Manager.DisplayMap();
                     displayMap = false;
 
-                    if (gameManager.ui_Manager.map.activeSelf)
+/*                    if (gameManager.ui_Manager.map.activeSelf)
                     {
                         Camera.main.orthographicSize = 3f;
                     }
                     else
                     {
                         Camera.main.orthographicSize = resolution.currentOrthographicSize;
-                    }
+                    }*/
                 }
                 else
                 {
@@ -400,25 +407,23 @@ public class PlayerGO : MonoBehaviour
         }
         // Mobile moving character
 
-        if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
+        if (Input.touchCount == 1 && Input.touches[0].phase == TouchPhase.Began )
         {
             Touch touch = Input.GetTouch(0);
             pointA = Camera.main.ScreenToWorldPoint(touch.position);
-
+            oldPointB = pointA;
         }
 
-        if ((Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Moved) || (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Stationary))
+        if ((Input.touchCount == 1 && Input.touches[0].phase == TouchPhase.Moved) || (Input.touchCount == 1 && Input.touches[0].phase == TouchPhase.Stationary))
         {
             Touch touch = Input.GetTouch(0);
             pointB = Camera.main.ScreenToWorldPoint(touch.position);
             touchStart = true;
-
         }
         else
         {
             touchStart = false;
         }
-
 
 
 
@@ -475,11 +480,7 @@ public class PlayerGO : MonoBehaviour
 
 
 
-        if (IsDoubleTap())
-        {
-            hideImpostorInformation = !hideImpostorInformation;
-            gameManager.ui_Manager.HideAllImpostorInformation(hideImpostorInformation);
-        }
+        
 
 
         if (gameManager)
@@ -562,26 +563,35 @@ public class PlayerGO : MonoBehaviour
         this.transform.Find("InfoCanvas").Find("PlayerName").gameObject.SetActive(display);
     }
 
-    public static bool IsDoubleTap()
+    public bool IsDoubleTap()
     {
+
         bool result = false;
         float MaxTimeWait;
 
 #if UNITY_IOS
         MaxTimeWait = 0.07f;
 #else
-        MaxTimeWait = 0.01f;
+        MaxTimeWait = 0.022f;
 #endif
 
-        float VariancePosition = 1f;
+        float VariancePosition = 0.5f;
 
-        if (Input.touchCount == 1 && (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetTouch(0).phase == TouchPhase.Ended))
+      
+        if (Input.touchCount == 1 &&( Input.GetTouch(0).phase == TouchPhase.Began || Input.GetTouch(0).phase == TouchPhase.Stationary))
         {
+
             float DeltaTime = Input.GetTouch(0).deltaTime;
             float DeltaPositionLenght = Input.GetTouch(0).deltaPosition.magnitude;
 
+
+            SetTextChat(DeltaTime + " " + MaxTimeWait + " " + DeltaPositionLenght + " " + VariancePosition);
             if (DeltaTime > 0 && DeltaTime < MaxTimeWait && DeltaPositionLenght < VariancePosition)
+            {
+                SetTextChat("sa passe");
                 result = true;
+            }
+              
         }
         return result;
     }
@@ -612,32 +622,46 @@ public class PlayerGO : MonoBehaviour
         {
             GetComponent<PlayerNetwork>().SendVoteExplorationDisplay(true);
         }
-        this.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
     }
 
 
 
     private void handlePlayerMove()
     {
+       
         handleDesktopMove();
         handleMobileMove();
+      
     }
 
     private void handleDesktopMove()
     {
         turnPlayer();
-        
-        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, -1);
 
+
+        //this.GetComponent<BoxCollider2D>().enabled = true;
+        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, -1);
+        oldPosition = transform.position;
+        float horizontal = InputManager.GetAxis("Horizontal");
+        float vertical = InputManager.GetAxis("Vertical");
+/*        if(Mathf.Abs(InputManager.GetAxis("Horizontal")) + Mathf.Abs(InputManager.GetAxis("Vertical")) > 1f)
+        {
+            horizontal = 0.5f * Mathf.Sign(InputManager.GetAxis("Horizontal"));
+            vertical = 0.5f * Mathf.Sign(InputManager.GetAxis("Vertical")); ;
+        }*/
         this.transform.Translate(
             new Vector3(
-                InputManager.GetAxis("Horizontal") * movementlControlSpeed * 1.3f * Time.deltaTime,
-                InputManager.GetAxis("Vertical") * movementlControlSpeed * 1.3f * Time.deltaTime,
+                horizontal * movementlControlSpeed * 1.3f * Time.deltaTime,
+                vertical * movementlControlSpeed * 1.3f * Time.deltaTime,
                 0
             )
         );
-        
+/*        if(horizontal > 0 || vertical > 0)
+            movement = transform.position - oldPosition;*/
+
+
     }
+
 
     private void handleMobileMove()
     {
@@ -723,10 +747,10 @@ public class PlayerGO : MonoBehaviour
         {
             if (gameManager && gameManager.fireBallIsLaunch)
             {
-                Physics2D.IgnoreCollision(collision.transform.GetComponent<BoxCollider2D>(), this.GetComponent<BoxCollider2D>(), false);
+                Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), false);
                 return;
             }
-            Physics2D.IgnoreCollision(collision.transform.GetComponent<BoxCollider2D>(), this.GetComponent<BoxCollider2D>());
+            Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>());
         }
 
     }
@@ -744,8 +768,8 @@ public class PlayerGO : MonoBehaviour
                     Debug.Log(player.GetComponent<PhotonView>().ViewID + " " + this.GetComponent<PhotonView>().ViewID);
                     if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isSacrifice)
                     {
-                        player.GetComponent<BoxCollider2D>().isTrigger = ignore;
-                        Physics2D.IgnoreCollision(player.transform.GetComponent<BoxCollider2D>(), this.GetComponent<BoxCollider2D>(), ignore);
+                        player.GetComponent<CapsuleCollider2D>().isTrigger = ignore;
+                        Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), ignore);
                     }
                 }
              
@@ -817,7 +841,7 @@ public class PlayerGO : MonoBehaviour
             {
                 gameManager.ui_Manager.DisplayBlackScreenToNoneImpostor();
                 gameManager.gameManagerNetwork.SendComeToHell();
-                Physics2D.IgnoreCollision(collision.transform.GetComponent<CircleCollider2D>(), this.GetComponent<BoxCollider2D>(), true);
+                Physics2D.IgnoreCollision(collision.transform.GetComponent<CircleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), true);
                 //Cursor.visible = true;
                 collisionHell = true;
             }
@@ -906,7 +930,7 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        changeBoss = true;
+        changeBoss = !changeBoss;
         
     }
 
@@ -963,7 +987,7 @@ public class PlayerGO : MonoBehaviour
         } 
         if (gameManager.game.currentRoom.isSacrifice)
         {
-            gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer();
+            gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer(true);
             GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
         }
         if (gameManager.game.currentRoom.IsVirus)
@@ -1148,7 +1172,6 @@ public class PlayerGO : MonoBehaviour
         }
         if (gameManager.expeditionHasproposed)
         {
-            // afficher panel explication comme quoi on peut pas echainer les explorations
             return;
         }
 
@@ -1186,15 +1209,15 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (!gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
-        {
-            return;
-        }
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lastPlayerIndexVote != this.GetComponent<PhotonView>().ViewID)
         {
             return;
         }
         if (!GameObject.Find("SacrificeRoom") || !GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch)
+        {
+            return;
+        }
+        if (gameManager.game.currentRoom.speciallyPowerIsUsed)
         {
             return;
         }
@@ -1204,7 +1227,6 @@ public class PlayerGO : MonoBehaviour
         }
         if (GetPlayerMineGO().GetComponent<PlayerGO>().isSacrifice)
         {
-            //transform.Find("Perso").Find("Light_red").gameObject.SetActive(false);
             return;
         }
         
@@ -1322,6 +1344,8 @@ public class PlayerGO : MonoBehaviour
         }
         if (gameManager && gameManager.fireBallIsLaunch)
         {
+            playerNetwork.SendResetWantToChangeBoss();
+            changeBoss = false;
             return;
         }
         if (displayChatInput)
@@ -1431,14 +1455,17 @@ public class PlayerGO : MonoBehaviour
     {
         if (gameManager.setting.displayTutorial || force)
         {
-           
-            if (!gameManager.ui_Manager.listTutorialBool[indexPanel])
-            {
-                gameManager.ui_Manager.tutorial_parent.SetActive(true);
-                gameManager.ui_Manager.tutorial[indexPanel].SetActive(true);
-                if(!force)
-                    gameManager.ui_Manager.listTutorialBool[indexPanel] = true;
-            }
+           if (!gameManager.ui_Manager.tutorial_parent.activeSelf)
+           {
+                if (!gameManager.ui_Manager.listTutorialBool[indexPanel])
+                {
+                    gameManager.ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
+                    gameManager.ui_Manager.tutorial_parent.SetActive(true);
+                    gameManager.ui_Manager.tutorial[indexPanel].SetActive(true);
+                    if (!force)
+                        gameManager.ui_Manager.listTutorialBool[indexPanel] = true;
+                }
+           }
         }
     }
 
@@ -1577,11 +1604,31 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-       
+
+        DisplayTutorial(22);
+  
+
         canLaunchChangeBoss = isEnter;
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Change_Boss").gameObject.SetActive(isEnter);
 
     }
+
+/*    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(this.transform.position);
+        }
+        else
+        {
+            networkPosition = (Vector3)stream.ReceiveNext();
+            networkRotation = (Quaternion)stream.ReceiveNext();
+            rigidbody.velocity = (Vector3)stream.ReceiveNext();
+
+            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
+            networkPosition += (this.m_Body.velocity * lag);
+        }
+    }*/
 
 }

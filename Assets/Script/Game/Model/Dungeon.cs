@@ -10,7 +10,7 @@ public class Dungeon : ScriptableObject
     private int ratio_obstacle;
     public Room initialRoom;
     private List<Room> listObstaclePivot;
-    private List<Room> listRoomTraversed;
+    public List<Room> listRoomTraversed;
 
 
 
@@ -500,10 +500,10 @@ public class Dungeon : ScriptableObject
 
     public void SetUpChests(Room room)
     {
-        int randomAward = Random.Range(0, 3);
+        //int randomAward = Random.Range(0, 3);
         int randomIndex = Random.Range(0, 2);
 
-        //int randomAward = 2;
+        int randomAward = 2;
 
         if(randomIndex == 0)
         {
@@ -591,6 +591,7 @@ public class Dungeon : ScriptableObject
             if(room.distance_pathFinding_initialRoom > (exit.distance_pathFinding_initialRoom + 3))
             {
                 room.IsObstacle = true;
+                room.isTooFar = true;
             }
         }
     }

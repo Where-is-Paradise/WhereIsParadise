@@ -13,6 +13,7 @@ public class FireBall : MonoBehaviourPun
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        StartCoroutine(CoroutineActiveCollision(2));
     }
 
     // Update is called once per frame
@@ -28,18 +29,28 @@ public class FireBall : MonoBehaviourPun
             return;
         }
         GetComponent<Rigidbody2D>().velocity = direction * speed;
-
+       
        
     }
 
-    public void ChangeDirection(string nameWall)
+    public IEnumerator CoroutineActiveCollision(int seconde)
+    {
+        yield return new WaitForSeconds(seconde);
+        GetComponent<CircleCollider2D>().enabled = true;
+    }
+
+    public void ChangeDirection(Collider2D nameWallColsion)
     {
         if (!PhotonNetwork.IsMasterClient)
         {
             return;
         }
-        if (nameWall == "Left" || nameWall == "Right")
+        string nameWall = nameWallColsion.gameObject.name;
+        if (nameWall == "Left" || nameWall == "Right" 
+            || (CollisionDoor(nameWallColsion) && nameWall == "A")
+            || (CollisionDoor(nameWallColsion) && nameWall == "D"))
         {
+
             if (direction.y < 0)
             {
                 direction = new Vector2(-direction.x, -1 * Random.Range(0.5f, 1f));
@@ -50,7 +61,11 @@ public class FireBall : MonoBehaviourPun
             }
 
         }
-        if (nameWall == "Top" || nameWall == "Bottom")
+        if (nameWall == "Top" || nameWall == "Bottom" 
+            || (CollisionDoor(nameWallColsion) && nameWall == "B")
+            || (CollisionDoor(nameWallColsion) && nameWall == "C") 
+            || (CollisionDoor(nameWallColsion) && nameWall == "E")
+            || (CollisionDoor(nameWallColsion) && nameWall == "F"))
         {
             if (direction.x < 0)
             {
@@ -62,8 +77,21 @@ public class FireBall : MonoBehaviourPun
             }
 
         }
+
+        if(nameWall  == "Turret")
+        {
+            direction = new Vector2(-direction.x * Random.Range(0.5f, 1f), -direction.y * Random.Range(0.5f, 1f));
+        }
     }
 
+    public bool CollisionDoor(Collider2D collision)
+    {
+        if (collision.isTrigger)
+        {
+            return false;
+        }
+        return true;
+    }
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -98,6 +126,17 @@ public class FireBall : MonoBehaviourPun
                 collision.gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
                 collision.gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
                 collision.gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
+                if (gameManager.setting.displayTutorial)
+                {
+                    if (!gameManager.ui_Manager.listTutorialBool[23])
+                    {
+                        gameManager.ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
+                        gameManager.ui_Manager.tutorial_parent.SetActive(true);
+                        gameManager.ui_Manager.tutorial[23].SetActive(true);
+                        gameManager.ui_Manager.listTutorialBool[23] = true;
+                    }
+
+                }
             }
             
             SendDestroy();
@@ -108,7 +147,7 @@ public class FireBall : MonoBehaviourPun
             {
                 return;
             }
-            ChangeDirection(collision.gameObject.name);
+            ChangeDirection(collision);
         }
     }
 

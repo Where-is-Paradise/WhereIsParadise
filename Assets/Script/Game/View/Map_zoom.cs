@@ -38,7 +38,7 @@ public class Map_zoom : MonoBehaviour
 
             float difference = currentMagnitude - prevMagnitude;
 
-            Zoom(difference * 0.02f);
+            Zoom(difference * 0.005f);
 
         }
         else if (Input.GetMouseButton(0))

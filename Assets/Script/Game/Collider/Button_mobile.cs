@@ -15,77 +15,69 @@ public class Button_mobile : MonoBehaviour
 
     void Update()
     {
-        if(this.name == "Map_panel")
+/*        if(this.name == "Map_panel")
         {
             if (gameManager.ui_Manager.map.activeSelf)
             {
                 this.gameObject.SetActive(false);
             }
+        }*/
+    }
+
+    public void OnClickExplorationButton()
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchExpeditionWithAnimation = true;
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
+        {
+            GameObject.Find("Exploration_button").SetActive(false);
         }
     }
 
-/*    public void OnMouseOver()
+    public void OnClickDoorPanel()
     {
-
-    }*/
-
-
-
-    public void OnMouseDown()
-    {
-        if (this.name == "Exploration_button")
-        {
-            //InputExplorationAnimation(Input.GetMouseButtonDown(0), Input.GetMouseButton(0), Input.GetMouseButtonUp(0));
-            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchExpeditionWithAnimation = true;
-            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
-            {
-               this.gameObject.SetActive(false);
-            }
-        }
-        if (this.name == "Door_panel")
-        {
-            //InputVoteDoorAnimation(Input.GetMouseButtonDown(0), Input.GetMouseButton(0), Input.GetMouseButtonUp(0));
-            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchVoteDoorMobile = true;
-        }
-        if (this.name == "Map_panel")
-        {
-            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().displayMap = true;
-        }
-        if(this.tag == "SpecialRoom_UI_Mobile")
-        {
-            if (gameManager.game.currentRoom.chest)
-            {
-                gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
-
-            }
-
-            if (gameManager.game.currentRoom.fireBall)
-            {
-                gameManager.gameManagerNetwork.SendLaunchFireBallRoom();
-
-            }
-
-            if (gameManager.game.currentRoom.isSacrifice)
-            {
-                gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer();
-                GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
-            }
-            gameManager.gameManagerNetwork.SendCloseDoorWhenVote();
-
-            gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
-        }
-        if (this.name == "Tuto_panel")
-        {
-            PlayerGO playerMine = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
-            playerMine.displayTutorial = true;
-        }
-        if (this.name == "Change_Boss")
-        {
-            PlayerGO playerMine = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
-            playerMine.changeBoss = true;
-        }
-
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchVoteDoorMobile = true;
     }
 
+
+    public void OnClickMapPanel()
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().displayMap = true;
+    }
+
+    public void OnClickSpecialityRoomMobile()
+    {
+        if (gameManager.game.currentRoom.chest)
+        {
+            gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
+
+        }
+
+        if (gameManager.game.currentRoom.fireBall)
+        {
+            gameManager.gameManagerNetwork.SendLaunchFireBallRoom();
+
+        }
+
+        if (gameManager.game.currentRoom.isSacrifice)
+        {
+            gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer(true);
+            GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
+        }
+        gameManager.gameManagerNetwork.SendCloseDoorWhenVote();
+
+        gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
+    }
+
+    public void OnClickTutoPanel()
+    {
+        PlayerGO playerMine = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
+        playerMine.displayTutorial = true;
+    }
+
+    public void OnClickChangeBoss()
+    {
+        PlayerGO playerMine = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
+        playerMine.changeBoss = true;
+    }
 
 }

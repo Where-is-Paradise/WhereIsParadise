@@ -16,6 +16,8 @@ public class Room : ScriptableObject
     public bool IsExit { get { return isExit; } set { isExit = value; } }
     private bool isObstacle;
     public bool IsObstacle { get { return isObstacle; } set { isObstacle = value; } }
+
+    public bool isTooFar;
     private bool isInitiale;
     public bool IsInitiale { get { return isInitiale; } set { isInitiale = value; } }
     private bool isVirus;
@@ -85,6 +87,7 @@ public class Room : ScriptableObject
         isObstacle = false;
         isInitiale = false;
         isExit = false;
+        isTooFar = false;
         availableKeyAnimation = true;
         for (int i = 0; i < 6; i++)
         {

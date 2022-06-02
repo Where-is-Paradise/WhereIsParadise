@@ -51,6 +51,7 @@ public class Setting : MonoBehaviour
     public int resolution_width_index = 0;
     public int resolution_height_index = 0;
     public bool fullscreen = false;
+    public int fullscreenMode = 0;
 
     //languge
     public string langage = "fr";

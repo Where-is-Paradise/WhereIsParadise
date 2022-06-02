@@ -23,7 +23,10 @@ public class LanguageManagement : MonoBehaviour
                     .Read<string>(indexStringInFileLanguage, (r) => { result = r; });
 
         GetComponent<Text>().text = result;
-        
+
+       // GetComponent<Text>().color = new Color(255,0,0);
+
+
     }
 
     // Update is called once per frame

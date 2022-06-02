@@ -859,6 +859,11 @@ public class UI_Managment : MonoBehaviourPun
     {
         buttonStartGame.SetActive(display);
     }
+/*    public void DisplayLaunchGameText()
+    {
+        DisplayLaunchGameText.SetActive(display);
+    }*/
+
     public void DisplaySettingButton(bool display)
     {
         settingButton.SetActive(display);

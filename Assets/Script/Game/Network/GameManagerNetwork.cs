@@ -58,7 +58,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.setting.LIMITED_TORCH = limitedTorch;
         gameManager.setting.TORCH_ADDITIONAL = additionalTorch;
 
-        gameManager.ui_Manager.SetDescriptionLoadPage("Syncronisation des paramètres..", 0.1f);
+        //gameManager.ui_Manager.SetDescriptionLoadPage("Parameter synchronization..", 0.1f);
     }
 
     public void SendBoss( int indexNewBoss)
@@ -79,7 +79,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().isBoss = true;
         //gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().isBoss = true ;
         //gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().LaunchTimerBoss();
-        gameManager.ui_Manager.SetDescriptionLoadPage("Choix du chef..", 0.1f);
+        //gameManager.ui_Manager.SetDescriptionLoadPage("Boss choice..", 0.1f);
 
     }
 
@@ -94,7 +94,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.game.GetPlayerById(indexPlayer).SetIsImpostor(isImpostor);
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isImpostor = isImpostor;
-        gameManager.ui_Manager.SetDescriptionLoadPage("Création des rôles.." , 0.1f);
+        //gameManager.ui_Manager.SetDescriptionLoadPage("Roles creation.." , 0.1f);
     }
 
     public void SendWidthHeightMap(int width , int height)
@@ -226,6 +226,17 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     }
 
+    public void SendDisplayAllGost(bool display)
+    {
+        photonView.RPC("SetDisplayAllGost", RpcTarget.All, display);
+    }
+
+    [PunRPC]
+    public void SetDisplayAllGost(bool display)
+    {
+        gameManager.ui_Manager.DisplayAllGost(display);
+    }
+
     public void SendVoteYesToExploration()
     {
         photonView.RPC("SetVoteYesToExploration", RpcTarget.All);
@@ -243,6 +254,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ResetVoteExploration();
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         //gameManager.game.currentRoom
+        gameManager.waitForEndVote = false;
     }
 
     public void SendVoteNoToExploration()
@@ -262,6 +274,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.expeditionHasproposed = false;
         gameManager.ui_Manager.DisplayMainLevers(true);
         gameManager.ResetVoteExploration();
+        gameManager.waitForEndVote = false;
     }
 
     public void SendVoteCP(int playerIndex, int vote)
@@ -317,7 +330,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.game.key_counter = nbKey;
         gameManager.ui_Manager.SetNBKey();
-        gameManager.ui_Manager.SetDescriptionLoadPage("Initialisation des objets..", 0.1f);
+        //gameManager.ui_Manager.SetDescriptionLoadPage("Objects Initialization..", 0.1f);
     }
 
 
@@ -1175,7 +1188,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.DisplayMainLevers(display);
     }
 
-    public void SendDisplayExplorationLever(bool display)
+    public void SendDisplayDoorLever(bool display)
     {
         photonView.RPC("SetDisplayDoorLever", RpcTarget.All, display);
     }
@@ -1204,15 +1217,15 @@ public class GameManagerNetwork : MonoBehaviourPun
 
 
 
-    public void SendDisplayNuVoteSacrificeForAllPlayer()
+    public void SendDisplayNuVoteSacrificeForAllPlayer(bool display)
     {
-        photonView.RPC("SetDisplayNuVoteSacrificeForAllPlayer", RpcTarget.All);
+        photonView.RPC("SetDisplayNuVoteSacrificeForAllPlayer", RpcTarget.All, display) ;
     }
 
     [PunRPC]
-    public void SetDisplayNuVoteSacrificeForAllPlayer()
+    public void SetDisplayNuVoteSacrificeForAllPlayer(bool display)
     {
-        gameManager.ui_Manager.DisplayNuVoteSacrificeForAllPlayer();
+        gameManager.ui_Manager.DisplayNuVoteSacrificeForAllPlayer(display);
     }
 
     public void  SendSacrificeVoteIsLaunch(bool isLaunch)
@@ -1224,6 +1237,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetSacrificeVoteIsLaunch(bool isLaunch)
     {
         GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch = isLaunch;
+        
     }
     public void SendUpdateNeighbourSpeciality(int indexRoom , int indexSpeciality)
     {
@@ -1292,5 +1306,15 @@ public class GameManagerNetwork : MonoBehaviourPun
             gameManager.GetHexagone(indexHexagone).Room.isJail = true;
 
         gameManager.GetHexagone(indexHexagone).Room.isSpecial = true;
+    }
+
+    public void SendDistanceAwardChest(int indexChest)
+    {
+        photonView.RPC("SetDistanceAwardChest", RpcTarget.All, indexChest);
+    }
+
+    public void SetDistanceAwardChest(int indexChest)
+    {
+        gameManager.ui_Manager.SetDistanceTextAwardChest(indexChest);
     }
 }

@@ -130,6 +130,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public IEnumerator DisplayTurorialWhenExpeditionCouroutine()
     {
         yield return new WaitForSeconds(0.4f);
+        player.gameManager.ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
         player.gameManager.ui_Manager.tutorial_parent.SetActive(true);
         player.gameManager.ui_Manager.tutorial[5].SetActive(true);
         player.gameManager.ui_Manager.listTutorialBool[5] = true;
@@ -270,7 +271,7 @@ public class PlayerNetwork : MonoBehaviourPun
             player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").gameObject.SetActive(false);
             player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").gameObject.SetActive(true);
             player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").Find("ChatText").GetComponent<Text>().text = message;
-            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").Find("ChatText").GetComponent<Text>().color = new Color(255, 0, 0);
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").Find("ChatText").GetComponent<Text>().color = new Color(219f /255, 55f/255, 38f/255);
             player.GetPlayer(indexPlayer).GetComponent<PlayerGO>().SendMessagePlayerInTimes(4);
         }
         else
@@ -278,12 +279,9 @@ public class PlayerNetwork : MonoBehaviourPun
             player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("NormalChat").gameObject.SetActive(false);
             player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").gameObject.SetActive(true);
             player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").Find("ChatText").GetComponent<Text>().text = message;
-            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").Find("ChatText").GetComponent<Text>().color = new Color(255, 0, 0);
+            player.GetPlayer(indexPlayer).transform.Find("InfoCanvas").Find("ChatPanel").Find("ChatPanelMoreLarger").Find("ChatText").GetComponent<Text>().color = new Color(219f / 255, 55f / 255, 38f / 255);
             player.GetPlayer(indexPlayer).GetComponent<PlayerGO>().SendMessagePlayerInTimes(6);
         }
-        /*player.GetPlayer(indexPlayer).transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().text = message;
-        player.GetPlayer(indexPlayer).transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().color = new Color(255, 0, 0);*/
-       
     }
 
     public void SendDisplayCharacter(bool display)
@@ -294,9 +292,7 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetDisplayCharacter(bool display)
     {
-
         player.isTouchByFireBall = !display;
-
         for(int i = 0; i < player.transform.childCount; i++)
         {
             if (player.gameManager.SamePositionAtBoss())
@@ -306,8 +302,6 @@ public class PlayerNetwork : MonoBehaviourPun
             }
                 
         }
-        //player.GetComponent<BoxCollider2D>().isTrigger = true;
-
     }
 
 
@@ -360,11 +354,14 @@ public class PlayerNetwork : MonoBehaviourPun
             playeritem.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
             playeritem.transform.Find("Perso").Find("Light_red").gameObject.SetActive(false);
         }
-        player.GetComponent<PlayerGO>().gameManager.game.currentRoom.speciallyPowerIsUsed = true;
-        player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayMainLevers(true);
-        player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplaySpeciallyLevers(false,0);
+        player.GetComponent<PlayerGO>().gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
+        player.GetComponent<PlayerGO>().gameManager.UpdateSpecialsRooms(player.GetComponent<PlayerGO>().gameManager.game.currentRoom);
+/*        player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayMainLevers(true);
+        player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplaySpeciallyLevers(false,0);*/
         player.GetComponent<PlayerGO>().gameManager.CloseDoorWhenVote(false);
-        player.GetComponent<PlayerGO>().hasVoteSacrifice = false;
+        player.GetComponent<PlayerGO>().gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice = false;
+        player.gameManager.HidePlayerNotInSameRoom();
+        player.gameManager.ui_Manager.DisplayNuVoteSacrificeForAllPlayer(false);
 
     }
 
@@ -397,7 +394,8 @@ public class PlayerNetwork : MonoBehaviourPun
         }
         this.transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(vote_V);
         this.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(!vote_V);
-       
+        this.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
+
     }
 
     public void SendHideVoteExplorationDisplay()
@@ -434,5 +432,37 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetIndexPower(int indexPower)
     {
         player.GetComponent<PlayerGO>().indexPower = indexPower;
+    }
+
+    public void SendMoving(int indexPlayer, float horizontal, float vertical)
+    {
+        photonView.RPC("SetMoving", RpcTarget.All, indexPlayer, horizontal, vertical) ;
+    }
+
+    [PunRPC]
+    public void SetMoving(int indexPlayer,float horizontal, float vertical)
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+        player.GetPlayer(indexPlayer).transform.Translate(
+            new Vector3(
+                horizontal * player.movementlControlSpeed * 1.3f * Time.deltaTime,
+                vertical * player.movementlControlSpeed * 1.3f * Time.deltaTime,
+                0
+            )
+        );
+        //photonView.RPC("SetMovingToSpecificPlayer", RpcTarget.All, indexPlayer, player.GetPlayer(indexPlayer).transform.position.x, player.GetPlayer(indexPlayer).transform.position.y);
+    }
+
+
+    [PunRPC]
+    public void SetMovingToSpecificPlayer(int indexPlayer, float x, float y)
+    {
+        if (player.gameManager.IsPlayerMine(indexPlayer))
+        {
+            player.gameManager.GetPlayer(indexPlayer).transform.position = new Vector3(x, y);
+        }
     }
 }

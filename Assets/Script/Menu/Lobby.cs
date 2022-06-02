@@ -192,7 +192,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         base.OnCreateRoomFailed(returnCode, message);
         print("Error creation room  RIP ... " + message);
         Debug.Log(returnCode);
-        if(returnCode == 32766 && isBackToWaitingRoom)
+        if( returnCode == 32766 && isBackToWaitingRoom)
         {
             matchmaking = true;
             ConnectToRoom(oldCode);
@@ -257,10 +257,12 @@ public class Lobby : MonoBehaviourPunCallbacks
                 ui_management.DisplayStartButton(true);
             }
             ui_management.DisplayReadyButtonOnly(false);
-            ui_management.DisplaySettingButton(true);
+            //ui_management.DisplaySettingButton(true);
         }
-        
-        if(isBackToWaitingRoom)
+
+        //ui_management.DisplayReadyButton(true);
+
+        if (isBackToWaitingRoom)
             newPlayer.GetComponent<PlayerNetwork>().SendNamePlayer(oldPlayerName);
 
 
@@ -324,6 +326,7 @@ public class Lobby : MonoBehaviourPunCallbacks
             if(players.Length+1 == 6 && matchmaking)
             {
                 ui_management.SendDisplayReadyButton(false);
+                ui_management.DisabledBackButton();
                 StartCoroutine(CouroutineStartGame());
             }
         }
@@ -480,7 +483,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         ui_management.DisplayReadyButton(false);
         ui_management.DisabledBackButton();
         ResetAllPlayerReady();
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(15);
         ResetAllPlayerReady();
         OnclikStartGame();
     }

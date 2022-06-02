@@ -20,12 +20,13 @@ public class Hexagone : MonoBehaviour
     }
     void Start()
     {
-        
         if (GameObject.Find("GameManager"))
         {
             gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         }
-        
+
+        if (Room && Room.isTooFar)
+            Destroy(this.gameObject);
     }
 
     void Update()
@@ -56,8 +57,6 @@ public class Hexagone : MonoBehaviour
             this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(false);
         }
         TouchHexagoneForPower();
-        //this.transform.Find("Canvas").Find("ImpostorPower").gameObject.SetActive(!(room.Index == gameManager.game.currentRoom.Index));
-
     }
     void OnMouseOver()
     {
@@ -96,6 +95,7 @@ public class Hexagone : MonoBehaviour
         }
         if(room.DistancePathFinding == 1)
         {
+            this.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
             return;
         }
         int indexPower = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower;
@@ -123,7 +123,7 @@ public class Hexagone : MonoBehaviour
                 if (this.room.isJail || this.room.IsFoggy || this.room.IsVirus || this.room.IsExit || this.room.IsHell)
                 {
                     this.transform.Find("Canvas").Find("ImpostorPower").gameObject.SetActive(true);
-                    this.transform.Find("Canvas").Find("Distance_text").gameObject.SetActive(false);
+                    //this.transform.Find("Canvas").Find("Distance_text").gameObject.SetActive(false);
                     if (this.room.IsExit)
                         this.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
                     if (this.room.IsHell)
@@ -136,8 +136,13 @@ public class Hexagone : MonoBehaviour
         {
             return;
         }
+        if (room.IsObstacle || room.IsExit || room.IsInitiale)
+        {
+            return;
+        }
         if (room.DistancePathFinding == 1)
         {
+            this.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
             return;
         }
 
@@ -158,17 +163,9 @@ public class Hexagone : MonoBehaviour
             }
             return;
         }
-        if (room.IsObstacle || room.IsExit || room.IsInitiale)
-        {
-            return;
-        }
-        //int indexPower = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower;
         this.transform.Find("Canvas").Find("ImpostorPower").GetChild(indexPower).gameObject.SetActive(false);
         SetSpecalityPower(indexPower, false);
-
-
         this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(room.isOldParadise && gameManager.game.currentRoom.Index != room.Index);
-
     }
 
     public void TouchHexagoneForPower()

@@ -23,6 +23,7 @@ public class Door : MonoBehaviour
     public bool iscurrentlyOpen = false;
     public bool isOpenForAll = false;
     public bool IsCloseNotPermantly = false;
+    public bool closeForTimerExploration = false;
     public int counterPlayerCollisionSelected = 0;
 
     // Start is called before the first frame update
@@ -82,19 +83,19 @@ public class Door : MonoBehaviour
                 {
                     if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().haveToGoToExpedition)
                     {
-                        Physics2D.IgnoreCollision(gameManager.GetPlayerMineGO().GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>(), false);
+                        Physics2D.IgnoreCollision(gameManager.GetPlayerMineGO().GetComponent<CapsuleCollider2D>(), GetComponent<CircleCollider2D>(), false);
                     }
                     else
                     {
-                        if (gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID != old_player.GetComponent<PhotonView>().ViewID)
+                        if (old_player && gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID != old_player.GetComponent<PhotonView>().ViewID)
                         {
-                            Physics2D.IgnoreCollision(gameManager.GetPlayerMineGO().GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>(), false);
+                            Physics2D.IgnoreCollision(gameManager.GetPlayerMineGO().GetComponent<CapsuleCollider2D>(), GetComponent<CircleCollider2D>(), false);
                         }
                     }
                 }
                 else
                 {
-                    Physics2D.IgnoreCollision(gameManager.GetPlayerMineGO().GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>(), false);
+                    Physics2D.IgnoreCollision(gameManager.GetPlayerMineGO().GetComponent<CapsuleCollider2D>(), GetComponent<CircleCollider2D>(), false);
                 }
             }
             else
@@ -133,11 +134,11 @@ public class Door : MonoBehaviour
                 {
                     if (transform.GetChild(6).GetComponent<Animator>().GetBool("open"))
                     {
-                        Physics2D.IgnoreCollision(collision.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>());
+                        Physics2D.IgnoreCollision(collision.GetComponent<CapsuleCollider2D>(), GetComponent<CircleCollider2D>());
                     }
                     else
                     {
-                        Physics2D.IgnoreCollision(collision.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>(), false);
+                        Physics2D.IgnoreCollision(collision.GetComponent<CapsuleCollider2D>(), GetComponent<CircleCollider2D>(), false);
                     }
                 }
             }
@@ -146,11 +147,11 @@ public class Door : MonoBehaviour
                 if (isOpenForAll && !collision.GetComponent<PlayerGO>().haveToGoToExpedition && !gameManager.voteDoorHasProposed && !IsCloseNotPermantly)
                 {
 
-                    Physics2D.IgnoreCollision(collision.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>());
+                    Physics2D.IgnoreCollision(collision.GetComponent<CapsuleCollider2D>(), GetComponent<CircleCollider2D>());
                 }
                 else
                 {
-                    Physics2D.IgnoreCollision(collision.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>(), false);
+                    Physics2D.IgnoreCollision(collision.GetComponent<CapsuleCollider2D>(), GetComponent<CircleCollider2D>(), false);
                 }
             }
         }
@@ -173,18 +174,18 @@ public class Door : MonoBehaviour
         if (collision.tag == "Player" && collision.GetComponent<PhotonView>().IsMine && !gameManager.paradiseIsFind && !gameManager.hellIsFind)
         {
 
-            if (gameManager.expeditionHasproposed && old_player)
+            if (gameManager.expeditionHasproposed && old_player )
             {
                 if (collision.GetComponent<PhotonView>().ViewID == old_player.GetComponent<PhotonView>().ViewID)
                 {
                     if (transform.GetChild(6).GetComponent<Animator>().GetBool("open"))
                     {
 
-                        Physics2D.IgnoreCollision(collision.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>());
+                        Physics2D.IgnoreCollision(collision.GetComponent<CapsuleCollider2D>(), GetComponent<CircleCollider2D>());
                     }
                     else
                     {
-                        Physics2D.IgnoreCollision(collision.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>(), false);
+                        Physics2D.IgnoreCollision(collision.GetComponent<CapsuleCollider2D>(), GetComponent<CircleCollider2D>(), false);
                     }
                 }
             }
@@ -192,11 +193,11 @@ public class Door : MonoBehaviour
             {
                 if (isOpenForAll && !collision.GetComponent<PlayerGO>().haveToGoToExpedition && !gameManager.voteDoorHasProposed && !IsCloseNotPermantly)
                 {
-                    Physics2D.IgnoreCollision(collision.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>());
+                    Physics2D.IgnoreCollision(collision.GetComponent<CapsuleCollider2D>(), GetComponent<CircleCollider2D>());
                 }
                 else
                 {
-                    Physics2D.IgnoreCollision(collision.GetComponent<BoxCollider2D>(), GetComponent<BoxCollider2D>(), false);
+                    Physics2D.IgnoreCollision(collision.GetComponent<CapsuleCollider2D>(), GetComponent<CircleCollider2D>(), false);
 
                 }
             }
