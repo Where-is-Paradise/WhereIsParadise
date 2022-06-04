@@ -124,5 +124,112 @@
 
  "tutorial_moreInformation" : "For more information: ESC => Tutorial",
  "tutorial_oneExploration_possible" : "Congrats you just did you first team exploration.\n Be careful you can't do a series explorations, after each  exploration you have to inevitably open a door.",
+  "tutorial_button_quit" : "Ok",
+
+
+"MISE A JOUR 0.5" : "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
+
+
+
+
+ "tutorial_initial_CorruptedSoul_1" : "You are a Corrupted soul,\n Your team must not find Heaven ! ",
+
+ "tutorial_initial_PlayerSelectionedGoToDoorZone" : "Then the selected player(s) must go to the door area until the letter appears above them.",
+ "tutorial_autel_0" : "Only the team leader can use this item",
+ "tutorial_autel_1" : "Before you can use this item, you must select one or more players",
+ "tutorial_autel_2" : "You have been selected by the team leader to go exploring, please go to the area of ​​one of the doors (the letter of the door must be displayed above you).",
+
+ "tutorial_initial_BossVoteDoor_0" : "This object allows you to cast a vote to open a door",
+ "tutorial_initial_BossVoteDoor_2" : "The door with the most votes (players in the area) opens.",
+ "tutorial_initial_BossVoteDoor_1" : "Each door opening uses a key.",
+
+ "tutorial_initial_NoBossExploration_0" : "This object allows the team leader to launch an exploration.",
+ "tutorial_initial_NoBossExploration_1" : "The team leader must first choose the future explorers.",
+
+ "tutorial_initial_BossExploration_0" : "Before you can interact with this object, you must select one or more players.",
+
+ "tutorial_initial_BossForbiden" : "Only the team leader can use these items",
+
+ "tutorial_initial_playerSelectioned" : "You have been selected by the team leader to go exploring, please go to one of the door areas (the door letter should be displayed above you).",
+
+ "tutorial_initial_BackExploration" : "You can then return to where your team is.",
+
+ "tutorial_initial_Map_0" : "The map allows you to visualize the dungeon and know where you are.",
+ "tutorial_autel_3" : "Corresponds to the distance from Paradise..",
+ "tutorial_autel_4" : "Corresponds to the number of remaining keys..",
+ "tutorial_autel_5" : "Corresponds to the number of remaining torches..",
+
+
+ "tutorial_changeBoss_0" : "You can offer to change the team leader.",
+ "tutorial_changeBoss_1" : "The leader will change if all players request it.",
+
+ "tutorial_exploration_award_0" : "Congratulation ! you have just earned your first reward.",
+ "tutorial_exploration_award_1" : "You can choose the exploration you want, for that please go to a door area and press the interact button (E by default).",
+
+ "tutorial_autel_chest_0" : "You must choose a chest to open.",
+ "tutorial_autel_chest_1" : "\n but beware one of the chests is trapped! !",
+ "tutorial_autel_chest_2" : "Corrupted souls know the trapped chest.",
+
+ "tutorial_autel_sacrifice_0" : "Sacrifice a person from your team and you will be rewarded with an extra key..",
+ "tutorial_autel_sacrifice_1" : "The player with the most votes will be sacrificed",
+
+ "tutorial_autel_cursed_0" : "A door will be opened randomly.",
+
+ "tutorial_autel_fireball_0" : "You don't have to touch the fireballs.",
+ "tutorial_autel_fireball_1" : "The last survivor of this ordeal will be rewarded with an exploration of their choice.",
+
+ "tutorial_autel_jail_0" : "You are imprisoned.",
+ "tutorial_autel_jall_1" : "Your team can come and free you if they open one of the doors adjacent to your room.",
+
+ "menu_setting_controls_exploration":"Interact",
+
+ "menu_setting_controls_moveForward":"Up",
+ "menu_setting_controls_moveBackward":"Bottom",
+
+ "menu_setting_video_fullscreenMode0":"Exclusive window",
+ "menu_setting_video_fullscreenMode1":"Fullscreen windowed",
+ "menu_setting_video_fullscreenMode2":"Maximized window",
+ "menu_setting_video_fullscreenMode3":"Windowed",
+
+
+ "waitingRoom_Skin_button" : "Skin",
+ "waitingRomm_Ready_button" : "Ready",
+ "waitingRomm_OpenRoom_button" : "Open room",
+ "waitingRomm_CloseRoom_button" : "Close room",
+ "waitingRomm_CopyCode_button" : "Copy",
+ "waitingRomm_Start_button" : "Start",
+ "waitingRomm_Start_text" : "Game launch...",
+
+ "LoadingPage_menu_description0" : "Parameter initialization..",
+ "LoadingPage_game_description0" : "Dungeon creation..",
+ "SkinPage_title" : "Choose your color",
+ "SkinPage_save_button" : "Apply",
+
+ "tutorial_powerImpostor_0" : "To use your power, select this button",
+ "tutorial_powerImpostor_1" : "Then choose the room you want to modify.",
+
+ "powerImpostor_waitingPage_0" : "Corrupted souls use their power",
+
+
+
+ "menu_credit_3" : "Website",
+ "menu_credit_6" : "The team",
+ "menu_credit_team_0" : "Project Manager / Programmer / Game designer",
+ "menu_credit_team_1" : "Main Graphic designer",
+ "menu_credit_team_2" : "Graphic Designer  / video editor / Animator",
+ "menu_credit_team_3" : "Community manager  / Web developer",
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

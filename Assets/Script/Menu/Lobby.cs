@@ -29,13 +29,18 @@ public class Lobby : MonoBehaviourPunCallbacks
     private string oldCode = "0";
     public string oldPlayerName = "";
 
-    // Use this for initialization
+
+    public bool openRoom = false;
+
+    int index_skin = 0;
+    // Use this  initialization
     void Start()
     {
         matchmaking = false;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         ConnectToMaster();
-        
+        index_skin = Random.Range(0, 7);
+        GameObject.Find("Setting").GetComponent<Setting>().INDEX_SKIN = index_skin;
     }
 
     // Update is called once per frame
@@ -70,6 +75,7 @@ public class Lobby : MonoBehaviourPunCallbacks
                 oldCode = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().codeRoom;
                 oldPlayerName = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().playerName;
                 matchmaking = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().isMatchmaking;
+                index_skin = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().indexSkin;
                 CreateRoomBack();
 
             }
@@ -194,7 +200,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         Debug.Log(returnCode);
         if( returnCode == 32766 && isBackToWaitingRoom)
         {
-            matchmaking = true;
+            //matchmaking = true;
             ConnectToRoom(oldCode);
             if(GameObject.Find("Setting_backWaitingRoom"))
                 Destroy(GameObject.Find("Setting_backWaitingRoom").gameObject);
@@ -233,7 +239,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         GameObject newPlayer = SpawnPlayer(indexPlayer);
 
 
-        int index_skin = Random.Range(0,7);
+        
 
         newPlayer.GetComponent<PlayerNetwork>().SendindexSkin(index_skin);
         //
@@ -430,18 +436,25 @@ public class Lobby : MonoBehaviourPunCallbacks
     }
 
 
-    public void SetVisibleRoom(GameObject button)
+    public void SetVisibleRoom()
     {
-        if(button.transform.GetChild(0).GetComponent<Text>().text == "Open Room")
+        openRoom = !openRoom;
+
+
+        if(openRoom)
         {
             PhotonNetwork.CurrentRoom.IsVisible = true;
-            button.transform.GetChild(0).GetComponent<Text>().text = "Close Room";
+            //button.transform.GetChild(0).GetComponent<Text>().text = "Close Room";
             ui_management.SetLabelSearchPlayer(true);
             return;
         }
-        PhotonNetwork.CurrentRoom.IsVisible = false;
-        button.transform.GetChild(0).GetComponent<Text>().text = "Open Room";
-        ui_management.SetLabelSearchPlayer(false);
+        else
+        {
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+            //button.transform.GetChild(0).GetComponent<Text>().text = "Open Room";
+            ui_management.SetLabelSearchPlayer(false);
+        }
+        
     }
 
     public void OnClickPlayerReady()
@@ -483,6 +496,8 @@ public class Lobby : MonoBehaviourPunCallbacks
         ui_management.DisplayReadyButton(false);
         ui_management.DisabledBackButton();
         ResetAllPlayerReady();
+        //ui_management.launchChrono.Play();
+        PhotonNetwork.CurrentRoom.IsVisible = false;
         yield return new WaitForSeconds(15);
         ResetAllPlayerReady();
         OnclikStartGame();

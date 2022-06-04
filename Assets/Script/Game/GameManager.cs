@@ -126,13 +126,13 @@ public class GameManager : MonoBehaviourPun
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendQuitTutorialN7(false);
         }
+/*        listProbalitySpecialyRoom.Add(1);
         listProbalitySpecialyRoom.Add(1);
-        listProbalitySpecialyRoom.Add(59);
-        listProbalitySpecialyRoom.Add(60);
+        listProbalitySpecialyRoom.Add(60);*/
 
-        /*        listProbalitySpecialyRoom.Add(30);
-                listProbalitySpecialyRoom.Add(40);
-                listProbalitySpecialyRoom.Add(60);*/
+        listProbalitySpecialyRoom.Add(30);
+        listProbalitySpecialyRoom.Add(50);
+        listProbalitySpecialyRoom.Add(60);
     }
 
 
@@ -640,7 +640,9 @@ public class GameManager : MonoBehaviourPun
 
             }
         }
-        //InsertSpeciallyRoom(roomTeam);
+        if(!isExpedition)
+            InsertSpeciallyRoom(roomTeam);
+
         gameManagerNetwork.SendOpenDoor(indexDoor, game.currentRoom.X, game.currentRoom.Y, isExpedition, roomTeam.GetIndex());
     }
 
@@ -772,7 +774,7 @@ public class GameManager : MonoBehaviourPun
         int counter = 1;
         foreach (Room room in game.dungeon.rooms)
         {
-            gameManagerNetwork.SendMap(room.Index, room.IsExit, room.IsObstacle,
+            gameManagerNetwork.SendMap(room.Index, room.IsExit, room.IsObstacle, room.isTooFar,
                 room.IsInitiale, room.DistanceExit, room.DistancePathFinding,
                 room.distance_pathFinding_initialRoom, counter == game.dungeon.rooms.Count, room.IsFoggy, room.IsVirus, room.HasKey, room.chest);
 
@@ -1123,6 +1125,7 @@ public class GameManager : MonoBehaviourPun
         {
             if (!ui_Manager.listTutorialBool[9])
             {
+                ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
                 ui_Manager.tutorial_parent.SetActive(true);
                 ui_Manager.tutorial[9].SetActive(true);
                 ui_Manager.listTutorialBool[9] = true;
@@ -1143,7 +1146,7 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendDoorToClose(expe.indexNeigbour);
             GetPlayerMineGO().GetComponent<PlayerGO>().isGoInExpeditionOneTime = true;
             GetPlayerMineGO().GetComponent<PlayerGO>().isInExpedition = false;
-            gameManagerNetwork.SendIsInJail(true, GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+            gameManagerNetwork.SendIsInJail(true, GetPlayerMineGO().GetComponent<PhotonView>().ViewID, roomExpedition.Index);
             game.currentRoom = roomExpedition;
             if (!OnePlayerHaveToGoToExpedition())
             {
@@ -1153,10 +1156,15 @@ public class GameManager : MonoBehaviourPun
             CloseDoorOveride();
             ui_Manager.timerMixExploration = true;
         }
-        StartCoroutine(ui_Manager.MixDistanceExplorationStopCoroutine());
+       
+
+        UpdateSpecialsRooms(roomExpedition);
 
         if(!roomExpedition.IsHell && !roomExpedition.IsExit)
+        {
             CloseDoorExplorationWhenVote(true);
+            StartCoroutine(ui_Manager.MixDistanceExplorationStopCoroutine());
+        }
     }
 
     public void BackToExpedition()
@@ -1642,7 +1650,11 @@ public class GameManager : MonoBehaviourPun
         if (!OnePlayerFindParadise && ((game.key_counter == 0 && !game.currentRoom.IsExit && !game.currentRoom.chest && ! game.currentRoom.isSacrifice)
             || game.currentRoom.IsHell || isAlreadyLoose))
         {
-            Loose();
+            if (!HaveMoreKeyInTraversedRoom())
+            {
+                Loose();
+            }
+           
         }
         if (game.currentRoom.IsExit)
         {
@@ -1655,6 +1667,19 @@ public class GameManager : MonoBehaviourPun
         }
     }
 
+
+    public bool HaveMoreKeyInTraversedRoom()
+    {
+        foreach(Hexagone hexa in dungeon)
+        {
+            if ((hexa.Room.isSacrifice || hexa.Room.chest) && !hexa.Room.speciallyPowerIsUsed)
+            {
+                return true;
+            }
+        }
+        return false;
+        
+    }
 
     public void HidePlayerNotInSameRoom()
     {
@@ -2263,12 +2288,16 @@ public class GameManager : MonoBehaviourPun
         if (room.isJail)
         {
             ui_Manager.DisplayJailRoom(true);
+            if (room.speciallyPowerIsUsed)
+            {
+                ui_Manager.DisplayJailRoom(false);
+            }
             return;
         }
         if (room.IsFoggy)
         {
             ui_Manager.DisplayFoggyRoom(true);
-            ui_Manager.DisplayLeverExploration(false);
+            ui_Manager.DisplayLeverExploration(true);
             ui_Manager.DisplayLeverVoteDoor(true);
             return;
         }
@@ -2375,6 +2404,11 @@ public class GameManager : MonoBehaviourPun
         GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         game.dungeon.rooms[GetRoomOfBoss().GetComponent<Hexagone>().Room.Index].speciallyPowerIsUsed = true;
         CloseDoorWhenVote(false);
+
+        if(game.key_counter == 0)
+        {
+            Loose();
+        }
     }
 
     public GameObject CalculVoteChest()

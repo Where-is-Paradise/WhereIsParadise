@@ -26,6 +26,7 @@ public class Setting : MonoBehaviour
     public bool DISPLAY_OBSTACLE_MAP = true;
     public bool DISPLAY_KEY_MAP = true;
     public bool LIMITED_TORCH = false;
+    public int INDEX_SKIN = 0;
 
     // server
     public string codeRoom;

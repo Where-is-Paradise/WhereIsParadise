@@ -85,7 +85,7 @@ public class PlayerNetwork : MonoBehaviourPun
             transform.GetChild(3).GetComponent<BoxCollider2D>().enabled = false;
         }
 
-        if (player.gameManager.setting.displayTutorial)
+        if (player.GetComponent<PhotonView>().IsMine && player.gameManager.setting.displayTutorial)
         {
             if (!player.gameManager.ui_Manager.listTutorialBool[5])
             {
@@ -333,7 +333,7 @@ public class PlayerNetwork : MonoBehaviourPun
 
         }
         player.GetComponent<PlayerGO>().gameManager.game.key_counter++;
-        player.gameManager.ui_Manager.AniamtionAddKey();
+        player.gameManager.ui_Manager.LaunchAnimationAddKey();
 
 
     }
@@ -356,8 +356,6 @@ public class PlayerNetwork : MonoBehaviourPun
         }
         player.GetComponent<PlayerGO>().gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         player.GetComponent<PlayerGO>().gameManager.UpdateSpecialsRooms(player.GetComponent<PlayerGO>().gameManager.game.currentRoom);
-/*        player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayMainLevers(true);
-        player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplaySpeciallyLevers(false,0);*/
         player.GetComponent<PlayerGO>().gameManager.CloseDoorWhenVote(false);
         player.GetComponent<PlayerGO>().gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice = false;
         player.gameManager.HidePlayerNotInSameRoom();

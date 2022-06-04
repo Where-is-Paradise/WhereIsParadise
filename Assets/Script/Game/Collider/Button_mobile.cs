@@ -63,6 +63,11 @@ public class Button_mobile : MonoBehaviour
             gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer(true);
             GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
         }
+        if (gameManager.game.currentRoom.IsVirus)
+        {
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchVoteDoorMobile = true;
+        }
+
         gameManager.gameManagerNetwork.SendCloseDoorWhenVote();
 
         gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);

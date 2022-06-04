@@ -22,7 +22,7 @@ public class Map_zoom : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
         {
             touchStart = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
@@ -41,21 +41,9 @@ public class Map_zoom : MonoBehaviour
             Zoom(difference * 0.005f);
 
         }
-        else if (Input.GetMouseButton(0))
+        else if (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
         {
-
-            //Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - (touchStart - Vector3.zero);
             Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition).normalized - (touchStart.normalized - Vector3.zero);
-            //transform.position += direction * 0.1f;
-
-            /*            float x = Mathf.Clamp(transform.position.x + direction.x * 0.025f, -14,-5f);
-                        float y = Mathf.Clamp(transform.position.y + direction.y * 0.025f, 1.20f, 8);*/
-
-/*            float x = Mathf.Clamp(direction.x, -14, -5f);
-            float y = Mathf.Clamp(direction.y, 1.20f, 8);*/
-            //transform.position = new Vector3(x, y, -3);
-            /*            transform.position = new Vector3(transform.position.x + direction.x * 0.05f,
-                            transform.position.y + direction.y * 0.05f, -3);*/
             CanContinueToTransform(direction * 7);
             touchStart = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }

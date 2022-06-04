@@ -33,7 +33,6 @@
   "waitingRoom_searchPlayer":"Recherche de joueurs..",
   "waitingRoom_button_setting":"Paramètres",
 
-
   "menu_setting_controls":"Controles",
 
   "menu_setting_controls_moveRight":"Droite",
@@ -96,7 +95,7 @@
   "tutorial_initial_LostSoul_2" : "Mais attention dans votre équipe se cache des âmes compompues",
 
   "tutorial_initial_CorruptedSoul_0" : "Âme corrompue",
-  "tutorial_initial_CorruptedSoul_1" : "Vous êtes une âme Corrompue et votre objectif est de faire en sorte que votre équipe ne trouve pas le Paradis.",
+
 
   "tutorial_initial_RandomBoss" : "Un chef d'équipe est désigné aléatoirement en début de partie.",
   "tutorial_initial_BossChoosePlayer" : "Le chef d'équipe doit sélectionner un ou plusieurs joueurs afin de les envoyer en exploration, vous devez cliquer ( ou tapoter ) sur le(s) future(s) explorateur(s).",
@@ -107,9 +106,7 @@
   "tutorial_initial_VoteExploration_1" : "Si le vote est accepté, des torches seront utilisées aux nombres d'explorateurs.\n\n Vous et votre équipe possèdez un nombre de torches limitées.",
   "tutorial_initial_Exploration_spectre" : "Les portes soumises a l'exploration s'ouvrent.. les explorateurs peuvent accéder aux portes associées à leurs âmes.",
   "tutorial_initial_Exploration_distance" : "Lorsqu'un joueur explore une salle, il a la capacité de voir le nombre de salle qu'il le sépare du Paradis.",
-
-
-
+  "tutorial_initial_Exploration_distance_1" : "Le temps d'apparation de la distance peut prendre entre 5 et 10 secondes.",
 
   "tutorial_initial_BossVoteDoor_3" : "Annulation du vote",
   "tutorial_initial_BossVoteDoor_4" : "Vote pour la porte F",
@@ -118,7 +115,7 @@
   "tutorial_initial_Map_1" : "Ce nombre permet d'identifier la salle.",
   "tutorial_initial_Map_2" : "Ce nombre donne la distance par rapport à la salle de départ.",
 
-  "tutorial_initial_Resumue_0" : "Avec toutes les distances récupérées lors des explorations, vous devriez être capable de savoir dans quelle salle se cache la porte du paradis, à moins que les âmes corompues réussises a vous berner !",
+  "tutorial_initial_Resumue_0" : "Avec toutes les distances récupérées lors des explorations, vous devriez être capable de savoir dans quelle salle se cache la porte du paradis, à moins que les âmes corrompues réussises a vous berner ! ",
   "tutorial_initial_Resumue_1" : "Si vous n'avez plus suffisament de clef pour atteindre le Paradis, l'enfer apparaîtra automatiquement.",
   "tutorial_initial_Resumue_2" : "N'oubliez pas ne faites confiance à personne ! ",
 
@@ -130,14 +127,22 @@
 
 
 
+"MISE A JOUR 0.5" : "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
 
-"tutorial_initial_PlayerSelectionedGoToDoorZone" : "Ensuite Le ou les joueurs sélectionnés doivent se rendre dans la zone de la porte jusqu'à ce que la lettre s'affiche au-dessus du personnage. Le joueur qui a par exemple la lettre A pourra explorer la salle derrière la porte A.",
+
+
+
+
+
+"tutorial_initial_CorruptedSoul_1" : "Vous êtes une âme Corrompue, \n Votre équipe ne doit pas trouver le Paradis ! ",
+
+"tutorial_initial_PlayerSelectionedGoToDoorZone" : "Ensuite, le ou les joueurs sélectionnés doivent se rendre dans la zone de la porte jusqu'à ce que la lettre s'affiche au-dessus d'eux.",
 "tutorial_autel_0" : "Seule le chef d'équipe peut utiliser cet objet",
 "tutorial_autel_1" : "Avant de pouvoir utiliser cet objet, vous devez sélectionner un ou plusieurs joueurs",
-"tutorial_autel_2" : "Vous avez été sélectionner par le chef d'équipe pour aller en exploration, veuillez vous rendre dans la zone de l'une des portes ( la lettre de la porte doit s'afficher au dessus de votre personnage).",
+"tutorial_autel_2" : "Vous avez été sélectionner par le chef d'équipe pour aller en exploration, veuillez vous rendre dans la zone de l'une des portes ( la lettre de la porte doit s'afficher au dessus de vous).",
 
 "tutorial_initial_BossVoteDoor_0" : "Cet objet permet de lancer un vote pour ouvrir une porte",
-"tutorial_initial_BossVoteDoor_2" : "La porte avec le plus de vote ( joueurs dans la zone) s'ouvre..",
+"tutorial_initial_BossVoteDoor_2" : "La porte avec le plus de vote (joueurs dans la zone) s'ouvre..",
 "tutorial_initial_BossVoteDoor_1" : "Chaque ouverture de porte utilise une clef.",
 
 "tutorial_initial_NoBossExploration_0" : "Cet objet permet au chef d'équipe de lancer une exploration.",
@@ -145,24 +150,37 @@
 
 "tutorial_initial_BossExploration_0" : "Avant de pouvoir interagir avec cet objet, vous devez sélectionner un ou plusieurs joueurs.",
 
+"tutorial_initial_BossForbiden" : "Seul le chef d'équipe peut utiliser ces objets",
+
+"tutorial_initial_playerSelectioned" : "Vous avez été sélectionné par le chef d'équipe pour aller en exploration, veuillez vous rendre dans une des zones de portes (la lettre de la porte doit s'afficher au-dessus de vous).",
+
+"tutorial_initial_BackExploration" : "Vous pouvez ensuite revenir là où se trouve votre équipe.",
+
 "tutorial_initial_Map_0" : "La carte vous permet de visualiser le donjon et de savoir où vous vous trouvez.",
 "tutorial_autel_3" : "Correspond à la distance du Paradis.",
 "tutorial_autel_4" : "Correspond aux nombre de clefs restantes.",
 "tutorial_autel_5" : "Correspond aux nombre de torches restantes..",
 
-"tutorial_autel_chest_0" : "Vous devez choisir un coffre à ouvrir,",
-"tutorial_autel_chest_1" : "\n mais attention un des coffres est piégé !",
-"tutorial_autel_chest_2" : "Les imposteurs connaissent le coffre piégé.",
 
-"tutorial_autel_sacrifice_0" : "Sacrifié une personne de votre équipe et vous serez récompenser par une clef supplémentaire.",
-"tutorial_autel_sacrifice_1" : "Le joueur ayant le plus de vote sera sacrifé",
+"tutorial_changeBoss_0" : "Vous pouvez proposer de changer de chef d'équipe.",
+"tutorial_changeBoss_1" : "Le chef changera si tous les joueurs le demandent.",
+
+"tutorial_exploration_award_0" : "Félicitations ! vous venez de gagner votre première récompense.",
+"tutorial_exploration_award_1" : "Vous pouvez choisir l'exploration que vous voulez, pour cela veuillez aller dans une zone de porte et appuyer sur le bouton d'interaction (E par défaut).",
+
+"tutorial_autel_chest_0" : "Vous devez choisir un coffre à ouvrir.",
+"tutorial_autel_chest_1" : "\n mais attention un des coffres est piégé !",
+"tutorial_autel_chest_2" : "Les âmes corrompues connaissent le coffre piégé.",
+
+"tutorial_autel_sacrifice_0" : "Sacrifié une personne de votre équipe et vous serez récompensés par une clef supplémentaire..",
+"tutorial_autel_sacrifice_1" : "Le joueur ayant le plus de vote sera sacrifié",
 
 "tutorial_autel_cursed_0" : "Une porte sera ouverte aléatoirement.",
 
 "tutorial_autel_fireball_0" : "Vous ne devez toucher les boules de feu.",
 "tutorial_autel_fireball_1" : "Le dernier survivant de cette épreuve sera récompenser par une exploration de son choix.",
 
-"tutorial_autel_jail_0" : "Vous êtes emprisoné(e).",
+"tutorial_autel_jail_0" : "Vous êtes emprisonné(e).",
 "tutorial_autel_jall_1" : "Votre équipe peut venir vous libérer si elle ouvre une des portes adjacentes à votre salle.",
 
 "menu_setting_controls_exploration":"Interagir",
@@ -179,6 +197,7 @@
 "waitingRoom_Skin_button" : "Personnage",
 "waitingRomm_Ready_button" : "Prêt",
 "waitingRomm_OpenRoom_button" : "Ouvrir le salon",
+"waitingRomm_CloseRoom_button" : "Fermer le salon",
 "waitingRomm_CopyCode_button" : "Copier",
 "waitingRomm_Start_button" : "Commencer",
 "waitingRomm_Start_text" : "La partie commence..",
@@ -189,7 +208,11 @@
 "SkinPage_save_button" : "Appliquer",
 
 "tutorial_powerImpostor_0" : "Pour utiliser votre pouvoir, selectionez ce bouton",
-"tutorial_powerImpostor_1" : "Ensuite choisissez la salle que vous voulez modifier.",
+"tutorial_powerImpostor_1" : "Ensuite, choisissez la salle que vous voulez modifier.",
+
+"powerImpostor_waitingPage_0" : "Les âmes corrompues utilisent leur pouvoir..",
+
+
 
 "menu_credit_3" : "Site web",
 "menu_credit_6" : "L'équipe",

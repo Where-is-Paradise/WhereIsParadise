@@ -96,6 +96,7 @@ public class Hexagone : MonoBehaviour
         if(room.DistancePathFinding == 1)
         {
             this.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
+            this.transform.Find("Canvas").Find("Cross_error").gameObject.SetActive(true);
             return;
         }
         int indexPower = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower;
@@ -143,6 +144,7 @@ public class Hexagone : MonoBehaviour
         if (room.DistancePathFinding == 1)
         {
             this.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            this.transform.Find("Canvas").Find("Cross_error").gameObject.SetActive(false);
             return;
         }
 

@@ -131,16 +131,17 @@ public class GameManagerNetwork : MonoBehaviourPun
     }
 
 
-    public void SendMap(int indexRoom, bool isExit, bool isObstacle, bool isInitial, int distance_exit, int distance_pathFinding,int distance_pathFinding_IR,bool isLast, bool isFoggy , bool isVirus, bool hasKey, bool chest)
+    public void SendMap(int indexRoom, bool isExit, bool isObstacle, bool isTooFar,  bool isInitial, int distance_exit, int distance_pathFinding,int distance_pathFinding_IR,bool isLast, bool isFoggy , bool isVirus, bool hasKey, bool chest)
     {
-        photonView.RPC("SetRooms", RpcTarget.Others, indexRoom,isExit,isObstacle, isInitial, distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey, chest);
+        photonView.RPC("SetRooms", RpcTarget.Others, indexRoom,isExit,isObstacle, isTooFar, isInitial, distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey, chest);
     }
 
     [PunRPC]
-    public void SetRooms(int indexRoom, bool isExit, bool isObstacle,bool isInitial, int distance_exit, int distance_pathFinding,int  distance_pathFinding_IR, bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest)
+    public void SetRooms(int indexRoom, bool isExit, bool isObstacle, bool isTooFar, bool isInitial, int distance_exit, int distance_pathFinding,int  distance_pathFinding_IR, bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest)
     {
         gameManager.game.dungeon.rooms[indexRoom].IsExit = isExit;
         gameManager.game.dungeon.rooms[indexRoom].IsObstacle = isObstacle;
+        gameManager.game.dungeon.rooms[indexRoom].isTooFar = isTooFar;
         gameManager.game.dungeon.rooms[indexRoom].DistanceExit = distance_exit;
         gameManager.game.dungeon.rooms[indexRoom].DistancePathFinding = distance_pathFinding;
         gameManager.game.dungeon.rooms[indexRoom].IsInitiale = isInitial;
@@ -245,15 +246,13 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetVoteYesToExploration()
     {
-        if (gameManager.setting.LIMITED_TORCH && !gameManager.game.currentRoom.fireBall)
-            gameManager.SetNbTorch(gameManager.game.current_expedition.Count);
+        gameManager.SetNbTorch(gameManager.game.current_expedition.Count);
         if (gameManager.SamePositionAtBoss())
             gameManager.OpenDoorsToExpedition();
         gameManager.alreaydyExpeditionHadPropose = true;
         gameManager.SetPlayersHaveTogoToExpeditionBool();
         gameManager.ResetVoteExploration();
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
-        //gameManager.game.currentRoom
         gameManager.waitForEndVote = false;
     }
 
@@ -805,9 +804,11 @@ public class GameManagerNetwork : MonoBehaviourPun
         GameObject player = gameManager.GetPlayer(indexPlayer);
         if (stay)
         {
-            player.transform.GetChild(1).GetChild(9).gameObject.SetActive(true);
+           
             if (indexChest == 1)
                 player.transform.GetChild(1).GetChild(6).gameObject.SetActive(true);
+            else
+                player.transform.GetChild(1).GetChild(9).gameObject.SetActive(true);
         }
         else
         {
@@ -815,16 +816,20 @@ public class GameManagerNetwork : MonoBehaviourPun
             {
                 
                 chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote++;
-                player.transform.GetChild(1).GetChild(9).gameObject.SetActive(true);
+                
                 if (indexChest == 1)
                     player.transform.GetChild(1).GetChild(6).gameObject.SetActive(true);
+                else
+                    player.transform.GetChild(1).GetChild(9).gameObject.SetActive(true);
             }
             else
             {
                 chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote--;
-                player.transform.GetChild(1).GetChild(9).gameObject.SetActive(false);
+                
                 if (indexChest == 1)
                     player.transform.GetChild(1).GetChild(6).gameObject.SetActive(false);
+                else
+                    player.transform.GetChild(1).GetChild(9).gameObject.SetActive(false);
 
             }
         }
@@ -899,19 +904,24 @@ public class GameManagerNetwork : MonoBehaviourPun
                 gameManager.GetDoorGo(indexDoorInJail).GetComponent<Door>().isOpenForAll = true;
                 gameManager.game.currentRoom.door_isOpen[gameManager.GetDoorGo(indexDoorInJail).GetComponent<Door>().index] = true;
                 gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInJail = false;
-                SendIsInJail(false, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+                SendIsInJail(false, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID , roomTeam.Index);
+                gameManager.game.dungeon.GetRoomByIndex(roomTeam.Index).speciallyPowerIsUsed = true;
+                gameManager.UpdateSpecialsRooms(roomTeam);
+
             }
         }
     }
-    public void SendIsInJail(bool isInJail, int indexPlayer)
+    public void SendIsInJail(bool isInJail, int indexPlayer , int indexRoom)
     {
-        photonView.RPC("SetIsInJail", RpcTarget.All, isInJail, indexPlayer);
+        photonView.RPC("SetIsInJail", RpcTarget.All, isInJail, indexPlayer, indexRoom);
     }
 
     [PunRPC]
-    public void SetIsInJail(bool isInJail, int indexPlayer)
+    public void SetIsInJail(bool isInJail, int indexPlayer , int indexRoom)
     {
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isInJail = isInJail;
+        if(!isInJail)
+            gameManager.game.dungeon.GetRoomByIndex(indexRoom).speciallyPowerIsUsed = !isInJail;
     }
 
     public void SendKeyNumber()
@@ -1145,7 +1155,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
             gameManager.ResetFireBallRoom();
         }
-        gameManager.ui_Manager.DisplayFireBallRoom(display);
+        //gameManager.ui_Manager.DisplayFireBallRoom(display);
         gameManager.game.currentRoom.speciallyPowerIsUsed = !display;
         gameManager.CloseAllDoor(gameManager.game.currentRoom, false);
         gameManager.fireBallIsLaunch = false;
@@ -1164,6 +1174,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.fireBallIsLaunch = true;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
+        gameManager.game.nbTorch++;
         if (!PhotonNetwork.IsMasterClient)
         {
             return;
@@ -1313,6 +1324,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         photonView.RPC("SetDistanceAwardChest", RpcTarget.All, indexChest);
     }
 
+    [PunRPC]
     public void SetDistanceAwardChest(int indexChest)
     {
         gameManager.ui_Manager.SetDistanceTextAwardChest(indexChest);

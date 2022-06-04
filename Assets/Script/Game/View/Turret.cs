@@ -26,7 +26,7 @@ public class Turret : MonoBehaviourPun
         }
         if (canFire && gameManager.fireBallIsLaunch)
         {
-            //ShotFireBall();
+            ShotFireBall();
             canFire = false;
         }
         

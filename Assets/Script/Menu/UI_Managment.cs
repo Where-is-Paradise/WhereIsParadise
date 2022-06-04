@@ -120,6 +120,8 @@ public class UI_Managment : MonoBehaviourPun
 
     public GameObject video_settingButton;
     public GameObject controle_settingButton;
+
+    public AudioSource launchChrono;
     float k = -1;
     // Start is called before the first frame update
     void Start()
@@ -138,33 +140,43 @@ public class UI_Managment : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-/*        if (PhotonNetwork.IsMasterClient)
-        {
-            if (buttonStartGame)
-            {
-*//*                if ((lobby.nbPlayer > 3 && lobby.nbPlayer < 9) || GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerGO>().playerName == "Homertimes   ")
+        /*        if (PhotonNetwork.IsMasterClient)
                 {
-                    buttonStartGame.SetActive(true);
+                    if (buttonStartGame)
+                    {
+        *//*                if ((lobby.nbPlayer > 3 && lobby.nbPlayer < 9) || GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerGO>().playerName == "Homertimes   ")
+                        {
+                            buttonStartGame.SetActive(true);
+                        }
+                        else
+                        {
+                            buttonStartGame.SetActive(false);
+                        }*//*
+
+                        buttonStartGame.SetActive(true);
+
+                    }
+
+                    ActivateAllFormSetting(true);
+                    canChange = true;
                 }
                 else
                 {
                     buttonStartGame.SetActive(false);
-                }*//*
+                    ActivateAllFormSetting(false);
+                    canChange = false;
+                }*/
 
-                buttonStartGame.SetActive(true);
 
-            }
+        if (PhotonNetwork.IsMasterClient && !lobby.matchmaking)
+        {
 
-            ActivateAllFormSetting(true);
-            canChange = true;
+            buttonStartGame.SetActive(true);
         }
         else
         {
             buttonStartGame.SetActive(false);
-            ActivateAllFormSetting(false);
-            canChange = false;
-        }*/
-       
+        }
 
         if (isLoadingConnection)
         {
@@ -518,6 +530,11 @@ public class UI_Managment : MonoBehaviourPun
     }
 
 
+    public void CleanInputName(GameObject input)
+    {
+        input.GetComponent<InputField>().text = "";
+    }
+
     public void DisplayErroCodeRoom()
     {
         panelErrorCode.SetActive(true);
@@ -825,6 +842,7 @@ public class UI_Managment : MonoBehaviourPun
 
     public void OnclickSavenNewIndexSkin()
     {
+        setting.GetComponent<Setting>().INDEX_SKIN = indexSkinUI;
         lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkin(indexSkinUI);
     }
 

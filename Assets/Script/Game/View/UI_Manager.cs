@@ -509,8 +509,10 @@ setting_button_echapMenu.SetActive(false);
     }
     public void MixDistanceForExploration()
     {
-        if (!timerMixExploration || gameManager.GetExpeditionOfPlayerMine().room.IsFoggy)
+        if (!timerMixExploration || gameManager.GetExpeditionOfPlayerMine().room.IsFoggy ||
+            gameManager.GetExpeditionOfPlayerMine().room.IsHell || gameManager.GetExpeditionOfPlayerMine().room.IsExit)
         {
+
             return;
         }
 

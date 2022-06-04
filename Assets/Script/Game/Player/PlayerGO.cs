@@ -745,7 +745,7 @@ public class PlayerGO : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (gameManager && gameManager.fireBallIsLaunch)
+            if (gameManager && gameManager.fireBallIsLaunch && !collision.gameObject.GetComponent<PlayerGO>().isTouchByFireBall)
             {
                 Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), false);
                 return;
@@ -765,7 +765,6 @@ public class PlayerGO : MonoBehaviour
             {
                 if (player.GetComponent<PhotonView>().ViewID != this.GetComponent<PhotonView>().ViewID)
                 {
-                    Debug.Log(player.GetComponent<PhotonView>().ViewID + " " + this.GetComponent<PhotonView>().ViewID);
                     if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isSacrifice)
                     {
                         player.GetComponent<CapsuleCollider2D>().isTrigger = ignore;
@@ -990,7 +989,7 @@ public class PlayerGO : MonoBehaviour
             gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer(true);
             GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
         }
-        if (gameManager.game.currentRoom.IsVirus)
+        if (gameManager.game.currentRoom.IsVirus && gameManager.game.key_counter > 0)
         {
             launchVoteDoorMobile = true;
         }

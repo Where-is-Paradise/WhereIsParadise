@@ -95,7 +95,7 @@ public class Game : ScriptableObject
             dungeon.InserKeyInRandomRoom();*/
 
         //dungeon.InsertRandomChestRoom();
-        dungeon.InsertRandomFireBallRoom();
+        //dungeon.InsertRandomFireBallRoom();
         //dungeon.InsertRandomSacrificeRoom();
         //dungeon.InsertRandomJailRoom();
         //dungeon.InsertRandomFoggyRoom();
@@ -116,7 +116,7 @@ public class Game : ScriptableObject
             return;
         }
         key_counter = currentRoom.DistancePathFinding + 2;
-        //key_counter = 10;
+        //key_counter = 2;
 
     }
 

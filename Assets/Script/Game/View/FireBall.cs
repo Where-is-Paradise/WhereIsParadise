@@ -35,7 +35,9 @@ public class FireBall : MonoBehaviourPun
 
     public IEnumerator CoroutineActiveCollision(int seconde)
     {
+        this.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
         yield return new WaitForSeconds(seconde);
+        this.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1);
         GetComponent<CircleCollider2D>().enabled = true;
     }
 
