@@ -126,13 +126,14 @@ public class GameManager : MonoBehaviourPun
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendQuitTutorialN7(false);
         }
-/*        listProbalitySpecialyRoom.Add(1);
-        listProbalitySpecialyRoom.Add(1);
-        listProbalitySpecialyRoom.Add(60);*/
 
-        listProbalitySpecialyRoom.Add(30);
+/*        listProbalitySpecialyRoom.Add(49);
         listProbalitySpecialyRoom.Add(50);
-        listProbalitySpecialyRoom.Add(60);
+        listProbalitySpecialyRoom.Add(50);*/
+
+        listProbalitySpecialyRoom.Add(35);
+        listProbalitySpecialyRoom.Add(57);
+        listProbalitySpecialyRoom.Add(70);
     }
 
 
@@ -337,7 +338,7 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexPower(randomInt);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
             listIndexPower.Remove(randomInt);
         }
 
@@ -710,8 +711,6 @@ public class GameManager : MonoBehaviourPun
         {
             gameManagerNetwork.LaunchTimerExpedition();
         }
-
-        
     }
 
     public IEnumerator CoroutineLaunchExploration()
@@ -724,7 +723,9 @@ public class GameManager : MonoBehaviourPun
     {
         if (door_idPlayer.Count == 0)
             return false;
-        if ((setting.LIMITED_TORCH && (game.nbTorch > 0 || GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom) && door_idPlayer.Count <= game.nbTorch))
+        if (GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
+            return true;
+        if ((setting.LIMITED_TORCH && game.nbTorch > 0) && (door_idPlayer.Count <= game.nbTorch))
             return true;
         return false;
     }
@@ -1670,9 +1671,10 @@ public class GameManager : MonoBehaviourPun
 
     public bool HaveMoreKeyInTraversedRoom()
     {
-        foreach(Hexagone hexa in dungeon)
+        game.dungeon.SetListRoomTraversed();
+        foreach (Room room in game.dungeon.listRoomTraversed)
         {
-            if ((hexa.Room.isSacrifice || hexa.Room.chest) && !hexa.Room.speciallyPowerIsUsed)
+            if ((room.isSacrifice || room.chest) && !room.speciallyPowerIsUsed)
             {
                 return true;
             }
@@ -1995,6 +1997,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.ShowAllDataInMap();
         ui_Manager.ShowImpostor();
         ui_Manager.DisplayKeyAndTorch(false);
+
     }
 
 
@@ -2242,16 +2245,14 @@ public class GameManager : MonoBehaviourPun
         if (room.chest)
         {
             ui_Manager.DisplayChestRoom(true);
-            ui_Manager.DisplayMainLevers(false);
+            ui_Manager.DisplayMainLevers(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
-                ui_Manager.DisplayMainLevers(true);
                 ui_Manager.DisplayChestRoom(false);
                 isActuallySpecialityTime = false;
-                ui_Manager.DisplayLeverExploration(true);
             }
             return;
         }
@@ -2272,16 +2273,13 @@ public class GameManager : MonoBehaviourPun
         if(room.isSacrifice )
         {
             ui_Manager.DisplaySacrificeRoom(true);
-            ui_Manager.DisplayMainLevers(false);
+            ui_Manager.DisplayMainLevers(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
-                ui_Manager.DisplayMainLevers(true);
                 isActuallySpecialityTime = false;
-                ui_Manager.DisplayLeverExploration(true);
-
             }
             return;
         }
@@ -2405,7 +2403,7 @@ public class GameManager : MonoBehaviourPun
         game.dungeon.rooms[GetRoomOfBoss().GetComponent<Hexagone>().Room.Index].speciallyPowerIsUsed = true;
         CloseDoorWhenVote(false);
 
-        if(game.key_counter == 0)
+        if(game.key_counter <= 0 && !HaveMoreKeyInTraversedRoom())
         {
             Loose();
         }
@@ -2560,7 +2558,7 @@ public class GameManager : MonoBehaviourPun
         int distanceParadiseCurrentRoom = game.currentRoom.DistancePathFinding;
         foreach (Room room in game.dungeon.listRoomTraversed)
         {
-            if(game.key_counter == 0)
+            if(game.key_counter <= 0)
                 listRoomWithCorrectDistance.AddRange(game.dungeon.GetListRoomByDistance(room, Random.Range(1, 2)));
             else
                 listRoomWithCorrectDistance.AddRange(game.dungeon.GetListRoomByDistance(room, Random.Range((int)(game.key_counter/2), game.key_counter+1))); 
@@ -2607,7 +2605,7 @@ public class GameManager : MonoBehaviourPun
             return -1;
         }
         int randomMain = Random.Range(1, 101);
-        if(randomMain <= 60)
+        if(randomMain <= 70)
         {
             if(randomMain <= listProbalitySpecialyRoom[0])
             {
@@ -2616,13 +2614,13 @@ public class GameManager : MonoBehaviourPun
                 listProbalitySpecialyRoom[0] = listProbalitySpecialyRoom[0] - (listProbalitySpecialyRoom[0] / 2);
                 return 0;
             }
-            if (randomMain <= listProbalitySpecialyRoom[1])
+            if (randomMain > 35 && randomMain <= listProbalitySpecialyRoom[1])
             {
                 room.fireBall = true;
                 listProbalitySpecialyRoom[1] = listProbalitySpecialyRoom[1] - (listProbalitySpecialyRoom[1] / 2);
                 return 1;
             }
-            if(randomMain <= listProbalitySpecialyRoom[2])
+            if(randomMain > 57 &&  randomMain <= listProbalitySpecialyRoom[2])
             {
                 room.isSacrifice = true;
                 listProbalitySpecialyRoom[2] = listProbalitySpecialyRoom[2] - (listProbalitySpecialyRoom[2] / 2);

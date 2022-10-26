@@ -5,7 +5,7 @@ using Photon.Pun;
 using UnityEngine.UI;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.Networking;
 
 public class Lobby : MonoBehaviourPunCallbacks
 {
@@ -32,6 +32,8 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public bool openRoom = false;
 
+    public bool versionIsCorrect = false;
+
     int index_skin = 0;
     // Use this  initialization
     void Start()
@@ -41,6 +43,8 @@ public class Lobby : MonoBehaviourPunCallbacks
         ConnectToMaster();
         index_skin = Random.Range(0, 7);
         GameObject.Find("Setting").GetComponent<Setting>().INDEX_SKIN = index_skin;
+
+         StartCoroutine(GetText());
     }
 
     // Update is called once per frame
@@ -62,11 +66,48 @@ public class Lobby : MonoBehaviourPunCallbacks
         
     }
 
+    IEnumerator GetText()
+    {
+        UnityWebRequest www = UnityWebRequest.Get("http://ec2-35-180-178-202.eu-west-3.compute.amazonaws.com/version");
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error);
+            StartCoroutine(GetText());
+        }
+        else
+        {
+            // Show results as tex
+
+            Debug.Log(www.downloadHandler.text);
+            try
+            {
+                ListVersion newVersion = JsonUtility.FromJson<ListVersion>(www.downloadHandler.text);
+
+                if (newVersion.response[0].major == 0 && newVersion.response[0].minor == 5 && newVersion.response[0].revision == 0)
+                {
+                    versionIsCorrect = true;
+                }
+            }
+            catch(System.Exception e)
+            {
+                Debug.Log(e);
+            }
+           
+
+          
+            // Or retrieve results as binary data
+            //byte[] results = www.downloadHandler.data;
+        }
+    }
+
 
     public override void OnConnectedToMaster()
     {
         print("Connected");
         base.OnConnectedToMaster();
+
         if (GameObject.Find("Setting_backWaitingRoom"))
         {
             if (GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().isBackToWaitingRoom)
@@ -91,7 +132,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         if (cause.ToString().Equals("DnsExceptionOnConnect"))
         {
             StartCoroutine(reconnect());
-            ui_management.DisplayErrorPanel("Vous avez été déconnecté");
+            ui_management.DisplayErrorPanel("Disconnection..");
         }
         else
         {

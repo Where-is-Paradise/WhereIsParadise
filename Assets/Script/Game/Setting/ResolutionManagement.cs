@@ -22,8 +22,8 @@ public class ResolutionManagement : MonoBehaviour
             if (!GetComponent<Renderer>().isVisible)
             {
                 //Camera.main.orthographicSize = currentOrthographicSize;
-                Camera.main.orthographicSize += 0.01f;
-                currentOrthographicSize = Camera.main.orthographicSize;  
+                Camera.main.orthographicSize += 0.001f;
+                currentOrthographicSize = Camera.main.orthographicSize;
             }
         }
 

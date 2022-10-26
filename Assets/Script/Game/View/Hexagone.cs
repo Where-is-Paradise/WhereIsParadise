@@ -41,7 +41,7 @@ public class Hexagone : MonoBehaviour
         }
         if (room.isOldParadise && !room.IsExit && !room.IsHell)
         {
-            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
             {
                 this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(true);
                 this.GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241/255f);
@@ -89,8 +89,18 @@ public class Hexagone : MonoBehaviour
         {
             return;
         }
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
+        {
+            return;
+        }
         if (room.IsObstacle || room.IsExit || room.IsInitiale)
         {
+            return;
+        }
+        if (room.isSpecial)
+        {
+            this.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
+            this.transform.Find("Canvas").Find("Cross_error").gameObject.SetActive(true);
             return;
         }
         if(room.DistancePathFinding == 1)
@@ -117,7 +127,7 @@ public class Hexagone : MonoBehaviour
         return;
 #endif
 
-        if ((this.room.isSpecial || this.room.IsExit || this.room.IsHell) && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        if ((this.room.isSpecial || this.room.IsExit || this.room.IsHell) && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
         {
             if (!gameManager.ui_Manager.blueWallPaper.transform.Find("Canvas").Find("Text_timer").gameObject.activeSelf)
             {
@@ -133,12 +143,32 @@ public class Hexagone : MonoBehaviour
             }
           
         }
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
         {
             return;
         }
         if (room.IsObstacle || room.IsExit || room.IsInitiale)
         {
+            return;
+        }
+        if (room.isSpecial)
+        {
+
+            if (room.IsTraversed || room.Index == gameManager.game.currentRoom.Index  || room.IsHell)
+            {
+                this.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
+
+                if(room.Index == gameManager.game.currentRoom.Index)
+                    this.GetComponent<SpriteRenderer>().color = new Color((float)(0f / 255f), (float)255f / 255f, (float)0 / 255f, 1);
+                if(room.IsHell)
+                    this.GetComponent<SpriteRenderer>().color = new Color((float)(255f / 255f), (float)0f / 255f, (float)0 / 255f, 1);
+            }
+            else
+            {
+                this.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            }
+           
+            this.transform.Find("Canvas").Find("Cross_error").gameObject.SetActive(false);
             return;
         }
         if (room.DistancePathFinding == 1)

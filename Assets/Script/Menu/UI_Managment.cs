@@ -122,6 +122,9 @@ public class UI_Managment : MonoBehaviourPun
     public GameObject controle_settingButton;
 
     public AudioSource launchChrono;
+
+
+    public Version_http version;
     float k = -1;
     // Start is called before the first frame update
     void Start()
@@ -140,43 +143,27 @@ public class UI_Managment : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        /*        if (PhotonNetwork.IsMasterClient)
-                {
-                    if (buttonStartGame)
-                    {
-        *//*                if ((lobby.nbPlayer > 3 && lobby.nbPlayer < 9) || GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerGO>().playerName == "Homertimes   ")
-                        {
-                            buttonStartGame.SetActive(true);
-                        }
-                        else
-                        {
-                            buttonStartGame.SetActive(false);
-                        }*//*
 
-                        buttonStartGame.SetActive(true);
+        // limité le nb de joueur
 
-                    }
-
-                    ActivateAllFormSetting(true);
-                    canChange = true;
-                }
-                else
-                {
-                    buttonStartGame.SetActive(false);
-                    ActivateAllFormSetting(false);
-                    canChange = false;
-                }*/
-
-
-        if (PhotonNetwork.IsMasterClient && !lobby.matchmaking)
+/*        if (PhotonNetwork.IsMasterClient &&  !lobby.matchmaking && buttonStartGame)
         {
+            if ((lobby.nbPlayer > 3 && lobby.nbPlayer < 9) || GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerGO>().playerName == "Homertimes   ")
+            {
+                buttonStartGame.SetActive(true);
+            }
+            else
+            {
+                buttonStartGame.SetActive(false);
+            }
 
-            buttonStartGame.SetActive(true);
-        }
-        else
-        {
-            buttonStartGame.SetActive(false);
-        }
+            //buttonStartGame.SetActive(true);
+
+        }*/
+
+  
+
+
 
         if (isLoadingConnection)
         {
@@ -600,7 +587,7 @@ public class UI_Managment : MonoBehaviourPun
     
     public void DisplayErrorPanel(string message)
     {
-        if (panelErrorForm)
+        if (!panelErrorForm.activeSelf)
         {
             panelErrorForm.SetActive(true);
             panelErrorForm.transform.GetChild(0).GetComponent<Text>().text = message;
@@ -908,15 +895,33 @@ public class UI_Managment : MonoBehaviourPun
     public IEnumerator CoroutineDisplayChatInputMobile(bool display)
     {
     
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(1.5f);
 
-          if (GameObject.FindGameObjectsWithTag("Player").Length == 0)
+        if (GameObject.FindGameObjectsWithTag("Player").Length == 0)
         {
             display = false;
         }
         CanvasChatInput.SetActive(display);
 
 
+    }
+
+    public void CheckVersion()
+    {
+        StartCoroutine(CheckVersionCoroutine());
+    }
+
+    public IEnumerator CheckVersionCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+
+        if (!lobby.versionIsCorrect)
+        {
+            
+            PhotonNetwork.Disconnect();
+            OnClickBackInWaitingRoom();
+            DisplayErrorPanel("Your game version is too old");
+        }
     }
 
     public void HideButtonForNoMobile()

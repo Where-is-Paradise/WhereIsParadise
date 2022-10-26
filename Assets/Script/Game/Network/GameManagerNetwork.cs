@@ -92,8 +92,9 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetRole(int indexPlayer, bool isImpostor, bool isLast)
     {
-        gameManager.game.GetPlayerById(indexPlayer).SetIsImpostor(isImpostor);
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isImpostor = isImpostor;
+        gameManager.game.GetPlayerById(indexPlayer).SetIsImpostor(isImpostor);
+        
         //gameManager.ui_Manager.SetDescriptionLoadPage("Roles creation.." , 0.1f);
     }
 

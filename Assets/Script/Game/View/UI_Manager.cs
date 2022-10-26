@@ -166,7 +166,7 @@ setting_button_echapMenu.SetActive(false);
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = !map.activeSelf;
 
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
-            DisplayPowerButton(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower, map.activeSelf);
+            DisplayPowerButton(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower, (map.activeSelf && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation));
 
         if (!blueWallPaper.activeSelf)
         {
@@ -1066,14 +1066,12 @@ setting_button_echapMenu.SetActive(false);
             {
                 return;
             }
-            if (gameManager.game.key_counter == 0)
-            {
-                return;
-            }
         }
         MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject.SetActive(display);
         DisplaySpeciallyLevers(display,0);
-        DisplayAwardAndPenaltyForImpostor(display);
+
+        if(!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
+            DisplayAwardAndPenaltyForImpostor(display);
       
         if (!display)
         {
@@ -1396,11 +1394,21 @@ setting_button_echapMenu.SetActive(false);
         bool hideImpostorInformation = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation = !hideImpostorInformation;
         HideAllImpostorInformation(hideImpostorInformation);
+        DisplayAwardAndPenaltyForImpostor(hideImpostorInformation);
     }
 
     public void DisplayPanelInWaiting(bool display)
     {
         panelInWaiting.SetActive(display);
+    }
+
+
+    public void HideAllTutorial()
+    {
+        foreach(GameObject tutorial_index in tutorial)
+        {
+            tutorial_index.SetActive(false);
+        }
     }
 }
 

@@ -137,7 +137,7 @@
 "tutorial_initial_CorruptedSoul_1" : "Vous êtes une âme Corrompue, \n Votre équipe ne doit pas trouver le Paradis ! ",
 
 "tutorial_initial_PlayerSelectionedGoToDoorZone" : "Ensuite, le ou les joueurs sélectionnés doivent se rendre dans la zone de la porte jusqu'à ce que la lettre s'affiche au-dessus d'eux.",
-"tutorial_autel_0" : "Seule le chef d'équipe peut utiliser cet objet",
+"tutorial_autel_0" : "Seul le chef d'équipe peut utiliser cet objet",
 "tutorial_autel_1" : "Avant de pouvoir utiliser cet objet, vous devez sélectionner un ou plusieurs joueurs",
 "tutorial_autel_2" : "Vous avez été sélectionner par le chef d'équipe pour aller en exploration, veuillez vous rendre dans la zone de l'une des portes ( la lettre de la porte doit s'afficher au dessus de vous).",
 
@@ -146,7 +146,7 @@
 "tutorial_initial_BossVoteDoor_1" : "Chaque ouverture de porte utilise une clef.",
 
 "tutorial_initial_NoBossExploration_0" : "Cet objet permet au chef d'équipe de lancer une exploration.",
-"tutorial_initial_NoBossExploration_1" : "Le chef d'équipe doit tout d'abord choisir les futures  explorateurs.",
+"tutorial_initial_NoBossExploration_1" : "Le chef d'équipe doit d'abord choisir les futur  explorateurs.",
 
 "tutorial_initial_BossExploration_0" : "Avant de pouvoir interagir avec cet objet, vous devez sélectionner un ou plusieurs joueurs.",
 
@@ -177,7 +177,7 @@
 
 "tutorial_autel_cursed_0" : "Une porte sera ouverte aléatoirement.",
 
-"tutorial_autel_fireball_0" : "Vous ne devez toucher les boules de feu.",
+"tutorial_autel_fireball_0" : "Evitez les boules de feu.",
 "tutorial_autel_fireball_1" : "Le dernier survivant de cette épreuve sera récompenser par une exploration de son choix.",
 
 "tutorial_autel_jail_0" : "Vous êtes emprisonné(e).",
@@ -208,10 +208,15 @@
 "SkinPage_save_button" : "Appliquer",
 
 "tutorial_powerImpostor_0" : "Pour utiliser votre pouvoir, selectionez ce bouton",
-"tutorial_powerImpostor_1" : "Ensuite, choisissez la salle que vous voulez modifier.",
+"tutorial_powerImpostor_1" : "Ensuite, choisissez la salle que vous voulez piéger.",
 
 "powerImpostor_waitingPage_0" : "Les âmes corrompues utilisent leur pouvoir..",
 
+
+ "resumePanel_0" : "Retour au menu",
+ "resumePanel_1" : "Afficher la carte",
+
+"echap_main_2" : "Cacher",
 
 
 "menu_credit_3" : "Site web",
@@ -220,7 +225,9 @@
 "menu_credit_team_1" : "Graphiste principal",
 "menu_credit_team_2" : "Graphiste  / Monteur / Animateur",
 "menu_credit_team_3" : "Community manager  / Développeur web",
-
+"menu_credit_team_4" : "Modération / Testeur",
+"menu_credit_team_5" : "Graphiste",
+"menu_credit_team_6" : "Musique / son",
 
 
   }

@@ -271,7 +271,7 @@ public class PlayerGO : MonoBehaviour
                 if (!gameManager.paradiseIsFind && !gameManager.hellIsFind)
                 {
                    
-                    if (!gameManager.alreaydyExpeditionHadPropose && gameManager.game.key_counter > 0 && !gameManager.DoorParadiseOrHellisOpen)
+                    if (!gameManager.alreaydyExpeditionHadPropose && !gameManager.DoorParadiseOrHellisOpen)
                     {
                         Dictionary<int, int> door_idPlayer = gameManager.SetPlayerNearOfDoor();
 
@@ -1106,9 +1106,14 @@ public class PlayerGO : MonoBehaviour
 
     public void SetSkinImpostor(bool isImpostor)
     {
-        if (gameManager.GetPlayerMine().GetIsImpostor())
+        if (gameManager.GetPlayerMine().GetIsImpostor() && this.GetComponent<PhotonView>().IsMine)
         {
-            this.transform.GetChild(1).GetChild(2).gameObject.SetActive(isImpostor);
+            foreach(GameObject impostor in GameObject.FindGameObjectsWithTag("Player"))
+            {
+                if(impostor.GetComponent<PlayerGO>().isImpostor)
+                    impostor.transform.GetChild(1).GetChild(2).gameObject.SetActive(isImpostor);
+            }
+           
         }
     }
 
@@ -1273,7 +1278,7 @@ public class PlayerGO : MonoBehaviour
             Debug.Log("threeFirstLetter < 4");
         }
 
-        if (text.Length > 4 && threeFirstLetter.Equals("/all"))
+/*        if (text.Length > 4 && threeFirstLetter.Equals("/all"))
         {
             string textWithoutSlash = text.Substring(4, text.Length - 4);
             if (textWithoutSlash == "" || textWithoutSlash == " " || textWithoutSlash == "  ")
@@ -1293,6 +1298,25 @@ public class PlayerGO : MonoBehaviour
                 GetComponent<PlayerNetwork>().SendTextChat(indexPlayer, text);
             }
 
+        }*/
+
+        if (GetComponent<PlayerGO>().isImpostor && threeFirstLetter.Equals("/imp") && text.Length > 3   )
+        {
+            string textWithoutSlash = text.Substring(4, text.Length -4);
+            if (textWithoutSlash == "" || textWithoutSlash == " " || textWithoutSlash == "  ")
+            {
+                return;
+            }
+            //GetComponent<PlayerNetwork>().SendTextChat(indexPlayer, textWithoutSlash);
+            GetComponent<PlayerNetwork>().SendTextChatToImpostor(indexPlayer, textWithoutSlash);
+        }
+        else
+        {
+            if (text[0].Equals('/'))
+            {
+                return;
+            }
+            GetComponent<PlayerNetwork>().SendTextChat(indexPlayer, text);
         }
     }
 
@@ -1613,21 +1637,5 @@ public class PlayerGO : MonoBehaviour
 
     }
 
-/*    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(this.transform.position);
-        }
-        else
-        {
-            networkPosition = (Vector3)stream.ReceiveNext();
-            networkRotation = (Quaternion)stream.ReceiveNext();
-            rigidbody.velocity = (Vector3)stream.ReceiveNext();
-
-            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
-            networkPosition += (this.m_Body.velocity * lag);
-        }
-    }*/
 
 }

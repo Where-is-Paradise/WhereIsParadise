@@ -114,7 +114,6 @@
  "tutorial_initial_BossVoteDoor_3" : "cancellation of vote",
  "tutorial_initial_BossVoteDoor_4" : "Vote for Door F",
 
- "tutorial_initial_Map_0" : "You can access the dungeon map, using the \"M\" Input",
  "tutorial_initial_Map_1" : "This number identifies the room.",
  "tutorial_initial_Map_2" : "This number gives the distance from the starting room.",
 
@@ -152,19 +151,19 @@
 
  "tutorial_initial_playerSelectioned" : "You have been selected by the team leader to go exploring, please go to one of the door areas (the door letter should be displayed above you).",
 
- "tutorial_initial_BackExploration" : "You can then return to where your team is.",
+ "tutorial_initial_BackExploration" : "You can then return to the room your team is..",
 
  "tutorial_initial_Map_0" : "The map allows you to visualize the dungeon and know where you are.",
- "tutorial_autel_3" : "Corresponds to the distance from Paradise..",
- "tutorial_autel_4" : "Corresponds to the number of remaining keys..",
- "tutorial_autel_5" : "Corresponds to the number of remaining torches..",
+ "tutorial_autel_3" : "The distance from Paradise..",
+ "tutorial_autel_4" : "The number of remaining keys..",
+ "tutorial_autel_5" : "The number of remaining torches..",
 
 
  "tutorial_changeBoss_0" : "You can offer to change the team leader.",
  "tutorial_changeBoss_1" : "The leader will change if all players request it.",
 
- "tutorial_exploration_award_0" : "Congratulation ! you have just earned your first reward.",
- "tutorial_exploration_award_1" : "You can choose the exploration you want, for that please go to a door area and press the interact button (E by default).",
+ "tutorial_exploration_award_0" : "Congratulation! you have just earned your first reward.",
+ "tutorial_exploration_award_1" : "You can choose the exploration you want. To do so, please go to a door area and press the interact button (E by default).",
 
  "tutorial_autel_chest_0" : "You must choose a chest to open.",
  "tutorial_autel_chest_1" : "\n but beware one of the chests is trapped! !",
@@ -173,13 +172,13 @@
  "tutorial_autel_sacrifice_0" : "Sacrifice a person from your team and you will be rewarded with an extra key..",
  "tutorial_autel_sacrifice_1" : "The player with the most votes will be sacrificed",
 
- "tutorial_autel_cursed_0" : "A door will be opened randomly.",
+ "tutorial_autel_cursed_0" : "A door will open randomly.",
 
- "tutorial_autel_fireball_0" : "You don't have to touch the fireballs.",
- "tutorial_autel_fireball_1" : "The last survivor of this ordeal will be rewarded with an exploration of their choice.",
+ "tutorial_autel_fireball_0" : "You must avoid the fireballs.",
+ "tutorial_autel_fireball_1" : "The last survivor will be rewarded with an exploration of their choice.",
 
  "tutorial_autel_jail_0" : "You are imprisoned.",
- "tutorial_autel_jall_1" : "Your team can come and free you if they open one of the doors adjacent to your room.",
+ "tutorial_autel_jall_1" : "Your team can come and free you if they open one of your room's door.",
 
  "menu_setting_controls_exploration":"Interact",
 
@@ -206,11 +205,14 @@
  "SkinPage_save_button" : "Apply",
 
  "tutorial_powerImpostor_0" : "To use your power, select this button",
- "tutorial_powerImpostor_1" : "Then choose the room you want to modify.",
+ "tutorial_powerImpostor_1" : "Then choose the room you want to trap.",
 
  "powerImpostor_waitingPage_0" : "Corrupted souls use their power",
 
+ "resumePanel_0" : "Back to menu",
+ "resumePanel_1" : "Display map",
 
+ "echap_main_2" : "Hide",
 
  "menu_credit_3" : "Website",
  "menu_credit_6" : "The team",
@@ -218,7 +220,9 @@
  "menu_credit_team_1" : "Main Graphic designer",
  "menu_credit_team_2" : "Graphic Designer  / video editor / Animator",
  "menu_credit_team_3" : "Community manager  / Web developer",
-
+ "menu_credit_team_4" : "Moderation / Tester",
+ "menu_credit_team_5" : "Graphic Designer",
+"menu_credit_team_6" :  "Music / Sound",
 
 
 
