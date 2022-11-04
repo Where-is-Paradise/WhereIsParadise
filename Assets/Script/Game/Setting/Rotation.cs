@@ -21,13 +21,13 @@ public class Rotation : MonoBehaviour
             if (PhotonNetwork.IsMasterClient)
             {
                 Vector3 newRotation2 = new Vector3(0, 0, speed * Time.deltaTime);
-                transform.eulerAngles += newRotation2;
+                transform.eulerAngles = newRotation2;
             }
             return;
 
         }
 
         Vector3 newRotation = new Vector3(0, 0, speed * Time.deltaTime);
-        transform.eulerAngles += newRotation;
+        transform.eulerAngles -= newRotation;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FireBall : MonoBehaviourPun
 {
-    public int speed = 2;
+    public float speed = 0;
     public Vector2 direction = new Vector2(0,0);
 
     private GameManager gameManager;
@@ -13,7 +13,8 @@ public class FireBall : MonoBehaviourPun
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        StartCoroutine(CoroutineActiveCollision(2));
+        StartCoroutine(CoroutineActiveCollision(1f));
+        //speed = Random.Range(2, 10);
     }
 
     // Update is called once per frame
@@ -24,7 +25,7 @@ public class FireBall : MonoBehaviourPun
             GetComponent<SpriteRenderer>().enabled = false;
             GetComponent<Collider2D>().enabled = false;
         }
-        if (!PhotonNetwork.IsMasterClient)
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
         }
@@ -33,7 +34,7 @@ public class FireBall : MonoBehaviourPun
        
     }
 
-    public IEnumerator CoroutineActiveCollision(int seconde)
+    public IEnumerator CoroutineActiveCollision(float seconde)
     {
         this.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
         yield return new WaitForSeconds(seconde);
@@ -43,10 +44,6 @@ public class FireBall : MonoBehaviourPun
 
     public void ChangeDirection(Collider2D nameWallColsion)
     {
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            return;
-        }
         string nameWall = nameWallColsion.gameObject.name;
         if (nameWall == "Left" || nameWall == "Right" 
             || (CollisionDoor(nameWallColsion) && nameWall == "A")
@@ -55,11 +52,11 @@ public class FireBall : MonoBehaviourPun
 
             if (direction.y < 0)
             {
-                direction = new Vector2(-direction.x, -1 * Random.Range(0.5f, 1f));
+                direction = new Vector2(-direction.x, -1 * Random.Range(1, 1f));
             }
             else
             {
-                direction = new Vector2(-direction.x, Random.Range(0.5f, 1f));
+                direction = new Vector2(-direction.x, Random.Range(1, 1f));
             }
 
         }
@@ -71,18 +68,18 @@ public class FireBall : MonoBehaviourPun
         {
             if (direction.x < 0)
             {
-                direction = new Vector2(-1 * Random.Range(0.5f, 1f), -direction.y);
+                direction = new Vector2(-1 * Random.Range(1, 1f), -direction.y);
             }
             else
             {
-                direction = new Vector2(Random.Range(0.5f, 1f), -direction.y);
+                direction = new Vector2(Random.Range(1, 1f), -direction.y);
             }
 
         }
 
         if(nameWall  == "Turret")
         {
-            direction = new Vector2(-direction.x * Random.Range(0.5f, 1f), -direction.y * Random.Range(0.5f, 1f));
+            direction = new Vector2(-direction.x * Random.Range(1, 1f), -direction.y * Random.Range(1, 1f));
         }
     }
 
@@ -155,18 +152,19 @@ public class FireBall : MonoBehaviourPun
 
     public void SendDestroy()
     {
-        photonView.RPC("SetDestoy", RpcTarget.All);
+        //photonView.RPC("SetDestoy", RpcTarget.All);
+        PhotonNetwork.Destroy(this.gameObject);
     }
 
 
-    [PunRPC]
-    public void SetDestoy()
+    //[PunRPC]
+/*    public void SetDestoy()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.Destroy(this.gameObject);
+            
         }
-    }
+    }*/
 
     public int GetAllPlayerTouchByFireBall()
     {

@@ -13,6 +13,8 @@ public class UI_Manager : MonoBehaviour
     public GameObject MainRoomGraphic;
 
     public GameObject text_distance_room;
+    public GameObject letterOne;
+    public GameObject letterTwo;
 
     public Text nbKeyText;
     public GameObject zonesVote;
@@ -221,17 +223,36 @@ setting_button_echapMenu.SetActive(false);
     public void SetDistanceRoom(int distance, Room room)
     {
         text_distance_room.GetComponent<Text>().text = distance.ToString();
+
     }
     public void HideDistanceRoom()
     {
         text_distance_room.GetComponent<Text>().text = "";
+        letterOne.GetComponent<Text>().text = "";
+        letterTwo.GetComponent<Text>().text = "";
     }
 
     public void DisplayInterrogationPoint()
     {
         text_distance_room.GetComponent<Text>().text = "?";
     }
-
+    public void SetLetterExploration(string trueLetter, string falseLetter)
+    {
+        int randomInt = Random.Range(0, 2);
+        letterOne.SetActive(true);
+        letterTwo.SetActive(true);
+        if (randomInt == 0)
+        {
+            letterOne.GetComponent<Text>().text = trueLetter;
+            letterTwo.GetComponent<Text>().text = falseLetter;
+        }
+        else
+        {
+            letterOne.GetComponent<Text>().text = falseLetter;
+            letterTwo.GetComponent<Text>().text = trueLetter;
+        }
+        
+    }
 
 
 
@@ -442,8 +463,8 @@ setting_button_echapMenu.SetActive(false);
         //waitingPage_PowerImpostor.SetActive(true);
         DisplayPowerImpostor(true);
         Camera.main.orthographicSize = 4f;
-        gameManager.timer.LaunchTimer(20, false);
-        yield return new WaitForSeconds(20);
+        gameManager.timer.LaunchTimer(2, false); // 20
+        yield return new WaitForSeconds(2); // 20
         DisplayPowerImpostor(false);
         Camera.main.orthographicSize = 5.1f;
         yield return new WaitForSeconds(0.5f);
@@ -538,13 +559,30 @@ setting_button_echapMenu.SetActive(false);
       
     }
 
-    public IEnumerator MixDistanceExplorationStopCoroutine()
+    public IEnumerator MixDistanceExplorationStopCoroutine(string trueLetter, string falseLetter)
     {
         yield return new WaitForSeconds(Random.Range(5, 11));
         if (!gameManager.GetExpeditionOfPlayerMine().room.IsFoggy)
-            text_distance_room.GetComponent<Text>().text = 
-            gameManager.game.dungeon.GetPathFindingDistance(gameManager.GetExpeditionOfPlayerMine().room, gameManager.game.dungeon.exit).ToString();
+        {
+   /*         text_distance_room.GetComponent<Text>().text =
+                gameManager.game.dungeon.GetPathFindingDistance(gameManager.GetExpeditionOfPlayerMine().room, gameManager.game.dungeon.exit).ToString();*/
+            int randomInt = Random.Range(0, 2);
+            if(randomInt == 0)
+            {
+                letterOne.GetComponent<Text>().text = trueLetter;
+                letterTwo.GetComponent<Text>().text = falseLetter;
+            }
+            else
+            {
+                letterOne.GetComponent<Text>().text = falseLetter;
+                letterTwo.GetComponent<Text>().text = trueLetter;
+            }
+            letterOne.SetActive(true);
+            letterTwo.SetActive(true);
+        }
+           
        
+
         timerMixExploration = false;
         gameManager.CloseDoorExplorationWhenVote(false);
     }
@@ -1000,13 +1038,12 @@ setting_button_echapMenu.SetActive(false);
 
         foreach(GameObject door in doors)
         {
-
             if (door.GetComponent<Door>().index == indexDoor)
             {
                 if (!display)
                 {
                     door.transform.GetChild(5).GetComponent<CapsuleCollider2D>().enabled = true;
-                    for(int i = 0; i < 6; i++)
+                    for(int i = 0; i < 9; i++)
                     {
                         door.transform.GetChild(5).GetChild(1).GetChild(1).GetChild(i).gameObject.SetActive(false);
                     }
@@ -1020,10 +1057,6 @@ setting_button_echapMenu.SetActive(false);
  
         }
     }
-
-   
-
-   
 
 
     public void OnClickBack()
@@ -1283,7 +1316,7 @@ setting_button_echapMenu.SetActive(false);
         player.GetComponent<PlayerGO>().GetPlayerMineGO().GetComponent<PlayerGO>().DisplayChat(false);
     }
 
-    public void DisplayNuVoteSacrificeForAllPlayer(bool display)
+    public void DisplayNuVoteSacrificeForAllPlayer()
     {
         if (!gameManager.SamePositionAtBoss())
         {
@@ -1294,15 +1327,34 @@ setting_button_echapMenu.SetActive(false);
         {
             if (!gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
             {
-                gameManager.HidePlayerNotInSameRoom(player.GetComponent<PhotonView>().ViewID, !display);
-                if(!display)
-                    player.transform.GetChild(1).GetChild(1).GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
-                else
-                    player.transform.GetChild(1).GetChild(1).GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+                player.transform.GetChild(0).gameObject.SetActive(true);
+                player.transform.GetChild(1).gameObject.SetActive(true);
+                player.transform.GetChild(1).GetChild(1).GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
             }
-            player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(display);
+            player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(true);
         }
     }
+
+    public void HideNuVoteSacrificeForAllPlayer()
+    {
+        if (!gameManager.SamePositionAtBoss())
+        {
+            return;
+        }
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            if (!gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
+            {
+                //gameManager.HidePlayerNotInSameRoom(player.GetComponent<PhotonView>().ViewID, false);
+                player.transform.GetChild(0).gameObject.SetActive(false);
+                player.transform.GetChild(1).gameObject.SetActive(false);
+                player.transform.GetChild(1).GetChild(1).GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+            }
+            player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
+        }
+    }
+
 
 
     public void DisplayJailRoom(bool display)
@@ -1317,6 +1369,22 @@ setting_button_echapMenu.SetActive(false);
     {
         GameObject.Find("Special").transform.Find("VirusRoom").gameObject.SetActive(display);
         DisplaySpeciallyLevers(display, 3);
+    }
+    public void DisplayDeathNPCRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("DeathNPCRoom").gameObject.SetActive(display);
+        GameObject.Find("Special").transform.Find("DeathNPCRoom").Find("DeathNpc").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display, 4);
+    }
+    public void DisplayDamoclesSwordRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("DamoclesSwordRoom").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display, 5);
+    }
+    public void DisplayAxRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("AxRoom").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display, 6);
     }
 
     public void DisplayUI_Mobile_SpecialRoom(bool display)

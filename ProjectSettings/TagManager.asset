@@ -21,6 +21,7 @@ TagManager:
   - Lever
   - InteractionObject
   - SpecialRoom_UI_Mobile
+  - CollisionTrigerPlayer
   layers:
   - Default
   - TransparentFX
@@ -28,7 +29,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - obtacle
   - 
   - 
   - 

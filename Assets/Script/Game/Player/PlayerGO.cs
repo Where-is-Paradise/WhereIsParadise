@@ -118,6 +118,10 @@ public class PlayerGO : MonoBehaviour
 
     public bool hideImpostorInformation = false;
     public Vector3 movement = new Vector3(0,0,0);
+    public bool isTouchByDeath = false;
+    public bool isDeadBySwordDamocles = false;
+    public bool isTouchByAx = false;
+
     private void Awake()
     {
         displayChatInput = false;
@@ -277,6 +281,7 @@ public class PlayerGO : MonoBehaviour
 
                         if (gameManager.VerificationExpedition(door_idPlayer))
                         {
+                            Debug.Log("propose expedition");
                             gameManager.ProposeExpedition(door_idPlayer);
                             gameManager.ui_Manager.DisplayMainLevers(false);
                             gameManager.gameManagerNetwork.SendDisplayMainLevers(false);
@@ -588,7 +593,6 @@ public class PlayerGO : MonoBehaviour
             SetTextChat(DeltaTime + " " + MaxTimeWait + " " + DeltaPositionLenght + " " + VariancePosition);
             if (DeltaTime > 0 && DeltaTime < MaxTimeWait && DeltaPositionLenght < VariancePosition)
             {
-                SetTextChat("sa passe");
                 result = true;
             }
               
@@ -746,6 +750,16 @@ public class PlayerGO : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             if (gameManager && gameManager.fireBallIsLaunch && !collision.gameObject.GetComponent<PlayerGO>().isTouchByFireBall)
+            {
+                Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), false);
+                return;
+            }
+            if (gameManager && gameManager.deathNPCIsLaunch && !collision.gameObject.GetComponent<PlayerGO>().isTouchByDeath)
+            {
+                Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), false);
+                return;
+            }
+            if(gameManager && gameManager.damoclesIsLaunch && !collision.gameObject.GetComponent<PlayerGO>().isDeadBySwordDamocles)
             {
                 Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), false);
                 return;
@@ -986,9 +1000,22 @@ public class PlayerGO : MonoBehaviour
         } 
         if (gameManager.game.currentRoom.isSacrifice)
         {
-            gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer(true);
+            gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer();
             GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
         }
+        if (gameManager.game.currentRoom.isDeathNPC)
+        {
+            gameManager.deathNPCIsLaunch = true;
+        }
+        if (gameManager.game.currentRoom.isSwordDamocles)
+        {
+            gameManager.gameManagerNetwork.SendLaunchDamoclesRoom();
+        }
+        if (gameManager.game.currentRoom.isAx)
+        {
+            gameManager.gameManagerNetwork.SendLaunchAxRoom();
+        }
+
         if (gameManager.game.currentRoom.IsVirus && gameManager.game.key_counter > 0)
         {
             launchVoteDoorMobile = true;
@@ -1191,10 +1218,11 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (gameManager.isActuallySpecialityTime)
+/*        if (gameManager.isActuallySpecialityTime)
         {
+            Debug.Log("sa passe");
             return;
-        }
+        }*/
 
         GetComponent<PlayerNetwork>().SendOnclickToExpedition();
     }

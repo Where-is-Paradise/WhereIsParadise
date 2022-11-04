@@ -253,7 +253,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.alreaydyExpeditionHadPropose = true;
         gameManager.SetPlayersHaveTogoToExpeditionBool();
         gameManager.ResetVoteExploration();
-        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
+        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.explorationIsUsed = true;
         gameManager.waitForEndVote = false;
     }
 
@@ -1156,35 +1156,48 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
             gameManager.ResetFireBallRoom();
         }
-        //gameManager.ui_Manager.DisplayFireBallRoom(display);
-        gameManager.game.currentRoom.speciallyPowerIsUsed = !display;
+        //gameManager.game.currentRoom.speciallyPowerIsUsed = !display;
         gameManager.CloseAllDoor(gameManager.game.currentRoom, false);
         gameManager.fireBallIsLaunch = false;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
-
-
+        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = !display;
     }
 
     public void SendLaunchFireBallRoom()
     {
-        photonView.RPC("SetLaunchFireBallRoom", RpcTarget.All);
+        int categorieFireball = Random.Range(0, 3);
+        photonView.RPC("SetLaunchFireBallRoom", RpcTarget.All, categorieFireball);
     }
 
     [PunRPC]
-    public void SetLaunchFireBallRoom()
+    public void SetLaunchFireBallRoom(int categorieFireball)
     {
         gameManager.fireBallIsLaunch = true;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
         gameManager.game.nbTorch++;
-        if (!PhotonNetwork.IsMasterClient)
+
+        GameObject[] turrets = GameObject.FindGameObjectsWithTag("Turret");
+
+        Debug.Log(PhotonNetwork.IsMasterClient + " " + turrets.Length + " " + gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss);
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
         }
-        GameObject[] turrets = GameObject.FindGameObjectsWithTag("Turret");
+        //GameObject[] turrets = GameObject.FindGameObjectsWithTag("Turret");
         foreach(GameObject turret in turrets)
         {
+            if(turrets.Length > 0 && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            {
+                turret.GetComponent<Turret>().therenotMasterClient = true;
+            }
             turret.GetComponent<Turret>().LaunchTurret();
+            turret.GetComponent<Turret>().categorie = categorieFireball;
+
         }
+    }
+    public void SendChangementMasterForFireball()
+    {
+
     }
 
     public void SendDisplayMainLevers(bool display)
@@ -1229,16 +1242,17 @@ public class GameManagerNetwork : MonoBehaviourPun
 
 
 
-    public void SendDisplayNuVoteSacrificeForAllPlayer(bool display)
+    public void SendDisplayNuVoteSacrificeForAllPlayer()
     {
-        photonView.RPC("SetDisplayNuVoteSacrificeForAllPlayer", RpcTarget.All, display) ;
+        photonView.RPC("SetDisplayNuVoteSacrificeForAllPlayer", RpcTarget.All) ;
     }
 
     [PunRPC]
-    public void SetDisplayNuVoteSacrificeForAllPlayer(bool display)
+    public void SetDisplayNuVoteSacrificeForAllPlayer()
     {
-        gameManager.ui_Manager.DisplayNuVoteSacrificeForAllPlayer(display);
+        gameManager.ui_Manager.DisplayNuVoteSacrificeForAllPlayer();
     }
+
 
     public void  SendSacrificeVoteIsLaunch(bool isLaunch)
     {
@@ -1248,7 +1262,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetSacrificeVoteIsLaunch(bool isLaunch)
     {
-        GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch = isLaunch;
+        if(GameObject.Find("SacrificeRoom"))
+            GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch = isLaunch;
         
     }
     public void SendUpdateNeighbourSpeciality(int indexRoom , int indexSpeciality)
@@ -1275,6 +1290,15 @@ public class GameManagerNetwork : MonoBehaviourPun
                 break;
             case 2:
                 room.isSacrifice = true;
+                break;
+            case 3:
+                room.isDeathNPC = true;
+                break;
+            case 4:
+                room.isSwordDamocles = true;
+                break;
+            case 5:
+                room.isAx = true;
                 break;
         }
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;
@@ -1330,4 +1354,45 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.ui_Manager.SetDistanceTextAwardChest(indexChest);
     }
+
+    public void SendChangeLeverDeathNPC()
+    {
+        photonView.RPC("SetChangeLeverDeathNPC", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetChangeLeverDeathNPC()
+    {
+        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
+        gameManager.UpdateSpecialsRooms(gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
+        gameManager.ui_Manager.DisplayMainLevers(true);
+        if (gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.explorationIsUsed)
+        {
+            gameManager.ui_Manager.DisplayLeverExploration(false);
+        }
+    }
+
+    public void SendLaunchDamoclesRoom()
+    {
+        photonView.RPC("SetLaunchDamoclesRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchDamoclesRoom()
+    {
+        GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().LaunchDamoclesSwordRoom();
+        
+    }
+    public void SendLaunchAxRoom()
+    {
+        photonView.RPC("SetLaunchAxRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchAxRoom()
+    {
+        GameObject.Find("AxRoom").GetComponent<AxRoom>().LaunchAxRoom();
+
+    }
+
 }

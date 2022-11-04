@@ -63,11 +63,15 @@ public class Room : ScriptableObject
     public bool availableKeyAnimation = true;
     public bool chest = false;
     public bool speciallyPowerIsUsed = false;
+    public bool explorationIsUsed = false;
     public bool fireBall = false;
     public bool isSacrifice = false;
     public bool isSpecial = false;
     public bool isNotSpecial = false;
     public bool isJail = false;
+    public bool isDeathNPC = false;
+    public bool isSwordDamocles = false;
+    public bool isAx = false;
 
     public List<Chest> chestList = null;
 

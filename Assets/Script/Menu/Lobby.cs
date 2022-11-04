@@ -516,10 +516,10 @@ public class Lobby : MonoBehaviourPunCallbacks
                 return false;
             }
         }
-/*        if (players.Length < 4)
+        if (players.Length < 4)
         {
             return false;
-        }*/
+        }
         return true;
     }
 

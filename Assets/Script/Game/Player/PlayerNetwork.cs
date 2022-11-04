@@ -75,7 +75,7 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         GetComponent<PlayerGO>().isChooseForExpedition = !GetComponent<PlayerGO>().isChooseForExpedition;
         this.transform.GetChild(1).GetChild(4).gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
-
+        Debug.Log(GetComponent<PlayerGO>().isChooseForExpedition);
         if (GetComponent<PlayerGO>().isChooseForExpedition)
         {
             transform.GetChild(3).GetComponent<BoxCollider2D>().enabled = true;
@@ -93,6 +93,19 @@ public class PlayerNetwork : MonoBehaviourPun
             }
            
         }
+
+    }
+
+    public void SendOnclickToExpedtionN2()
+    {
+        photonView.RPC("SetOnclickToExpedition", RpcTarget.All);
+    }
+
+    public void SetOnclickToExpedtionN2()
+    {
+        GetComponent<PlayerGO>().isChooseForExpedition = true;
+        this.transform.GetChild(1).GetChild(4).gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
+        transform.GetChild(3).GetComponent<BoxCollider2D>().enabled = true;
 
     }
 
@@ -358,8 +371,9 @@ public class PlayerNetwork : MonoBehaviourPun
         player.GetComponent<PlayerGO>().gameManager.UpdateSpecialsRooms(player.GetComponent<PlayerGO>().gameManager.game.currentRoom);
         player.GetComponent<PlayerGO>().gameManager.CloseDoorWhenVote(false);
         player.GetComponent<PlayerGO>().gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice = false;
+        player.gameManager.ui_Manager.HideNuVoteSacrificeForAllPlayer();
         player.gameManager.HidePlayerNotInSameRoom();
-        player.gameManager.ui_Manager.DisplayNuVoteSacrificeForAllPlayer(false);
+       
 
     }
 
@@ -461,6 +475,61 @@ public class PlayerNetwork : MonoBehaviourPun
         if (player.gameManager.IsPlayerMine(indexPlayer))
         {
             player.gameManager.GetPlayer(indexPlayer).transform.position = new Vector3(x, y);
+        }
+    }
+
+    public void SendIstouchByDeath(bool isTouch)
+    {
+        photonView.RPC("SetIsTouchByDeath", RpcTarget.All, isTouch);
+    }
+
+    [PunRPC]
+    public void SetIsTouchByDeath(bool isTouch)
+    {
+        this.player.isTouchByDeath = isTouch;
+    }
+
+
+    public void SendIstouchByAx(bool isTouch)
+    {
+        photonView.RPC("SetIsTouchByAx", RpcTarget.All, isTouch);
+    }
+
+    [PunRPC]
+    public void SetIsTouchByAx(bool isTouch)
+    {
+        this.player.isTouchByAx = isTouch;
+    }
+
+
+    public void SendIstouchBydDamoclesSword(bool isTouch)
+    {
+        photonView.RPC("SetIsTouchBydDamoclesSword", RpcTarget.All, isTouch);
+    }
+
+    [PunRPC]
+    public void SetIsTouchBydDamoclesSword(bool isTouch)
+    {
+        this.player.isDeadBySwordDamocles = isTouch;
+    }
+
+    public void SendChangeColorWhenTouchByDeath()
+    {
+        photonView.RPC("SeetChangeColorWhenTouchByDeath", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SeetChangeColorWhenTouchByDeath()
+    {
+        if (player.gameObject.GetComponent<PhotonView>().IsMine)
+        {
+            int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
+            player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+        }
+        else
+        {
+            player.transform.GetChild(0).gameObject.SetActive(false);
+            player.transform.GetChild(1).gameObject.SetActive(false);
         }
     }
 }

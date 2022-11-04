@@ -29,6 +29,8 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         //base.OnDisconnected(cause);
         //MainReconnect();
         Debug.Log("sa passe");
+        Time.timeScale = 0;
+        StartCoroutine(MainReconnect());
         //StartCoroutine(MainReconnect());
     }
 
@@ -73,6 +75,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
 
         SceneManager.LoadScene("Menu");
 
+
         base.OnLeftRoom();
     }
 
@@ -101,13 +104,15 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.Reconnect())
             {
+                Time.timeScale = 1;
                 Debug.Log("Successful reconnected!", this);
             }
         }
-        else
+/*        else
         {
+            Time.timeScale = 1;
             Debug.Log("Successful reconnected and joined!", this);
-        }
+        }*/
     }
 
 

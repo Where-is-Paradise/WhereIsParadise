@@ -10,6 +10,9 @@ public class Turret : MonoBehaviourPun
     public GameObject fireBall;
     public GameManager gameManager;
     public bool canFire = false;
+    public int categorie = 0;
+    public bool therenotMasterClient = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,7 +23,7 @@ public class Turret : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
         }
@@ -29,19 +32,28 @@ public class Turret : MonoBehaviourPun
             ShotFireBall();
             canFire = false;
         }
-        
-
     }
 
     public void LaunchTurret()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        switch (categorie)
         {
-            return;
+            case 0:
+                frequency = 6 + index;
+                SendFrequency(frequency);
+                break;
+            case 1:
+                frequency = Random.Range(0.25f + index, 1.5f + index);
+                SendFrequency(frequency);
+                break;
+            case 2:
+                frequency = 2.5f + index;
+                SendFrequency(frequency);
+                break;
         }
-        
-        frequency = Random.Range(1, 10);
-        SendFrequency(frequency);
+/*        frequency = Random.Range(0.25f + index, 1.5f + index);
+        SendFrequency(frequency);*/
+
     }
 
     public void ShotFireBall()
@@ -50,8 +62,45 @@ public class Turret : MonoBehaviourPun
         fireball.GetComponent<FireBall>().direction = -this.transform.up;
         fireball.transform.parent = this.gameObject.transform;
         fireball.GetComponent<FireBall>().SendParent(fireball.transform.parent.GetComponent<Turret>().index);
-        frequency = Random.Range(5, 15);
-        SendFrequency(frequency);
+        RandomSpeedCategoriFireball(fireball);
+        switch (categorie)
+        {
+            case 0:
+                frequency = 6 * index;
+                SendFrequency(frequency);
+                break;
+            case 1:
+                frequency = Random.Range(0.25f + index, 1.5f + index);
+                SendFrequency(frequency);
+                break;
+            case 2:
+                frequency = 2.5f * index;
+                SendFrequency(frequency);
+                break;
+        }
+
+    }
+
+    public void RandomSpeedCategoriFireball(GameObject fireball)
+    {
+
+
+        switch (categorie)
+        {
+            case 0:
+                fireball.GetComponent<FireBall>().speed = 5.5f;
+                break;
+            case 1:
+                fireball.GetComponent<FireBall>().speed = 1.25f;
+                break;
+            case 2:
+                fireball.GetComponent<FireBall>().speed = 3.5f;
+                break;
+        }
+
+        //fireball.GetComponent<FireBall>().speed = 1.5f;
+        /*        frequency = 2 * index;
+                SendFrequency(frequency);*/
     }
 
     public IEnumerator CoroutineFrequency(float frequency)

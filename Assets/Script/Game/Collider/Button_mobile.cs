@@ -60,7 +60,7 @@ public class Button_mobile : MonoBehaviour
 
         if (gameManager.game.currentRoom.isSacrifice)
         {
-            gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer(true);
+            gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer();
             GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
         }
         if (gameManager.game.currentRoom.IsVirus)
