@@ -13,7 +13,7 @@ public class FireBall : MonoBehaviourPun
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        StartCoroutine(CoroutineActiveCollision(1f));
+        StartCoroutine(CoroutineActiveCollision(0.2f));
         //speed = Random.Range(2, 10);
     }
 
@@ -116,15 +116,16 @@ public class FireBall : MonoBehaviourPun
             
 
 
-            if (collision.gameObject.GetComponent<PlayerGO>().rankTouchBall == 1)
+            if (collision.gameObject.GetComponent<PlayerGO>().rankTouchBall == 2)
             {
+                GameObject playerWin = GetPlayerRemaning();
                 photonView.RPC("ResetIsTouchFireBall", RpcTarget.All);
-                collision.gameObject.GetComponent<PlayerGO>().DisplayCharacter(true);
-                collision.gameObject.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.SendDisplayFireBallRoom(false);
-                collision.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedition();
-                collision.gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
-                collision.gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
-                collision.gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
+                //playerWin.gameObject.GetComponent<PlayerGO>().DisplayCharacter(true);
+                playerWin.gameObject.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.SendDisplayFireBallRoom(false);
+                playerWin.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedition();
+                playerWin.gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
+                playerWin.gameObject.GetComponent<PlayerNetwork>().SendCanLaunchExploration();
+                playerWin.gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
                 if (gameManager.setting.displayTutorial)
                 {
                     if (!gameManager.ui_Manager.listTutorialBool[23])
@@ -156,6 +157,19 @@ public class FireBall : MonoBehaviourPun
         PhotonNetwork.Destroy(this.gameObject);
     }
 
+
+    public GameObject GetPlayerRemaning()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            if (!player.GetComponent<PlayerGO>().isTouchByFireBall)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
 
     //[PunRPC]
 /*    public void SetDestoy()

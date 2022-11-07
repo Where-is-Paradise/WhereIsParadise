@@ -121,7 +121,9 @@ public class PlayerGO : MonoBehaviour
     public bool isTouchByDeath = false;
     public bool isDeadBySwordDamocles = false;
     public bool isTouchByAx = false;
+    public bool isTouchBySword = false;
 
+    public bool lightHexagoneIsOn = false;
     private void Awake()
     {
         displayChatInput = false;
@@ -1015,6 +1017,10 @@ public class PlayerGO : MonoBehaviour
         {
             gameManager.gameManagerNetwork.SendLaunchAxRoom();
         }
+        if (gameManager.game.currentRoom.isSword)
+        {
+            gameManager.gameManagerNetwork.SendLaunchSwordRoom();
+        }
 
         if (gameManager.game.currentRoom.IsVirus && gameManager.game.key_counter > 0)
         {
@@ -1218,12 +1224,31 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-/*        if (gameManager.isActuallySpecialityTime)
+        if (gameManager.game.currentRoom.isSword)
         {
-            Debug.Log("sa passe");
             return;
-        }*/
-
+        }
+        if (gameManager.game.currentRoom.isSwordDamocles)
+        {
+            return;
+        }
+        if (gameManager.game.currentRoom.isDeathNPC)
+        {
+            return;
+        }
+        if (gameManager.game.currentRoom.fireBall)
+        {
+            return;
+        }
+        if (gameManager.game.currentRoom.isAx)
+        {
+            return;
+        }
+        /*        if (gameManager.isActuallySpecialityTime)
+                {
+                    Debug.Log("sa passe");
+                    return;
+                }*/
         GetComponent<PlayerNetwork>().SendOnclickToExpedition();
     }
 

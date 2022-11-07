@@ -28,8 +28,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
     {
         //base.OnDisconnected(cause);
         //MainReconnect();
-        Debug.Log("sa passe");
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
         StartCoroutine(MainReconnect());
         //StartCoroutine(MainReconnect());
     }

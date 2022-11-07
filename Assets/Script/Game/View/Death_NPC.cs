@@ -20,7 +20,8 @@ public class Death_NPC : MonoBehaviourPun
         {
             return;
         }
-        
+        gameManager.speciallyIsLaunch = true;
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         SetTargetOfPathFinding();
         StartCoroutine(ChangerSpeedCoroutine());
         StartCoroutine(UpdatePositionCoroutine());
@@ -101,7 +102,7 @@ public class Death_NPC : MonoBehaviourPun
 
     public IEnumerator UpdatePositionCoroutine()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.3f);
         SendUpdatePosition(this.transform.position.x, this.transform.position.y);
         StartCoroutine(UpdatePositionCoroutine());
     }
@@ -257,6 +258,8 @@ public class Death_NPC : MonoBehaviourPun
         this.gameObject.GetComponent<CapsuleCollider2D>().enabled = true;
         gameManager.ChangeLeverDeathNPC();
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
+        gameManager.speciallyIsLaunch = false;
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         this.gameObject.SetActive(false);
         
     }

@@ -148,7 +148,6 @@ public class Ax : MonoBehaviourPun
                 counter++;
             }
         }
-        Debug.Log("Counter " + counter);
         if (counter == (listPlayer.Length - 1))
             return true;
         return false;

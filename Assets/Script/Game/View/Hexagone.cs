@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using Photon.Pun;
+using UnityEngine;
 using UnityEngine.UI;
 
-public class Hexagone : MonoBehaviour
+public class Hexagone : MonoBehaviourPun
 {
 
     [SerializeField]
@@ -14,6 +15,8 @@ public class Hexagone : MonoBehaviour
     public Text index_text;
 
     public bool isGenerate = false;
+    public bool isLighted = false;
+    public bool isLightByOther = false;
 
     public Hexagone(Room room) {
         this.room = room;
@@ -57,7 +60,15 @@ public class Hexagone : MonoBehaviour
             this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(false);
         }
         TouchHexagoneForPower();
+       
     }
+
+
+    private void OnMouseUp()
+    {
+        OnClickToLight();
+    }
+
     void OnMouseOver()
     {
 
@@ -118,6 +129,29 @@ public class Hexagone : MonoBehaviour
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter = true;
         gameManager.gameManagerNetwork.SendHexagoneNewPower(this.room.Index, indexPower);
         gameManager.ui_Manager.listButtonPowerImpostor[indexPower].GetComponent<Button>().interactable = false;
+    }
+
+    public void OnClickToLight()
+    {
+        if (this.room.IsTraversed)
+            return;
+        if (this.room.IsObstacle)
+            return;
+        if (this.isLightByOther)
+            return;
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lightHexagoneIsOn && !isLighted)
+            return;
+        isLighted = !this.transform.Find("Light").gameObject.activeSelf;
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lightHexagoneIsOn = isLighted;
+        this.transform.Find("Light").gameObject.SetActive(isLighted);
+        gameManager.gameManagerNetwork.SendLightHexagone(this.room.Index, isLighted);
+    }
+
+
+    public void SetLight(bool active)
+    {
+        this.transform.Find("Light").gameObject.SetActive(active);
+        isLightByOther = active;
     }
 
     void OnMouseExit()

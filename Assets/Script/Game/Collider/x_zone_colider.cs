@@ -43,7 +43,6 @@ public class x_zone_colider : MonoBehaviour
         {
             return;
         }
-
         gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(collision.GetComponent<PhotonView>().ViewID, true, false);
 
     }
@@ -88,7 +87,7 @@ public class x_zone_colider : MonoBehaviour
         {
             return;
         }
-
+        
         gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(collision.GetComponent<PhotonView>().ViewID, false, true);
 
     }

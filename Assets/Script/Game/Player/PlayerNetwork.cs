@@ -75,7 +75,6 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         GetComponent<PlayerGO>().isChooseForExpedition = !GetComponent<PlayerGO>().isChooseForExpedition;
         this.transform.GetChild(1).GetChild(4).gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
-        Debug.Log(GetComponent<PlayerGO>().isChooseForExpedition);
         if (GetComponent<PlayerGO>().isChooseForExpedition)
         {
             transform.GetChild(3).GetComponent<BoxCollider2D>().enabled = true;
@@ -98,9 +97,10 @@ public class PlayerNetwork : MonoBehaviourPun
 
     public void SendOnclickToExpedtionN2()
     {
-        photonView.RPC("SetOnclickToExpedition", RpcTarget.All);
+        photonView.RPC("SetOnclickToExpedtionN2", RpcTarget.All);
     }
 
+    [PunRPC]
     public void SetOnclickToExpedtionN2()
     {
         GetComponent<PlayerGO>().isChooseForExpedition = true;
@@ -200,23 +200,41 @@ public class PlayerNetwork : MonoBehaviourPun
             return;
         }
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        int counterChangeBoss = 0;
         foreach(GameObject player in listPlayer)
         {
             PlayerGO playerGo = player.GetComponent<PlayerGO>();
-            if (!playerGo.isBoss && !playerGo.wantToChangeBoss && !playerGo.isSacrifice)
+            if ((!playerGo.isBoss && playerGo.wantToChangeBoss) || playerGo.isSacrifice )
             {
-                return;
+                counterChangeBoss++;
             }
         }
-        StartCoroutine(player.gameManager.ChangeBossCoroutine(0.2f));
-        foreach (GameObject player in listPlayer)
+        if(listPlayer.Length < 4)
         {
-            StartCoroutine(player.GetComponent<PlayerNetwork>().CouroutineResetWantToChangeBoss());
+            if (counterChangeBoss == (listPlayer.Length - 1))
+            {
+                StartCoroutine(player.gameManager.ChangeBossCoroutine(0.2f));
+                foreach (GameObject player in listPlayer)
+                {
+                    StartCoroutine(player.GetComponent<PlayerNetwork>().CouroutineResetWantToChangeBoss());
+                }
+            }
+        }
+        else
+        {
+            if (counterChangeBoss > (listPlayer.Length / 2))
+            {
+                StartCoroutine(player.gameManager.ChangeBossCoroutine(0.2f));
+                foreach (GameObject player in listPlayer)
+                {
+                    StartCoroutine(player.GetComponent<PlayerNetwork>().CouroutineResetWantToChangeBoss());
+                }
+            }
         }
     }
     public IEnumerator CouroutineResetWantToChangeBoss()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.25f);
         SendResetWantToChangeBoss();
     }
 
@@ -490,6 +508,17 @@ public class PlayerNetwork : MonoBehaviourPun
     }
 
 
+    public void SendIstouchByWord(bool isTouch)
+    {
+        photonView.RPC("SetIsTouchBySword", RpcTarget.All, isTouch);
+    }
+
+    [PunRPC]
+    public void SetIsTouchBySword(bool isTouch)
+    {
+        this.player.isTouchBySword = isTouch;
+    }
+
     public void SendIstouchByAx(bool isTouch)
     {
         photonView.RPC("SetIsTouchByAx", RpcTarget.All, isTouch);
@@ -531,5 +560,31 @@ public class PlayerNetwork : MonoBehaviourPun
             player.transform.GetChild(0).gameObject.SetActive(false);
             player.transform.GetChild(1).gameObject.SetActive(false);
         }
+    }
+
+    public void SendRedColor(bool display)
+    {
+        photonView.RPC("SetRedColor", RpcTarget.All , display);
+    }
+
+    [PunRPC]
+    public void SetRedColor(bool display)
+    {
+        if (!player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || !player.GetComponent<PhotonView>().IsMine)
+            return;
+            player.transform.Find("Perso").Find("Light_red").gameObject.SetActive(display);
+    }
+
+    public void SendCanLaunchExploration()
+    {
+        photonView.RPC("SetCanLunchExploration", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetCanLunchExploration()
+    {
+        player.gameManager.game.nbTorch++;
+        player.gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
+        player.gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
 }

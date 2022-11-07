@@ -244,4 +244,25 @@ public class Door : MonoBehaviour
 
         }
     }
+
+    public Room GetRoomBehind()
+    {
+        switch (this.index)
+        {
+            case 0:
+                return gameManager.game.currentRoom.left_neighbour;
+            case 1:
+                return gameManager.game.currentRoom.up_Left_neighbour;
+            case 2:
+                return gameManager.game.currentRoom.up_Right_neighbour;
+            case 3:
+                return gameManager.game.currentRoom.right_neighbour;
+            case 4:
+                return gameManager.game.currentRoom.down_Right_neighbour;
+            case 5:
+                return gameManager.game.currentRoom.down_Left_neighbour;
+        }
+        Debug.Log(index);
+        return null; 
+    }
 }

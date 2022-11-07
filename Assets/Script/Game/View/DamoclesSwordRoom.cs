@@ -26,12 +26,15 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         gameManager.damoclesIsLaunch = true;
         gameManager.CloseDoorWhenVote(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
+        gameManager.speciallyIsLaunch = true;
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         GameObject player = ChoosePlayerRandomly();
         Debug.Log(player.GetComponent<PhotonView>().ViewID);
         SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
         CounterLaunch(10);
+        
         //photonView.RPC("CounterLaunch", RpcTarget.All, 10);
     }
 
@@ -195,6 +198,8 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         this.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         gameManager.CloseDoorWhenVote(false);
         gameManager.damoclesIsLaunch = true;
+        gameManager.speciallyIsLaunch = false;
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         this.gameObject.SetActive(false);
     }
 

@@ -72,12 +72,15 @@ public class Room : ScriptableObject
     public bool isDeathNPC = false;
     public bool isSwordDamocles = false;
     public bool isAx = false;
+    public bool isSword = false;
 
     public List<Chest> chestList = null;
 
     public int nbKeyInPath = 0;
 
     public bool isOldParadise = false;
+
+    public bool isTraped = false;
 
     public void Init(int pos_X, int pos_Y)
     {

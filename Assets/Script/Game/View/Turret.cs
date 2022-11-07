@@ -70,11 +70,11 @@ public class Turret : MonoBehaviourPun
                 SendFrequency(frequency);
                 break;
             case 1:
-                frequency = Random.Range(0.25f + index, 1.5f + index);
+                frequency = 2.5f * index;
                 SendFrequency(frequency);
                 break;
             case 2:
-                frequency = 2.5f * index;
+                frequency = Random.Range(0.25f + index, 1.5f + index);
                 SendFrequency(frequency);
                 break;
         }
@@ -91,10 +91,10 @@ public class Turret : MonoBehaviourPun
                 fireball.GetComponent<FireBall>().speed = 5.5f;
                 break;
             case 1:
-                fireball.GetComponent<FireBall>().speed = 1.25f;
+                fireball.GetComponent<FireBall>().speed = 3.5f;
                 break;
             case 2:
-                fireball.GetComponent<FireBall>().speed = 3.5f;
+                fireball.GetComponent<FireBall>().speed = 1.25f;
                 break;
         }
 

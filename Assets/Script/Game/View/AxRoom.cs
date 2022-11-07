@@ -48,6 +48,8 @@ public class AxRoom : MonoBehaviourPun
     {
         DiplayAxForAllPlayer(true);
         isLaunch = true;
+        gameManager.speciallyIsLaunch = true;
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
     }
 
     public IEnumerator CanShootCoroutine()
@@ -107,6 +109,7 @@ public class AxRoom : MonoBehaviourPun
         photonView.RPC("SendDisplayAxForAllPlayer", RpcTarget.All, false);
         photonView.RPC("SetIsLaunch", RpcTarget.All, false);
         photonView.RPC("SendSpeciallyPowerIsUsed", RpcTarget.All, true);
+        photonView.RPC("SendResetSpeciallyIsLauch", RpcTarget.All );
         DisplayLineToShot(false);
     }
     [PunRPC]
@@ -125,6 +128,14 @@ public class AxRoom : MonoBehaviourPun
     public void SendSpeciallyPowerIsUsed(bool speciallyPowerIsUsed)
     {
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = speciallyPowerIsUsed;
+    }
+   
+
+    [PunRPC]
+    public void SendResetSpeciallyIsLauch()
+    {
+        gameManager.speciallyIsLaunch = false;
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
     }
 
 }

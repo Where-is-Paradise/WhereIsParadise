@@ -411,6 +411,7 @@ public class GameManagerNetwork : MonoBehaviourPun
        
         gameManager.ui_Manager.HideDistanceRoom();
         gameManager.ui_Manager.DisplayKeyAndTorch(false);
+        DisplayLightAllAvailableDoorN2(false);
         gameManager.timer.LaunchTimer(5, false);
         StartCoroutine(gameManager.LauchVoteDoorCoroutine());
         gameManager.voteDoorHasProposed = true;
@@ -424,7 +425,6 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
 
         StartCoroutine(CoroutineActiveZoneDoor());
-
 
 
     }
@@ -759,6 +759,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (stay)
         {
             player.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
+            player.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(true);
         }
         else
         {
@@ -773,6 +774,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                 gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote--;
                 //player.GetComponent<PlayerGO>().hasVoteVD = false;
                 player.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
+                player.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(false);
 
             }
         }
@@ -807,7 +809,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
            
             if (indexChest == 1)
-                player.transform.GetChild(1).GetChild(6).gameObject.SetActive(true);
+                player.transform.Find("Perso").Find("Light_redDark").gameObject.SetActive(true);
             else
                 player.transform.GetChild(1).GetChild(9).gameObject.SetActive(true);
         }
@@ -819,7 +821,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                 chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote++;
                 
                 if (indexChest == 1)
-                    player.transform.GetChild(1).GetChild(6).gameObject.SetActive(true);
+                    player.transform.Find("Perso").Find("Light_redDark").gameObject.SetActive(true);
                 else
                     player.transform.GetChild(1).GetChild(9).gameObject.SetActive(true);
             }
@@ -828,7 +830,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                 chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote--;
                 
                 if (indexChest == 1)
-                    player.transform.GetChild(1).GetChild(6).gameObject.SetActive(false);
+                    player.transform.Find("Perso").Find("Light_redDark").gameObject.SetActive(false);
                 else
                     player.transform.GetChild(1).GetChild(9).gameObject.SetActive(false);
 
@@ -1155,6 +1157,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (!display)
         {
             gameManager.ResetFireBallRoom();
+            gameManager.speciallyIsLaunch = false;
+            gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         }
         //gameManager.game.currentRoom.speciallyPowerIsUsed = !display;
         gameManager.CloseAllDoor(gameManager.game.currentRoom, false);
@@ -1165,7 +1169,7 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendLaunchFireBallRoom()
     {
-        int categorieFireball = Random.Range(0, 3);
+        int categorieFireball = Random.Range(0, 2);
         photonView.RPC("SetLaunchFireBallRoom", RpcTarget.All, categorieFireball);
     }
 
@@ -1192,12 +1196,9 @@ public class GameManagerNetwork : MonoBehaviourPun
             }
             turret.GetComponent<Turret>().LaunchTurret();
             turret.GetComponent<Turret>().categorie = categorieFireball;
-
         }
-    }
-    public void SendChangementMasterForFireball()
-    {
-
+        gameManager.speciallyIsLaunch = true;
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
     }
 
     public void SendDisplayMainLevers(bool display)
@@ -1264,7 +1265,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         if(GameObject.Find("SacrificeRoom"))
             GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch = isLaunch;
-        
+        gameManager.speciallyIsLaunch = isLaunch;
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(isLaunch);
     }
     public void SendUpdateNeighbourSpeciality(int indexRoom , int indexSpeciality)
     {
@@ -1299,6 +1301,9 @@ public class GameManagerNetwork : MonoBehaviourPun
                 break;
             case 5:
                 room.isAx = true;
+                break;
+            case 6:
+                room.isSword = true;
                 break;
         }
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;
@@ -1340,8 +1345,24 @@ public class GameManagerNetwork : MonoBehaviourPun
             gameManager.GetHexagone(indexHexagone).Room.IsVirus = true;
         if (indexPower == 2)
             gameManager.GetHexagone(indexHexagone).Room.isJail = true;
+        if (indexPower == 3)
+        {
+            gameManager.GetHexagone(indexHexagone).Room.chest = true;
+            gameManager.GetHexagone(indexHexagone).Room.isTraped = true;
+        }
 
         gameManager.GetHexagone(indexHexagone).Room.isSpecial = true;
+    }
+
+    public void SendLightHexagone(int indexHexagone, bool activeLight)
+    {
+        photonView.RPC("SetLightHexagone", RpcTarget.Others, indexHexagone, activeLight);
+    }
+
+    [PunRPC]
+    public void SetLightHexagone(int indexHexagone, bool activeLight)
+    {
+        gameManager.GetHexagone(indexHexagone).SetLight(activeLight);
     }
 
     public void SendDistanceAwardChest(int indexChest)
@@ -1395,4 +1416,121 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     }
 
+    public void SendLaunchSwordRoom()
+    {
+        photonView.RPC("SetLaunchSwordRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchSwordRoom()
+    {
+        GameObject.Find("SwordRoom").GetComponent<SwordRoom>().LaunchSwordRoom(); ;
+
+    }
+    public void SendDisplayLightAllAvailableDoor(bool display)
+    {
+        photonView.RPC("DisplayLightAllAvailableDoor", RpcTarget.All, display);
+    }
+
+
+    [PunRPC]
+    public void DisplayLightAllAvailableDoor(bool display)
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+        if (gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().powerIsUsed && display)
+            return;
+        if (!gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().powerIsUsed && !display)
+            return;
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        foreach (GameObject door in doors)
+        {
+            if (door.GetComponent<Door>().barricade)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (door.GetComponent<Door>().isOpenForAll)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (door.GetComponent<Door>().iscurrentlyOpen)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (gameManager.speciallyIsLaunch)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (door.GetComponent<Door>().GetRoomBehind().isTraped)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+
+            door.transform.Find("RedLight").gameObject.SetActive(display);
+        }
+    }
+
+    public void DisplayLightAllAvailableDoorN2(bool display)
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        foreach (GameObject door in doors)
+        {
+            if (door.GetComponent<Door>().barricade)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (door.GetComponent<Door>().isOpenForAll)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (door.GetComponent<Door>().iscurrentlyOpen)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (gameManager.speciallyIsLaunch)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            door.transform.Find("RedLight").gameObject.SetActive(display);
+            if (gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().powerIsUsed)
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+        }
+        
+
+    }
+
+
+
+    public void SendDisplayPowerImpostorInGame()
+    {
+        photonView.RPC("SetDisplayPowerImpostorInGame", RpcTarget.All);
+
+    }
+
+    [PunRPC]
+    public void SetDisplayPowerImpostorInGame()
+    {
+        gameManager.ui_Manager.DisplayPowerImpostorInGame();
+    }
 }
