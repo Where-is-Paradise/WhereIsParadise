@@ -51,8 +51,9 @@ public class Turret : MonoBehaviourPun
                 SendFrequency(frequency);
                 break;
         }
-/*        frequency = Random.Range(0.25f + index, 1.5f + index);
-        SendFrequency(frequency);*/
+        /*        frequency = Random.Range(0.25f + index, 1.5f + index);
+                SendFrequency(frequency);*/
+        gameManager.CloseDoorWhenVote(true);
 
     }
 

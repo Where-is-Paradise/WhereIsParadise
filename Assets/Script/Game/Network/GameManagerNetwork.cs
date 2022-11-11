@@ -174,6 +174,10 @@ public class GameManagerNetwork : MonoBehaviourPun
             gameManager.game.SetKeyCounter();
             gameManager.distanceInitial = gameManager.game.currentRoom.DistancePathFinding;
             gameManager.SetInitialPositionPlayers();
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().SetRoomCursed();
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().
+               SendDistanceCursed(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().distanceCursed,
+               gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().roomUsedWhenCursed.Index);
         }
         
         //gameManager.ui_Manager.SetDescriptionLoadPage("Création des Salles " + indexRoom + ".." , 0.1f + (indexRoom / 100));
@@ -889,6 +893,10 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
             Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
             roomInPlayer.door_isOpen[indexDoor] = true;
+            int indexNeWDoor3 = gameManager.GetIndexDoorAfterCrosse(indexDoor);
+            GameObject newDoor = gameManager.GetDoorGo(indexNeWDoor3);
+            gameManager.game.currentRoom.door_isOpen[newDoor.GetComponent<Door>().index] = true;
+         
 
             Room roomTeam2 = gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam);
             if (roomTeam2.isJail)
@@ -1170,6 +1178,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SendLaunchFireBallRoom()
     {
         int categorieFireball = Random.Range(0, 2);
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
         photonView.RPC("SetLaunchFireBallRoom", RpcTarget.All, categorieFireball);
     }
 
@@ -1267,6 +1276,7 @@ public class GameManagerNetwork : MonoBehaviourPun
             GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().sacrificeVoteIsLaunch = isLaunch;
         gameManager.speciallyIsLaunch = isLaunch;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(isLaunch);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendResetClickToExpedition();
     }
     public void SendUpdateNeighbourSpeciality(int indexRoom , int indexSpeciality)
     {
@@ -1395,6 +1405,7 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendLaunchDamoclesRoom()
     {
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
         photonView.RPC("SetLaunchDamoclesRoom", RpcTarget.All);
     }
 
@@ -1406,6 +1417,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     }
     public void SendLaunchAxRoom()
     {
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
         photonView.RPC("SetLaunchAxRoom", RpcTarget.All);
     }
 
@@ -1418,6 +1430,7 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendLaunchSwordRoom()
     {
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
         photonView.RPC("SetLaunchSwordRoom", RpcTarget.All);
     }
 
@@ -1532,5 +1545,36 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetDisplayPowerImpostorInGame()
     {
         gameManager.ui_Manager.DisplayPowerImpostorInGame();
+    }
+
+    public void SendDisplayObjectPowerImpostor()
+    {
+        photonView.RPC("SetDisplayObjectPowerImpostor", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetDisplayObjectPowerImpostor()
+    {
+        gameManager.ui_Manager.DisplayObjectPowerImpostorInGame();
+    }
+
+    public void SendIsDiscorved(bool isDiscovered, int indexRoom)
+    {
+        photonView.RPC("SetIsDiscovered", RpcTarget.All, isDiscovered , indexRoom);
+    }
+    [PunRPC]
+    public void SetIsDiscovered( bool isDiscovered , int indexRoom)
+    {
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).IsDiscovered = isDiscovered;
+    }
+
+    public void SendUpdateHidePlayer()
+    {
+        photonView.RPC("UpdateHidePlayer", RpcTarget.All);
+    }
+    [PunRPC]
+    public void UpdateHidePlayer()
+    {
+        gameManager.HidePlayerNotInSameRoom();
     }
 }

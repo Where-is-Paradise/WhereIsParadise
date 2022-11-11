@@ -26,11 +26,20 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        //base.OnDisconnected(cause);
-        //MainReconnect();
-        //Time.timeScale = 0;
-        StartCoroutine(MainReconnect());
-        //StartCoroutine(MainReconnect());
+        base.OnDisconnected(cause);
+        Debug.LogError(cause);
+        if (cause.ToString() != "DisconnectByClientLogic")
+        {
+            StartCoroutine(MainReconnect());
+            Time.timeScale = 0;
+        }
+        else
+        {
+           
+            //StartCoroutine(MainReconnect());
+            BackToMenuScene();
+            //StartCoroutine(MainReconnect());
+        }
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -58,12 +67,20 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
 
     public void QuitLobby()
     {
-        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.Disconnect();
         //SceneManager.LoadScene("Menu");
     }
 
 
     public override void OnLeftRoom()
+    {
+
+        
+
+        base.OnLeftRoom();
+    }
+
+    public void BackToMenuScene()
     {
         foreach (GameObject objectDonDesroy in this.gameObject.scene.GetRootGameObjects())
         {
@@ -73,11 +90,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         Destroy(GameObject.Find("Input Manager"));
 
         SceneManager.LoadScene("Menu");
-
-
-        base.OnLeftRoom();
     }
-
 
 
 
@@ -107,11 +120,11 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
                 Debug.Log("Successful reconnected!", this);
             }
         }
-/*        else
+        else
         {
             Time.timeScale = 1;
             Debug.Log("Successful reconnected and joined!", this);
-        }*/
+        }
     }
 
 

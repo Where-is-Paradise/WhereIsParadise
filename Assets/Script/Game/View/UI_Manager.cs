@@ -226,6 +226,11 @@ setting_button_echapMenu.SetActive(false);
         text_distance_room.GetComponent<Text>().text = distance.ToString();
 
     }
+    public void SetDistanceRoomFalse(int distance)
+    {
+        text_distance_room.GetComponent<Text>().text = distance.ToString();
+    }
+
     public void HideDistanceRoom()
     {
         text_distance_room.GetComponent<Text>().text = "";
@@ -254,6 +259,7 @@ setting_button_echapMenu.SetActive(false);
         }
         
     }
+
 
 
 
@@ -562,14 +568,23 @@ setting_button_echapMenu.SetActive(false);
       
     }
 
-    public IEnumerator MixDistanceExplorationStopCoroutine(string trueLetter, string falseLetter)
+    public IEnumerator MixDistanceExplorationStopCoroutine()
     {
         yield return new WaitForSeconds(Random.Range(5, 11));
         if (!gameManager.GetExpeditionOfPlayerMine().room.IsFoggy)
         {
-   /*         text_distance_room.GetComponent<Text>().text =
-                gameManager.game.dungeon.GetPathFindingDistance(gameManager.GetExpeditionOfPlayerMine().room, gameManager.game.dungeon.exit).ToString();*/
-            int randomInt = Random.Range(0, 2);
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isCursed || gameManager.GetExpeditionOfPlayerMine().room.isCursedTrap)
+            {
+                int distance = gameManager.game.dungeon.GetPathFindingDistance(gameManager.GetExpeditionOfPlayerMine().room, gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().roomUsedWhenCursed);
+                SetDistanceRoomFalse(distance);
+            }
+            else
+            {
+                text_distance_room.GetComponent<Text>().text =
+                    gameManager.game.dungeon.GetPathFindingDistance(gameManager.GetExpeditionOfPlayerMine().room, gameManager.game.dungeon.exit).ToString();
+            }
+
+/*            int randomInt = Random.Range(0, 2);
             if(randomInt == 0)
             {
                 letterOne.GetComponent<Text>().text = trueLetter;
@@ -581,11 +596,8 @@ setting_button_echapMenu.SetActive(false);
                 letterTwo.GetComponent<Text>().text = trueLetter;
             }
             letterOne.SetActive(true);
-            letterTwo.SetActive(true);
+            letterTwo.SetActive(true);*/
         }
-           
-       
-
         timerMixExploration = false;
         gameManager.CloseDoorExplorationWhenVote(false);
     }
@@ -1336,19 +1348,15 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayNuVoteSacrificeForAllPlayer()
     {
-        if (!gameManager.SamePositionAtBoss())
-        {
-            return;
-        }
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach(GameObject player in players)
         {
-            if (!gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
-            {
-                player.transform.GetChild(0).gameObject.SetActive(true);
-                player.transform.GetChild(1).gameObject.SetActive(true);
-                player.transform.GetChild(1).GetChild(1).GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
-            }
+            /*            if (!gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
+                        {
+                            player.transform.GetChild(0).gameObject.SetActive(true);
+                            player.transform.GetChild(1).gameObject.SetActive(true);
+                            player.transform.GetChild(1).GetChild(1).GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+                        }*/
             player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(true);
         }
     }
@@ -1507,7 +1515,70 @@ setting_button_echapMenu.SetActive(false);
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             return;
-        canvasInGame.transform.GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).gameObject.SetActive(true);
+        canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).gameObject.SetActive(true);
+        DisplayTrapPowerButtonDesactivateTime(true, 60);
+        StartCoroutine(gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().CanUsedTimerCoroutine());
+    }
+    public void DisplayObjectPowerImpostorInGame()
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).gameObject.SetActive(true);
+    }
+
+    public void DesactivateObjectPowerImpostor()
+    {
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower)
+            .GetComponent<Button>().interactable = false;
+    }
+    public void DisplayN2PotionObject(bool display)
+    {
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower)
+            .Find("Potion").gameObject.SetActive(!display);
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower)
+          .Find("Character").gameObject.SetActive(display);
+    }
+
+    public void DisplayObjectPowerBigger(bool display)
+    {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Bigger").gameObject.SetActive(display);
+    }
+    public void DisplayObjectPowerButtonDesactivateTime(bool display, float timer)
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").gameObject.SetActive(display);
+        if(display)
+            canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").Find("Text_timer").GetComponent<TimerDisplay>().timeLeft = timer;
+    }
+    public void DisplayTrapPowerButtonDesactivateTime(bool display, float timer)
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+        canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").gameObject.SetActive(display);
+        if (display)
+            canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").Find("Text_timer").GetComponent<TimerDisplay>().timeLeft = timer;
+    }
+
+
+    public void DisplayTrapPowerBigger(bool display)
+    {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Bigger").gameObject.SetActive(display);
+    }
+
+    public void DisplayImgInHexagoneUseWhenCursedPlayer()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int indexRoom = -1;
+        foreach(GameObject player in players)
+        {
+            if (!player.GetComponent<PlayerGO>().isCursed)
+                continue;
+            indexRoom = player.GetComponent<PlayerGO>().roomUsedWhenCursed.Index;
+        }
+        gameManager.GetHexagone(indexRoom).transform.Find("Canvas").Find("Cursed").gameObject.SetActive(true);
     }
 }
 

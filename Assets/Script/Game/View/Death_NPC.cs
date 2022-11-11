@@ -10,8 +10,18 @@ public class Death_NPC : MonoBehaviourPun
     // Start is called before the first frame update
     void Start()
     {
+        //GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
+        StartCoroutine(StartDeathNPCRoomAfterTeleportation());
+    }
+
+    public IEnumerator StartDeathNPCRoomAfterTeleportation()
+    {
+        yield return new WaitForSeconds(2); 
+        StartDeathNPCRoom();
+    }
+    public void StartDeathNPCRoom()
+    {
         this.GetComponent<AIPath>().maxSpeed = 0;
-        
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
@@ -21,12 +31,11 @@ public class Death_NPC : MonoBehaviourPun
             return;
         }
         gameManager.speciallyIsLaunch = true;
-        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         SetTargetOfPathFinding();
         StartCoroutine(ChangerSpeedCoroutine());
         StartCoroutine(UpdatePositionCoroutine());
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -38,7 +47,6 @@ public class Death_NPC : MonoBehaviourPun
         {
             this.transform.localScale = new Vector2(Mathf.Abs(this.transform.localScale.x), this.transform.localScale.y);
         }
-
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
@@ -47,11 +55,9 @@ public class Death_NPC : MonoBehaviourPun
         {
             return;
         }
+        gameManager.CloseDoorWhenVote(true);
         SetTargetOfPathFinding();
-       
     }
-
-
     public GameObject GetPlayerWithMinDistance()
     {
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
@@ -59,8 +65,10 @@ public class Death_NPC : MonoBehaviourPun
         float minDistance = 1000;
         foreach(GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByDeath)
+            if (player.GetComponent<PlayerGO>().isTouchByDeath || player.GetComponent<PlayerGO>().isSacrifice 
+                || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
             {
+                Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), true);
                 continue;
             }
             float subX = Mathf.Abs(player.transform.position.x - this.transform.position.x);
@@ -246,6 +254,7 @@ public class Death_NPC : MonoBehaviourPun
                     player.transform.GetChild(1).gameObject.SetActive(true);
                 }
             }
+            Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), false);
             player.GetComponent<PlayerGO>().isTouchByDeath = false;
         }
     }
@@ -259,7 +268,8 @@ public class Death_NPC : MonoBehaviourPun
         gameManager.ChangeLeverDeathNPC();
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
         gameManager.speciallyIsLaunch = false;
-        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+        gameManager.CloseDoorWhenVote(false);
         this.gameObject.SetActive(false);
         
     }

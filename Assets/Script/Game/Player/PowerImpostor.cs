@@ -8,16 +8,24 @@ public class PowerImpostor : MonoBehaviourPun
 {
     public int indexPower;
     public bool powerIsUsed = false;
+    public bool isNearOfDoor = false;
+    public float timerToUsing;
+ 
+    public Collider2D collision;
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
     void Update()
     {
         indexPower = this.transform.parent.GetComponent<PlayerGO>().indexPower;
+    }
+    public IEnumerator CanUsedTimerCoroutine()
+    {
+        yield return new WaitForSeconds(60);
+        DisplayButtonDesactivateTimer(false, 0);
     }
 
     public void OnTriggerStay2D(Collider2D collision)
@@ -31,7 +39,11 @@ public class PowerImpostor : MonoBehaviourPun
                 return;
             if (!this.transform.parent.GetComponent<PlayerGO>().gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
                 return;
+            if (!this.transform.parent.GetComponent<PhotonView>().IsMine)
+                return;
             if (collision.transform.parent.GetComponent<Door>().GetRoomBehind().isTraped)
+                return;
+            if (collision.transform.parent.GetComponent<Door>().barricade)
                 return;
             if (collision.transform.parent.GetComponent<Door>().GetRoomBehind().IsHell || collision.transform.parent.GetComponent<Door>().GetRoomBehind().IsExit)
                 return;
@@ -49,14 +61,14 @@ public class PowerImpostor : MonoBehaviourPun
                 return;
             if (this.transform.parent.GetComponent<PlayerGO>().gameManager.voteDoorHasProposed)
                 return;
-            SetRedColorPlayer(true);
-            if (!InputManager.GetButton("Exploration"))
-                return;
-            photonView.RPC("InsertPowerToDoor", RpcTarget.All, collision.transform.parent.GetComponent<Door>().index);
-            this.transform.parent.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.DisplayLightAllAvailableDoor(false);
-            SetRedColorPlayer(false);
-            photonView.RPC("SetRedColorDoor", RpcTarget.All, collision.transform.parent.GetComponent<Door>().index);
 
+            SetRedColorPlayer(true);
+            isNearOfDoor = true;
+            DisplayButtonCanUsed(isNearOfDoor);
+            this.collision = collision;
+            if (!InputManager.GetButton("Exploration"))
+                return;           
+            UsePowerTrapInDoor();
         }
     }
 
@@ -65,9 +77,23 @@ public class PowerImpostor : MonoBehaviourPun
         if (collision.name == "PowerImpostor")
             return;
         if (collision.transform.parent && collision.transform.parent.tag == "Door")
+        {
             SetRedColorPlayer(false);
-    }
+            isNearOfDoor = false;
+            DisplayButtonCanUsed(isNearOfDoor);
+        }
 
+    }
+    public void UsePowerTrapInDoor()
+    {
+        if (!isNearOfDoor)
+            return;
+        photonView.RPC("InsertPowerToDoor", RpcTarget.All, collision.transform.parent.GetComponent<Door>().index);
+        this.transform.parent.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.DisplayLightAllAvailableDoor(false);
+        SetRedColorPlayer(false);
+        photonView.RPC("SetRedColorDoor", RpcTarget.All, collision.transform.parent.GetComponent<Door>().index);
+        DisplayButtonCanUsed(false);
+    }
     [PunRPC]
     public void InsertPowerToDoor(int  indexDoor)
     {
@@ -125,18 +151,45 @@ public class PowerImpostor : MonoBehaviourPun
                     this.transform.parent.GetComponent<PlayerGO>().gameManager.game.dungeon.InsertChestRoom(room.Index);
                     this.transform.parent.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 0);
                 }
-                
+                break;
+            case 4:
+                room.isCursedTrap = true;
                 break;
         }
         room.isTraped = true;
         powerIsUsed = true;
     }
 
-
-    [PunRPC]
-    public void SendChestInformation()
+    public void DisplayButtonCanUsed(bool display)
     {
-
+        if (powerIsUsed)
+        {
+            this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerBigger(false);
+            return;
+        }
+        this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerBigger(display);
     }
 
+    public void GetTimerToUsingByIndex(int index)
+    {
+        int initalTimerPlus = 13;
+        switch (index)
+        {
+            case 0:
+                timerToUsing = 60;
+                break;
+            case 1:
+                timerToUsing = 250;
+                break;
+            case 2:
+                timerToUsing = 120;
+                break;
+        }
+        timerToUsing += initalTimerPlus;
+    }
+
+    public void DisplayButtonDesactivateTimer(bool display, float timer)
+    {
+        this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerButtonDesactivateTime(display, timer);
+    }
 }

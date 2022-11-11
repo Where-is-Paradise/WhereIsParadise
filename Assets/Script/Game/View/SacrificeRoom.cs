@@ -28,13 +28,16 @@ public class SacrificeRoom : MonoBehaviour
     public IEnumerator CouroutineTimerVote()
     {
         GameObject.Find("GameManager").GetComponent<GameManager>().gameManagerNetwork.SendSacrificeVoteIsLaunch(true);
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
         yield return new WaitForSeconds(15f);
         GameObject player = GetPlayerWithMaxVote();
-        player.GetComponent<PlayerNetwork>().SendDeathSacrifice();
+        player.GetComponent<PlayerNetwork>().SendDeathSacrifice(true);
         player.GetComponent<PlayerNetwork>().SendResetVoteSacrifice();
         GameObject.Find("GameManager").GetComponent<GameManager>().gameManagerNetwork.SendSacrificeVoteIsLaunch(false);
         //player.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.SendKey();
     }
+
+
 
     public GameObject GetPlayerWithMaxVote()
     {

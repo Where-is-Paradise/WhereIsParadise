@@ -24,17 +24,24 @@ public class SwordRoom : MonoBehaviourPun
     }
     public void LaunchSwordRoom()
     {
+        StartCoroutine(LaunchSwordRoomAfterTeleporation());
+    }
+    public IEnumerator LaunchSwordRoomAfterTeleporation() {
+        yield return new WaitForSeconds(2);
         DisplaySwordAllPlayer(true);
         roomIsLaunched = true;
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+        gameManager.CloseDoorWhenVote(true);
     }
+
     public void DisplaySwordAllPlayer(bool display)
     {
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach(GameObject player in listPlayer)
         {
-            player.transform.Find("Perso").Find("Sword").gameObject.SetActive(display);
+            if(!player.GetComponent<PlayerGO>().isSacrifice)
+                player.transform.Find("Perso").Find("Sword").gameObject.SetActive(display);
         }
     }
 
@@ -118,6 +125,7 @@ public class SwordRoom : MonoBehaviourPun
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
+        gameManager.CloseDoorWhenVote(false);
     }
 
     public void ResetIsTouchBySwordAllPlayer()

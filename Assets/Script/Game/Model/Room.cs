@@ -53,6 +53,9 @@ public class Room : ScriptableObject
     public bool IsHell { get { return isHell; } set { isHell = value; } }
     private bool isTraversed = false;
     public bool IsTraversed { get { return isTraversed; } set { isTraversed = value; } }
+    private bool isDiscovered = false;
+    public bool IsDiscovered { get { return isDiscovered; } set { isDiscovered = value; } }
+
     private bool isFoggy = false;
     public bool IsFoggy { get { return isFoggy; } set { isFoggy = value; } }
     private bool hasKey = false;
@@ -73,6 +76,8 @@ public class Room : ScriptableObject
     public bool isSwordDamocles = false;
     public bool isAx = false;
     public bool isSword = false;
+    public bool isNPC = false;
+    public bool isCursedTrap = false;
 
     public List<Chest> chestList = null;
 

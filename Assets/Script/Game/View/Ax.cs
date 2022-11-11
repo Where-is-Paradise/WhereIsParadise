@@ -171,7 +171,6 @@ public class Ax : MonoBehaviourPun
 
     public void GiveAwardToPlayer(GameObject lastPlayer)
     {
-        Debug.Log(lastPlayer.GetComponent<PhotonView>().ViewID);
         photonView.RPC("SetCanLunchExploration", RpcTarget.All, lastPlayer.GetComponent<PhotonView>().ViewID);
     }
 

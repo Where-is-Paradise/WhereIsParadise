@@ -530,6 +530,19 @@ public class Dungeon : ScriptableObject
         }
     }
 
+    public List<Room> GetListRoomDiscoverd()
+    {
+        List<Room> listRoomDiscovered = new List<Room>();
+        foreach (Room room in rooms)
+        {
+            if (room.IsDiscovered)
+            {
+                listRoomDiscovered.Add(room);
+            }
+        }
+        return listRoomDiscovered;
+    }
+
     public bool GetIfThereisKeyInShortsPath(int nbkey)
     {
         SetListRoomTraversed();

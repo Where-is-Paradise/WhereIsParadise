@@ -43,13 +43,19 @@ public class AxRoom : MonoBehaviourPun
             }
         }
     }
-
     public void LaunchAxRoom()
     {
+        StartCoroutine(LaunchAxRoomAfterTeleportation());
+    }
+    public IEnumerator LaunchAxRoomAfterTeleportation()
+    {
+        yield return new WaitForSeconds(2);
         DiplayAxForAllPlayer(true);
         isLaunch = true;
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
+        gameManager.CloseDoorWhenVote(true);
+
     }
 
     public IEnumerator CanShootCoroutine()
@@ -111,6 +117,7 @@ public class AxRoom : MonoBehaviourPun
         photonView.RPC("SendSpeciallyPowerIsUsed", RpcTarget.All, true);
         photonView.RPC("SendResetSpeciallyIsLauch", RpcTarget.All );
         DisplayLineToShot(false);
+        gameManager.CloseDoorWhenVote(false);
     }
     [PunRPC]
     public  void SetIsLaunch(bool isLaunch)

@@ -23,19 +23,23 @@ public class DamoclesSwordRoom : MonoBehaviourPun
 
     public void LaunchDamoclesSwordRoom()
     {
+        StartCoroutine(LaunchDamoclesRoomAfterTeleportation());
+    }
+    public IEnumerator LaunchDamoclesRoomAfterTeleportation()
+    {
+        yield return new WaitForSeconds(2);
         gameManager.damoclesIsLaunch = true;
         gameManager.CloseDoorWhenVote(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            return;
-        GameObject player = ChoosePlayerRandomly();
-        Debug.Log(player.GetComponent<PhotonView>().ViewID);
-        SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
-        CounterLaunch(10);
-        
-        //photonView.RPC("CounterLaunch", RpcTarget.All, 10);
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            GameObject player = ChoosePlayerRandomly();
+            Debug.Log(player.GetComponent<PhotonView>().ViewID);
+            SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
+            CounterLaunch(10);
+        }  
     }
 
     public GameObject ChoosePlayerRandomly()

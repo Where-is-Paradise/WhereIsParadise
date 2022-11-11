@@ -95,6 +95,19 @@ public class PlayerNetwork : MonoBehaviourPun
 
     }
 
+    public void SendResetClickToExpedition()
+    {
+        photonView.RPC("SetResetClickToExpedition", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetResetClickToExpedition()
+    {
+        GetComponent<PlayerGO>().isChooseForExpedition = false;
+        this.transform.GetChild(1).GetChild(4).gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
+        transform.GetChild(3).GetComponent<BoxCollider2D>().enabled = false;
+    }
+
     public void SendOnclickToExpedtionN2()
     {
         photonView.RPC("SetOnclickToExpedtionN2", RpcTarget.All);
@@ -336,13 +349,13 @@ public class PlayerNetwork : MonoBehaviourPun
     }
 
 
-    public void SendDeathSacrifice()
+    public void SendDeathSacrifice(bool KeyPlus)
     {
-        photonView.RPC("SetDeathSacrifice", RpcTarget.All);
+        photonView.RPC("SetDeathSacrifice", RpcTarget.All, KeyPlus);
     }
 
     [PunRPC]
-    public void SetDeathSacrifice()
+    public void SetDeathSacrifice(bool keyPlus)
     {
         player.GetComponent<PlayerGO>().isSacrifice = true;
         if (player.GetComponent<PlayerGO>().isBoss)
@@ -363,11 +376,39 @@ public class PlayerNetwork : MonoBehaviourPun
             }
 
         }
-        player.GetComponent<PlayerGO>().gameManager.game.key_counter++;
-        player.gameManager.ui_Manager.LaunchAnimationAddKey();
-
-
+        if (keyPlus)
+        {
+            player.GetComponent<PlayerGO>().gameManager.game.key_counter++;
+            player.gameManager.ui_Manager.LaunchAnimationAddKey();
+        }
     }
+
+    public void SendColorInvisible(bool invisible)
+    {
+        photonView.RPC("SetColorInvisible", RpcTarget.All , invisible);
+    }
+
+    [PunRPC]
+    public void SetColorInvisible(bool invisible)
+    {
+        if (!invisible)
+        {
+            player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+            player.transform.Find("Perso").Find("Eyes1").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+            player.transform.Find("InfoCanvas").gameObject.SetActive(true);
+            return;
+        }
+        if (player.GetComponent<PhotonView>().IsMine)
+        {
+            player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+        }
+        else{
+            player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0f);
+            player.transform.Find("Perso").Find("Eyes1").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0f);
+            player.transform.Find("InfoCanvas").gameObject.SetActive(false);
+        }
+    }
+
     public void SendResetVoteSacrifice()
     {
         photonView.RPC("SetResetVoteSacrifice", RpcTarget.All);
@@ -457,12 +498,29 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         photonView.RPC("SetIndexPower", RpcTarget.All, indexPower);
     }
-
     [PunRPC]
     public void SetIndexPower(int indexPower)
     {
         player.GetComponent<PlayerGO>().indexPower = indexPower;
+        if (player.GetComponent<PhotonView>().IsMine)
+            player.transform.Find("PowerImpostor").gameObject.SetActive(true);
     }
+
+    public void SendIndexObjectPower(int indexObjectPower)
+    {
+        photonView.RPC("SetIndexObjectPower", RpcTarget.All, indexObjectPower);
+    }
+    [PunRPC]
+    public void SetIndexObjectPower(int indexObjectPower)
+    {
+        player.GetComponent<PlayerGO>().indexObjectPower = indexObjectPower;
+        player.transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().indexPower = indexObjectPower;
+        if (player.GetComponent<PhotonView>().IsMine)
+            player.transform.Find("ImpostorObject").gameObject.SetActive(true);
+    }
+
+
+
 
     public void SendMoving(int indexPlayer, float horizontal, float vertical)
     {
@@ -587,4 +645,55 @@ public class PlayerNetwork : MonoBehaviourPun
         player.gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
         player.gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
+
+    public void SendIsCursed(bool isCursed)
+    {
+        photonView.RPC("SetIsCursed", RpcTarget.All, isCursed);
+    }
+
+    [PunRPC]
+    public void SetIsCursed(bool isCursed)
+    {
+        player.GetComponent<PlayerGO>().isCursed = isCursed;
+        if(player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            player.transform.Find("Perso").Find("Light_Cursed").gameObject.SetActive(isCursed);
+    }
+
+    public void SendDistanceCursed(int distanceCursed, int indexRoom)
+    {
+        photonView.RPC("SetDistanceCursed", RpcTarget.All, distanceCursed, indexRoom);
+    }
+
+    [PunRPC]
+    public void SetDistanceCursed(int distanceCursed, int indexRoom)
+    {
+        player.distanceCursed = distanceCursed;
+        player.roomUsedWhenCursed = player.gameManager.GetHexagone(indexRoom).Room;
+    }
+
+    public void SendTeleportPlayerToSameRoomOfBoss()
+    {
+       
+            photonView.RPC("TeleportPlayerToSameRoomOfBoss", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void TeleportPlayerToSameRoomOfBoss()
+    {
+        player.position_X = player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.X;
+        player.position_Y = player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.Y;
+        if (!player.GetComponent<PhotonView>().IsMine)
+            return;
+        player.gameManager.game.currentRoom = player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room;
+        player.gameManager.UpdateSpecialsRooms(player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
+        player.gameManager.ResetDoorsActive();
+        player.gameManager.SetDoorNoneObstacle(player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
+        player.gameManager.SetDoorObstacle(player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
+        player.gameManager.SetCurrentRoomColor();
+        player.gameManager.HidePlayerNotInSameRoom();
+        player.gameManager.CloseAllDoor(player.gameManager.game.currentRoom, false);
+        player.gameManager.gameManagerNetwork.SendUpdateHidePlayer();
+        player.gameManager.ui_Manager.HideDistanceRoom();
+    }
+
 }

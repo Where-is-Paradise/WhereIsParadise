@@ -46,9 +46,9 @@ public class PlayerGO : MonoBehaviour
     private float timeStayTouch = 0;
 
     private bool takeDoor = false;
-    private bool isCollisionInDoorTakeDoor = false;
-    private bool isCollisionInDoorBackExpedition = false;
-    private bool isCollisionInDoorExpedition = false;
+    public bool isCollisionInDoorTakeDoor = false;
+    public bool isCollisionInDoorBackExpedition = false;
+    public bool isCollisionInDoorExpedition = false;
     public bool collisionParadise = false;
     public bool collisionHell = false;
 
@@ -56,7 +56,7 @@ public class PlayerGO : MonoBehaviour
 
     private bool takeDoorBackExpedition = false;
     private bool takeDoorExpededition = false;
-    private GameObject doorCollision = null;
+    public GameObject doorCollision = null;
 
     public bool animateEyes = false;
     public bool comeToParadise = false;
@@ -112,6 +112,7 @@ public class PlayerGO : MonoBehaviour
     public bool isInJail = false;
 
     public int indexPower = -1;
+    public int indexObjectPower = -1;
 
     public bool hasClickInPowerImposter = false;
     public bool hasValidPowerImposter = false;
@@ -123,7 +124,12 @@ public class PlayerGO : MonoBehaviour
     public bool isTouchByAx = false;
     public bool isTouchBySword = false;
 
+    public bool isCursed = false;
+
     public bool lightHexagoneIsOn = false;
+
+    public int distanceCursed = 0;
+    public Room roomUsedWhenCursed;
     private void Awake()
     {
         displayChatInput = false;
@@ -794,50 +800,6 @@ public class PlayerGO : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("teleport_changeRoom"))
-        {
-            if (GetComponent<PhotonView>().IsMine)
-            {
-                if (collision.transform.parent.GetComponent<Door>().isOpenForAll && !haveToGoToExpedition)
-                {
-                    if (!gameManager.timer.timerLaunch)
-                    {
-
-                        gameManager.timer.LaunchTimer(1f, false);
-                        isCollisionInDoorTakeDoor = true;
-                        doorCollision = collision.gameObject;
-                        canMove = false;
-                        gameManager.ui_Manager.DisplayBlackScreen(true, true);
-                    }
-
-                }
-                else
-                {
-                    if (isInExpedition)
-                    {
-                        gameManager.timer.LaunchTimer(1f, false);
-                        isCollisionInDoorBackExpedition = true;
-                        doorCollision = collision.gameObject;
-                        canMove = false;
-                        gameManager.ui_Manager.DisplayBlackScreen(true, true);
-                    }
-                    else
-                    {
-                        if (haveToGoToExpedition)
-                        {
-                            gameManager.timer.LaunchTimer(1f, false);
-                            isCollisionInDoorExpedition = true;
-                            doorCollision = collision.gameObject;
-                            canMove = false;
-                            gameManager.ui_Manager.DisplayBlackScreen(true, true);
-                            collisionToGost = false;
-                        }
-                       
-                    }
-                }
-            }
-        }
-
         if (collision.gameObject.CompareTag("teleport_paradise"))
         {
             if (GetComponent<PhotonView>().IsMine)
@@ -1244,11 +1206,8 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        /*        if (gameManager.isActuallySpecialityTime)
-                {
-                    Debug.Log("sa passe");
-                    return;
-                }*/
+        if (gameManager.speciallyIsLaunch)
+            return;
         GetComponent<PlayerNetwork>().SendOnclickToExpedition();
     }
 
@@ -1689,6 +1648,31 @@ public class PlayerGO : MonoBehaviour
         gameManager.ui_Manager.mobileCanvas.transform.Find("Change_Boss").gameObject.SetActive(isEnter);
 
     }
-
-
+    public void SetRoomCursed()
+    {
+        List<Room> listPossiblityRoom = new List<Room>();
+        List<Room> listPossiblityRoomWithMoreDistance = new List<Room>();
+        foreach (Room room in gameManager.game.dungeon.rooms)
+        {
+            if(room.distance_pathFinding_initialRoom == gameManager.game.dungeon.exit.distance_pathFinding_initialRoom)
+            {
+                if (room.IsObstacle || room.IsExit)
+                    continue;
+                if(gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.dungeon.exit) > 3)
+                {
+                    listPossiblityRoomWithMoreDistance.Add(room);
+                }
+                listPossiblityRoom.Add(room);
+            }
+        }
+        if (listPossiblityRoomWithMoreDistance.Count == 0)
+        {
+            //this.distanceCursed = listPossiblityRoom[Random.Range(0, listPossiblityRoom.Count)].distance_pathFinding_initialRoom;
+            this.roomUsedWhenCursed = listPossiblityRoom[Random.Range(0, listPossiblityRoom.Count)];
+            return;
+        }
+        //this.distanceCursed =  listPossiblityRoomWithMoreDistance[Random.Range(0, listPossiblityRoomWithMoreDistance.Count)].distance_pathFinding_initialRoom;
+        this.roomUsedWhenCursed = listPossiblityRoomWithMoreDistance[Random.Range(0, listPossiblityRoomWithMoreDistance.Count)];
+    }
+   
 }

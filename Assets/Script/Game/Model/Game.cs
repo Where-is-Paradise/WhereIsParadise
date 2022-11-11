@@ -116,7 +116,6 @@ public class Game : ScriptableObject
             return;
         }
         key_counter = currentRoom.DistancePathFinding + 2;
-        //key_counter = 2;
 
     }
 
