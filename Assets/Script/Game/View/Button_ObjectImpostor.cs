@@ -23,6 +23,13 @@ public class Button_ObjectImpostor : MonoBehaviour
     {
         gameManager.GetPlayerMineGO().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().UsePower();
         gameManager.GetPlayerMineGO().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().isClickedInButtonPower = true;
+        StartCoroutine(ResetClickObjectCoroutine());
+    }
+
+    public IEnumerator ResetClickObjectCoroutine()
+    {
+        yield return new WaitForSeconds(0.2f);
+        gameManager.GetPlayerMineGO().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().isClickedInButtonPower = false;
     }
     public void OnClickPowerTrap()
     {

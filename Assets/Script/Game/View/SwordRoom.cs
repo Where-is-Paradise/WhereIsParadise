@@ -18,7 +18,7 @@ public class SwordRoom : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        if (!roomIsLaunched)
+        if (!roomIsLaunched || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchBySword)
             return;
         CanAttack();
     }

@@ -169,8 +169,8 @@ setting_button_echapMenu.SetActive(false);
         if(gameManager.gameIsReady)
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = !map.activeSelf;
 
-        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
-            DisplayPowerButton(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower, (map.activeSelf && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation));
+        //if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower != -1)
+            //DisplayPowerButton(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower, (map.activeSelf && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation));
 
         if (!blueWallPaper.activeSelf)
         {
@@ -470,19 +470,35 @@ setting_button_echapMenu.SetActive(false);
         yield return new WaitForSeconds(2);
         roleInformation.SetActive(false);
         //waitingPage_PowerImpostor.SetActive(true);
-        DisplayPowerImpostor(true);
-        Camera.main.orthographicSize = 4f;
-        gameManager.timer.LaunchTimer(2, false); // 20
-        yield return new WaitForSeconds(2); // 20
-        DisplayPowerImpostor(false);
-        Camera.main.orthographicSize = 5.1f;
-        yield return new WaitForSeconds(0.5f);
-        DisplayTutorial();
-        gameManager.gameIsReady = true;
-        if (gameManager.setting.displayTutorial)
+        //int launchTimer = 20;
+        int launchTimer = 2;
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower == -1 || true)
         {
-            tutorial[21].SetActive(false);
+            Camera.main.orthographicSize = 5.1f;
+            gameManager.gameIsReady = true;
+            if (gameManager.setting.displayTutorial)
+            {
+                tutorial[21].SetActive(false);
+            }
         }
+        else
+        {
+            DisplayPowerImpostor(true);
+            Camera.main.orthographicSize = 4f;
+            gameManager.timer.LaunchTimer(launchTimer, false); // 20
+            yield return new WaitForSeconds(launchTimer); // 20
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower != -1)
+                DisplayPowerImpostor(false);
+            Camera.main.orthographicSize = 5.1f;
+            yield return new WaitForSeconds(0.5f);
+            DisplayTutorial();
+            gameManager.gameIsReady = true;
+            if (gameManager.setting.displayTutorial)
+            {
+                tutorial[21].SetActive(false);
+            }
+        }
+        
     }
 
 
@@ -829,7 +845,7 @@ setting_button_echapMenu.SetActive(false);
         foreach(GameObject player  in GameObject.FindGameObjectsWithTag("Player"))
         {
             player.transform.GetChild(1).GetChild(9).gameObject.SetActive(false);
-            player.transform.GetChild(1).GetChild(6).gameObject.SetActive(false);
+            player.transform.GetChild(1).GetChild(13).gameObject.SetActive(false);
         }
     }
 
@@ -1400,7 +1416,7 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayDeathNPCRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("DeathNPCRoom").gameObject.SetActive(display);
-        GameObject.Find("Special").transform.Find("DeathNPCRoom").Find("DeathNpc").gameObject.SetActive(display);
+        //GameObject.Find("Special").transform.Find("DeathNPCRoom").Find("DeathNpc").gameObject.SetActive(display);
         DisplaySpeciallyLevers(display, 4);
     }
     public void DisplayDamoclesSwordRoom(bool display)
@@ -1515,13 +1531,17 @@ setting_button_echapMenu.SetActive(false);
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             return;
+        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower == -1)
+            return;
         canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).gameObject.SetActive(true);
-        DisplayTrapPowerButtonDesactivateTime(true, 60);
+        DisplayTrapPowerButtonDesactivateTime(true, 10);
         StartCoroutine(gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().CanUsedTimerCoroutine());
     }
     public void DisplayObjectPowerImpostorInGame()
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower == -1)
             return;
         canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).gameObject.SetActive(true);
     }
@@ -1533,10 +1553,14 @@ setting_button_echapMenu.SetActive(false);
     }
     public void DisplayN2PotionObject(bool display)
     {
-        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower)
-            .Find("Potion").gameObject.SetActive(!display);
-        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower)
-          .Find("Character").gameObject.SetActive(display);
+        /*        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower)
+                    .Find("Potion").gameObject.SetActive(!display);*/
+        if (canvasInGame.transform.Find("Object"))
+        {
+            canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower)
+                .Find("BiggerReset").gameObject.SetActive(display);
+        }
+          
     }
 
     public void DisplayObjectPowerBigger(bool display)
@@ -1544,6 +1568,12 @@ setting_button_echapMenu.SetActive(false);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Bigger").gameObject.SetActive(display);
     }
+    public void DisplayObjectResetInvisibility(bool display)
+    {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("BiggerReset").gameObject.SetActive(display);
+    }
+
     public void DisplayObjectPowerButtonDesactivateTime(bool display, float timer)
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
@@ -1561,10 +1591,33 @@ setting_button_echapMenu.SetActive(false);
             canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").Find("Text_timer").GetComponent<TimerDisplay>().timeLeft = timer;
     }
 
+    public void DisplayObjectPowerButtonDesactivate()
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").gameObject.SetActive(true);
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").Find("Text_timer").gameObject.SetActive(false);
+    }
+    public void HideObjectPowerButtonDesactivate()
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").gameObject.SetActive(false);
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").Find("Text_timer").gameObject.SetActive(false);
+    }
+
+    public void DisplayTrapPowerButtonDesactivate()
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+        canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").gameObject.SetActive(true);
+        canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").Find("Text_timer").gameObject.SetActive(false);
+    }
+
 
     public void DisplayTrapPowerBigger(bool display)
     {
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower != -1)
             canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Bigger").gameObject.SetActive(display);
     }
 

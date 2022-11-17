@@ -10,13 +10,23 @@ public class Death_NPC : MonoBehaviourPun
     // Start is called before the first frame update
     void Start()
     {
-        //GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
-        StartCoroutine(StartDeathNPCRoomAfterTeleportation());
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            gameManager.TeleportAllPlayerInRoomOfBoss();
+            StartCoroutine(StartDeathNPCRoomAfterTeleportation());
+        }
+            
     }
+
+
 
     public IEnumerator StartDeathNPCRoomAfterTeleportation()
     {
-        yield return new WaitForSeconds(2); 
+       
+        yield return new WaitForSeconds(2);
+        gameManager.deathNPCIsLaunch = true;
         StartDeathNPCRoom();
     }
     public void StartDeathNPCRoom()
@@ -31,10 +41,9 @@ public class Death_NPC : MonoBehaviourPun
             return;
         }
         gameManager.speciallyIsLaunch = true;
-        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         SetTargetOfPathFinding();
         StartCoroutine(ChangerSpeedCoroutine());
-        StartCoroutine(UpdatePositionCoroutine());
+        //StartCoroutine(UpdatePositionCoroutine());
     }
     // Update is called once per frame
     void Update()
@@ -87,8 +96,8 @@ public class Death_NPC : MonoBehaviourPun
     public void SetTargetOfPathFinding()
     {
         GameObject playerTarget = GetPlayerWithMinDistance();
-        SendIndexTarget(playerTarget.GetComponent<PhotonView>().ViewID);
-        SendMaxSpeed(4f);
+        SetIndexTarget(playerTarget.GetComponent<PhotonView>().ViewID);
+        SetMaxSpeed(4f);
     }
 
     public IEnumerator ChangerSpeedCoroutine()
@@ -98,7 +107,7 @@ public class Death_NPC : MonoBehaviourPun
         {
             this.GetComponent<AIPath>().maxSpeed += 0.1f;
             float newSpeed = this.GetComponent<AIPath>().maxSpeed + 0.1f;
-            SendMaxSpeed(newSpeed);
+            SetMaxSpeed(newSpeed);
             StartCoroutine(ChangerSpeedCoroutine());
         }
         else
@@ -108,12 +117,12 @@ public class Death_NPC : MonoBehaviourPun
        
     }
 
-    public IEnumerator UpdatePositionCoroutine()
+/*    public IEnumerator UpdatePositionCoroutine()
     {
         yield return new WaitForSeconds(0.3f);
         SendUpdatePosition(this.transform.position.x, this.transform.position.y);
         StartCoroutine(UpdatePositionCoroutine());
-    }
+    }*/
 
     public void SendUpdatePosition(float x, float y)
     {
@@ -132,11 +141,8 @@ public class Death_NPC : MonoBehaviourPun
         photonView.RPC("SetMaxSpeed", RpcTarget.All, maxSpeed);
     }
 
-    [PunRPC]
     public void SetMaxSpeed(float maxSpeed)
     {
-        if (!gameManager.SamePositionAtBoss())
-            return;
         this.GetComponent<AIPath>().maxSpeed = maxSpeed;
     }
 
@@ -145,11 +151,8 @@ public class Death_NPC : MonoBehaviourPun
         photonView.RPC("SetIndexTarget", RpcTarget.All, indexTarget);
     }
 
-    [PunRPC]
     public void SetIndexTarget(int indexTarget)
     {
-        if (!gameManager.SamePositionAtBoss())
-            return;
         this.GetComponent<AIPath>().destination = gameManager.GetPlayer(indexTarget).transform.position;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
     }
@@ -262,16 +265,19 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void DesactivateNPC()
     {
-        this.gameObject.transform.Find("eyes").gameObject.SetActive(true);
+/*        this.gameObject.transform.Find("eyes").gameObject.SetActive(true);
         this.gameObject.transform.Find("body_gfx").gameObject.SetActive(true);
-        this.gameObject.GetComponent<CapsuleCollider2D>().enabled = true;
+        this.gameObject.GetComponent<CapsuleCollider2D>().enabled = true;*/
         gameManager.ChangeLeverDeathNPC();
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(false);
+        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         this.gameObject.SetActive(false);
-        
+        if(PhotonNetwork.IsMasterClient)
+            PhotonNetwork.Destroy(this.gameObject);
+
     }
 
     [PunRPC]
@@ -290,6 +296,7 @@ public class Death_NPC : MonoBehaviourPun
     {
         yield return new WaitForSeconds(0.5f);
         SendResetColor();
+        
         photonView.RPC("DesactivateNPC", RpcTarget.All);
     }
 

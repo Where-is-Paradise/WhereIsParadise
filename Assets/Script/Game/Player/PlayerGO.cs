@@ -969,7 +969,7 @@ public class PlayerGO : MonoBehaviour
         }
         if (gameManager.game.currentRoom.isDeathNPC)
         {
-            gameManager.deathNPCIsLaunch = true;
+            gameManager.InstantiateDeathNPC();
         }
         if (gameManager.game.currentRoom.isSwordDamocles)
         {

@@ -299,7 +299,7 @@ public class UI_Managment : MonoBehaviourPun
         setting.LIMITED_TORCH = true;
         SetCodeText();
         DisplayLoadingConnection();
-        SetGameSettingFirstTime();
+        SendGameSettingSpciallyRoom();
         canChange = true;
     }
 
@@ -326,27 +326,36 @@ public class UI_Managment : MonoBehaviourPun
         canChange = true;
     }
 
-    public void SetGameSettingFirstTime()
-    {
-        difficulty2.GetComponent<Dropdown>().value = difficulty.GetComponent<Dropdown>().value;
-        SetDifficulty(difficulty2);
-        foggyRoom2.isOn = setting.FOGGY_ROOM;
-        virusRoom2.isOn = setting.VIRUS_ROOM;
-        randomRoomKeys2.isOn = setting.RANDOM_ROOM_ADDKEYS;
-        hellRoom2.isOn = setting.HELL_ROOM;
-        miniMap2.isOn = setting.DISPLAY_MINI_MAP;
-        displayKeyMap2.isOn = setting.DISPLAY_KEY_MAP;
-
-        photonView.RPC("SendGameSetting",
-            RpcTarget.Others,
-            difficulty2.GetComponent<Dropdown>().value,
-            foggyRoom2.isOn ,
-            virusRoom2.isOn,
-            hellRoom2.isOn,
-            randomRoomKeys2.isOn,
-            miniMap2.isOn,
-            displayKeyMap2.isOn);
+    public void SendGameSettingSpciallyRoom()
+    {   
+        for(int i =0; i< setting.listSpeciallyRoom.Count; i++)
+        {
+            photonView.RPC("SendGameSettingSpeciallyRoom",
+           RpcTarget.Others, setting.listSpeciallyRoom[i], i);
+        }
     }
+
+    public void SendOnChangeGameSettingSpeciallyRoom(bool active , int index)
+    {
+        photonView.RPC("SendGameSettingSpeciallyRoom",
+        RpcTarget.Others, active, index);
+    }
+    public void SendOnChangeGameSettingTrialsRoom(bool active, int index)
+    {
+        photonView.RPC("SendGameSettingTrialsRoom",
+        RpcTarget.Others, active, index);
+    }
+    public void SendOnChangeGameSettingTrapRoom(bool active, int index)
+    {
+        photonView.RPC("SendGameSettingTrapRoom",
+        RpcTarget.Others, active, index);
+    }
+    public void SendOnChangeGameSettingObjectImpostor(bool active, int index)
+    {
+        photonView.RPC("SendGameSettingObjectImpostor",
+        RpcTarget.Others, active, index);
+    }
+
     public void DisplayLoadingConnection()
     {
         pannel_loadingConnection.SetActive(true);
@@ -379,18 +388,32 @@ public class UI_Managment : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void SendGameSetting(int difficulty , bool foggyRoom, bool virusRoom, bool hellRoom, bool randomRoomKey, bool map, bool displayKey)
+    public void SendGameSettingSpeciallyRoom(bool isActive , int index)
     {
         canChange = false;
-        difficulty2.GetComponent<Dropdown>().value = difficulty;
-        foggyRoom2.isOn = foggyRoom;
-        virusRoom2.isOn = virusRoom;
-        randomRoomKeys2.isOn = randomRoomKey;
-        hellRoom2.isOn = hellRoom;
-        miniMap2.isOn = map;
-        displayKeyMap2.isOn = displayKey;
+        setting.listSpeciallyRoom[index] = isActive;
+    }
+    [PunRPC]
+    public void SendGameSettingTrialsRoom(bool isActive, int index)
+    {
+        canChange = false;
+        setting.listTrialRoom[index] = isActive;
     }
 
+    [PunRPC]
+    public void SendGameSettingTrapRoom(bool isActive, int index)
+    {
+        canChange = false;
+        setting.listTrapRoom[index] = isActive;
+    }
+    [PunRPC]
+    public void SendGameSettingObjectImpostor(bool isActive, int index)
+    {
+        canChange = false;
+        setting.listObjectImpostor[index] = isActive;
+    }
+
+    
     public void ActivateAllFormSetting( bool activate)
     {
         difficulty2.GetComponent<Dropdown>().interactable = activate;
@@ -437,11 +460,11 @@ public class UI_Managment : MonoBehaviourPun
         int distanceParadise = 0;
         if (value == 0)
         {
-            distanceParadise = UnityEngine.Random.Range(4, 8);
+            distanceParadise = UnityEngine.Random.Range(3, 7);
         }
         if (value == 1)
         {
-            distanceParadise = UnityEngine.Random.Range(8, 12);
+            distanceParadise = UnityEngine.Random.Range(7, 12);
         }
 
         setting.DISTANCE_EXIT_DOOR_MAX = distanceParadise;
@@ -938,8 +961,65 @@ public class UI_Managment : MonoBehaviourPun
     video_settingButton.SetActive(false);
     controle_settingButton.SetActive(false);
 #endif
-
-
     }
 
+
+    public void SendSetting(string objectName, bool newValue)
+    {
+        photonView.RPC("SetNewSetting", RpcTarget.Others, objectName, newValue);
+    }
+
+    [PunRPC]
+    public void SetNewSetting(string objectName, bool newValue)
+    {
+        if(GameObject.Find(objectName))
+            GameObject.Find(objectName).GetComponent<Toggle>().isOn = newValue;
+    }
+
+    public void SendSettingDoubleChoice(string objectName,int index)
+    {
+        photonView.RPC("SetSettingDoubleChoice", RpcTarget.Others, objectName, index);
+    }
+
+    [PunRPC]
+    public void SetSettingDoubleChoice(string objectName, int index)
+    {
+        if (!GameObject.Find(objectName))
+            return;
+
+        if (index == 0)
+            GameObject.Find(objectName).GetComponent<ToggleChange>().OnClickToggle1();
+        else
+            GameObject.Find(objectName).GetComponent<ToggleChange>().OnClickToggle2();
+    }
+
+    public void SendKeyAdditionalSetting(int newNb)
+    {
+        photonView.RPC("SetKeyAdditionalSetting", RpcTarget.Others, newNb);
+    }
+    [PunRPC]
+    public void SetKeyAdditionalSetting(int newNb)
+    {
+        setting.KEY_ADDITIONAL = newNb;
+    }
+
+    public void SendKeyTorchSetting(int newNb)
+    {
+        photonView.RPC("SetKeyTorchSetting", RpcTarget.Others, newNb);
+    }
+    [PunRPC]
+    public void SetKeyTorchSetting(int newNb)
+    {
+        setting.TORCH_ADDITIONAL = newNb;
+    }
+
+    public void SendNBImpostorSetting(int newNb)
+    {
+        photonView.RPC("SetNBImpostorSetting", RpcTarget.Others, newNb);
+    }
+    [PunRPC]
+    public void SetNBImpostorSetting(int newNb)
+    {
+        setting.NB_IMPOSTOR = newNb;
+    }
 }

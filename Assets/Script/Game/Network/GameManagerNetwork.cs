@@ -891,12 +891,14 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         if (!isExpedition)
         {
+            // jsai pa pk c la sérieu jpige rien
+            /*            Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
+                        roomInPlayer.door_isOpen[indexDoor] = true;
+                        int indexNeWDoor3 = gameManager.GetIndexDoorAfterCrosse(indexDoor);
+                        GameObject newDoor = gameManager.GetDoorGo(indexNeWDoor3);
+                        gameManager.game.currentRoom.door_isOpen[newDoor.GetComponent<Door>().index] = true;*/
             Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
             roomInPlayer.door_isOpen[indexDoor] = true;
-            int indexNeWDoor3 = gameManager.GetIndexDoorAfterCrosse(indexDoor);
-            GameObject newDoor = gameManager.GetDoorGo(indexNeWDoor3);
-            gameManager.game.currentRoom.door_isOpen[newDoor.GetComponent<Door>().index] = true;
-         
 
             Room roomTeam2 = gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam);
             if (roomTeam2.isJail)
@@ -1403,6 +1405,18 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
     }
 
+    public void SendLaunchDeathNPC()
+    {
+        
+        photonView.RPC("SetLaunchDeathNPC", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchDeathNPC()
+    {
+
+    }
+
     public void SendLaunchDamoclesRoom()
     {
         GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
@@ -1449,7 +1463,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void DisplayLightAllAvailableDoor(bool display)
     {
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower == -1)
             return;
         if (gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().powerIsUsed && display)
             return;
@@ -1488,6 +1502,16 @@ public class GameManagerNetwork : MonoBehaviourPun
                 door.transform.Find("RedLight").gameObject.SetActive(false);
                 continue;
             }
+            if (!gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().canUsed)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (gameManager.OnePlayerHaveToGoToExpedition())
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
 
             door.transform.Find("RedLight").gameObject.SetActive(display);
         }
@@ -1495,7 +1519,7 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void DisplayLightAllAvailableDoorN2(bool display)
     {
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower == -1)
             return;
         GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
         foreach (GameObject door in doors)
@@ -1521,6 +1545,16 @@ public class GameManagerNetwork : MonoBehaviourPun
                 continue;
             }
             if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (!gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().canUsed) 
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (gameManager.OnePlayerHaveToGoToExpedition())
             {
                 door.transform.Find("RedLight").gameObject.SetActive(false);
                 continue;
@@ -1570,11 +1604,13 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendUpdateHidePlayer()
     {
-        photonView.RPC("UpdateHidePlayer", RpcTarget.All);
+        photonView.RPC("UpdateHidePlayer", RpcTarget.Others);
     }
     [PunRPC]
     public void UpdateHidePlayer()
     {
         gameManager.HidePlayerNotInSameRoom();
     }
+
+    
 }

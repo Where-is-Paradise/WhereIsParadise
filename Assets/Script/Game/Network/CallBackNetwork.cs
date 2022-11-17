@@ -27,6 +27,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
+        PhotonNetwork.NetworkingClient.LoadBalancingPeer.MaximumTransferUnit = 576;
         Debug.LogError(cause);
         if (cause.ToString() != "DisconnectByClientLogic")
         {
@@ -86,7 +87,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         {
             Destroy(objectDonDesroy);
         }
-        Destroy(GameObject.Find("Setting"));
+        //Destroy(GameObject.Find("Setting"));
         Destroy(GameObject.Find("Input Manager"));
 
         SceneManager.LoadScene("Menu");
@@ -103,6 +104,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
 
     private IEnumerator MainReconnect()
     {
+        Debug.LogError(PhotonNetwork.NetworkingClient.LoadBalancingPeer.PeerState);
         while (PhotonNetwork.NetworkingClient.LoadBalancingPeer.PeerState != ExitGames.Client.Photon.PeerStateValue.Disconnected)
         {
             Debug.Log("Waiting for client to be fully disconnected..", this);

@@ -29,6 +29,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     private string oldCode = "0";
     public string oldPlayerName = "";
 
+    public string server;
 
     public bool openRoom = false;
 
@@ -43,7 +44,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         ConnectToMaster();
         index_skin = Random.Range(0, 7);
         GameObject.Find("Setting").GetComponent<Setting>().INDEX_SKIN = index_skin;
-
+       
          StartCoroutine(GetText());
     }
 
@@ -58,12 +59,20 @@ public class Lobby : MonoBehaviourPunCallbacks
     public void ConnectToMaster()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
-       
         //PhotonNetwork.LocalCleanPhotonView()
         PhotonNetwork.MaxResendsBeforeDisconnect = 10;
+        
         PhotonNetwork.ConnectUsingSettings();
         
-        
+
+
+
+
+    }
+
+    public void OnclickChangeServerRegion(GameObject regionText)
+    {
+        PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = regionText.GetComponent<Text>().text;
     }
 
     IEnumerator GetText()
@@ -106,6 +115,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         print("Connected");
+        Debug.Log(PhotonNetwork.CloudRegion);
         base.OnConnectedToMaster();
 
         if (GameObject.Find("Setting_backWaitingRoom"))
@@ -289,7 +299,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         {
             ui_management.SetPlayerNameMatchmaking(newPlayer);
             ui_management.DisplaySettingButton(false);
-            ui_management.DisplayOpenRoomButton(false);
+            //ui_management.DisplayOpenRoomButton(false);
             ui_management.DisplayStartButton(false);
             ui_management.DisplayReadyButtonOnly(true);
             ui_management.SetDifficultyValue(0);
@@ -300,7 +310,7 @@ public class Lobby : MonoBehaviourPunCallbacks
             ui_management.SetPlayerName(newPlayer);
             if (PhotonNetwork.IsMasterClient)
             {
-                ui_management.DisplayOpenRoomButton(true);
+                //ui_management.DisplayOpenRoomButton(true);
                 ui_management.DisplayStartButton(true);
             }
             ui_management.DisplayReadyButtonOnly(false);
@@ -365,7 +375,7 @@ public class Lobby : MonoBehaviourPunCallbacks
             PlayerIsMine().GetComponent<PlayerNetwork>().SendindexSkin(PlayerIsMine().GetComponent<PlayerGO>().indexSkin);
 
         //ui_management.SetGameSettingFirstTime();
-        ui_management.SetSettingInWaitingRoom();
+        //ui_management.SetSettingInWaitingRoom();
 
         if (PhotonNetwork.IsMasterClient)
         {

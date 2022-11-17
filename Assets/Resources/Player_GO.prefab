@@ -66,11 +66,15 @@ MonoBehaviour:
   powerIsUsed: 0
   timerToUsing: 0
   canUsed: 0
+  cantTemporyUsed: 0
   powerIsReset: 0
   collision: {fileID: 0}
   isClickedInButtonPower: 0
   isInvisible: 0
   isNearOfPlayer: 0
+  OtherIsInvisible: 0
+  isOtherToInvisible: 0
+  colliderIsImpostor: 0
 --- !u!1 &150579921965535271
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,6 +1836,7 @@ GameObject:
   - component: {fileID: 7463834410242310785}
   - component: {fileID: -3756451342725869009}
   - component: {fileID: 7349149619588218411}
+  - component: {fileID: 2341397929803788861}
   m_Layer: 0
   m_Name: Player_GO
   m_TagString: Player
@@ -1881,6 +1886,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 7463834410242310785}
   - {fileID: -3756451342725869009}
+  - {fileID: 2341397929803788861}
   sceneViewId: 4
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -2046,18 +2052,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PositionModel:
-    SynchronizeEnabled: 1
+    SynchronizeEnabled: 0
     TeleportEnabled: 1
     TeleportIfDistanceGreaterThan: 3
     InterpolateOption: 2
     InterpolateMoveTowardsSpeed: 5.2
     InterpolateLerpSpeed: 1
-    ExtrapolateOption: 0
+    ExtrapolateOption: 1
     ExtrapolateSpeed: 1
     ExtrapolateIncludingRoundTripTime: 1
     ExtrapolateNumberOfStoredPositions: 1
   m_RotationModel:
-    SynchronizeEnabled: 1
+    SynchronizeEnabled: 0
     InterpolateOption: 1
     InterpolateRotateTowardsSpeed: 180
     InterpolateLerpSpeed: 5
@@ -2096,6 +2102,22 @@ CapsuleCollider2D:
   m_Offset: {x: 0.04, y: -0.17}
   m_Size: {x: 0.76, y: 1.12}
   m_Direction: 0
+--- !u!114 &2341397929803788861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2672510705023225238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e7cb724808c322458aa4d15f5035fa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &3055500933973960091
 GameObject:
   m_ObjectHideFlags: 0
@@ -2114,7 +2136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &689768631560738905
 Transform:
   m_ObjectHideFlags: 0
@@ -2171,6 +2193,7 @@ MonoBehaviour:
   powerIsUsed: 0
   isNearOfDoor: 0
   timerToUsing: 0
+  canUsed: 0
   collision: {fileID: 0}
 --- !u!114 &208173725058215940
 MonoBehaviour:

@@ -11,11 +11,18 @@ public class Setting : MonoBehaviour
     public int KEY_ADDITIONAL = 2;
     public int NB_IMPOSTOR = 1;
     public int RATIO_OBSTACLE = 5;
-    public int DISTANCE_EXIT_DOOR_MAX = 8;
+    public int DISTANCE_EXIT_DOOR_MAX = 6;
     public int NUMBER_EXPEDTION_MAX = 3;
     public int TORCH_ADDITIONAL = 1;
     public int WIDTH_DUNGEON = 10;
     public int HEIGHT_DUNGEON = 10;
+
+    public List<bool> globalSetting;
+    public List<bool> listSpeciallyRoom;
+    public List<bool> listTrialRoom;
+    public List<bool> listTrapRoom;
+    public List<bool> listObjectImpostor;
+
     public bool DISTANCE_WITHOUT_OBSTACLE = true;
     public bool FOGGY_ROOM = false;
     public bool VIRUS_ROOM = false;
@@ -64,6 +71,10 @@ public class Setting : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+        if (GameObject.FindGameObjectsWithTag("Setting").Length > 1)
+            Destroy(this.gameObject);
+
         DontDestroyOnLoad(this);
         InputManager.Load();
         INPUT_MOVE_FORWARD = InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Positive;
@@ -77,6 +88,32 @@ public class Setting : MonoBehaviour
         listLangage.Add("en");
         listLangage.Add("fr");
         listLangage.Add("kr");
+
+        globalSetting.Add(true); // Distance initial room
+        globalSetting.Add(true); // Clue Double distance
+        globalSetting.Add(true); // Map
+        globalSetting.Add(true); // Trap at only start
+
+        listSpeciallyRoom.Add(true); // ChestRoom
+        listSpeciallyRoom.Add(true); // SacrificeRoom
+        listSpeciallyRoom.Add(true); // HellRoom
+
+        listTrialRoom.Add(true); // FireBall room
+        listTrialRoom.Add(true); // GodDeath room
+        listTrialRoom.Add(true); // Damocles room
+        listTrialRoom.Add(true); // Ax room
+        listTrialRoom.Add(true); // Sword room
+        
+
+        listTrapRoom.Add(true); // Foggy room
+        listTrapRoom.Add(true); // Cursed room
+        listTrapRoom.Add(true); // Jail room
+        listTrapRoom.Add(true); // ChestTraped room
+        listTrapRoom.Add(true); // Poised room
+
+        listObjectImpostor.Add(true); // Invisible potion
+        listObjectImpostor.Add(true); // Satanic knife
+        listObjectImpostor.Add(true); // Satanic book
     }
 
 

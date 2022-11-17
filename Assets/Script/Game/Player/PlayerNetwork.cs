@@ -502,7 +502,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetIndexPower(int indexPower)
     {
         player.GetComponent<PlayerGO>().indexPower = indexPower;
-        if (player.GetComponent<PhotonView>().IsMine)
+        if (player.GetComponent<PhotonView>().IsMine && indexPower != -1)
             player.transform.Find("PowerImpostor").gameObject.SetActive(true);
     }
 
@@ -612,11 +612,13 @@ public class PlayerNetwork : MonoBehaviourPun
         {
             int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
             player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+            player.transform.Find("Perso").Find("Sword").gameObject.SetActive(false);
         }
         else
         {
             player.transform.GetChild(0).gameObject.SetActive(false);
             player.transform.GetChild(1).gameObject.SetActive(false);
+            player.transform.Find("Perso").Find("Sword").gameObject.SetActive(false);
         }
     }
 
@@ -673,8 +675,7 @@ public class PlayerNetwork : MonoBehaviourPun
 
     public void SendTeleportPlayerToSameRoomOfBoss()
     {
-       
-            photonView.RPC("TeleportPlayerToSameRoomOfBoss", RpcTarget.All);
+        photonView.RPC("TeleportPlayerToSameRoomOfBoss", RpcTarget.All);
     }
 
     [PunRPC]
@@ -684,7 +685,7 @@ public class PlayerNetwork : MonoBehaviourPun
         player.position_Y = player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.Y;
         if (!player.GetComponent<PhotonView>().IsMine)
             return;
-        player.gameManager.game.currentRoom = player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room;
+        player.gameManager.game.currentRoom = player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room; 
         player.gameManager.UpdateSpecialsRooms(player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
         player.gameManager.ResetDoorsActive();
         player.gameManager.SetDoorNoneObstacle(player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
@@ -696,4 +697,42 @@ public class PlayerNetwork : MonoBehaviourPun
         player.gameManager.ui_Manager.HideDistanceRoom();
     }
 
+    public void SendInsertPowerToDoor(int indexRoom, int indexPower)
+    {
+        photonView.RPC("InsertPowerToDoor", RpcTarget.All, indexRoom, indexPower);
+    }
+
+    [PunRPC]
+    public void InsertPowerToDoor(int indexRoom, int indexPower)
+    {
+        Debug.LogError(indexRoom);
+        Room room = player.gameManager.game.dungeon.GetRoomByIndex(indexRoom);
+        Debug.LogError(indexPower);
+        switch (indexPower)
+        {
+            case 0:
+                room.IsFoggy = true;
+                break;
+            case 1:
+                room.IsVirus = true;
+                break;
+            case 2:
+                room.isJail = true;
+                break;
+            case 3:
+                room.chest = true;
+                room.isTraped = true;
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    player.gameManager.game.dungeon.InsertChestRoom(room.Index);
+                    player.gameManager.gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 0);
+                }
+                break;
+            case 4:
+                room.isCursedTrap = true;
+                break;
+        }
+        room.isTraped = true;
+        player.transform.Find("PowerImpostor").GetComponent<PowerImpostor>().powerIsUsed = true;
+    }
 }

@@ -211,8 +211,9 @@ public class Hexagone : MonoBehaviourPun
             this.transform.Find("Canvas").Find("Cross_error").gameObject.SetActive(false);
             return;
         }
-
         int indexPower = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower;
+        if (indexPower == -1)
+            return;
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter)
         {
             if (this.transform.Find("Canvas").Find("ImpostorPower").GetChild(indexPower).gameObject.activeSelf)

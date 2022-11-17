@@ -163,7 +163,7 @@ public class FireBall : MonoBehaviourPun
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
         {
-            if (!player.GetComponent<PlayerGO>().isTouchByFireBall)
+            if (!player.GetComponent<PlayerGO>().isTouchByFireBall && !player.GetComponent<PlayerGO>().isSacrifice)
             {
                 return player;
             }

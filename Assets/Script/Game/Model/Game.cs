@@ -56,9 +56,9 @@ public class Game : ScriptableObject
         setting.NB_IMPOSTOR = CalculNbImpostor();
 
         bool correctExit;
-        int randomPercentageRatioObatacle = Random.Range(30, 40);
-        int randomPercentagePropagation = Random.Range(15, 30);
-        int randomPercentageInitialPropagation = Random.Range(10, 20);
+        int randomPercentageRatioObatacle = Random.Range(35, 40);
+        int randomPercentagePropagation = Random.Range(15, 20);
+        int randomPercentageInitialPropagation = Random.Range(10, 15);
         int limit = 0; 
         do
         {
@@ -76,7 +76,7 @@ public class Game : ScriptableObject
             {
                 dungeon.SetPathFindingDistanceAllRoom();
                 int nbOfPossiblity = dungeon.GetNumberOfPossiblityOfExit();
-                if(nbOfPossiblity < Random.Range(5,11))
+                if(nbOfPossiblity < 5)
                 {
                     correctExit = false;
                 }
@@ -90,17 +90,6 @@ public class Game : ScriptableObject
         }
 
         dungeon.RemoveAllRoomTooFarAway();
-
-/*        if(setting.RANDOM_ROOM_ADDKEYS)
-            dungeon.InserKeyInRandomRoom();*/
-
-        //dungeon.InsertRandomChestRoom();
-        //dungeon.InsertRandomFireBallRoom();
-        //dungeon.InsertRandomSacrificeRoom();
-        //dungeon.InsertRandomJailRoom();
-        //dungeon.InsertRandomFoggyRoom();
-        //dungeon.InsertRandomVirusRoom();
-
     }
 
     public void SetKeyCounter()
@@ -110,12 +99,14 @@ public class Game : ScriptableObject
             key_counter = currentRoom.DistancePathFinding;
             return;
         }*/
-        if (dungeon.GetNumberOfPossiblityOfExit() < 10)
+        if (dungeon.GetNumberOfPossiblityOfExit() < 7)
         {
-            key_counter = currentRoom.DistancePathFinding + 1;
+            Debug.Log(currentRoom.DistancePathFinding);
+            key_counter = currentRoom.DistancePathFinding - 1;
             return;
         }
-        key_counter = currentRoom.DistancePathFinding + 2;
+        Debug.Log(currentRoom.DistancePathFinding);
+        key_counter = currentRoom.DistancePathFinding;
 
     }
 
@@ -188,15 +179,17 @@ public class Game : ScriptableObject
         if(list_player.Count <  7 && list_player.Count > 4 )
         {
             nbImpostor = 2;
-        }else if (list_player.Count >= 7 )
+        }else if (list_player.Count >= 7 && setting.NB_IMPOSTOR == 3)
         {
             nbImpostor = 3;
+        }else if (list_player.Count >= 7 && setting.NB_IMPOSTOR == 2)
+        {
+            nbImpostor = 2;
         }
-
 
         List<PlayerDun> potentialImpostor = new List<PlayerDun>();
         potentialImpostor.AddRange(list_player);
-        for (int i =0; i < nbImpostor; i++)
+/*        for (int i =0; i < nbImpostor; i++)
         {
             if(potentialImpostor.Count > 0)
             {
@@ -204,15 +197,16 @@ public class Game : ScriptableObject
                 potentialImpostor[indexRandom].SetIsImpostor(true);
                 potentialImpostor.RemoveAt(indexRandom);
             }
-        }
-     
+        }*/
+        potentialImpostor[0].SetIsImpostor(true);
+        potentialImpostor[1].SetIsImpostor(true);
     }
 
 
     public void CreateExpedition(int idPlayer, int roomID)
     {
         PlayerDun player = GetPlayerById(idPlayer);
-        Room room = GetRoomById(roomID);
+        Room room = GetRoomByNeigbourID(roomID);
         current_expedition.Add(Expedition.CreateInstance(player, room, roomID));
     }
 
@@ -238,7 +232,7 @@ public class Game : ScriptableObject
         return null;
     } 
 
-    public Room GetRoomById(int roomID)
+    public Room GetRoomByNeigbourID(int roomID)
     {
         Room room = null;
  /*       if (currentRoom == null)
