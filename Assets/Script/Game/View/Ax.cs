@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Ax : MonoBehaviourPun
 {
-    public float speed = 4;
+    public float speed = 3;
     public Vector2 direction = new Vector2(0,0);
     public AxRoom axRoom;
     public PlayerGO player;
@@ -29,7 +29,7 @@ public class Ax : MonoBehaviourPun
             return;
         }
         this.GetComponent<Rigidbody2D>().velocity = direction * speed;
-        if(nbBounds == 3)
+        if(nbBounds == 1)
         {
             PhotonNetwork.Destroy(this.gameObject);
         }
@@ -117,18 +117,29 @@ public class Ax : MonoBehaviourPun
 
     public void IsTouchPlayer(Collider2D collision)
     {
+
         if (collision.tag == "Player")
         {
-            SetPlayerColor(collision.gameObject);
-
-            if (TestLastPlayer())
+            if (collision.gameObject.GetComponent<PlayerGO>().isInvincible)
+                return;
+            collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom--;
+            collision.gameObject.GetComponent<PlayerNetwork>()
+                .SendLifeTrialRoom(collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom);
+            if (collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom == 0)
             {
-                GiveAwardToPlayer(GetLastPlayer());
-                SendResetColor();
-                DesactivateAxRoom();
+                SetPlayerColor(collision.gameObject);
+
+                if (TestLastPlayer())
+                {
+                    GiveAwardToPlayer(GetLastPlayer());
+                    SendResetColor();
+                    DesactivateAxRoom();
+                }
             }
         }
     }
+
+
 
     public void SetPlayerColor(GameObject player)
     {
@@ -195,6 +206,8 @@ public class Ax : MonoBehaviourPun
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
         {
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
             if (player.GetComponent<PhotonView>().IsMine)
             {
                 int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
@@ -208,6 +221,7 @@ public class Ax : MonoBehaviourPun
                     player.transform.GetChild(1).gameObject.SetActive(true);
                 }
             }
+            player.GetComponent<PlayerGO>().ResetHeart();
             player.GetComponent<PlayerGO>().isTouchByAx = false;
         }
     }

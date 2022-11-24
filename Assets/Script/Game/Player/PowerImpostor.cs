@@ -25,7 +25,7 @@ public class PowerImpostor : MonoBehaviourPun
     }
     public IEnumerator CanUsedTimerCoroutine()
     {
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(30);
         DisplayButtonDesactivateTimer(false, 0);
         canUsed = true;
         if (!this.transform.parent.GetComponent<PlayerGO>().gameManager.timer.timerLaunch &&
@@ -53,6 +53,9 @@ public class PowerImpostor : MonoBehaviourPun
             if (collision.transform.parent.GetComponent<Door>().barricade)
                 return;
             if (collision.transform.parent.GetComponent<Door>().GetRoomBehind().IsHell || collision.transform.parent.GetComponent<Door>().GetRoomBehind().IsExit)
+                return;
+            if (!collision.transform.parent.GetComponent<Door>().GetRoomBehind().isHide && 
+                   !(collision.transform.parent.GetComponent<Door>().GetRoomBehind().chest && indexPower == 3))
                 return;
             if (collision.transform.parent.GetComponent<Door>().isOpenForAll)
                 return;
@@ -99,7 +102,6 @@ public class PowerImpostor : MonoBehaviourPun
             return;
         Door door = this.transform.parent.GetComponent<PlayerGO>().gameManager.GetDoorGo(collision.transform.parent.GetComponent<Door>().index).GetComponent<Door>();
         Room room = door.GetRoomBehind();
-        Debug.LogError(room.IsObstacle + " " + (room.isDeathNPC || room.isAx || room.isSword) + " " + (room.isSwordDamocles || room.fireBall) + "  " + (room.IsExit || room.IsHell));
         if (room.IsObstacle)
             return;
         if (room.isDeathNPC || room.isAx || room.isSword)
@@ -108,7 +110,6 @@ public class PowerImpostor : MonoBehaviourPun
             return;
         if (room.IsExit || room.IsHell)
             return;
-        Debug.LogError("sa passe 0");
         this.transform.parent.GetComponent<PlayerNetwork>().SendInsertPowerToDoor(room.Index, indexPower);
         this.transform.parent.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.DisplayLightAllAvailableDoor(false);
         SetRedColorPlayer(false);
@@ -158,13 +159,13 @@ public class PowerImpostor : MonoBehaviourPun
         switch (index)
         {
             case 0:
-                timerToUsing = 60;
+                timerToUsing = 30;
                 break;
             case 1:
-                timerToUsing = 250;
+                timerToUsing = 30;
                 break;
             case 2:
-                timerToUsing = 120;
+                timerToUsing = 30;
                 break;
         }
         timerToUsing += initalTimerPlus;

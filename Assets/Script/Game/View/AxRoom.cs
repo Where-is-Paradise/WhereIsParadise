@@ -51,6 +51,7 @@ public class AxRoom : MonoBehaviourPun
     {
         yield return new WaitForSeconds(2);
         DiplayAxForAllPlayer(true);
+        DisplayHeartsFoAllPlayer(true);
         isLaunch = true;
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
@@ -72,6 +73,16 @@ public class AxRoom : MonoBehaviourPun
             player.transform.Find("Perso").Find("Ax").gameObject.SetActive(display);
         }
     }
+
+    public void DisplayHeartsFoAllPlayer(bool display)
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in listPlayer)
+        {
+            player.GetComponent<PlayerGO>().DisiplayHeartInitial(display);
+        }
+    }
+
     public void DisplayLineToShot(bool display)
     {
         gameManager.GetPlayerMineGO().transform.Find("Perso").Find("LineForAx").gameObject.SetActive(display);
@@ -95,7 +106,7 @@ public class AxRoom : MonoBehaviourPun
             return;
 
         GameObject newAx = PhotonNetwork.Instantiate("Ax", new Vector3(positionX,positionY), Quaternion.identity);
-        newAx.GetComponent<Ax>().SendSpeedAndDirection(7.5f, directionX, directionY);
+        newAx.GetComponent<Ax>().SendSpeedAndDirection(5, directionX, directionY);
         newAx.GetComponent<Ax>().player = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
     }
 
@@ -129,6 +140,7 @@ public class AxRoom : MonoBehaviourPun
     public void SendDisplayAxForAllPlayer( bool display)
     {
         DiplayAxForAllPlayer(display);
+        DisplayHeartsFoAllPlayer(display);
     }
 
     [PunRPC]

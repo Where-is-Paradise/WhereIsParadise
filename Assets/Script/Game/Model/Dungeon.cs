@@ -62,6 +62,42 @@ public class Dungeon : ScriptableObject
         }
     }
 
+    public void InsertSpeciallyRoom()
+    {
+        foreach (Room room in rooms)
+        {
+            if (room.isTooFar || room.IsInitiale || room.IsExit)
+                continue;
+            int randomIsHide = Random.Range(0, 100);
+            if (randomIsHide <= 60)
+            {
+                room.isHide = true;
+                continue;
+            }
+                
+            int randomSpeciallity = Random.Range(0, 9);
+            randomSpeciallity = 8;
+            if (randomSpeciallity == 0)
+                room.chest = true;
+            if (randomSpeciallity == 1)
+                room.isSacrifice = true;
+            if (randomSpeciallity == 2)
+                room.fireBall = true;
+            if (randomSpeciallity == 3)
+                room.isAx = true;
+            if (randomSpeciallity == 4)
+                room.isSword = true;
+            if (randomSpeciallity == 5)
+                room.isSwordDamocles = true;
+            if (randomSpeciallity == 6)
+                room.isDeathNPC = true;
+            if (randomSpeciallity == 7)
+                room.isLostTorch = true;
+            if (randomSpeciallity == 8)
+                room.isMonsters = true;
+
+        }
+    }
 
     public bool AssignRandomExit(int distance)
     {

@@ -132,13 +132,18 @@ public class GameManagerNetwork : MonoBehaviourPun
     }
 
 
-    public void SendMap(int indexRoom, bool isExit, bool isObstacle, bool isTooFar,  bool isInitial, int distance_exit, int distance_pathFinding,int distance_pathFinding_IR,bool isLast, bool isFoggy , bool isVirus, bool hasKey, bool chest)
+    public void SendMap(int indexRoom, bool isExit, bool isObstacle, bool isTooFar, 
+        bool isInitial, int distance_exit, int distance_pathFinding,int distance_pathFinding_IR,bool isLast, 
+        bool isFoggy , bool isVirus, bool hasKey, bool chest , bool isHide)
     {
-        photonView.RPC("SetRooms", RpcTarget.Others, indexRoom,isExit,isObstacle, isTooFar, isInitial, distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey, chest);
+        photonView.RPC("SetRooms", RpcTarget.Others, indexRoom,isExit,isObstacle, isTooFar, isInitial,
+            distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey, chest , isHide);
     }
 
     [PunRPC]
-    public void SetRooms(int indexRoom, bool isExit, bool isObstacle, bool isTooFar, bool isInitial, int distance_exit, int distance_pathFinding,int  distance_pathFinding_IR, bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest)
+    public void SetRooms(int indexRoom, bool isExit, bool isObstacle, bool isTooFar,
+        bool isInitial, int distance_exit, int distance_pathFinding,int  distance_pathFinding_IR, 
+        bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest, bool isHide)
     {
         gameManager.game.dungeon.rooms[indexRoom].IsExit = isExit;
         gameManager.game.dungeon.rooms[indexRoom].IsObstacle = isObstacle;
@@ -152,7 +157,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.rooms[indexRoom].HasKey = hasKey;
         gameManager.game.dungeon.rooms[indexRoom].chest = chest;
         gameManager.game.dungeon.rooms[indexRoom].IsVirus = isVirus;
-        
+        gameManager.game.dungeon.rooms[indexRoom].isHide = isHide;
+
         if (isExit)
         {
             gameManager.game.dungeon.SetExit(gameManager.game.dungeon.rooms[indexRoom]);
@@ -1127,6 +1133,64 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.game.dungeon.rooms[indexRoom].isSacrifice = isSacrifice;
     }
+
+
+    public void SendAxData(int indexRoom, bool isAx)
+    {
+        photonView.RPC("SetAxData", RpcTarget.All, indexRoom, isAx);
+    }
+
+    [PunRPC]
+    public void SetAxData(int indexRoom, bool isAx)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isAx = isAx;
+    }
+
+    public void SendSwordData(int indexRoom, bool isSword)
+    {
+        photonView.RPC("SetSwordData", RpcTarget.All, indexRoom, isSword);
+    }
+
+    [PunRPC]
+    public void SetSwordData(int indexRoom, bool isSword)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isSword = isSword;
+    }
+
+    public void SendDamoclesData(int indexRoom, bool isDamocles)
+    {
+        photonView.RPC("SetDamoclesData", RpcTarget.All, indexRoom, isDamocles);
+    }
+
+    [PunRPC]
+    public void SetDamoclesData(int indexRoom, bool isDamocles)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isSwordDamocles = isDamocles;
+    }
+
+    public void SendDeahtNPCData(int indexRoom, bool isDeath)
+    {
+        photonView.RPC("SetDeahtNPCData", RpcTarget.All, indexRoom, isDeath);
+    }
+
+    [PunRPC]
+    public void SetDeahtNPCData(int indexRoom, bool isDeath)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isDeathNPC = isDeath;
+    }
+
+    public void SendLostTorchData(int indexRoom, bool isLostTorch)
+    {
+        photonView.RPC("SetLostTorchData", RpcTarget.All, indexRoom, isLostTorch);
+    }
+
+    [PunRPC]
+    public void SetLostTorchData(int indexRoom, bool isLostTorch)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isLostTorch = isLostTorch;
+    }
+
+
     public void SendJailRoom(int indexRoom , bool isJail)
     {
         photonView.RPC("SetJailRoom", RpcTarget.All, indexRoom, isJail);
@@ -1454,11 +1518,34 @@ public class GameManagerNetwork : MonoBehaviourPun
         GameObject.Find("SwordRoom").GetComponent<SwordRoom>().LaunchSwordRoom(); ;
 
     }
+    public void SendLaunchLostTorchRoom()
+    {
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
+        photonView.RPC("SetLaunchLostTorchRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchLostTorchRoom()
+    {
+        GameObject.Find("LostTorchRoom").GetComponent<LostTorchRoom>().StartLostTorchRoom();
+
+    }
+    public void SendLaunchMonsterRoom()
+    {
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
+        photonView.RPC("SetLaunchMonsterRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchMonsterRoom()
+    {
+        GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>().StartMonstersRoom();
+    }
+
     public void SendDisplayLightAllAvailableDoor(bool display)
     {
         photonView.RPC("DisplayLightAllAvailableDoor", RpcTarget.All, display);
     }
-
 
     [PunRPC]
     public void DisplayLightAllAvailableDoor(bool display)
@@ -1478,6 +1565,14 @@ public class GameManagerNetwork : MonoBehaviourPun
                 continue;
             }
             if (door.GetComponent<Door>().isOpenForAll)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (!door.GetComponent<Door>().GetRoomBehind().isHide &&
+                   !(door.GetComponent<Door>().GetRoomBehind().chest && 
+                   gameManager.GetPlayerMineGO().transform.Find("PowerImpostor")
+                   .GetComponent<PowerImpostor>().indexPower == 3))
             {
                 door.transform.Find("RedLight").gameObject.SetActive(false);
                 continue;
@@ -1535,6 +1630,13 @@ public class GameManagerNetwork : MonoBehaviourPun
                 continue;
             }
             if (door.GetComponent<Door>().iscurrentlyOpen)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if (!door.GetComponent<Door>().GetRoomBehind().isHide &&  !(door.GetComponent<Door>().GetRoomBehind().chest &&
+                   gameManager.GetPlayerMineGO().transform.Find("PowerImpostor")
+                   .GetComponent<PowerImpostor>().indexPower == 3))
             {
                 door.transform.Find("RedLight").gameObject.SetActive(false);
                 continue;

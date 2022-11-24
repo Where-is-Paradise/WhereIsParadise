@@ -123,6 +123,7 @@ public class UI_Managment : MonoBehaviourPun
 
     public AudioSource launchChrono;
 
+    public GameObject panelLanguageReset;
 
     public Version_http version;
     float k = -1;
@@ -460,7 +461,7 @@ public class UI_Managment : MonoBehaviourPun
         int distanceParadise = 0;
         if (value == 0)
         {
-            distanceParadise = UnityEngine.Random.Range(3, 7);
+            distanceParadise = UnityEngine.Random.Range(4, 7);
         }
         if (value == 1)
         {

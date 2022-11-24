@@ -203,7 +203,7 @@ public class FireBall : MonoBehaviourPun
         List<GameObject> players = gameManager.GetPlayerSameRoom(gameManager.GetBoss().GetComponent<PhotonView>().ViewID);
         foreach (GameObject player in players)
         {
-            if(gameManager.SamePositionAtBoss())
+            if(gameManager.SamePositionAtBoss() && !player.GetComponent<PlayerGO>().isSacrifice)
                 player.GetComponent<PlayerGO>().DisplayCharacter(true);
         }
         GameObject[] players2 = GameObject.FindGameObjectsWithTag("Player");

@@ -29,6 +29,7 @@ public class SwordRoom : MonoBehaviourPun
     public IEnumerator LaunchSwordRoomAfterTeleporation() {
         yield return new WaitForSeconds(2);
         DisplaySwordAllPlayer(true);
+        DisplayHeartsFoAllPlayer(true);
         roomIsLaunched = true;
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
@@ -42,6 +43,14 @@ public class SwordRoom : MonoBehaviourPun
         {
             if(!player.GetComponent<PlayerGO>().isSacrifice)
                 player.transform.Find("Perso").Find("Sword").gameObject.SetActive(display);
+        }
+    }
+    public void DisplayHeartsFoAllPlayer(bool display)
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in listPlayer)
+        {
+            player.GetComponent<PlayerGO>().DisiplayHeartInitial(display);
         }
     }
 
@@ -120,6 +129,7 @@ public class SwordRoom : MonoBehaviourPun
     public void SetDesactivateRoom()
     {
         DisplaySwordAllPlayer(false);
+        DisplayHeartsFoAllPlayer(false);
         ResetIsTouchBySwordAllPlayer();
         roomIsLaunched = false;
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
@@ -134,6 +144,7 @@ public class SwordRoom : MonoBehaviourPun
         foreach(GameObject player in listPlayer)
         {
             player.GetComponent<PlayerGO>().isTouchBySword = false;
+            player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
         }
     }
 }

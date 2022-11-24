@@ -15,6 +15,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
     void Start()
     {
         Photon.Realtime.Room room = PhotonNetwork.CurrentRoom;
+        
         room.IsOpen = false;
     }
 

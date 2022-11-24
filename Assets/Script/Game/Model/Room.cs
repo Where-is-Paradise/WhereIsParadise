@@ -78,6 +78,10 @@ public class Room : ScriptableObject
     public bool isSword = false;
     public bool isNPC = false;
     public bool isCursedTrap = false;
+    public bool isLostTorch = false;
+    public bool isMonsters = false;
+
+    public bool isHide = false;
 
     public List<Chest> chestList = null;
 

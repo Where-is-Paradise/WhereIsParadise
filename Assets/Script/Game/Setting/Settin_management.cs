@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using Photon.Pun;
 
 public class Settin_management : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class Settin_management : MonoBehaviour
     // Video
     public GameObject resolution;
     public GameObject fullscren;
+    public GameObject serverRegion;
     public int current_index_fullscreenMode = 0;
     public List<GameObject> fullScreeMode;
 
@@ -39,6 +41,7 @@ public class Settin_management : MonoBehaviour
     private bool inputIsPress = false;
 
     public GameObject panelLanguageReset;
+    public bool serverRegionIsUpdated = false;
 
     
 
@@ -66,6 +69,10 @@ public class Settin_management : MonoBehaviour
 
         SetGlobalVolume();
         SetMusicVolume();
+
+        LoadServerRegion();
+
+       
     }
 
     // Update is called once per frame
@@ -477,6 +484,68 @@ public class Settin_management : MonoBehaviour
     {
         current_index_fullscreenMode = index;
         setting.fullscreenMode = current_index_fullscreenMode;
+    }
+
+    public void OnclickChangeServerRegion(GameObject regionText)
+    {
+        if (serverRegionIsUpdated)
+        {
+            setting.region = regionText.GetComponent<Text>().text;
+
+            PhotonNetwork.Disconnect();
+            PhotonNetwork.ConnectToRegion(setting.region);
+            //PhotonNetwork.LoadOrCreateSettings();
+            //StartCoroutine(CoroutineReset(2));
+        }   
+    }
+
+    public void UpdateServerRegion()
+    {
+        string serverRegionString = "eu";
+        //if(PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion.Length != 0)
+        serverRegionString = setting.region;
+        Dropdown server_dropdown = serverRegion.GetComponent<Dropdown>();
+        GetIndexServerWithName(serverRegionString);
+        serverRegionIsUpdated = true;
+    }
+
+    public void GetIndexServerWithName(string serverRegionString)
+    {
+        Dropdown server_dropdown = serverRegion.GetComponent<Dropdown>();
+        for(int i =0; i < server_dropdown.options.Count; i++)
+        {
+            if(server_dropdown.options[i].text == serverRegionString)
+            {
+                server_dropdown.value = i;
+            }
+        }
+    }
+
+    public void LoadServerRegion()
+    {
+        string serverRegion = "eu";
+        try
+        {
+            QuickSaveReader.Create("Server")
+                      .Read<string>("region", (r) => { serverRegion = r; });
+        }
+        catch (Exception e)
+        {
+            SaveServerRegion("eu");
+        }
+        setting.region = serverRegion;
+
+        if (this.serverRegion)
+            UpdateServerRegion();
+    }
+
+    public void SaveServerRegion(string serverRegion)
+    {
+        QuickSaveWriter.Create("Server")
+                      .Write("region", serverRegion)
+                      .Commit();
+
+        QuickSaveRaw.LoadString("Server.json");
     }
 
 }

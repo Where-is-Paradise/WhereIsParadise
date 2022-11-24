@@ -8,12 +8,12 @@ public class Setting : MonoBehaviour
 {
 
     public int NB_PLAYER_MAX = 10;
-    public int KEY_ADDITIONAL = 2;
+    public int KEY_ADDITIONAL = 1;
     public int NB_IMPOSTOR = 1;
     public int RATIO_OBSTACLE = 5;
     public int DISTANCE_EXIT_DOOR_MAX = 6;
     public int NUMBER_EXPEDTION_MAX = 3;
-    public int TORCH_ADDITIONAL = 1;
+    public int TORCH_ADDITIONAL = 0;
     public int WIDTH_DUNGEON = 10;
     public int HEIGHT_DUNGEON = 10;
 
@@ -67,6 +67,9 @@ public class Setting : MonoBehaviour
 
     //tutorial
     public bool displayTutorial = true;
+
+    //Server
+    public string region = "eu";
 
     // Start is called before the first frame update
     void Start()

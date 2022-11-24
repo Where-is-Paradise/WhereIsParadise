@@ -29,13 +29,13 @@ public class Lobby : MonoBehaviourPunCallbacks
     private string oldCode = "0";
     public string oldPlayerName = "";
 
-    public string server;
-
     public bool openRoom = false;
 
     public bool versionIsCorrect = false;
 
     int index_skin = 0;
+
+    public Setting setting;
     // Use this  initialization
     void Start()
     {
@@ -43,15 +43,16 @@ public class Lobby : MonoBehaviourPunCallbacks
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         ConnectToMaster();
         index_skin = Random.Range(0, 7);
-        GameObject.Find("Setting").GetComponent<Setting>().INDEX_SKIN = index_skin;
+        setting = GameObject.Find("Setting").GetComponent<Setting>();
+        setting.INDEX_SKIN = index_skin;
        
-         StartCoroutine(GetText());
+        StartCoroutine(GetText());
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        //Debug.LogError(PhotonNetwork.CloudRegion);
     }
 
 
@@ -61,19 +62,20 @@ public class Lobby : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
         //PhotonNetwork.LocalCleanPhotonView()
         PhotonNetwork.MaxResendsBeforeDisconnect = 10;
+
         
         PhotonNetwork.ConnectUsingSettings();
-        
-
-
-
-
+        //PhotonNetwork.ConnectToRegion("eu");
     }
 
-    public void OnclickChangeServerRegion(GameObject regionText)
+
+    public void ConnectToMasterInSpecificRegion()
     {
-        PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = regionText.GetComponent<Text>().text;
+        PhotonNetwork.Disconnect();
+        PhotonNetwork.ConnectToRegion(setting.region);
     }
+
+
 
     IEnumerator GetText()
     {

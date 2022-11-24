@@ -72,6 +72,8 @@ public class Hexagone : MonoBehaviourPun
     void OnMouseOver()
     {
 
+       
+
 #if UNITY_IOS || UNITY_ANDROID
         return;
 #endif
@@ -91,6 +93,9 @@ public class Hexagone : MonoBehaviourPun
                
             }
         }
+
+        DiplayInformationSpeciallyRoom(true);
+        return;
 
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter)
         {
@@ -157,6 +162,8 @@ public class Hexagone : MonoBehaviourPun
     void OnMouseExit()
     {
 
+
+
 #if UNITY_IOS || UNITY_ANDROID
         return;
 #endif
@@ -177,6 +184,10 @@ public class Hexagone : MonoBehaviourPun
             }
           
         }
+
+        DiplayInformationSpeciallyRoom(false);
+        return;
+
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
         {
             return;
@@ -298,4 +309,32 @@ public class Hexagone : MonoBehaviourPun
         this.room.isSpecial = change;
     }
 
+
+    public void DiplayInformationSpeciallyRoom(bool display)
+    {
+        if (room.IsExit || room.IsHell || room.IsObstacle || room.IsInitiale || room.IsTraversed)
+            return;
+        if (this.room.isHide)
+        {
+            GameObject interogationPoint = this.transform.Find("Integoration_point").gameObject;
+            interogationPoint.SetActive(display);
+            return;
+        }
+        GameObject Information_Speciality = this.transform.Find("Information_Speciality").gameObject;
+        Information_Speciality.SetActive(display);
+        if (this.room.isAx)
+            Information_Speciality.transform.Find("Hexagone").Find("Ax").gameObject.SetActive(display);
+        if (this.room.isSword)
+            Information_Speciality.transform.Find("Hexagone").Find("Sword").gameObject.SetActive(display);
+        if (this.room.isSwordDamocles)
+            Information_Speciality.transform.Find("Hexagone").Find("Damocles").gameObject.SetActive(display);
+        if (this.room.isDeathNPC)
+            Information_Speciality.transform.Find("Hexagone").Find("GodDeath").gameObject.SetActive(display);
+        if (this.room.fireBall)
+            Information_Speciality.transform.Find("Hexagone").Find("Gargouille").gameObject.SetActive(display);
+        if (this.room.chest)
+            Information_Speciality.transform.Find("Hexagone").Find("Chest").gameObject.SetActive(display);
+        if (this.room.isSacrifice)
+            Information_Speciality.transform.Find("Hexagone").Find("Sacrifice").gameObject.SetActive(display);
+    }
 }

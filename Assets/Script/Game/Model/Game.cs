@@ -90,7 +90,10 @@ public class Game : ScriptableObject
         }
 
         dungeon.RemoveAllRoomTooFarAway();
+        dungeon.InsertSpeciallyRoom();
     }
+
+
 
     public void SetKeyCounter()
     {
@@ -189,17 +192,17 @@ public class Game : ScriptableObject
 
         List<PlayerDun> potentialImpostor = new List<PlayerDun>();
         potentialImpostor.AddRange(list_player);
-/*        for (int i =0; i < nbImpostor; i++)
+        for (int i = 0; i < nbImpostor; i++)
         {
-            if(potentialImpostor.Count > 0)
+            if (potentialImpostor.Count > 0)
             {
                 int indexRandom = Random.Range(0, potentialImpostor.Count);
                 potentialImpostor[indexRandom].SetIsImpostor(true);
                 potentialImpostor.RemoveAt(indexRandom);
             }
-        }*/
-        potentialImpostor[0].SetIsImpostor(true);
-        potentialImpostor[1].SetIsImpostor(true);
+        }
+/*        potentialImpostor[0].SetIsImpostor(true);
+        potentialImpostor[1].SetIsImpostor(true);*/
     }
 
 

@@ -599,6 +599,16 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         this.player.isDeadBySwordDamocles = isTouch;
     }
+    public void SendIstouchByMonsterNPC(bool isTouch)
+    {
+        photonView.RPC("SetIsTouchBydDamoclesSword", RpcTarget.All, isTouch);
+    }
+
+    [PunRPC]
+    public void SetIstouchByMonsterNPC(bool isTouch)
+    {
+        this.player.isTouchByMonster = isTouch;
+    }
 
     public void SendChangeColorWhenTouchByDeath()
     {
@@ -705,9 +715,7 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void InsertPowerToDoor(int indexRoom, int indexPower)
     {
-        Debug.LogError(indexRoom);
         Room room = player.gameManager.game.dungeon.GetRoomByIndex(indexRoom);
-        Debug.LogError(indexPower);
         switch (indexPower)
         {
             case 0:
@@ -734,5 +742,19 @@ public class PlayerNetwork : MonoBehaviourPun
         }
         room.isTraped = true;
         player.transform.Find("PowerImpostor").GetComponent<PowerImpostor>().powerIsUsed = true;
+    }
+
+    public void SendLifeTrialRoom(int nbLife)
+    {
+        photonView.RPC("SetLifeTrialRoom", RpcTarget.All, nbLife);
+    }
+
+    [PunRPC]
+    public void SetLifeTrialRoom(int nbLife)
+    {
+        player.lifeTrialRoom = nbLife;
+        player.isInvincible = true;
+        player.DisplayHeartInSituation();
+        StartCoroutine(player.ResetInvincibleCouroutine());
     }
 }

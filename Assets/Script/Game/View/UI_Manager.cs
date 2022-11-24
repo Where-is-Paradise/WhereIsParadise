@@ -1084,7 +1084,7 @@ setting_button_echapMenu.SetActive(false);
                 if (!display)
                 {
                     door.transform.GetChild(5).GetComponent<CapsuleCollider2D>().enabled = true;
-                    for(int i = 0; i < 9; i++)
+                    for(int i = 0; i < door.transform.GetChild(5).GetChild(1).GetChild(1).childCount; i++)
                     {
                         door.transform.GetChild(5).GetChild(1).GetChild(1).GetChild(i).gameObject.SetActive(false);
                     }
@@ -1434,6 +1434,16 @@ setting_button_echapMenu.SetActive(false);
         GameObject.Find("Special").transform.Find("SwordRoom").gameObject.SetActive(display);
         DisplaySpeciallyLevers(display, 7);
     }
+    public void DisplayLostTorchRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("LostTorchRoom").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display, 7);
+    }
+    public void DisplayMonstersRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("MonstersRoom").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display, 7);
+    }
 
     public void DisplayUI_Mobile_SpecialRoom(bool display)
     {
@@ -1534,7 +1544,7 @@ setting_button_echapMenu.SetActive(false);
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower == -1)
             return;
         canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).gameObject.SetActive(true);
-        DisplayTrapPowerButtonDesactivateTime(true, 10);
+        DisplayTrapPowerButtonDesactivateTime(true, 30);
         StartCoroutine(gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().CanUsedTimerCoroutine());
     }
     public void DisplayObjectPowerImpostorInGame()
@@ -1546,10 +1556,10 @@ setting_button_echapMenu.SetActive(false);
         canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).gameObject.SetActive(true);
     }
 
-    public void DesactivateObjectPowerImpostor()
+    public void DesactivateObjectPowerImpostor(bool interactable)
     {
         canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower)
-            .GetComponent<Button>().interactable = false;
+            .GetComponent<Button>().interactable = interactable;
     }
     public void DisplayN2PotionObject(bool display)
     {
@@ -1591,12 +1601,12 @@ setting_button_echapMenu.SetActive(false);
             canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").Find("Text_timer").GetComponent<TimerDisplay>().timeLeft = timer;
     }
 
-    public void DisplayObjectPowerButtonDesactivate()
+    public void DisplayObjectPowerButtonDesactivate(bool display)
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             return;
-        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").gameObject.SetActive(true);
-        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").Find("Text_timer").gameObject.SetActive(false);
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").gameObject.SetActive(display);
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").Find("Text_timer").gameObject.SetActive(!display);
     }
     public void HideObjectPowerButtonDesactivate()
     {

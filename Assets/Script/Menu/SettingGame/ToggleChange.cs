@@ -65,11 +65,11 @@ public class ToggleChange : MonoBehaviour
     {
         if (isOneActive)
         {
-            setting.KEY_ADDITIONAL = 2;
+            setting.KEY_ADDITIONAL = 1;
             uiManager.SendKeyAdditionalSetting(setting.KEY_ADDITIONAL);
             return;
         }
-        setting.KEY_ADDITIONAL = 4;
+        setting.KEY_ADDITIONAL = 2;
         uiManager.SendKeyAdditionalSetting(setting.KEY_ADDITIONAL);
     }
 
@@ -77,11 +77,11 @@ public class ToggleChange : MonoBehaviour
     {
         if (isOneActive)
         {
-            setting.TORCH_ADDITIONAL = 1;
+            setting.TORCH_ADDITIONAL = 0;
             uiManager.SendKeyTorchSetting(setting.TORCH_ADDITIONAL);
             return;
         }
-        setting.TORCH_ADDITIONAL = 2;
+        setting.TORCH_ADDITIONAL = 1;
         uiManager.SendKeyTorchSetting(setting.TORCH_ADDITIONAL);
     }
 

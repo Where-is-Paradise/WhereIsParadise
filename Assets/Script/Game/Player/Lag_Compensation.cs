@@ -7,32 +7,30 @@ public class Lag_Compensation : MonoBehaviour, IPunObservable
 {
 
     public Vector3 networkPosition;
-    public Rigidbody2D rigidbody;
+    public Vector3 velocity;
+
+    
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
             stream.SendNext(this.transform.position);
-
+            stream.SendNext(this.velocity);
         }
         else
         {
             networkPosition = (Vector3)stream.ReceiveNext();
+            GetComponent<Rigidbody2D>().velocity = (Vector3)stream.ReceiveNext();
 
-            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
-            
-            if (rigidbody)
-            {
-                rigidbody.position += rigidbody.velocity * lag;
-            }
-               
+            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
+            networkPosition  += (velocity * lag);
         }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody2D>();
+        velocity = GetComponent<Rigidbody2D>().velocity;
     }
 
     // Update is called once per frame
@@ -40,8 +38,8 @@ public class Lag_Compensation : MonoBehaviour, IPunObservable
     {
         if (!GetComponent<PhotonView>().IsMine)
         {
-            rigidbody.position = Vector3.MoveTowards(rigidbody.position, networkPosition, Time.fixedDeltaTime);
-            return;
+            this.GetComponent<Rigidbody2D>().position = Vector3.MoveTowards(this.GetComponent<Rigidbody2D>().position, networkPosition, Time.fixedDeltaTime);
+        
         }
     }
 }

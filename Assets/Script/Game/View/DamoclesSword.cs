@@ -10,7 +10,9 @@ public class DamoclesSword : MonoBehaviourPun
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!damoclesRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        if (!damoclesRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().damoclesSwordIsAbove)
+            return;
+        if (!damoclesRoom.canChangePlayer)
             return;
         if (collision.tag == "CollisionTrigerPlayer")
         {
@@ -46,7 +48,7 @@ public class DamoclesSword : MonoBehaviourPun
 
    public IEnumerator CanChangePlayerCoroutine()
     {
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.75f);
         SendCanChangePlayer(true);
     }
 }

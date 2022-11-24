@@ -97,6 +97,8 @@ public class PlayerGO : MonoBehaviour
     public bool hasVoteSacrifice = false;
     public bool isSacrifice = false;
     public int lastPlayerIndexVote = -1;
+    public bool damoclesSwordIsAbove = false;
+    public int lifeTrialRoom = 2;
 
     public GameObject chatPanel;
 
@@ -123,6 +125,7 @@ public class PlayerGO : MonoBehaviour
     public bool isDeadBySwordDamocles = false;
     public bool isTouchByAx = false;
     public bool isTouchBySword = false;
+    public bool isTouchByMonster = false;
 
     public bool isCursed = false;
 
@@ -130,6 +133,8 @@ public class PlayerGO : MonoBehaviour
 
     public int distanceCursed = 0;
     public Room roomUsedWhenCursed;
+
+    public bool isInvincible = false;
     private void Awake()
     {
         displayChatInput = false;
@@ -983,6 +988,14 @@ public class PlayerGO : MonoBehaviour
         {
             gameManager.gameManagerNetwork.SendLaunchSwordRoom();
         }
+        if (gameManager.game.currentRoom.isLostTorch)
+        {
+            gameManager.gameManagerNetwork.SendLaunchLostTorchRoom();
+        }
+        if (gameManager.game.currentRoom.isMonsters)
+        {
+            gameManager.gameManagerNetwork.SendLaunchMonsterRoom();
+        }
 
         if (gameManager.game.currentRoom.IsVirus && gameManager.game.key_counter > 0)
         {
@@ -1674,5 +1687,38 @@ public class PlayerGO : MonoBehaviour
         //this.distanceCursed =  listPossiblityRoomWithMoreDistance[Random.Range(0, listPossiblityRoomWithMoreDistance.Count)].distance_pathFinding_initialRoom;
         this.roomUsedWhenCursed = listPossiblityRoomWithMoreDistance[Random.Range(0, listPossiblityRoomWithMoreDistance.Count)];
     }
-   
+
+    public void DisplayHeartInSituation()
+    {
+        if (this.lifeTrialRoom == 2)
+        {
+            this.transform.Find("Life").Find("TwoHeart").gameObject.SetActive(true);
+        }
+        else if (this.lifeTrialRoom == 1)
+        {
+            this.transform.Find("Life").Find("TwoHeart").gameObject.SetActive(false);
+            this.transform.Find("Life").Find("OneHeart").gameObject.SetActive(true);
+        }
+        else if (this.lifeTrialRoom <= 0)
+        {
+            this.transform.Find("Life").Find("TwoHeart").gameObject.SetActive(false);
+            this.transform.Find("Life").Find("OneHeart").gameObject.SetActive(false);
+        }
+    }
+
+    public void ResetHeart()
+    {
+        this.transform.Find("Life").Find("TwoHeart").gameObject.SetActive(false);
+        this.transform.Find("Life").Find("OneHeart").gameObject.SetActive(false);
+    }
+    public void DisiplayHeartInitial(bool display)
+    {
+        this.transform.Find("Life").Find("TwoHeart").gameObject.SetActive(display);
+    }
+
+    public IEnumerator ResetInvincibleCouroutine()
+    {
+        yield return new WaitForSeconds(1);
+        this.isInvincible = false;
+    }
 }

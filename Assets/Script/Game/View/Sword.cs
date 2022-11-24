@@ -30,12 +30,20 @@ public class Sword : MonoBehaviourPun
         {
             if (!swordRoom.gameManager.SamePositionAtBossWithIndex(collision.transform.parent.gameObject.GetComponent<PhotonView>().ViewID))
                 return;
-            SetPlayerColor(collision.transform.parent.gameObject);
-            if (TestLastPlayer())
+            if (collision.transform.parent.gameObject.GetComponent<PlayerGO>().isInvincible)
+                return;
+            collision.transform.parent.gameObject.GetComponent<PlayerGO>().lifeTrialRoom--;
+            collision.transform.parent.gameObject.GetComponent<PlayerNetwork>()
+                .SendLifeTrialRoom(collision.transform.parent.gameObject.GetComponent<PlayerGO>().lifeTrialRoom);
+            if (collision.transform.parent.gameObject.GetComponent<PlayerGO>().lifeTrialRoom == 0)
             {
-                GiveAwardToPlayer(GetLastPlayer());
-                SendResetColor();
-                DesactivateSwordRoom();
+                SetPlayerColor(collision.transform.parent.gameObject);
+                if (TestLastPlayer())
+                {
+                    GiveAwardToPlayer(GetLastPlayer());
+                    SendResetColor();
+                    DesactivateSwordRoom();
+                }
             }
         }
     }
@@ -53,7 +61,7 @@ public class Sword : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             if (player.GetComponent<PlayerGO>().isTouchBySword || !swordRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
-                    || player.GetComponent<PlayerGO>().isSacrifice)
+                    || player.GetComponent<PlayerGO>().isSacrifice )
             {
                 counter++;
             }
@@ -109,6 +117,8 @@ public class Sword : MonoBehaviourPun
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
         {
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
             if (player.GetComponent<PhotonView>().IsMine)
             {
                 int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;

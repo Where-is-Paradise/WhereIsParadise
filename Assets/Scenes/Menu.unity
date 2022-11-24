@@ -5561,7 +5561,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &277588425
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6762,6 +6762,18 @@ MonoBehaviour:
       - m_Target: {fileID: 430666166}
         m_TargetAssemblyTypeName: UI_Managment, Assembly-CSharp
         m_MethodName: ZoomInMenuForMobile
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1740359033}
+        m_TargetAssemblyTypeName: Lobby, Assembly-CSharp
+        m_MethodName: ConnectToMasterInSpecificRegion
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9826,6 +9838,7 @@ MonoBehaviour:
   video_settingButton: {fileID: 1445756433}
   controle_settingButton: {fileID: 1225809090}
   launchChrono: {fileID: 1029683947}
+  panelLanguageReset: {fileID: 1999875905}
   version:
     _id: 
     major: 0
@@ -12310,12 +12323,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NB_PLAYER_MAX: 8
-  KEY_ADDITIONAL: 2
+  KEY_ADDITIONAL: 1
   NB_IMPOSTOR: 1
   RATIO_OBSTACLE: 5
   DISTANCE_EXIT_DOOR_MAX: 5
   NUMBER_EXPEDTION_MAX: 3
-  TORCH_ADDITIONAL: 1
+  TORCH_ADDITIONAL: 0
   WIDTH_DUNGEON: 20
   HEIGHT_DUNGEON: 20
   globalSetting: 
@@ -12354,6 +12367,7 @@ MonoBehaviour:
   langage: en
   listLangage: []
   displayTutorial: 1
+  region: eu
 --- !u!4 &503813623
 Transform:
   m_ObjectHideFlags: 0
@@ -13584,7 +13598,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &558920119
 RectTransform:
   m_ObjectHideFlags: 0
@@ -27286,8 +27300,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1740359033}
-        m_TargetAssemblyTypeName: Lobby, Assembly-CSharp
+      - m_Target: {fileID: 1081620638}
+        m_TargetAssemblyTypeName: Settin_management, Assembly-CSharp
         m_MethodName: OnclickChangeServerRegion
         m_Mode: 2
         m_Arguments:
@@ -27997,6 +28011,7 @@ MonoBehaviour:
   - {fileID: 1757729577}
   resolution: {fileID: 1513811093}
   fullscren: {fileID: 1430985163}
+  serverRegion: {fileID: 1048532684}
   current_index_fullscreenMode: 0
   fullScreeMode:
   - {fileID: 327040040}
@@ -28013,6 +28028,7 @@ MonoBehaviour:
   textGlobalVolume: {fileID: 205882184}
   language: {fileID: 1944633850}
   panelLanguageReset: {fileID: 1999875905}
+  serverRegionIsUpdated: 0
 --- !u!4 &1081620639
 Transform:
   m_ObjectHideFlags: 0
@@ -45400,9 +45416,9 @@ MonoBehaviour:
   matchmaking: 0
   isBackToWaitingRoom: 0
   oldPlayerName: 
-  server: 
   openRoom: 0
   versionIsCorrect: 0
+  setting: {fileID: 0}
 --- !u!4 &1740359034
 Transform:
   m_ObjectHideFlags: 0

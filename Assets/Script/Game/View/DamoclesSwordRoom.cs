@@ -9,6 +9,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     public GameManager gameManager;
     public GameObject currentPlayer = null;
     public GameObject sword;
+    public bool canChangePlayer = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -70,7 +71,11 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     [PunRPC]
     public void SetCurrentPlayer(int indexPlayer)
     {
+        if (currentPlayer)
+            currentPlayer.GetComponent<PlayerGO>().damoclesSwordIsAbove = false;
+
         this.currentPlayer = gameManager.GetPlayer(indexPlayer);
+        currentPlayer.GetComponent<PlayerGO>().damoclesSwordIsAbove = true;
         ChangePositionAtPlayer(indexPlayer);
     }
 
@@ -102,11 +107,12 @@ public class DamoclesSwordRoom : MonoBehaviourPun
 
     public IEnumerator CouroutineAnimationDeath()
     {
+        canChangePlayer = false;
         yield return new WaitForSeconds(0.5f);
         SetPlayerColor(this.currentPlayer);
         GameObject player = ChoosePlayerRandomly();
         SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
-
+        canChangePlayer = true;
         if (TestLastPlayer())
         {
             GiveAwardToPlayer(GetLastPlayer());
@@ -176,6 +182,8 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
         {
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
             if (player.GetComponent<PhotonView>().IsMine)
             {
                 int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
