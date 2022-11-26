@@ -90,9 +90,6 @@ public class SwordRoom : MonoBehaviourPun
     [PunRPC]
     public void DisplayMiddleOne(int indexPlayer)
     {
-/*        gameManager.GetPlayerMineGO().transform.Find("Perso").Find("Sword").Find("Initial").gameObject.SetActive(false);
-        gameManager.GetPlayerMineGO().transform.Find("Perso").Find("Sword").Find("middle1").gameObject.SetActive(true);*/
-
         gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("Sword").Find("Initial").gameObject.SetActive(false);
         gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("Sword").Find("middle1").gameObject.SetActive(true);
         StartCoroutine(DisplayMiddleTwo(indexPlayer));

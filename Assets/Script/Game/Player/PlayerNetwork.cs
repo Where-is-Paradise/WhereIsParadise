@@ -383,6 +383,23 @@ public class PlayerNetwork : MonoBehaviourPun
         }
     }
 
+    public void SendResetSacrifice()
+    {
+        photonView.RPC("SetResetSacrifice", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetResetSacrifice()
+    {
+        player.GetComponent<PlayerGO>().isSacrifice = false;
+        player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+        player.transform.Find("Collision").gameObject.SetActive(true);
+        for (int i = 0; i < player.transform.childCount; i++)
+        {
+            player.transform.GetChild(i).gameObject.SetActive(true);
+        }
+    }
+
     public void SendColorInvisible(bool invisible)
     {
         photonView.RPC("SetColorInvisible", RpcTarget.All , invisible);
@@ -601,7 +618,7 @@ public class PlayerNetwork : MonoBehaviourPun
     }
     public void SendIstouchByMonsterNPC(bool isTouch)
     {
-        photonView.RPC("SetIsTouchBydDamoclesSword", RpcTarget.All, isTouch);
+        photonView.RPC("SetIstouchByMonsterNPC", RpcTarget.All, isTouch);
     }
 
     [PunRPC]
@@ -739,6 +756,10 @@ public class PlayerNetwork : MonoBehaviourPun
             case 4:
                 room.isCursedTrap = true;
                 break;
+            case 5:
+                room.isPray = true;
+                room.isTraped = true;
+                break;
         }
         room.isTraped = true;
         player.transform.Find("PowerImpostor").GetComponent<PowerImpostor>().powerIsUsed = true;
@@ -756,5 +777,16 @@ public class PlayerNetwork : MonoBehaviourPun
         player.isInvincible = true;
         player.DisplayHeartInSituation();
         StartCoroutine(player.ResetInvincibleCouroutine());
+    }
+
+    public void SendDisplayWhiteLight(bool display)
+    {
+        photonView.RPC("SetDisplayWhiteLight", RpcTarget.All, display);
+    }
+
+    [PunRPC]
+    public void SetDisplayWhiteLight(bool display)
+    {
+        player.transform.Find("Perso").Find("Light_around").gameObject.SetActive(display);
     }
 }

@@ -1444,6 +1444,26 @@ setting_button_echapMenu.SetActive(false);
         GameObject.Find("Special").transform.Find("MonstersRoom").gameObject.SetActive(display);
         DisplaySpeciallyLevers(display, 7);
     }
+    public void DisplayPurificationRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("PurificationRoom").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display, 7);
+    }
+    public void DisplayResurectionRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("ResurectionRoom").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display, 7);
+    }
+    public void DisplayPrayRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("PrayRoom").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display, 7);
+    }
+    public void DisplayNPCRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("NPCRoom").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display, 7);
+    }
 
     public void DisplayUI_Mobile_SpecialRoom(bool display)
     {

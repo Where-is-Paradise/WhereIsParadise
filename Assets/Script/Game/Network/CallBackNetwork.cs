@@ -32,8 +32,9 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         Debug.LogError(cause);
         if (cause.ToString() != "DisconnectByClientLogic")
         {
-            StartCoroutine(MainReconnect());
             Time.timeScale = 0;
+            StartCoroutine(MainReconnect());
+          
         }
         else
         {

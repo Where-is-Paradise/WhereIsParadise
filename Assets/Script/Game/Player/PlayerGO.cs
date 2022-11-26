@@ -996,6 +996,22 @@ public class PlayerGO : MonoBehaviour
         {
             gameManager.gameManagerNetwork.SendLaunchMonsterRoom();
         }
+        if (gameManager.game.currentRoom.isPurification)
+        {
+            gameManager.gameManagerNetwork.SendLaunchPurificationRoom();
+        }
+        if (gameManager.game.currentRoom.isResurection)
+        {
+            gameManager.gameManagerNetwork.SendLaunchResurectionRoom();
+        }
+        if (gameManager.game.currentRoom.isPray)
+        {
+            gameManager.gameManagerNetwork.SendLaunchPrayRoom();
+        }
+        if (gameManager.game.currentRoom.isNPC)
+        {
+            gameManager.gameManagerNetwork.SendNpcRoom();
+        }
 
         if (gameManager.game.currentRoom.IsVirus && gameManager.game.key_counter > 0)
         {

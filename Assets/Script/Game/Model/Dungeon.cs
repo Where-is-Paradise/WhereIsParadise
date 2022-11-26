@@ -69,14 +69,14 @@ public class Dungeon : ScriptableObject
             if (room.isTooFar || room.IsInitiale || room.IsExit)
                 continue;
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 60)
+            if (randomIsHide <= 55)
             {
                 room.isHide = true;
                 continue;
             }
                 
-            int randomSpeciallity = Random.Range(0, 9);
-            randomSpeciallity = 8;
+            int randomSpeciallity = Random.Range(0, 12);
+            randomSpeciallity = 12;
             if (randomSpeciallity == 0)
                 room.chest = true;
             if (randomSpeciallity == 1)
@@ -95,6 +95,14 @@ public class Dungeon : ScriptableObject
                 room.isLostTorch = true;
             if (randomSpeciallity == 8)
                 room.isMonsters = true;
+            if (randomSpeciallity == 9)
+                room.isPurification = true;
+            if (randomSpeciallity == 10)
+                room.isResurection = true;
+            if (randomSpeciallity == 11)
+                room.isPray = true;
+            if (randomSpeciallity == 12)
+                room.isNPC = true;
 
         }
     }

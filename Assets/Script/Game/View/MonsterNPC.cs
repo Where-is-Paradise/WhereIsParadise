@@ -17,9 +17,17 @@ public class MonsterNPC : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        if(PhotonNetwork.IsMasterClient)
-            MoveOnTarget();
+
         ChangeScaleForSituation();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            MoveOnTarget();
+            if (target)
+            {
+                if (target.isTouchByMonster || target.isSacrifice)
+                    ChangeRandomTarget();
+            }
+        }
     }
 
     public void ChangeScaleForSituation()
@@ -37,12 +45,14 @@ public class MonsterNPC : MonoBehaviourPun
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (monsterRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            return;
+
 
         if(collision.tag == "CollisionTrigerPlayer")
         {
+            if (!monsterRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                return;
             IsTouchPlayer(collision);
+          
         }
     }
     public void MoveOnTarget()
@@ -53,24 +63,40 @@ public class MonsterNPC : MonoBehaviourPun
         this.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(new Vector3(vectorX, vectorY))  * speed ;
     }
 
+    public void ChangeRandomTarget()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        List<GameObject> listPotentialPlayer = new List<GameObject>();
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchByMonster)
+                continue;
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            listPotentialPlayer.Add(player);
+        }
+
+        int randomIndexPlayer = Random.Range(0, listPotentialPlayer.Count);
+        target = listPotentialPlayer[randomIndexPlayer].GetComponent<PlayerGO>() ;
+    }
 
     public void IsTouchPlayer(Collider2D collision)
     {
-        if (collision.gameObject.GetComponent<PlayerGO>().isInvincible)
+        GameObject player = collision.transform.parent.gameObject;
+        if (player.GetComponent<PlayerGO>().isInvincible)
             return;
-        collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom--;
-        collision.gameObject.GetComponent<PlayerNetwork>()
-            .SendLifeTrialRoom(collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom);
+        player.GetComponent<PlayerGO>().lifeTrialRoom--;
+        player.GetComponent<PlayerNetwork>()
+            .SendLifeTrialRoom(player.GetComponent<PlayerGO>().lifeTrialRoom);
 
-        if (collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom == 0)
+        if (player.GetComponent<PlayerGO>().lifeTrialRoom == 0)
         {
-            SetPlayerColor(collision.gameObject);
+            SetPlayerColor(player);
 
             if (TestLastPlayer())
             {
                 GiveAwardToPlayer(GetLastPlayer());
-                SendResetColor();
-                DesactivateMonsterRoom();
+                photonView.RPC("SendDectivateRoom", RpcTarget.All);
             }
         }
     }
@@ -80,7 +106,7 @@ public class MonsterNPC : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByAx || !monsterRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchByMonster || !monsterRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice)
             {
                 counter++;
@@ -100,7 +126,7 @@ public class MonsterNPC : MonoBehaviourPun
                 continue;
             if (player.GetComponent<PlayerGO>().isSacrifice)
                 continue;
-            if (!player.GetComponent<PlayerGO>().isTouchByAx)
+            if (!player.GetComponent<PlayerGO>().isTouchByMonster)
                 return player;
         }
         Debug.Log("return null");
@@ -110,6 +136,16 @@ public class MonsterNPC : MonoBehaviourPun
     public void GiveAwardToPlayer(GameObject lastPlayer)
     {
         photonView.RPC("SetCanLunchExploration", RpcTarget.All, lastPlayer.GetComponent<PhotonView>().ViewID);
+    }
+
+    [PunRPC]
+    public void SetCanLunchExploration(int indexPlayer)
+    {
+        monsterRoom.gameManager.game.nbTorch++;
+        monsterRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
+        monsterRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
+        monsterRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
+        monsterRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
 
     public void SetPlayerColor(GameObject player)
@@ -130,9 +166,19 @@ public class MonsterNPC : MonoBehaviourPun
         photonView.RPC("ResetColorAllPlayer", RpcTarget.All);
     }
 
-    public void DesactivateMonsterRoom()
+    public void SendDestroy()
+    {
+        photonView.RPC("SetDestroy", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetDestroy()
+    {
+        Destroy(this.gameObject);
+    }
+    [PunRPC]
+    public void SendDectivateRoom()
     {
         this.monsterRoom.DesactivateRoom();
-        PhotonNetwork.Destroy(this.gameObject);
     }
 }

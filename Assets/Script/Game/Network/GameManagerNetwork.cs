@@ -1189,7 +1189,58 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.game.dungeon.rooms[indexRoom].isLostTorch = isLostTorch;
     }
+    public void SendMonstersData(int indexRoom, bool isMonster)
+    {
+        photonView.RPC("SetMonstersData", RpcTarget.All, indexRoom, isMonster);
+    }
 
+    [PunRPC]
+    public void SetMonstersData(int indexRoom, bool isMonster)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isMonsters = isMonster;
+    }
+    public void SendPurificationData(int indexRoom, bool isPurification)
+    {
+        photonView.RPC("SetPurificationData", RpcTarget.All, indexRoom, isPurification);
+    }
+
+    [PunRPC]
+    public void SetPurificationData(int indexRoom, bool isPurification)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isPurification = isPurification;
+
+    }
+    public void SendResurectionData(int indexRoom, bool isResurection)
+    {
+        photonView.RPC("SetResurectionData", RpcTarget.All, indexRoom, isResurection);
+    }
+
+    [PunRPC]
+    public void SetResurectionData(int indexRoom, bool isResurection)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isResurection = isResurection;
+    }
+    public void SendPrayData(int indexRoom, bool isPray)
+    {
+        photonView.RPC("SetPrayData", RpcTarget.All, indexRoom, isPray);
+    }
+
+    [PunRPC]
+    public void SetPrayData(int indexRoom, bool isPray)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isPray = isPray;
+    }
+
+    public void SendNPCData(int indexRoom, bool isNpc)
+    {
+        photonView.RPC("SetNPCData", RpcTarget.All, indexRoom, isNpc);
+    }
+
+    [PunRPC]
+    public void SetNPCData(int indexRoom, bool isNpc)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isNPC = isNpc;
+    }
 
     public void SendJailRoom(int indexRoom , bool isJail)
     {
@@ -1381,6 +1432,12 @@ public class GameManagerNetwork : MonoBehaviourPun
             case 6:
                 room.isSword = true;
                 break;
+            case 7:
+                room.isLostTorch = true;
+                break;
+            case 8:
+                room.isMonsters = true;
+                break;
         }
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;
 
@@ -1506,6 +1563,19 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     }
 
+    public void SendNpcRoom()
+    {
+        //GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
+        photonView.RPC("SetNPCRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetNPCRoom()
+    {
+        GameObject.Find("NPCRoom").GetComponent<NPCRoom>().LaunchNPCRoom();
+
+    }
+
     public void SendLaunchSwordRoom()
     {
         GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
@@ -1540,6 +1610,44 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetLaunchMonsterRoom()
     {
         GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>().StartMonstersRoom();
+    }
+
+    public void SendLaunchPurificationRoom()
+    {
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
+        photonView.RPC("SetLaunchPurificationRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchPurificationRoom()
+    {
+        GameObject.Find("PurificationRoom").GetComponent<PurificationRoom>().LaunchPurificationRoom();
+    }
+
+    public void SendLaunchResurectionRoom()
+    {
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
+        photonView.RPC("SetLaunchResurectionRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchResurectionRoom()
+    {
+        GameObject.Find("ResurectionRoom").GetComponent<ResurectionRoom>().LaunchResurectionRoom();
+    }
+
+    public void SendLaunchPrayRoom()
+    {
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
+        photonView.RPC("SetLaunchPrayRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchPrayRoom()
+    {
+        Debug.Log(GameObject.Find("PrayRoom"));
+        Debug.Log(GameObject.Find("PrayRoom").GetComponent<PrayRoom>());
+        GameObject.Find("PrayRoom").GetComponent<PrayRoom>().LaunchPrayRoom();
     }
 
     public void SendDisplayLightAllAvailableDoor(bool display)

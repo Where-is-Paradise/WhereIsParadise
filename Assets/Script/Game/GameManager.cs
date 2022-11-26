@@ -335,6 +335,8 @@ public class GameManager : MonoBehaviourPun
             listIndexPower.Add(3);
         if (setting.listTrapRoom[4])
             listIndexPower.Add(4);
+        if (setting.listTrapRoom[4])
+            listIndexPower.Add(5);
 
         if (listIndexPower.Count == 1)
         {
@@ -356,7 +358,7 @@ public class GameManager : MonoBehaviourPun
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
             player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
-            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[1]);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[4]);
             listIndexPower.RemoveAt(randomInt);
         }
 
@@ -370,7 +372,7 @@ public class GameManager : MonoBehaviourPun
             listIndexPower.Add(1);
         if (setting.listObjectImpostor[2])
             listIndexPower.Add(2);
-        if(listIndexPower.Count == 1)
+        if (listIndexPower.Count == 1)
         {
             foreach (GameObject player in GetAllImpostor())
             {
@@ -872,6 +874,26 @@ public class GameManager : MonoBehaviourPun
             if (room.isLostTorch)
             {
                 gameManagerNetwork.SendLostTorchData(room.GetIndex(), room.isLostTorch);
+            }
+            if (room.isMonsters)
+            {
+                gameManagerNetwork.SendMonstersData(room.GetIndex(), room.isMonsters);
+            }
+            if (room.isPurification)
+            {
+                gameManagerNetwork.SendPurificationData(room.GetIndex(), room.isPurification);
+            }
+            if (room.isResurection)
+            {
+                gameManagerNetwork.SendResurectionData(room.GetIndex(), room.isResurection);
+            }
+            if (room.isPray)
+            {
+                gameManagerNetwork.SendPrayData(room.GetIndex(), room.isPray);
+            }
+            if (room.isNPC)
+            {
+                gameManagerNetwork.SendNPCData(room.GetIndex(), room.isNPC);
             }
             counter++;
         }
@@ -2580,6 +2602,58 @@ public class GameManager : MonoBehaviourPun
 
             }
         }
+        if (room.isPurification)
+        {
+            ui_Manager.DisplayPurificationRoom(true);
+            if (!room.explorationIsUsed)
+                ui_Manager.DisplayMainLevers(true);
+            else
+                ui_Manager.DisplayLeverVoteDoor(true);
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            if (room.speciallyPowerIsUsed)
+            {
+                ui_Manager.DisplaySpeciallyLevers(false, 0);
+            }
+        }
+        if (room.isResurection)
+        {
+            ui_Manager.DisplayResurectionRoom(true);
+            if (!room.explorationIsUsed)
+                ui_Manager.DisplayMainLevers(true);
+            else
+                ui_Manager.DisplayLeverVoteDoor(true);
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            if (room.speciallyPowerIsUsed)
+            {
+                ui_Manager.DisplaySpeciallyLevers(false, 0);
+            }
+        }
+        if (room.isPray)
+        {
+            ui_Manager.DisplayPrayRoom(true);
+            if (!room.explorationIsUsed)
+                ui_Manager.DisplayMainLevers(true);
+            else
+                ui_Manager.DisplayLeverVoteDoor(true);
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            if (room.speciallyPowerIsUsed)
+            {
+                ui_Manager.DisplaySpeciallyLevers(false, 0);
+            }
+        }
+        if (room.isNPC)
+        {
+            ui_Manager.DisplayNPCRoom(true);
+            if (!room.explorationIsUsed)
+                ui_Manager.DisplayMainLevers(true);
+            else
+                ui_Manager.DisplayLeverVoteDoor(true);
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            if (room.speciallyPowerIsUsed)
+            {
+                ui_Manager.DisplaySpeciallyLevers(false, 0);
+            }
+        }
         if (room.IsExit || room.IsHell)
         {
             ui_Manager.DisplaySpeciallyLevers(false, 0);
@@ -3018,8 +3092,8 @@ public class GameManager : MonoBehaviourPun
             return -1;
         }
 
-        int randomMain = Random.Range(0, 5);
-        randomMain = 4;
+        int randomMain = Random.Range(0, 7);
+        randomMain = 6;
         if(randomMain == 0 && setting.listTrialRoom[0])
         {
             room.fireBall = true;
@@ -3044,6 +3118,16 @@ public class GameManager : MonoBehaviourPun
         {
             room.isSword = true;
             return 6;
+        }
+        if (randomMain == 5 && setting.listTrialRoom[4])
+        {
+            room.isLostTorch = true;
+            return 7;
+        }
+        if (randomMain == 6 && setting.listTrialRoom[4])
+        {
+            room.isMonsters = true;
+            return 8;
         }
         return -1;
     }

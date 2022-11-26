@@ -26,6 +26,8 @@ public class Sword : MonoBehaviourPun
 
     public void IsTouchPlayer(Collider2D collision)
     {
+        if(!this.transform.parent.parent.GetComponent<PhotonView>().IsMine)
+            return;
         if (collision.tag == "CollisionTrigerPlayer")
         {
             if (!swordRoom.gameManager.SamePositionAtBossWithIndex(collision.transform.parent.gameObject.GetComponent<PhotonView>().ViewID))

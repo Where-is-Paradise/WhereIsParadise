@@ -80,6 +80,9 @@ public class Room : ScriptableObject
     public bool isCursedTrap = false;
     public bool isLostTorch = false;
     public bool isMonsters = false;
+    public bool isPurification = false;
+    public bool isResurection = false;
+    public bool isPray = false;
 
     public bool isHide = false;
 
