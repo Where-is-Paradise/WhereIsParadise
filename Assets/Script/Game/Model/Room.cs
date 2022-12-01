@@ -83,6 +83,7 @@ public class Room : ScriptableObject
     public bool isPurification = false;
     public bool isResurection = false;
     public bool isPray = false;
+    public bool isLabyrintheHide = false;
 
     public bool isHide = false;
 
@@ -93,6 +94,7 @@ public class Room : ScriptableObject
     public bool isOldParadise = false;
 
     public bool isTraped = false;
+    public bool isUseOneTime = false;
 
     public void Init(int pos_X, int pos_Y)
     {

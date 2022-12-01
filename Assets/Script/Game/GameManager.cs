@@ -93,6 +93,8 @@ public class GameManager : MonoBehaviourPun
 
     public int counterRoom = 0;
 
+    public bool labyrinthIsUsed = false;
+
     public List<float> listProbalitySpecialyRoom = new List<float>();
     private void Awake()
     {
@@ -894,6 +896,10 @@ public class GameManager : MonoBehaviourPun
             if (room.isNPC)
             {
                 gameManagerNetwork.SendNPCData(room.GetIndex(), room.isNPC);
+            }
+            if (room.isLabyrintheHide)
+            {
+                gameManagerNetwork.SendLabyrinthData(room.GetIndex(), room.isLabyrintheHide);
             }
             counter++;
         }
@@ -2556,6 +2562,7 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
 
             }
+            return;
         }
         if (room.isSword)
         {
@@ -2571,6 +2578,7 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
 
             }
+            return;
         }
         if (room.isLostTorch)
         {
@@ -2586,6 +2594,7 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
 
             }
+            return;
         }
         if (room.isMonsters)
         {
@@ -2600,7 +2609,9 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
 
+
             }
+            return;
         }
         if (room.isPurification)
         {
@@ -2614,6 +2625,7 @@ public class GameManager : MonoBehaviourPun
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
+            return;
         }
         if (room.isResurection)
         {
@@ -2627,6 +2639,7 @@ public class GameManager : MonoBehaviourPun
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
+            return;
         }
         if (room.isPray)
         {
@@ -2640,6 +2653,7 @@ public class GameManager : MonoBehaviourPun
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
+            return;
         }
         if (room.isNPC)
         {
@@ -2653,6 +2667,22 @@ public class GameManager : MonoBehaviourPun
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
+            return;
+        }
+        if (room.isLabyrintheHide)
+        {
+            ui_Manager.DisplayLabyrinthRoom(true);
+            ui_Manager.DisplayMainLevers(false);
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            isActuallySpecialityTime = true;
+            if (room.speciallyPowerIsUsed || labyrinthIsUsed)
+            {
+                ui_Manager.DisplayLabyrinthRoom(false);
+                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplayLeverVoteDoor(true);
+                isActuallySpecialityTime = false;
+            }
+            return;
         }
         if (room.IsExit || room.IsHell)
         {
@@ -3093,7 +3123,7 @@ public class GameManager : MonoBehaviourPun
         }
 
         int randomMain = Random.Range(0, 7);
-        randomMain = 6;
+        randomMain = 7;
         if(randomMain == 0 && setting.listTrialRoom[0])
         {
             room.fireBall = true;
@@ -3128,6 +3158,11 @@ public class GameManager : MonoBehaviourPun
         {
             room.isMonsters = true;
             return 8;
+        }
+        if (randomMain == 7 && setting.listTrialRoom[4])
+        {
+            room.isLabyrintheHide = true;
+            return 9;
         }
         return -1;
     }
@@ -3240,6 +3275,18 @@ public class GameManager : MonoBehaviourPun
                     continue;
                 player.GetComponent<PlayerNetwork>().SendTeleportPlayerToSameRoomOfBoss();
             }
+        }
+    }
+    public void TeleportAllPlayerInRoomOfBossEvenSameRoom()
+    {
+        TeleportAllPlayerInRoomOfBoss();
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            player.transform.position = new Vector3(-0.21f, 0.36f);
+            player.GetComponent<PlayerGO>().canMove = false;
         }
     }
 

@@ -1464,6 +1464,11 @@ setting_button_echapMenu.SetActive(false);
         GameObject.Find("Special").transform.Find("NPCRoom").gameObject.SetActive(display);
         DisplaySpeciallyLevers(display, 7);
     }
+    public void DisplayLabyrinthRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("LabyrinthHideRoom").gameObject.SetActive(display);
+        DisplaySpeciallyLevers(display, 7);
+    }
 
     public void DisplayUI_Mobile_SpecialRoom(bool display)
     {

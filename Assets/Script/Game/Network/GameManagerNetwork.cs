@@ -1242,6 +1242,17 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.rooms[indexRoom].isNPC = isNpc;
     }
 
+    public void SendLabyrinthData(int indexRoom, bool isLabyrintheHide)
+    {
+        photonView.RPC("SetLabyrinthData", RpcTarget.All, indexRoom, isLabyrintheHide);
+    }
+
+    [PunRPC]
+    public void SetLabyrinthData(int indexRoom, bool isLabyrintheHide)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isLabyrintheHide = isLabyrintheHide;
+    }
+
     public void SendJailRoom(int indexRoom , bool isJail)
     {
         photonView.RPC("SetJailRoom", RpcTarget.All, indexRoom, isJail);
@@ -1437,6 +1448,9 @@ public class GameManagerNetwork : MonoBehaviourPun
                 break;
             case 8:
                 room.isMonsters = true;
+                break;
+            case 9:
+                room.isLabyrintheHide = true;
                 break;
         }
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;
@@ -1645,9 +1659,19 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetLaunchPrayRoom()
     {
-        Debug.Log(GameObject.Find("PrayRoom"));
-        Debug.Log(GameObject.Find("PrayRoom").GetComponent<PrayRoom>());
         GameObject.Find("PrayRoom").GetComponent<PrayRoom>().LaunchPrayRoom();
+    }
+
+    public void SendLaunchLabyrinthRoom()
+    {
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBossEvenSameRoom();
+        photonView.RPC("SetLaunchLabyrinthRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchLabyrinthRoom()
+    {
+        GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthHideRoom>().LaunchLabyrintheRoom();
     }
 
     public void SendDisplayLightAllAvailableDoor(bool display)

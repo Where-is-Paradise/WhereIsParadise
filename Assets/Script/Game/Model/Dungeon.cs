@@ -64,6 +64,7 @@ public class Dungeon : ScriptableObject
 
     public void InsertSpeciallyRoom()
     {
+        int labyrinthCounter = 0;
         foreach (Room room in rooms)
         {
             if (room.isTooFar || room.IsInitiale || room.IsExit)
@@ -76,7 +77,7 @@ public class Dungeon : ScriptableObject
             }
                 
             int randomSpeciallity = Random.Range(0, 12);
-            randomSpeciallity = 12;
+            randomSpeciallity = 13;
             if (randomSpeciallity == 0)
                 room.chest = true;
             if (randomSpeciallity == 1)
@@ -103,6 +104,11 @@ public class Dungeon : ScriptableObject
                 room.isPray = true;
             if (randomSpeciallity == 12)
                 room.isNPC = true;
+            if (randomSpeciallity == 13)
+            {
+                room.isLabyrintheHide = true;
+            }
+                
 
         }
     }

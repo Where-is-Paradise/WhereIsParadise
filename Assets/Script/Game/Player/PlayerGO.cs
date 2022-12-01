@@ -1012,6 +1012,10 @@ public class PlayerGO : MonoBehaviour
         {
             gameManager.gameManagerNetwork.SendNpcRoom();
         }
+        if (gameManager.game.currentRoom.isLabyrintheHide)
+        {
+            gameManager.gameManagerNetwork.SendLaunchLabyrinthRoom();
+        }
 
         if (gameManager.game.currentRoom.IsVirus && gameManager.game.key_counter > 0)
         {

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class LabyrinthHideRoom : MonoBehaviour
+public class LabyrinthHideRoom : MonoBehaviourPun
 {
     public GameObject obstacleClone;
     public List<GameObject> listObstacles;
@@ -26,40 +27,34 @@ public class LabyrinthHideRoom : MonoBehaviour
     public int retourErrorPathFindFunction =  0;
     public bool pathIsFinish = false;
     public bool pathFalseOneIsFinish = false;
+    public bool pathFalseSemiOneOneIsFinish = false;
+    public bool pathFalseSemiTwoIsFinish = false;
 
-    public List<ObstacleLabyrinth> path = new List<ObstacleLabyrinth>();
+    public List<ObstacleLabyrinth> currentPath = new List<ObstacleLabyrinth>();
     public ObstacleLabyrinth inverseObstacleWithTorch;
-
+    public List<ObstacleLabyrinth> pathOne = new List<ObstacleLabyrinth>();
+    public List<ObstacleLabyrinth> pathTwo = new List<ObstacleLabyrinth>();
+    public ObstacleLabyrinth randomExitToSemiWay;
+    public int waySize = 50;
     public int counter = 0;
+
+    public GameManager gameManager;
+    public bool DataObstacleAreSent = false;
+    public bool roomIsLaunched = false;
 
     // Start is called before the first frame update
     void Start()
-    {
-        obstacleClone = this.transform.Find("Obstacle").gameObject;
-
-        SpawnObtacles();
-        AddNeighboursToEachObstacle();
-        DesactivateObstaclesInMiddle();
-        SetListObstacleBorder();
-        AddTorch();
-        AddRandomObstaclesPathFinding();
+    {   
         
-        //AddExitPathFinding();
-        SetInvertTorchPosition();
-        SetListObstacleBorderWithoutTorch();
-        //pathfinding
-        /*        
-                openList.Add(obstacleWithTorch);
-                currentNode = exitPathFinding;*/
-
-        //StartCoroutine(CreateWayToTorch2());
-        //StartCoroutine(CreateFalseWay());
-
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        if (!roomIsLaunched)
+            return;
         if (!pathIsFinish)
         {
             CreateWayToTorch2();
@@ -67,35 +62,37 @@ public class LabyrinthHideRoom : MonoBehaviour
         else
         {
             if (!pathFalseOneIsFinish)
+            {
                 CreateFalseWay();
+            }
+            else
+            {
+                if(!DataObstacleAreSent)
+                    SendStatusToAllObstacles();
+            }      
         }
+    }
 
-        //Debug.Log(retourErrorPathFindFunction);
-        /*        if(pathIsFinish && path.Count < 20)
-                {
-                    retourErrorPathFindFunction = -1;
-                    pathIsFinish = false;
-                    ResetPath();
-                }
-                if (retourErrorPathFindFunction == 1 )
-                {
-                    RetracePath(obstacleWithTorch);
-                    return;
-                }*/
-        /*        if(retourErrorPathFindFunction == 0)
-                {
-                    CreateWayToTorch();
-                }
-
-                if (retourErrorPathFindFunction == -1)
-                {
-                    openList.Add(obstacleWithTorch);
-                    if(closeList.Count > 0)
-                        closeList.RemoveRange(0, closeList.Count-1);
-                    retourErrorPathFindFunction = 0;
-                    ResetObstaclesPathFinding();
-                    AddRandomObstaclesPathFinding();
-                }   */
+    public void LaunchLabyrintheRoom()
+    {
+        StartCoroutine(LauchLabyrintheAfterTp());
+    }
+    public IEnumerator LauchLabyrintheAfterTp()
+    {
+        yield return new WaitForSeconds(2);
+        SpawnObtacles();
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            AddNeighboursToEachObstacle();
+            DesactivateObstaclesInMiddle();
+            SetListObstacleBorder();
+            AddTorch();
+            SetInvertTorchPosition();
+            SetListObstacleBorderWithoutTorch();
+            waySize = Random.Range(15, 60);
+            roomIsLaunched = true;
+        }
     }
 
     public void SpawnObtacles()
@@ -104,7 +101,8 @@ public class LabyrinthHideRoom : MonoBehaviour
         { 
             for (int j =0; j < width; j++)
             {
-                GameObject newObstacle = Instantiate(obstacleClone, this.transform.Find("ListObstacle"));
+                GameObject newObstacle = PhotonNetwork.Instantiate("Obstacle", this.transform.Find("ListObstacle").position , Quaternion.identity);
+                newObstacle.transform.parent = this.transform.Find("ListObstacle").transform;
                 newObstacle.transform.position = new Vector3(initialPositionObstacle_x + ( j * decalageObstacleRight),
                     initialPositionObstacle_y + ( i * -decalageObstacleDown));
                 newObstacle.GetComponent<ObstacleLabyrinth>().isEmpty = false;
@@ -222,6 +220,16 @@ public class LabyrinthHideRoom : MonoBehaviour
            
         }
     }
+
+    public void SendStatusToAllObstacles()
+    {
+        foreach (GameObject obstacle in listObstacles)
+        {
+            ObstacleLabyrinth obtacleComponenet = obstacle.GetComponent<ObstacleLabyrinth>();
+            obtacleComponenet.SendData(obtacleComponenet.isEmpty , obtacleComponenet.hasTorch);
+        }
+        DataObstacleAreSent = true;
+    }
     public void AddNeighboursNoneObstacle()
     {
         foreach (GameObject obstacle in listObstacles)
@@ -335,7 +343,7 @@ public class LabyrinthHideRoom : MonoBehaviour
     {
         if (currentNode != startNode)
         {
-            path.Add(currentNode);
+            currentPath.Add(currentNode);
             currentNode = currentNode.parent;
             currentNode.isEmpty = true;
         }
@@ -358,7 +366,7 @@ public class LabyrinthHideRoom : MonoBehaviour
     }
     private void ResetPath()
     {
-        foreach(ObstacleLabyrinth obstacle in path)
+        foreach(ObstacleLabyrinth obstacle in currentPath)
         {
             if (obstacle.GetComponent<ObstacleLabyrinth>().isMiddle)
                 continue;
@@ -366,23 +374,29 @@ public class LabyrinthHideRoom : MonoBehaviour
             obstacle.parent = null;
             obstacle.GetComponent<ObstacleLabyrinth>().ResetListNeibourNoneObstacle();
         }
-        path.RemoveRange(0, path.Count - 1);
+
+
+        currentPath.RemoveRange(0, currentPath.Count - 1);
+        
     }
     private void ResetParent()
     {
         foreach (GameObject obstacle in listObstacles)
         {
             obstacle.GetComponent<ObstacleLabyrinth>().parent = null;
+            obstacle.GetComponent<ObstacleLabyrinth>().ResetListNeibourNoneObstacle();
         }
+        currentPath.RemoveRange(0, currentPath.Count - 1);
     }
     private void ResetParentOnPath()
     {
-        foreach (ObstacleLabyrinth obstacle in path)
+        foreach (ObstacleLabyrinth obstacle in currentPath)
         {
             obstacle.parent = null;
+            //obstacle.isEmpty = false;
             obstacle.GetComponent<ObstacleLabyrinth>().ResetListNeibourNoneObstacle();
         }
-        path.RemoveRange(0, path.Count - 1);
+        currentPath.RemoveRange(0, currentPath.Count - 1);
     }
 
     static public int GetDistance(ObstacleLabyrinth a, ObstacleLabyrinth b)
@@ -398,11 +412,72 @@ public class LabyrinthHideRoom : MonoBehaviour
 
     }
 
-    public void DesactivateAllObtacle()
+    public void DesactivateRoom(int indexPlayer)
     {
+        GameObject playerWinner = gameManager.GetPlayer(indexPlayer);
+        GiveAwardToPlayer(playerWinner);
+        SendResetColor();
+        SendHideAllObstacles();
+        photonView.RPC("SendSpeciallyPowerIsUsed", RpcTarget.All, true);
 
     }
+    public void SendHideAllObstacles()
+    {
+        this.transform.Find("ListObstacle").gameObject.SetActive(false);
+        this.transform.Find("ListSeparation").gameObject.SetActive(false);
+    }
 
+    public void GiveAwardToPlayer(GameObject lastPlayer)
+    {
+        photonView.RPC("SetCanLunchExploration", RpcTarget.All, lastPlayer.GetComponent<PhotonView>().ViewID);
+    }
+
+    [PunRPC]
+    public void SetCanLunchExploration(int indexPlayer)
+    {
+        gameManager.game.nbTorch++;
+        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
+        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
+        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
+        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
+    }
+    public void SendResetColor()
+    {
+        photonView.RPC("ResetColorAllPlayer", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void ResetColorAllPlayer()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            if (player.GetComponent<PhotonView>().IsMine)
+            {
+                int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
+                player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+            }
+            else
+            {
+                if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
+                {
+                    player.transform.GetChild(0).gameObject.SetActive(true);
+                    player.transform.GetChild(1).gameObject.SetActive(true);
+                }
+            }
+            player.GetComponent<PlayerGO>().ResetHeart();
+            player.GetComponent<PlayerGO>().isTouchByAx = false;
+        }
+    }
+
+    [PunRPC]
+    public void SendSpeciallyPowerIsUsed(bool speciallyPowerIsUsed)
+    {
+        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = speciallyPowerIsUsed;
+        gameManager.labyrinthIsUsed = speciallyPowerIsUsed;
+    }
 
     public void CreateWayToTorch2()
     {
@@ -413,14 +488,15 @@ public class LabyrinthHideRoom : MonoBehaviour
     {
         if (current.isPotentialExit)
         {
-            Debug.Log(GetDistance(current, obstacleWithTorch) + " " + GetDistance(current, obstacleWithTorch) + 8 + " " + path.Count);
-            if (path.Count <= GetDistance(current, obstacleWithTorch) + 50)
+            Debug.Log(GetDistance(current, obstacleWithTorch) + " " + GetDistance(current, obstacleWithTorch) + 8 + " " + currentPath.Count);
+            if (currentPath.Count <= GetDistance(current, obstacleWithTorch) + waySize)
             {
                 ResetObstacles();
                 ResetPath();
+                pathOne.RemoveRange(0, pathOne.Count - 1);
                 return;
             }
-            path.RemoveRange(0, path.Count - 1);
+            currentPath.RemoveRange(0, currentPath.Count - 1);
             pathIsFinish = true;
             return;
         }
@@ -428,11 +504,14 @@ public class LabyrinthHideRoom : MonoBehaviour
         current.SetListNeigbourNoneObstacle();
         ObstacleLabyrinth obstacleNeigbour = current.GetRandomNeigbourNoneObstacle();
         current.SetParentToAllNeigbour(false);
-        path.Add(current);
+        currentPath.Add(current);
+        pathOne.Add(current);
         if (obstacleNeigbour == null)
         {
             ResetObstacles();
             ResetPath();
+            if (pathOne.Count > 0 )
+                pathOne.RemoveRange(0, pathOne.Count - 1);
             return;
         }
        
@@ -464,6 +543,7 @@ public class LabyrinthHideRoom : MonoBehaviour
     {
         if (current.isPotentialExit)
         {
+            
             pathFalseOneIsFinish = true;
             return;
         }
@@ -475,13 +555,80 @@ public class LabyrinthHideRoom : MonoBehaviour
         if (obstacleNeigbour == null)
         {
             ResetParentOnPath();
+            if(pathTwo.Count > 0)
+                pathTwo.RemoveRange(0, pathTwo.Count - 1);
             return;
         }
-        path.Add(obstacleNeigbour);
+        currentPath.Add(obstacleNeigbour);
+        pathTwo.Add(obstacleNeigbour);
         //Debug.Log(obstacleNeigbour.position_x + " " + obstacleNeigbour.position_y);
         obstacleNeigbour.parent = current;
         obstacleNeigbour.isEmpty = true;
 
         GetNeigbourUntilFalseExit(obstacleNeigbour);
     }
+
+    public void AddSemiWayOne()
+    {
+        randomExitToSemiWay = listObstaclesborderWithoutTorch[Random.Range(0, listObstaclesborderWithoutTorch.Count)].GetComponent<ObstacleLabyrinth>();
+        GetNeigbourUntilFalseExitSemiOne(pathOne[Random.Range(0, pathOne.Count)]);
+    }
+    public void AddSemiWayTwo()
+    {
+        randomExitToSemiWay = listObstaclesborderWithoutTorch[Random.Range(0, listObstaclesborderWithoutTorch.Count)].GetComponent<ObstacleLabyrinth>();
+        GetNeigbourUntilFalseExitSemiTwo(pathTwo[Random.Range(0, pathTwo.Count)]);
+    }
+
+    public void GetNeigbourUntilFalseExitSemiOne(ObstacleLabyrinth current)
+    {
+        if (current.SameObstacleByPosition(randomExitToSemiWay))
+        {
+            ResetParent();
+            pathFalseSemiOneOneIsFinish = true;
+            return;
+        }
+        current.SetParentToAllNeigbour(true);
+        current.SetListNeigbourNoneObstacle();
+        ObstacleLabyrinth obstacleNeigbour = current.GetRandomNeigbourNoneObstacle();
+        current.SetParentToAllNeigbour(false);
+
+        if (obstacleNeigbour == null)
+        {
+            ResetParentOnPath();
+            return;
+        }
+        currentPath.Add(obstacleNeigbour);
+        //Debug.Log(obstacleNeigbour.position_x + " " + obstacleNeigbour.position_y);
+        obstacleNeigbour.parent = current;
+        obstacleNeigbour.isEmpty = true;
+
+        GetNeigbourUntilFalseExit(obstacleNeigbour);
+    }
+
+    public void GetNeigbourUntilFalseExitSemiTwo(ObstacleLabyrinth current)
+    {
+        if (current.SameObstacleByPosition(randomExitToSemiWay))
+        {
+            ResetParent();
+            pathFalseSemiTwoIsFinish = true;
+            return;
+        }
+        current.SetParentToAllNeigbour(true);
+        current.SetListNeigbourNoneObstacle();
+        ObstacleLabyrinth obstacleNeigbour = current.GetRandomNeigbourNoneObstacle();
+        current.SetParentToAllNeigbour(false);
+
+        if (obstacleNeigbour == null)
+        {
+            ResetParentOnPath();
+            return;
+        }
+        currentPath.Add(obstacleNeigbour);
+        //Debug.Log(obstacleNeigbour.position_x + " " + obstacleNeigbour.position_y);
+        obstacleNeigbour.parent = current;
+        obstacleNeigbour.isEmpty = true;
+
+        GetNeigbourUntilFalseExit(obstacleNeigbour);
+    }
+    
 }

@@ -1,9 +1,10 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ObstacleLabyrinth : MonoBehaviour
+public class ObstacleLabyrinth : MonoBehaviourPun
 {
     public int position_x;
     public int position_y;
@@ -11,6 +12,7 @@ public class ObstacleLabyrinth : MonoBehaviour
     public bool hasTorch = false;
     public bool isMiddle = false; 
     public LabyrinthHideRoom labyrinthRoom;
+    public bool isTouchByPlayer = false;
 
     public bool display = false;
 
@@ -34,20 +36,33 @@ public class ObstacleLabyrinth : MonoBehaviour
     void Update()
     {
         this.GetComponent<SpriteRenderer>().enabled = display;
-        if (isEmpty)
+
+        if (isTouchByPlayer)
+        {
+            if (isEmpty)
+            {
+                this.GetComponent<BoxCollider2D>().enabled = false;
+                this.GetComponent<SpriteRenderer>().enabled = false;
+            }
+            else
+            {
+                this.GetComponent<BoxCollider2D>().enabled = true;
+                this.GetComponent<SpriteRenderer>().enabled = display;
+            }
+        }
+        else
+        {
+            this.GetComponent<SpriteRenderer>().enabled = true;
+        }
+       
+        if(isMiddle)
         {
             this.GetComponent<BoxCollider2D>().enabled = false;
             this.GetComponent<SpriteRenderer>().enabled = false;
         }
-        else
-        {
-            this.GetComponent<BoxCollider2D>().enabled = true;
-            this.GetComponent<SpriteRenderer>().enabled = display;
-        }
-       
         if (hasTorch)
         {
-            this.GetComponent<BoxCollider2D>().enabled = false;
+            this.GetComponent<BoxCollider2D>().isTrigger = true;
             this.GetComponent<SpriteRenderer>().enabled = false;
             this.transform.Find("Torch").gameObject.SetActive(true);
         }
@@ -70,7 +85,12 @@ public class ObstacleLabyrinth : MonoBehaviour
     {
         if(collision.tag == "CollisionTrigerPlayer")
         {
+            if (hasTorch)
+                DesactivateRoom(collision);
             //labyrinthRoom.DesactivateAllObtacle();
+            if (!isEmpty)
+                return;
+            isTouchByPlayer = true;
         }
     }
     public int Fcost()
@@ -144,5 +164,23 @@ public class ObstacleLabyrinth : MonoBehaviour
                 neigbour.parent = null;
         }
     }
+    public void DesactivateRoom(Collider2D playerCollision)
+    {
+        int indexPlayer = playerCollision.transform.parent.GetComponent<PhotonView>().ViewID;
+        labyrinthRoom.DesactivateRoom(indexPlayer);
+    }
+
+    public void SendData(bool isEmpty , bool hasTorch)
+    {
+        photonView.RPC("SetData", RpcTarget.All, isEmpty  , hasTorch);
+    }
+
+    [PunRPC]
+    public void SetData(bool isEmpty , bool hasTorch)
+    {
+        this.isEmpty = isEmpty;
+        this.hasTorch = hasTorch;
+    }
+
 
 }
