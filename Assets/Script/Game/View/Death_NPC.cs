@@ -89,7 +89,7 @@ public class Death_NPC : MonoBehaviourPun
         foreach(GameObject player in listPlayer)
         {
             if (player.GetComponent<PlayerGO>().isTouchByDeath || player.GetComponent<PlayerGO>().isSacrifice 
-                || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
+                || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) || player.GetComponent<PlayerGO>().isInJail)
             {
                 Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), true);
                 continue;
@@ -240,7 +240,7 @@ public class Death_NPC : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             if (!player.GetComponent<PlayerGO>().isTouchByDeath  && !player.GetComponent<PlayerGO>().isSacrifice
-                && gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
+                && gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isInJail)
             {
                 return player;
             }

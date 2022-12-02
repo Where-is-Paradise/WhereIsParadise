@@ -53,6 +53,10 @@ public class DamoclesSwordRoom : MonoBehaviourPun
             {
                 continue;
             }
+            if (player.GetComponent<PlayerGO>().isInJail)
+            {
+                continue;
+            }           
             if (player.GetComponent<PlayerGO>().isDeadBySwordDamocles)
             {
                 continue;
@@ -146,7 +150,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             if (player.GetComponent<PlayerGO>().isDeadBySwordDamocles || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
-                    || player.GetComponent<PlayerGO>().isSacrifice)
+                    || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
             }
@@ -165,8 +169,10 @@ public class DamoclesSwordRoom : MonoBehaviourPun
                 continue;
             if (player.GetComponent<PlayerGO>().isSacrifice)
                 continue;
+            if (player.GetComponent<PlayerGO>().isInJail)
+                continue;
             if (!player.GetComponent<PlayerGO>().isDeadBySwordDamocles)
-                return player;    
+                return player;  
         }
         return null;
     }
@@ -183,6 +189,8 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            if (player.GetComponent<PlayerGO>().isInJail)
                 continue;
             if (player.GetComponent<PhotonView>().IsMine)
             {

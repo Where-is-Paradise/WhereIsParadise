@@ -56,7 +56,7 @@ public class AxRoom : MonoBehaviourPun
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(true);
-
+        
     }
 
     public IEnumerator CanShootCoroutine()

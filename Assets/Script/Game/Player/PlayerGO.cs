@@ -792,7 +792,8 @@ public class PlayerGO : MonoBehaviour
             {
                 if (player.GetComponent<PhotonView>().ViewID != this.GetComponent<PhotonView>().ViewID)
                 {
-                    if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isSacrifice)
+                    if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isSacrifice && 
+                        !player.GetComponent<PlayerGO>().isInJail)
                     {
                         player.GetComponent<CapsuleCollider2D>().isTrigger = ignore;
                         Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), ignore);
@@ -1477,6 +1478,8 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (gameManager.speciallyIsLaunch)
+            return;
         if (gameManager.timer.timerLaunch)
         {
             transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);

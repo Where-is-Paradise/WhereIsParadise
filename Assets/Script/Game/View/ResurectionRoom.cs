@@ -39,7 +39,7 @@ public class ResurectionRoom : MonoBehaviourPun
         List<GameObject> listSacrifiedplayer = new List<GameObject>();
         foreach (GameObject player in players)
         {
-            if (player.GetComponent<PlayerGO>().isSacrifice)
+            if (player.GetComponent<PlayerGO>().isSacrifice )
                 listSacrifiedplayer.Add(player);
         }
         if(listSacrifiedplayer.Count > 0)
@@ -69,7 +69,9 @@ public class ResurectionRoom : MonoBehaviourPun
     [PunRPC]
     public void RelaunchRoom()
     {
-        gameManager.UpdateSpecialsRooms(this.gameManager.game.currentRoom);
+        gameManager.ResurectionIsUsed = true;
+        //gameManager.UpdateSpecialsRooms(this.gameManager.game.currentRoom);
+        gameManager.ui_Manager.DisplaySpeciallyLevers(false, 7);
     }
 
     [PunRPC]

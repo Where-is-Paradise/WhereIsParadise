@@ -154,7 +154,7 @@ public class Ax : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             if (player.GetComponent<PlayerGO>().isTouchByAx || !axRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
-                    || player.GetComponent<PlayerGO>().isSacrifice)
+                    || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
             }
@@ -172,6 +172,8 @@ public class Ax : MonoBehaviourPun
             if (!axRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
                 continue;
             if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            if (player.GetComponent<PlayerGO>().isInJail)
                 continue;
             if (!player.GetComponent<PlayerGO>().isTouchByAx)
                 return player;
@@ -207,6 +209,8 @@ public class Ax : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            if (player.GetComponent<PlayerGO>().isInJail)
                 continue;
             if (player.GetComponent<PhotonView>().IsMine)
             {

@@ -11,7 +11,9 @@ public class MonsterNPC : MonoBehaviourPun
     // Start is called before the first frame update
     void Start()
     {
-        monsterRoom = GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>(); 
+        monsterRoom = GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>();
+        if (!monsterRoom)
+            Destroy(this.gameObject);
     }
 
     // Update is called once per frame
@@ -42,14 +44,11 @@ public class MonsterNPC : MonoBehaviourPun
         }
     }
 
-
     public void OnTriggerEnter2D(Collider2D collision)
     {
-
-
         if(collision.tag == "CollisionTrigerPlayer")
         {
-            if (!monsterRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            if (!collision.transform.parent.GetComponent<PhotonView>().IsMine)
                 return;
             IsTouchPlayer(collision);
           
@@ -72,6 +71,8 @@ public class MonsterNPC : MonoBehaviourPun
             if (player.GetComponent<PlayerGO>().isTouchByMonster)
                 continue;
             if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            if (player.GetComponent<PlayerGO>().isInJail)
                 continue;
             listPotentialPlayer.Add(player);
         }
@@ -107,7 +108,7 @@ public class MonsterNPC : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             if (player.GetComponent<PlayerGO>().isTouchByMonster || !monsterRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
-                    || player.GetComponent<PlayerGO>().isSacrifice)
+                    || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
             }
@@ -125,6 +126,8 @@ public class MonsterNPC : MonoBehaviourPun
             if (!monsterRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
                 continue;
             if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            if (player.GetComponent<PlayerGO>().isInJail)
                 continue;
             if (!player.GetComponent<PlayerGO>().isTouchByMonster)
                 return player;

@@ -45,10 +45,17 @@ public class PrayRoom : MonoBehaviour
 
     public void ActiveZoneByNumberPlayer()
     {
-        for(int i = 0; i < GameObject.FindGameObjectsWithTag("Player").Length; i++)
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int i = 0;
+        foreach(GameObject player in players)
         {
+            if (player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
+                continue;
             this.transform.Find("ZonesPray").GetChild(i).gameObject.SetActive(true);
+            i++;
         }
+
+
     }
     public void DisplayResultOfPray()
     {
@@ -62,6 +69,7 @@ public class PrayRoom : MonoBehaviour
             DisplayDistance();
 
         roomIsLaunched = false;
+        gameManager.PrayIsUsed = true;
     }
     public void DisplayDistance()
     {

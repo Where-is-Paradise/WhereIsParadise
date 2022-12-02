@@ -1437,37 +1437,37 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayLostTorchRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("LostTorchRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 7);
+        DisplaySpeciallyLevers(display, 8);
     }
     public void DisplayMonstersRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("MonstersRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 7);
+        DisplaySpeciallyLevers(display, 9);
     }
     public void DisplayPurificationRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("PurificationRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 7);
+        DisplaySpeciallyLevers(display, 10);
     }
     public void DisplayResurectionRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("ResurectionRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 7);
+        DisplaySpeciallyLevers(display, 11);
     }
     public void DisplayPrayRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("PrayRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 7);
+        DisplaySpeciallyLevers(display, 12);
     }
     public void DisplayNPCRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("NPCRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 7);
+        DisplaySpeciallyLevers(display, 13);
     }
     public void DisplayLabyrinthRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("LabyrinthHideRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 7);
+        DisplaySpeciallyLevers(display, 14);
     }
 
     public void DisplayUI_Mobile_SpecialRoom(bool display)

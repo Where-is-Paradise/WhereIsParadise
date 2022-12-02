@@ -336,5 +336,19 @@ public class Hexagone : MonoBehaviourPun
             Information_Speciality.transform.Find("Hexagone").Find("Chest").gameObject.SetActive(display);
         if (this.room.isSacrifice)
             Information_Speciality.transform.Find("Hexagone").Find("Sacrifice").gameObject.SetActive(display);
+        if (this.room.isLostTorch)
+            Information_Speciality.transform.Find("Hexagone").Find("LostTorch").gameObject.SetActive(display);
+        if (this.room.isMonsters)
+            Information_Speciality.transform.Find("Hexagone").Find("Monsters").gameObject.SetActive(display);
+        if (this.room.isResurection)
+            Information_Speciality.transform.Find("Hexagone").Find("Resurection").gameObject.SetActive(display);
+        if (this.room.isPurification)
+            Information_Speciality.transform.Find("Hexagone").Find("Purification").gameObject.SetActive(display);
+        if (this.room.isPray)
+            Information_Speciality.transform.Find("Hexagone").Find("Pray").gameObject.SetActive(display);
+        if (this.room.isNPC)
+            Information_Speciality.transform.Find("Hexagone").Find("NPC").gameObject.SetActive(display);
+        if (this.room.isLabyrintheHide)
+            Information_Speciality.transform.Find("Hexagone").Find("Labyrinthe").gameObject.SetActive(display);
     }
 }

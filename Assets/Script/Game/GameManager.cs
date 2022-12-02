@@ -94,6 +94,15 @@ public class GameManager : MonoBehaviourPun
     public int counterRoom = 0;
 
     public bool labyrinthIsUsed = false;
+    public bool NPCIsUsed = false;
+    public bool PrayIsUsed = false;
+    public bool ResurectionIsUsed = false;
+    public bool PurificationIsUsed = false;
+
+    public int coutnerDoorOpenToJail = 0;
+    public int indexDoorExplorationInJail = 0;
+    public bool onePlayerInJail = false;
+    public int nbKeyWhenJail = 0;
 
     public List<float> listProbalitySpecialyRoom = new List<float>();
     private void Awake()
@@ -331,8 +340,8 @@ public class GameManager : MonoBehaviourPun
             listIndexPower.Add(0);
         if (setting.listTrapRoom[1])
             listIndexPower.Add(1);
-        //if (setting.listTrapRoom[2])
-        //listIndexPower.Add(2);
+        if (setting.listTrapRoom[2])
+            listIndexPower.Add(2);
         if (setting.listTrapRoom[3])
             listIndexPower.Add(3);
         if (setting.listTrapRoom[4])
@@ -359,8 +368,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
-            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[4]);
+            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[2]);
             listIndexPower.RemoveAt(randomInt);
         }
 
@@ -701,7 +710,6 @@ public class GameManager : MonoBehaviourPun
             InsertSpeciallyRoom(roomTeam);
             gameManagerNetwork.SendIsDiscorved(true, roomTeam.Index);
         }
-            
 
         gameManagerNetwork.SendOpenDoor(indexDoor, game.currentRoom.X, game.currentRoom.Y, isExpedition, roomTeam.GetIndex());
     }
@@ -1248,7 +1256,7 @@ public class GameManager : MonoBehaviourPun
             door.GetComponent<Door>().isOpen = false;
             door.GetComponent<Door>().old_player = null;
             ui_Manager.DisplayJailRoom(true);
-           
+            indexDoorExplorationInJail = door.GetComponent<Door>().index;
             GetPlayerMineGO().GetComponent<PlayerGO>().haveToGoToExpedition = false;
             gameManagerNetwork.SendCatchInJailRoom(door.GetComponent<Door>().index);
             GetPlayerMine().SetIsInExpedition(false);
@@ -1265,6 +1273,8 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             CloseDoorOveride();
             ui_Manager.timerMixExploration = true;
+            onePlayerInJail = true;
+            nbKeyWhenJail = nbKeyBroken;
         }
        
 
@@ -1866,6 +1876,14 @@ public class GameManager : MonoBehaviourPun
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendOnclickToExpedition();
         }
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+
+        if (GetPlayerMineGO().GetComponent<PlayerGO>().isInJail)
+        {
+            GetDoorGo(indexNeWDoor3).GetComponent<Door>().isOpenForAll = false;
+            GetDoorGo(indexNeWDoor3).GetComponent<Door>().gameObject.transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
+            GetPlayerMineGO().GetComponent<PlayerGO>().isInJail = false;
+            gameManagerNetwork.SendIsInJail(false, GetPlayerMineGO().GetComponent<PhotonView>().ViewID, game.currentRoom.Index);
+        }
     }
 
 
@@ -2621,7 +2639,7 @@ public class GameManager : MonoBehaviourPun
             else
                 ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-            if (room.speciallyPowerIsUsed)
+            if (room.speciallyPowerIsUsed || PurificationIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
@@ -2635,7 +2653,7 @@ public class GameManager : MonoBehaviourPun
             else
                 ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-            if (room.speciallyPowerIsUsed)
+            if (room.speciallyPowerIsUsed || ResurectionIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
@@ -2649,7 +2667,7 @@ public class GameManager : MonoBehaviourPun
             else
                 ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-            if (room.speciallyPowerIsUsed)
+            if (room.speciallyPowerIsUsed || PrayIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
@@ -2663,7 +2681,7 @@ public class GameManager : MonoBehaviourPun
             else
                 ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-            if (room.speciallyPowerIsUsed)
+            if (room.speciallyPowerIsUsed || NPCIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
@@ -3061,6 +3079,9 @@ public class GameManager : MonoBehaviourPun
         {
             return ;
         }
+        if (game.dungeon.GetPathFindingDistance(room, game.dungeon.initialRoom) == game.dungeon.GetPathFindingDistance(game.dungeon.initialRoom, game.dungeon.exit))
+            return;
+
         int indexSpeciality = -1;
         if (counterRoom%2 != 0)
         {
@@ -3271,7 +3292,7 @@ public class GameManager : MonoBehaviourPun
         {
             if (!SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
             {
-                if (player.GetComponent<PlayerGO>().isSacrifice)
+                if (player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
                     continue;
                 player.GetComponent<PlayerNetwork>().SendTeleportPlayerToSameRoomOfBoss();
             }
@@ -3279,15 +3300,13 @@ public class GameManager : MonoBehaviourPun
     }
     public void TeleportAllPlayerInRoomOfBossEvenSameRoom()
     {
-        TeleportAllPlayerInRoomOfBoss();
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in players)
-        {
-            if (player.GetComponent<PlayerGO>().isSacrifice)
-                continue;
-            player.transform.position = new Vector3(-0.21f, 0.36f);
-            player.GetComponent<PlayerGO>().canMove = false;
-        }
+        GameObject playerMine = GetPlayerMineGO();
+        if (playerMine.GetComponent<PlayerGO>().isSacrifice || playerMine.GetComponent<PlayerGO>().isInJail)
+            return;
+
+        playerMine.transform.position = new Vector3(0, 0);
+        playerMine.GetComponent<PlayerGO>().canMove = false;
+
     }
 
     public void InstantiateDeathNPC()

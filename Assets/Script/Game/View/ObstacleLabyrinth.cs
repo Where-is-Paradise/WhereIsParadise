@@ -25,11 +25,12 @@ public class ObstacleLabyrinth : MonoBehaviourPun
 
     public List<ObstacleLabyrinth> listNeigbour;
     public List<ObstacleLabyrinth> listNeigbourNoneObstaclePathFinding;
+
+    public float timerLight = 100;
     // Start is called before the first frame update
     void Start()
     {
-        labyrinthRoom = this.transform.parent.parent.gameObject.GetComponent<LabyrinthHideRoom>();
-        
+               
     }
 
     // Update is called once per frame
@@ -78,7 +79,18 @@ public class ObstacleLabyrinth : MonoBehaviourPun
             this.transform.Find("Canvas").Find("Text").GetComponent<Text>().color = new Color(0, 0, 0);
         }
         this.transform.Find("Canvas").Find("Text").GetComponent<Text>().text = position_x + "/" + position_y;
-      
+
+        if (hasTorch)
+        {
+            timerLight -= (Time.deltaTime * 50);
+            DisplayLightBlink();
+            if (timerLight < 0)
+            {
+                timerLight = 100;
+            }
+
+        }
+        
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -170,17 +182,42 @@ public class ObstacleLabyrinth : MonoBehaviourPun
         labyrinthRoom.DesactivateRoom(indexPlayer);
     }
 
-    public void SendData(bool isEmpty , bool hasTorch)
+    public void SendData(bool isEmpty , bool hasTorch , bool isMiddle)
     {
-        photonView.RPC("SetData", RpcTarget.All, isEmpty  , hasTorch);
+        photonView.RPC("SetData", RpcTarget.All, isEmpty  , hasTorch , isMiddle);
     }
 
     [PunRPC]
-    public void SetData(bool isEmpty , bool hasTorch)
+    public void SetData(bool isEmpty , bool hasTorch , bool isMiddle)
     {
         this.isEmpty = isEmpty;
         this.hasTorch = hasTorch;
+        this.isMiddle = isMiddle;
     }
 
+    public void DisplayLightBlink()
+    {
+        this.transform.Find("Torch").Find("TorchLight").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, timerLight/100);
+        this.transform.Find("Torch").Find("TorchLight2").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, timerLight / 100);
+        this.transform.Find("Torch").Find("TorchLight3").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, timerLight / 100);
+    }
+
+    public void SendInitiationData(int i, int j)
+    {
+      
+        photonView.RPC("SetInitiationData", RpcTarget.All, i, j);
+    }
+
+    [PunRPC]
+    public void SetInitiationData(int i, int j)
+    {
+        labyrinthRoom = GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthHideRoom>();
+        this.transform.parent = labyrinthRoom.transform.Find("ListObstacle").transform;
+        this.transform.position = new Vector3(labyrinthRoom.initialPositionObstacle_x + (j * labyrinthRoom.decalageObstacleRight),
+            labyrinthRoom.initialPositionObstacle_y + (i * -labyrinthRoom.decalageObstacleDown));
+        this.isEmpty = false;
+        this.position_x = j;
+        this.position_y = i;
+    }
 
 }

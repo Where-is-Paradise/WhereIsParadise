@@ -911,10 +911,13 @@ public class GameManagerNetwork : MonoBehaviourPun
             {
                 roomTeam2.speciallyPowerIsUsed = true;
             }
+                
         }
 
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInJail)
         {
+           
+
             Room roomTeam = gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam);
             if (roomTeam.X == gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().position_X && roomTeam.Y == gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().position_Y)
             {
@@ -926,8 +929,18 @@ public class GameManagerNetwork : MonoBehaviourPun
                 SendIsInJail(false, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID , roomTeam.Index);
                 gameManager.game.dungeon.GetRoomByIndex(roomTeam.Index).speciallyPowerIsUsed = true;
                 gameManager.UpdateSpecialsRooms(roomTeam);
-
+                return;
             }
+
+            if ( (gameManager.nbKeyBroken - gameManager.nbKeyWhenJail) >= 2)
+            {
+                Door doorInJail = gameManager.GetDoorGo(gameManager.indexDoorExplorationInJail).GetComponent<Door>();
+                //gameManager.game.currentRoom.door_isOpen[doorInJail.index] = true;
+                doorInJail.gameObject.transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
+                gameManager.game.dungeon.GetRoomByIndex(gameManager.game.currentRoom.Index).speciallyPowerIsUsed = true;
+                doorInJail.isOpenForAll = true;
+                gameManager.UpdateSpecialsRooms(gameManager.game.currentRoom);
+            }       
         }
     }
     public void SendIsInJail(bool isInJail, int indexPlayer , int indexRoom)
@@ -1664,13 +1677,14 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendLaunchLabyrinthRoom()
     {
-        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBossEvenSameRoom();
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
         photonView.RPC("SetLaunchLabyrinthRoom", RpcTarget.All);
     }
 
     [PunRPC]
     public void SetLaunchLabyrinthRoom()
     {
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBossEvenSameRoom();
         GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthHideRoom>().LaunchLabyrintheRoom();
     }
 

@@ -30,8 +30,11 @@ public class PurificationRoom : MonoBehaviour
         if (PurificationPlayer())
         {
             gameManager.game.currentRoom.speciallyPowerIsUsed = true;
+            gameManager.PurificationIsUsed = true;
         }
-        gameManager.UpdateSpecialsRooms(gameManager.game.currentRoom);
+        gameManager.ui_Manager.DisplaySpeciallyLevers(false, 7);
+        //gameManager.UpdateSpecialsRooms(gameManager.game.currentRoom);
+
     }
 
     public bool PurificationPlayer()

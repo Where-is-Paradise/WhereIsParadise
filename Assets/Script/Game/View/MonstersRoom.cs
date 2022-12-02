@@ -93,7 +93,7 @@ public class MonstersRoom : MonoBehaviourPun
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
         {
-            if (!player.GetComponent<PlayerGO>().isSacrifice)
+            if (!player.GetComponent<PlayerGO>().isSacrifice && !player.GetComponent<PlayerGO>().isInJail)
                 player.transform.Find("Perso").Find("SwordMonster").gameObject.SetActive(display);
         }
     }
@@ -131,7 +131,7 @@ public class MonstersRoom : MonoBehaviourPun
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(false);
         timerSpawnMonster = 5;
-       
+        StartCoroutine(CanMoveActiveCoroutine());
         this.gameObject.SetActive(false);
     }
     public void ResetIsTouchByMonsterAllPlayer()
@@ -149,6 +149,8 @@ public class MonstersRoom : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            if (player.GetComponent<PlayerGO>().isInJail)
                 continue;
             if (player.GetComponent<PhotonView>().IsMine)
             {
@@ -219,5 +221,9 @@ public class MonstersRoom : MonoBehaviourPun
     }
 
 
-
+    public IEnumerator CanMoveActiveCoroutine()
+    {
+        yield return new WaitForSeconds(2);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
+    }
 }

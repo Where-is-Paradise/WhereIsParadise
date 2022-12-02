@@ -44,6 +44,7 @@ public class NPCRoom : MonoBehaviourPun
     {
         yield return new WaitForSeconds(5);
         this.transform.Find("NPC").Find("SquareMessage").gameObject.SetActive(false);
+        gameManager.NPCIsUsed = true;
     }
 
     public void GenerateAndSetMessage()

@@ -133,6 +133,7 @@ public class SwordRoom : MonoBehaviourPun
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(false);
+        StartCoroutine(CanMoveActiveCoroutine());
     }
 
     public void ResetIsTouchBySwordAllPlayer()
@@ -143,5 +144,11 @@ public class SwordRoom : MonoBehaviourPun
             player.GetComponent<PlayerGO>().isTouchBySword = false;
             player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
         }
+    }
+
+    public IEnumerator CanMoveActiveCoroutine()
+    {
+        yield return new WaitForSeconds(2);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
     }
 }
