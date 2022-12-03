@@ -32,6 +32,9 @@ public class LostTorchRoom : MonoBehaviourPun
     {
         yield return new WaitForSeconds(2);
         SpawnLostTorch();
+        gameManager.speciallyIsLaunch = true;
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
+        gameManager.CloseDoorWhenVote(true);
         StartCoroutine(TimerCouroutine());
     }
     public void SpawnLostTorch()
@@ -73,13 +76,17 @@ public class LostTorchRoom : MonoBehaviourPun
         lostTorch.transform.Find("CollisionTorch").GetComponent<CapsuleCollider2D>().enabled = true;
         timerFinish = false;
         this.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
+        gameManager.speciallyIsLaunch = false;
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+        gameManager.CloseDoorWhenVote(false);
     }
 
     public void AssignAwardToPlayer()
     {
-        if (!PhotonNetwork.IsMasterClient)
-            return;
         PlayerGO PlayerWiner = lostTorch.currentPlayer;
+        if (!PlayerWiner.GetComponent<PhotonView>().IsMine)
+            return;
+        
         photonView.RPC("SetCanLunchExploration", RpcTarget.All, PlayerWiner.GetComponent<PhotonView>().ViewID);
     }
 

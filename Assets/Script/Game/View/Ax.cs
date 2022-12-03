@@ -11,6 +11,7 @@ public class Ax : MonoBehaviourPun
     public PlayerGO player;
     public int nbBounds = 0;
     public bool canChangeDirection = true;
+    public PlayerGO launcher;
     // Start is called before the first frame update
     void Start()
     {
@@ -120,6 +121,8 @@ public class Ax : MonoBehaviourPun
 
         if (collision.tag == "Player")
         {
+            if (collision.gameObject.GetComponent<PhotonView>().ViewID == this.launcher.GetComponent<PhotonView>().ViewID)
+                return;
             if (collision.gameObject.GetComponent<PlayerGO>().isInvincible)
                 return;
             collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom--;

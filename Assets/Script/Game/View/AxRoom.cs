@@ -22,7 +22,7 @@ public class AxRoom : MonoBehaviourPun
     {
         if (!isLaunch)
             return;
-        if (Input.GetMouseButton(0) && !isPreparedToLauch)
+        if (Input.GetMouseButton(0) && !isPreparedToLauch && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchByAx)
         {
             isPreparedToLauch = true;
             DisplayLineToShot(true);
@@ -106,6 +106,7 @@ public class AxRoom : MonoBehaviourPun
             return;
 
         GameObject newAx = PhotonNetwork.Instantiate("Ax", new Vector3(positionX,positionY), Quaternion.identity);
+        newAx.GetComponent<Ax>().launcher = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
         newAx.GetComponent<Ax>().SendSpeedAndDirection(5, directionX, directionY);
         newAx.GetComponent<Ax>().player = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
     }
@@ -128,7 +129,6 @@ public class AxRoom : MonoBehaviourPun
         photonView.RPC("SendSpeciallyPowerIsUsed", RpcTarget.All, true);
         photonView.RPC("SendResetSpeciallyIsLauch", RpcTarget.All );
         DisplayLineToShot(false);
-        gameManager.CloseDoorWhenVote(false);
     }
     [PunRPC]
     public  void SetIsLaunch(bool isLaunch)
@@ -155,6 +155,7 @@ public class AxRoom : MonoBehaviourPun
     {
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+        gameManager.CloseDoorWhenVote(false);
     }
 
 }

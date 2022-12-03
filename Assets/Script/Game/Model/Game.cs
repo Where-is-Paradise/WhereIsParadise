@@ -45,7 +45,9 @@ public class Game : ScriptableObject
     public void Launch(int width , int height)
     {
         dungeon = Dungeon.CreateInstance(width, height, setting.RATIO_OBSTACLE);
+        dungeon.setting = setting;
         dungeon.CreateRooms();
+        
     }
 
   

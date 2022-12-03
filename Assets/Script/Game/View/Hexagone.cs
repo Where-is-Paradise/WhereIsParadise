@@ -314,6 +314,9 @@ public class Hexagone : MonoBehaviourPun
     {
         if (room.IsExit || room.IsHell || room.IsObstacle || room.IsInitiale || room.IsTraversed)
             return;
+        if (gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.dungeon.initialRoom) == 
+            gameManager.game.dungeon.GetPathFindingDistance(gameManager.game.dungeon.initialRoom, gameManager.game.dungeon.exit))
+            return;
         if (this.room.isHide)
         {
             GameObject interogationPoint = this.transform.Find("Integoration_point").gameObject;

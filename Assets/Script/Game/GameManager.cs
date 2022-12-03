@@ -346,7 +346,7 @@ public class GameManager : MonoBehaviourPun
             listIndexPower.Add(3);
         if (setting.listTrapRoom[4])
             listIndexPower.Add(4);
-        if (setting.listTrapRoom[4])
+        if (setting.listTrapRoom[5])
             listIndexPower.Add(5);
 
         if (listIndexPower.Count == 1)
@@ -368,8 +368,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
-            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[2]);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
+            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[2]);
             listIndexPower.RemoveAt(randomInt);
         }
 
@@ -402,8 +402,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
-            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[0]);
+            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
+            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
             listIndexPower.RemoveAt(randomInt);
         }
     }
@@ -706,11 +706,10 @@ public class GameManager : MonoBehaviourPun
             }
         }
         if (!isExpedition)
-        {
-            InsertSpeciallyRoom(roomTeam);
+        {    
             gameManagerNetwork.SendIsDiscorved(true, roomTeam.Index);
         }
-
+        InsertSpeciallyRoom(roomTeam);
         gameManagerNetwork.SendOpenDoor(indexDoor, game.currentRoom.X, game.currentRoom.Y, isExpedition, roomTeam.GetIndex());
     }
 
@@ -1200,7 +1199,7 @@ public class GameManager : MonoBehaviourPun
         {
             ui_Manager.DisplayInterrogationPoint();
         }
-        else
+/*        else
         {
             if(GetPlayerMineGO().GetComponent<PlayerGO>().isCursed || roomExpedition.isCursedTrap)
             {
@@ -1209,7 +1208,7 @@ public class GameManager : MonoBehaviourPun
             }
             else
                 ui_Manager.SetDistanceRoom(distance, roomExpedition);
-        }
+        }*/
 
         SetDoorNoneObstacle(roomExpedition);
         SetDoorObstacle(roomExpedition);
@@ -2214,6 +2213,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.ShowAllDataInMap();
         ui_Manager.ShowImpostor();
         ui_Manager.DisplayKeyAndTorch(false);
+        ui_Manager.HideSpeciallyDisplay();
 
     }
 
@@ -2513,6 +2513,7 @@ public class GameManager : MonoBehaviourPun
         if (room.isJail)
         {
             ui_Manager.DisplayJailRoom(true);
+            ui_Manager.HideDistanceRoom();
             if (room.speciallyPowerIsUsed)
             {
                 ui_Manager.DisplayJailRoom(false);
@@ -3111,7 +3112,7 @@ public class GameManager : MonoBehaviourPun
         {
             return -1;
         }
-        int randomMain = Random.Range(1, 101);
+/*        int randomMain = Random.Range(1, 101);
         if (randomMain <= 70)
         {
             if (randomMain <= listProbalitySpecialyRoom[0] && setting.listSpeciallyRoom[0])
@@ -3133,7 +3134,41 @@ public class GameManager : MonoBehaviourPun
                 listProbalitySpecialyRoom[2] = 0;
                 return 2;
             }
+        }*/
+
+        int randomMain = Random.Range(0, 8);
+        if(randomMain == 0 && setting.listTrialRoom[0])
+        {
+            game.dungeon.InsertChestRoom(room.Index);
+            room.chest = true;
+            return 0;
         }
+        if(randomMain == 1 && setting.listTrialRoom[1])
+        {
+            room.isSacrifice = true;
+            return 2;
+        }
+        if (randomMain == 2 && setting.listTrialRoom[3]) 
+        {
+            room.isNPC = true;
+            return 10;
+        }
+        if (randomMain == 3 && setting.listTrialRoom[4])
+        {
+            room.isResurection = true;
+            return 11;
+        }
+        if (randomMain == 4 && setting.listTrialRoom[5])
+        {
+            room.isPurification = true;
+            return 12;
+        }
+        if (randomMain == 5 && setting.listTrialRoom[6])
+        {
+            room.isPray = true;
+            return 13;
+        }
+
         return -1;
     }
     public int InsertSpeciallyN2(Room room)
@@ -3143,8 +3178,8 @@ public class GameManager : MonoBehaviourPun
             return -1;
         }
 
-        int randomMain = Random.Range(0, 7);
-        randomMain = 7;
+        int randomMain = Random.Range(0, 8);
+        //randomMain = 7;
         if(randomMain == 0 && setting.listTrialRoom[0])
         {
             room.fireBall = true;
@@ -3170,17 +3205,17 @@ public class GameManager : MonoBehaviourPun
             room.isSword = true;
             return 6;
         }
-        if (randomMain == 5 && setting.listTrialRoom[4])
+        if (randomMain == 5 && setting.listTrialRoom[6])
         {
             room.isLostTorch = true;
             return 7;
         }
-        if (randomMain == 6 && setting.listTrialRoom[4])
+        if (randomMain == 6 && setting.listTrialRoom[5])
         {
             room.isMonsters = true;
             return 8;
         }
-        if (randomMain == 7 && setting.listTrialRoom[4])
+        if (randomMain == 7 && setting.listTrialRoom[7])
         {
             room.isLabyrintheHide = true;
             return 9;

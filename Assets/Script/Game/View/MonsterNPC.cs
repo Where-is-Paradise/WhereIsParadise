@@ -54,6 +54,18 @@ public class MonsterNPC : MonoBehaviourPun
           
         }
     }
+
+    public void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "CollisionTrigerPlayer")
+        {
+            if (!collision.transform.parent.GetComponent<PhotonView>().IsMine)
+                return;
+            IsTouchPlayer(collision);
+
+        }
+    }
+
     public void MoveOnTarget()
     {
         float vectorX = target.transform.position.x - this.transform.position.x;
@@ -90,7 +102,7 @@ public class MonsterNPC : MonoBehaviourPun
         player.GetComponent<PlayerNetwork>()
             .SendLifeTrialRoom(player.GetComponent<PlayerGO>().lifeTrialRoom);
 
-        if (player.GetComponent<PlayerGO>().lifeTrialRoom == 0)
+        if (player.GetComponent<PlayerGO>().lifeTrialRoom <= 0)
         {
             SetPlayerColor(player);
 

@@ -11,7 +11,7 @@ public class Dungeon : ScriptableObject
     public Room initialRoom;
     private List<Room> listObstaclePivot;
     public List<Room> listRoomTraversed;
-
+    public Setting setting;
 
 
     public void Init(int width, int height, int ratio_obstacle)
@@ -76,35 +76,36 @@ public class Dungeon : ScriptableObject
             }
                 
             int randomSpeciallity = Random.Range(0, 14);
-            randomSpeciallity = 8;
-            if (randomSpeciallity == 0)
+            if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
                 room.chest = true;
-            if (randomSpeciallity == 1)
+            if (randomSpeciallity == 1 && setting.listSpeciallyRoom[1])
                 room.isSacrifice = true;
-            if (randomSpeciallity == 2)
+            if (randomSpeciallity == 2 && setting.listTrialRoom[0])
                 room.fireBall = true;
-            if (randomSpeciallity == 3)
+            if (randomSpeciallity == 3 && setting.listTrialRoom[3]) 
                 room.isAx = true;
-            if (randomSpeciallity == 4)
+            if (randomSpeciallity == 4 && setting.listTrialRoom[4])
                 room.isSword = true;
-            if (randomSpeciallity == 5)
+            if (randomSpeciallity == 5 && setting.listTrialRoom[2])
                 room.isSwordDamocles = true;
-            if (randomSpeciallity == 6)
+            if (randomSpeciallity == 6 && setting.listTrialRoom[1])
                 room.isDeathNPC = true;
-            if (randomSpeciallity == 7)
+            if (randomSpeciallity == 7 && setting.listTrialRoom[6])
                 room.isLostTorch = true;
-            if (randomSpeciallity == 8)
+            if (randomSpeciallity == 8 && setting.listTrialRoom[5])
                 room.isMonsters = true;
-            if (randomSpeciallity == 9)
+            if (randomSpeciallity == 9 && setting.listSpeciallyRoom[5])
                 room.isPurification = true;
-            if (randomSpeciallity == 10)
+            if (randomSpeciallity == 10 && setting.listSpeciallyRoom[4])
                 room.isResurection = true;
-            if (randomSpeciallity == 11)
+            if (randomSpeciallity == 11 && setting.listSpeciallyRoom[6])
                 room.isPray = true;
-            if (randomSpeciallity == 12)
+            if (randomSpeciallity == 12 && setting.listSpeciallyRoom[3])
                 room.isNPC = true;
-            if (randomSpeciallity == 13)
+            if (randomSpeciallity == 13 && setting.listTrialRoom[7])
                 room.isLabyrintheHide = true;
+
+            room.isSpecial = true;
         }
     }
 

@@ -85,6 +85,8 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         gameManager.ui_Manager.DisplayKeyAndTorch(false);
         gameManager.speciallyIsLaunch = true;
         this.transform.Find("ListSeparation").Find("SeparationsMiddleUp").gameObject.SetActive(true);
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
+        gameManager.CloseDoorWhenVote(true);
         if (PhotonNetwork.IsMasterClient)
         {
             SpawnObtacles();
@@ -292,12 +294,6 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         }
     }
 
-
-    public void CreateRandomWay()
-    {
-
-    }
-
     public void CreateWayToTorch()
     {
         if (openList.Count > 0)
@@ -442,6 +438,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         SendHideAllObstacles();
         photonView.RPC("SendSpeciallyPowerIsUsed", RpcTarget.All, true);
 
+
     }
     public void SendHideAllObstacles()
     {
@@ -504,6 +501,8 @@ public class LabyrinthHideRoom : MonoBehaviourPun
     {
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = speciallyPowerIsUsed;
         gameManager.labyrinthIsUsed = speciallyPowerIsUsed;
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+        gameManager.CloseDoorWhenVote(false);
     }
 
     public void CreateWayToTorch2()

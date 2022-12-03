@@ -897,14 +897,14 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         if (!isExpedition)
         {
-            // jsai pa pk c la sérieu jpige rien
-            /*            Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
-                        roomInPlayer.door_isOpen[indexDoor] = true;
-                        int indexNeWDoor3 = gameManager.GetIndexDoorAfterCrosse(indexDoor);
-                        GameObject newDoor = gameManager.GetDoorGo(indexNeWDoor3);
-                        gameManager.game.currentRoom.door_isOpen[newDoor.GetComponent<Door>().index] = true;*/
+            // c la pour update le door_isOpen[indexDoor] pour la porte inverse de la prochaine salle
             Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
             roomInPlayer.door_isOpen[indexDoor] = true;
+            int indexNeWDoor3 = gameManager.GetIndexDoorAfterCrosse(indexDoor);
+            GameObject newDoor = gameManager.GetDoorGo(indexDoor);
+            newDoor.GetComponent<Door>().GetRoomBehind().door_isOpen[indexNeWDoor3] = true;
+/*            Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
+            roomInPlayer.door_isOpen[indexDoor] = true;*/
 
             Room roomTeam2 = gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam);
             if (roomTeam2.isJail)
@@ -1465,6 +1465,18 @@ public class GameManagerNetwork : MonoBehaviourPun
             case 9:
                 room.isLabyrintheHide = true;
                 break;
+            case 10:
+                room.isNPC = true;
+                break;
+            case 11:
+                room.isResurection = true;
+                break;
+            case 12:
+                room.isPurification = true;
+                break;
+            case 13:
+                room.isPray = true;
+                break;
         }
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;
 
@@ -1653,14 +1665,15 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendLaunchResurectionRoom()
     {
-        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
+        //GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
         photonView.RPC("SetLaunchResurectionRoom", RpcTarget.All);
     }
 
     [PunRPC]
     public void SetLaunchResurectionRoom()
     {
-        GameObject.Find("ResurectionRoom").GetComponent<ResurectionRoom>().LaunchResurectionRoom();
+        if (GameObject.Find("ResurectionRoom"))
+            GameObject.Find("ResurectionRoom").GetComponent<ResurectionRoom>().LaunchResurectionRoom();
     }
 
     public void SendLaunchPrayRoom()
@@ -1860,5 +1873,65 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.HidePlayerNotInSameRoom();
     }
 
-    
+    public void SendRandomSacrificePlayer(int indexPlayer)
+    {
+        photonView.RPC("SetRandomSacrificedPlayer", RpcTarget.All, indexPlayer);
+    }
+
+    [PunRPC]
+    public void SetRandomSacrificedPlayer(int indexPlayer)
+    {
+        GameObject playerRevive = gameManager.GetPlayer(indexPlayer);
+        playerRevive.transform.position = new Vector3(0, -0.3f);
+       
+        if (playerRevive.GetComponent<PhotonView>().IsMine)
+        {
+            Debug.LogError("sa passe 0 ");
+            if (!gameManager.SamePositionAtBoss())
+            {
+                gameManager.game.currentRoom = gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room;
+                gameManager.CloseAllDoor(gameManager.game.currentRoom, false);
+                gameManager.SetDoorNoneObstacle(gameManager.game.currentRoom);
+                gameManager.SetDoorObstacle(gameManager.game.currentRoom);
+                gameManager.SetCurrentRoomColor();
+                gameManager.ui_Manager.HideDistanceRoom();
+                
+                gameManager.UpdateSpecialsRooms(gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
+                Debug.LogError("sa passe 1");
+            }
+        }
+        
+        playerRevive.GetComponent<PlayerGO>().position_X = gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.X;
+        playerRevive.GetComponent<PlayerGO>().position_Y = gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.Y;
+
+        if(playerRevive.GetComponent<PhotonView>().IsMine)
+            gameManager.HidePlayerNotInSameRoom();
+        StartCoroutine(gameManager.CloseDoorWhenVoteCoroutine(false));
+        RevivePlayer(playerRevive);
+        ResetRoom();
+    }
+
+    public void SendRelaunchRoom()
+    {
+        photonView.RPC("RelaunchRoom", RpcTarget.All);
+    }
+    [PunRPC]
+    public void RelaunchRoom()
+    {
+        gameManager.ResurectionIsUsed = true;
+        //gameManager.UpdateSpecialsRooms(this.gameManager.game.currentRoom);
+        gameManager.ui_Manager.DisplaySpeciallyLevers(false, 7);
+    }
+
+    public void RevivePlayer(GameObject player)
+    {
+        player.GetComponent<PlayerNetwork>().SendResetSacrifice();
+    }
+
+    [PunRPC]
+    public void ResetRoom()
+    {
+        this.gameManager.game.currentRoom.speciallyPowerIsUsed = true;
+    }
+
 }

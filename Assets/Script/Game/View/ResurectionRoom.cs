@@ -8,6 +8,7 @@ public class ResurectionRoom : MonoBehaviourPun
     public GameObject playerRevive;
     public GameManager gameManager;
     public GameObject spawnResurection;
+    List<GameObject> listSacrifiedplayer;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,7 +37,7 @@ public class ResurectionRoom : MonoBehaviourPun
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        List<GameObject> listSacrifiedplayer = new List<GameObject>();
+        listSacrifiedplayer = new List<GameObject>();
         foreach (GameObject player in players)
         {
             if (player.GetComponent<PlayerGO>().isSacrifice )
@@ -45,39 +46,15 @@ public class ResurectionRoom : MonoBehaviourPun
         if(listSacrifiedplayer.Count > 0)
         {
             int randomIndexPlayer = Random.Range(0, listSacrifiedplayer.Count);
-            photonView.RPC("SendRandomSacrificedPlayer", RpcTarget.All, listSacrifiedplayer[randomIndexPlayer].GetComponent<PhotonView>().ViewID);
+            gameManager.gameManagerNetwork.SendRandomSacrificePlayer(listSacrifiedplayer[randomIndexPlayer].GetComponent<PhotonView>().ViewID);
             return;
         }
-        photonView.RPC("RelaunchRoom", RpcTarget.All);
+        gameManager.gameManagerNetwork.SendRelaunchRoom();
 
     }
 
-    public void RevivePlayer()
-    {
-        playerRevive.GetComponent<PlayerNetwork>().SendResetSacrifice();
-    }
 
-    [PunRPC]
-    public void  SendRandomSacrificedPlayer(int indexPlayer)
-    {
-        playerRevive =  gameManager.GetPlayer(indexPlayer);
-        playerRevive.transform.position = spawnResurection.transform.position;
-        RevivePlayer();
-        ResetRoom();
-    }
 
-    [PunRPC]
-    public void RelaunchRoom()
-    {
-        gameManager.ResurectionIsUsed = true;
-        //gameManager.UpdateSpecialsRooms(this.gameManager.game.currentRoom);
-        gameManager.ui_Manager.DisplaySpeciallyLevers(false, 7);
-    }
+  
 
-    [PunRPC]
-    public void ResetRoom()
-    {
-        playerRevive = null;
-        this.gameManager.game.currentRoom.speciallyPowerIsUsed = true;
-    }
 }

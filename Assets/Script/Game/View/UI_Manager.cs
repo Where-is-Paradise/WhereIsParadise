@@ -1668,6 +1668,10 @@ setting_button_echapMenu.SetActive(false);
         }
         gameManager.GetHexagone(indexRoom).transform.Find("Canvas").Find("Cursed").gameObject.SetActive(true);
     }
+    public void HideSpeciallyDisplay()
+    {
+        GameObject.Find("Special").gameObject.SetActive(false);   
+    }
 }
 
 

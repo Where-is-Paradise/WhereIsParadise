@@ -107,6 +107,7 @@ MonoBehaviour:
   player: {fileID: 0}
   nbBounds: 0
   canChangeDirection: 1
+  launcher: {fileID: 0}
 --- !u!114 &2793397278095793249
 MonoBehaviour:
   m_ObjectHideFlags: 0

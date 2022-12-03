@@ -15,7 +15,6 @@ public class ToogleSpeciallyRoom : MonoBehaviour
         setting = GameObject.FindGameObjectWithTag("Setting").GetComponent<Setting>();
         uiManagement = GameObject.Find("UI_Management").GetComponent<UI_Managment>();
         UpdateToggle();
-        Debug.Log("sa passe");
     }
 
     // Update is called once per frame

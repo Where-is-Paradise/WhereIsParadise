@@ -100,19 +100,26 @@ public class Setting : MonoBehaviour
         listSpeciallyRoom.Add(true); // ChestRoom
         listSpeciallyRoom.Add(true); // SacrificeRoom
         listSpeciallyRoom.Add(true); // HellRoom
+        listSpeciallyRoom.Add(true); // NPC
+        listSpeciallyRoom.Add(true); // Resurection
+        listSpeciallyRoom.Add(true); // Purification
+        listSpeciallyRoom.Add(true); // Pray
 
         listTrialRoom.Add(true); // FireBall room
         listTrialRoom.Add(true); // GodDeath room
         listTrialRoom.Add(true); // Damocles room
         listTrialRoom.Add(true); // Ax room
         listTrialRoom.Add(true); // Sword room
-        
+        listTrialRoom.Add(true); // Monsters room
+        listTrialRoom.Add(true); // Lost torch room
+        listTrialRoom.Add(true); // Labyrinth room
 
         listTrapRoom.Add(true); // Foggy room
         listTrapRoom.Add(true); // Cursed room
         listTrapRoom.Add(true); // Jail room
         listTrapRoom.Add(true); // ChestTraped room
         listTrapRoom.Add(true); // Poised room
+        listTrapRoom.Add(true); // Pray trap room
 
         listObjectImpostor.Add(true); // Invisible potion
         listObjectImpostor.Add(true); // Satanic knife
