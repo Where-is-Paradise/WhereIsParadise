@@ -33,6 +33,7 @@ public class MonstersRoom : MonoBehaviourPun
     {
         StartCoroutine(LaunchMonsterRoom());
         StartCoroutine(AddDifficulty());
+       
     }
     public IEnumerator AddDifficulty()
     {
@@ -51,6 +52,7 @@ public class MonstersRoom : MonoBehaviourPun
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(true);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
 
     }
 
@@ -133,6 +135,11 @@ public class MonstersRoom : MonoBehaviourPun
         timerSpawnMonster = 5;
         StartCoroutine(CanMoveActiveCoroutine());
         this.gameObject.SetActive(false);
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(true);
+        }
+
     }
     public void ResetIsTouchByMonsterAllPlayer()
     {

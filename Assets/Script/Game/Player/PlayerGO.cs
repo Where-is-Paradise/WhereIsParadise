@@ -274,7 +274,9 @@ public class PlayerGO : MonoBehaviour
         if (GameObject.Find("GameManager"))
         {
             gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-            SetSkinBoss(isBoss);
+            
+            if(!gameManager.isActuallySpecialityTime)
+                SetSkinBoss(isBoss);
             if (!hideImpostorInformation)
                 SetSkinImpostor(isImpostor);
             else
@@ -974,6 +976,10 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (!gameManager.AllPlayerBackToExpedition())
+        {
+            return;
+        }
         if (gameManager.game.currentRoom.chest)
         {
             gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
@@ -1531,6 +1537,7 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+
         canDisplayTutorial = isEnter;
         transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Tuto_panel").gameObject.SetActive(isEnter);
@@ -1543,17 +1550,16 @@ public class PlayerGO : MonoBehaviour
     {
         if (gameManager.setting.displayTutorial || force)
         {
-           if (!gameManager.ui_Manager.tutorial_parent.activeSelf)
-           {
-                if (!gameManager.ui_Manager.listTutorialBool[indexPanel])
-                {
-                    gameManager.ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
-                    gameManager.ui_Manager.tutorial_parent.SetActive(true);
-                    gameManager.ui_Manager.tutorial[indexPanel].SetActive(true);
-                    if (!force)
-                        gameManager.ui_Manager.listTutorialBool[indexPanel] = true;
-                }
-           }
+
+            if (!gameManager.ui_Manager.listTutorialBool[indexPanel] || force)
+            {
+                gameManager.ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
+                gameManager.ui_Manager.tutorial_parent.SetActive(true);
+                gameManager.ui_Manager.tutorial[indexPanel].SetActive(true);
+                if (!force)
+                    gameManager.ui_Manager.listTutorialBool[indexPanel] = true;
+            }
+
         }
     }
 
@@ -1569,6 +1575,28 @@ public class PlayerGO : MonoBehaviour
             DisplayTutorial(19, true);
         if (gameManager.game.currentRoom.isJail)
             DisplayTutorial(20, true);
+        if (gameManager.game.currentRoom.isAx)
+            DisplayTutorial(24, true);
+        if (gameManager.game.currentRoom.isSword)
+            DisplayTutorial(25, true);
+        if (gameManager.game.currentRoom.isSwordDamocles)
+            DisplayTutorial(26, true);
+        if (gameManager.game.currentRoom.isDeathNPC)
+            DisplayTutorial(27, true);
+        if (gameManager.game.currentRoom.isLostTorch)
+            DisplayTutorial(28, true);
+        if (gameManager.game.currentRoom.isMonsters)
+            DisplayTutorial(29, true);
+        if (gameManager.game.currentRoom.isLabyrintheHide)
+            DisplayTutorial(30, true);
+        if (gameManager.game.currentRoom.isPurification)
+            DisplayTutorial(31, true);
+        if (gameManager.game.currentRoom.isResurection)
+            DisplayTutorial(32, true);
+        if (gameManager.game.currentRoom.isPray)
+            DisplayTutorial(33, true);
+        if (gameManager.game.currentRoom.isNPC)
+            DisplayTutorial(34, true);
 
     }
 

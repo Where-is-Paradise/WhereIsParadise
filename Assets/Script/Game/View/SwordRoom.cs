@@ -30,6 +30,7 @@ public class SwordRoom : MonoBehaviourPun
         yield return new WaitForSeconds(2);
         DisplaySwordAllPlayer(true);
         DisplayHeartsFoAllPlayer(true);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         roomIsLaunched = true;
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
@@ -134,6 +135,10 @@ public class SwordRoom : MonoBehaviourPun
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(false);
         StartCoroutine(CanMoveActiveCoroutine());
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(true);
+        }
     }
 
     public void ResetIsTouchBySwordAllPlayer()

@@ -812,4 +812,6 @@ public class PlayerNetwork : MonoBehaviourPun
         player.GetComponent<PlayerGO>().isReady = isReady;
         player.transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(isReady);
     }
+
+
 }

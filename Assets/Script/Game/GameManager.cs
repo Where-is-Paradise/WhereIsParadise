@@ -2216,6 +2216,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.ShowImpostor();
         ui_Manager.DisplayKeyAndTorch(false);
         ui_Manager.HideSpeciallyDisplay();
+        ui_Manager.DisplayAutelTutorialSpeciallyRoom(false);
 
     }
 

@@ -52,6 +52,7 @@ public class AxRoom : MonoBehaviourPun
         yield return new WaitForSeconds(2);
         DiplayAxForAllPlayer(true);
         DisplayHeartsFoAllPlayer(true);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         isLaunch = true;
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
@@ -156,6 +157,10 @@ public class AxRoom : MonoBehaviourPun
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(false);
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(true);
+        }
     }
 
 }
