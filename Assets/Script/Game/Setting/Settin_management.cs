@@ -547,5 +547,62 @@ public class Settin_management : MonoBehaviour
 
         QuickSaveRaw.LoadString("Server.json");
     }
+    public void OnClickApplySetResolutionFirstConnexion(Dropdown resolution_dropdown)
+    {
+        int resolution_int = resolution_dropdown.value;
+        Resolution[] resolutions = Screen.resolutions;
+        setting.resolution_width_index = resolution_int;
+        setting.resolution_height_index = resolution_int;
+        setting.fullscreen = fullscren.transform.GetChild(0).GetComponent<Image>().enabled;
+        Screen.SetResolution(resolutions[resolution_int].width, resolutions[resolution_int].height,
+            setting.fullscreen);
+        Camera.main.orthographicSize = 5.1f;
+        SetFullScreenMode(current_index_fullscreenMode);
+        SaveVideo();
+
+    }
+
+    public void OnClickApplyLanguageWithoutReset(Dropdown language_dropdown)
+    {
+        //Dropdown language_dropdown = language.GetComponent<Dropdown>();
+        int language_index = language_dropdown.value;
+        setting.langage = setting.listLangage[language_index];
+        SaveLanguage(setting.langage);
+    }
+    public void OnClickApplyFirstConnexion(Toggle azerty)
+    {
+        setting.canUpdate = true;
+        ChangeControlToAzerty(azerty.isOn);
+    }
+
+    public void ChangeControlToAzerty(bool azerty)
+    {
+        if (azerty)
+        {
+            Debug.Log("sa passe azerty");
+            setting.INPUT_MOVE_FORWARD = KeyCode.Z;
+            InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Positive = KeyCode.Z;
+            setting.INPUT_MOVE_BACKWARD = KeyCode.S;
+            InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Negative = KeyCode.S;
+            setting.INPUT_MOVE_LEFT = KeyCode.Q;
+            InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Negative = KeyCode.Q;
+            setting.INPUT_MOVE_RIGHT = KeyCode.D;
+            InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Positive = KeyCode.D;
+            InputManager.Save();
+        }
+        else
+        {
+            Debug.Log("sa passe querty");
+            setting.INPUT_MOVE_FORWARD = KeyCode.W;
+            InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Positive = KeyCode.W;
+            setting.INPUT_MOVE_BACKWARD = KeyCode.S;
+            InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Negative = KeyCode.S;
+            setting.INPUT_MOVE_LEFT = KeyCode.A;
+            InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Negative = KeyCode.A;
+            setting.INPUT_MOVE_RIGHT = KeyCode.D;
+            InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Positive = KeyCode.D;
+            InputManager.Save();
+        }
+    }
 
 }

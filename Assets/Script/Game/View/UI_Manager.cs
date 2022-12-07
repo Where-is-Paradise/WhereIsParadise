@@ -476,6 +476,7 @@ setting_button_echapMenu.SetActive(false);
         {
             Camera.main.orthographicSize = 5.1f;
             gameManager.gameIsReady = true;
+            StartCoroutine(DisplayTutorialCoroutine());
             if (gameManager.setting.displayTutorial)
             {
                 tutorial[21].SetActive(false);
@@ -491,7 +492,7 @@ setting_button_echapMenu.SetActive(false);
                 DisplayPowerImpostor(false);
             Camera.main.orthographicSize = 5.1f;
             yield return new WaitForSeconds(0.5f);
-            DisplayTutorial();
+           StartCoroutine(DisplayTutorialCoroutine());
             gameManager.gameIsReady = true;
             if (gameManager.setting.displayTutorial)
             {
@@ -1184,6 +1185,7 @@ setting_button_echapMenu.SetActive(false);
             else
             {
                 GameObject chestRoomPenalty = chestRoom.transform.GetChild(chest.index).Find("Penalty").gameObject;
+                Debug.Log(chest.index);
                 if (gameManager.game.currentRoom.isTraped)
                 {
                     chestRoomPenalty.SetActive(display);
@@ -1293,8 +1295,9 @@ setting_button_echapMenu.SetActive(false);
         }
     }
 
-    public void DisplayTutorial()
+    public IEnumerator DisplayTutorialCoroutine()
     {
+        yield return new WaitForSeconds(1);
         if (gameManager.setting.displayTutorial)
         {
             panelTutoriel.SetActive(true);

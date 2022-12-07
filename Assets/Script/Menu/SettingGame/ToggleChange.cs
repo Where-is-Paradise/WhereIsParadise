@@ -41,7 +41,7 @@ public class ToggleChange : MonoBehaviour
         ActivateCheckMark(toggle2, true);
         isOneActive = false;
         if (PhotonNetwork.IsMasterClient)
-            uiManager.SendSettingDoubleChoice(this.gameObject.name, 0);
+            uiManager.SendSettingDoubleChoice(this.gameObject.name, 1);
     }
 
     public void ActivateCheckMark(GameObject toogle, bool activate)
@@ -120,7 +120,7 @@ public class ToggleChange : MonoBehaviour
                 }
                 break;
             case 1:
-                if (setting.KEY_ADDITIONAL == 2)
+                if (setting.KEY_ADDITIONAL == 1)
                 {
                     ActivateCheckMark(toggle1, true);
                     ActivateCheckMark(toggle2, false);
@@ -135,7 +135,7 @@ public class ToggleChange : MonoBehaviour
                     
                 break;
             case 2:
-                if (setting.TORCH_ADDITIONAL == 1)
+                if (setting.TORCH_ADDITIONAL == 0)
                 {
                     ActivateCheckMark(toggle1, true);
                     ActivateCheckMark(toggle2, false);

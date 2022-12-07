@@ -789,4 +789,27 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.transform.Find("Perso").Find("Light_around").gameObject.SetActive(display);
     }
+
+    public void SendDisplayCrown(bool display)
+    {
+        photonView.RPC("SetDisplayCrown", RpcTarget.All, display);
+    }
+
+    [PunRPC]
+    public void SetDisplayCrown(bool display)
+    {
+        player.transform.Find("Perso").Find("Crown").gameObject.SetActive(display);
+    }
+
+    public void SendIsReady(bool isReady)
+    {
+        photonView.RPC("SetIsReady", RpcTarget.All, isReady);
+    }
+
+    [PunRPC]
+    public void SetIsReady(bool isReady)
+    {
+        player.GetComponent<PlayerGO>().isReady = isReady;
+        player.transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(isReady);
+    }
 }

@@ -64,6 +64,7 @@ public class Setting : MonoBehaviour
     //languge
     public string langage = "fr";
     public List<string> listLangage;
+    public bool canUpdate = false;
 
     //tutorial
     public bool displayTutorial = true;

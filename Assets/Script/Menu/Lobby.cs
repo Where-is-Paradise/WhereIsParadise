@@ -218,7 +218,14 @@ public class Lobby : MonoBehaviourPunCallbacks
     {
         maxPlayer = 8;
         if (matchmaking)
-            maxPlayer = 6;
+        {
+            Matchmaking();
+            ui_management.LauchWaitingRoom();
+            ui_management.SetLabelSearchPlayer(matchmaking);
+            Destroy(GameObject.Find("Setting_backWaitingRoom").gameObject);
+            return;
+        }
+            
         PhotonNetwork.CreateRoom(oldCode, new RoomOptions { MaxPlayers = (byte)maxPlayer, PublishUserId = true, IsVisible = true });
         ui_management.SetNbPlayerUI(1, maxPlayer);
         ui_management.LauchWaitingRoom();
@@ -300,26 +307,17 @@ public class Lobby : MonoBehaviourPunCallbacks
         if (matchmaking)
         {
             ui_management.SetPlayerNameMatchmaking(newPlayer);
-            ui_management.DisplaySettingButton(false);
-            //ui_management.DisplayOpenRoomButton(false);
-            ui_management.DisplayStartButton(false);
-            ui_management.DisplayReadyButtonOnly(true);
             ui_management.SetDifficultyValue(0);
-            //ui_management.SetPlayerName(newPlayer);
         }
         else
         {
             ui_management.SetPlayerName(newPlayer);
             if (PhotonNetwork.IsMasterClient)
             {
-                //ui_management.DisplayOpenRoomButton(true);
                 ui_management.DisplayStartButton(true);
             }
-            ui_management.DisplayReadyButtonOnly(false);
-            //ui_management.DisplaySettingButton(true);
         }
 
-        //ui_management.DisplayReadyButton(true);
 
         if (isBackToWaitingRoom)
             newPlayer.GetComponent<PlayerNetwork>().SendNamePlayer(oldPlayerName);
@@ -389,6 +387,8 @@ public class Lobby : MonoBehaviourPunCallbacks
                 StartCoroutine(CouroutineStartGame());
             }
         }
+        GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsReady(GetPlayerMineGO().GetComponent<PlayerGO>().isReady);
+
     }
 
 
@@ -528,10 +528,10 @@ public class Lobby : MonoBehaviourPunCallbacks
                 return false;
             }
         }
-        if (players.Length < 4)
+/*        if (players.Length < 4)
         {
             return false;
-        }
+        }*/
         return true;
     }
 
@@ -566,6 +566,6 @@ public class Lobby : MonoBehaviourPunCallbacks
         }
     }
 
-    
+
     
 }

@@ -228,6 +228,18 @@ public class PlayerGO : MonoBehaviour
 
     void Update()
     {
+        if (GameObject.Find("Lobby_Manager"))
+        {
+            if (this.GetComponent<PhotonView>().IsMine && !GameObject.Find("Lobby_Manager").GetComponent<Lobby>().matchmaking)
+            {
+                if(PhotonNetwork.IsMasterClient)
+                    GetComponent<PlayerNetwork>().SendDisplayCrown(true);
+                else
+                    GetComponent<PlayerNetwork>().SendDisplayCrown(false);
+            }
+
+        }
+
         if (isMovingAutomaticaly)
         {
             return;
@@ -730,13 +742,18 @@ public class PlayerGO : MonoBehaviour
         if (perso.localScale.x < 0)
         {
             chat.localPosition = new Vector3(561, 182);
+            chat.Find("NormalChat").Find("ChatPanel").gameObject.SetActive(true);
+            chat.Find("NormalChat").Find("ChatLeft").gameObject.SetActive(false);
         }
         else
-        {
-            
+        { 
             chat.localPosition = new Vector3(-223, 182);
+            chat.Find("NormalChat").Find("ChatPanel").gameObject.SetActive(false);
+            chat.Find("NormalChat").Find("ChatLeft").gameObject.SetActive(true);
         }
-        
+       
+
+
     }
 
     private void turnLeft()

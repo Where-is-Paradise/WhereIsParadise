@@ -12,12 +12,12 @@ public class LanguageManagement : MonoBehaviour
     public string indexStringInFileLanguage = "";
     private string result;
     private Setting setting;
+    
     // Start is called before the first frame update
     void Start()
     {
         //StartCoroutine(LoadLanguage());
         setting = GameObject.Find("Setting").GetComponent<Setting>();
-
 
             QuickSaveReader.Create(setting.langage)
                     .Read<string>(indexStringInFileLanguage, (r) => { result = r; });
@@ -32,7 +32,7 @@ public class LanguageManagement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        UpdateLanguage();
     }
 
     public IEnumerator LoadLanguage()
@@ -42,6 +42,25 @@ public class LanguageManagement : MonoBehaviour
                       .Read<string>(indexStringInFileLanguage, (r) => { result = r; });
 
         GetComponent<Text>().text = result;
+    }
+
+    public void UpdateLanguage()
+    {
+        if (!setting.canUpdate)
+            return;
+        setting = GameObject.Find("Setting").GetComponent<Setting>();
+
+
+        QuickSaveReader.Create(setting.langage)
+                .Read<string>(indexStringInFileLanguage, (r) => { result = r; });
+
+        GetComponent<Text>().text = result;
+    }
+
+    public IEnumerator SetCanUpdateCoroutine()
+    {
+        yield return new WaitForSeconds(0.05f);
+        setting.canUpdate = false;
     }
 
 }

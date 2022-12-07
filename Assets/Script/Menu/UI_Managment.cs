@@ -36,15 +36,8 @@ public class UI_Managment : MonoBehaviourPun
     public Toggle displayKeyMap;
     public Toggle limitedTorch;
 
-    public Toggle foggyRoom2;
-    public Toggle virusRoom2;
-    public Toggle randomRoomKeys2;
     public Toggle hellRoom2;
-    public Toggle miniMap2;
-    public Toggle distanceT12;
-    public Toggle displayObstacle2;
-    public Toggle displayKeyMap2;
-    public Toggle limitedTorch2;
+
 
     public Text code_Text;
     public GameObject label_text;
@@ -52,6 +45,8 @@ public class UI_Managment : MonoBehaviourPun
     public InputField playerName_matchmaking;
     public GameObject labelSearch;
 
+    public GameObject panelDoorMatchmaking;
+    public GameObject panelDoorLocalGame;
 
     public Setting setting;
     public GameObject waitingMap;
@@ -60,6 +55,7 @@ public class UI_Managment : MonoBehaviourPun
     public GameObject panelErrorForm;
 
     public Text textNbPlayer;
+    public Text textNbPlayerMatchmaking;
 
     public GameObject loading_page;
 
@@ -113,6 +109,7 @@ public class UI_Managment : MonoBehaviourPun
     public GameObject settingButton;
 
     public GameObject backButtonInDoor;
+    public GameObject backButtonInDoormatchmaking;
 
     public GameObject CanvasChatInput;
     public GameObject ButtonChatInputMobile;
@@ -124,6 +121,7 @@ public class UI_Managment : MonoBehaviourPun
     public AudioSource launchChrono;
 
     public GameObject panelLanguageReset;
+    public GameObject panelFirstConnexion;
 
     public Version_http version;
     float k = -1;
@@ -137,8 +135,6 @@ public class UI_Managment : MonoBehaviourPun
         StartCoroutine(TranslateDropdown());
         StartCoroutine(HideSkipTextTrailer());
        
-
-
     }
 
     // Update is called once per frame
@@ -147,24 +143,28 @@ public class UI_Managment : MonoBehaviourPun
 
         // limité le nb de joueur
 
-/*        if (PhotonNetwork.IsMasterClient &&  !lobby.matchmaking && buttonStartGame)
-        {
-            if ((lobby.nbPlayer > 3 && lobby.nbPlayer < 9) || GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerGO>().playerName == "Homertimes   ")
-            {
-                buttonStartGame.SetActive(true);
-            }
-            else
-            {
-                buttonStartGame.SetActive(false);
-            }
+        /*        if (PhotonNetwork.IsMasterClient &&  !lobby.matchmaking && buttonStartGame)
+                {
+                    if ((lobby.nbPlayer > 3 && lobby.nbPlayer < 9) || GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerGO>().playerName == "Homertimes   ")
+                    {
+                        buttonStartGame.SetActive(true);
+                    }
+                    else
+                    {
+                        buttonStartGame.SetActive(false);
+                    }
 
-            //buttonStartGame.SetActive(true);
+                    //buttonStartGame.SetActive(true);
 
-        }*/
+                }*/
 
-  
+        // display StartButton when masterclient
 
 
+        if (PhotonNetwork.IsMasterClient)
+            DisplayStartButton(true);
+        else
+            DisplayStartButton(false);
 
         if (isLoadingConnection)
         {
@@ -179,13 +179,14 @@ public class UI_Managment : MonoBehaviourPun
         if (trailer.isPaused || backToMenu)
         {
             HideTrailer();
-            
+           
         }
 
         if (clickToLaunch || backToMenu)
         {
             presentation.SetActive(false);
             backToMenu = false;
+           
         }
         else
         {
@@ -256,6 +257,9 @@ public class UI_Managment : MonoBehaviourPun
     public void  OnclickIntro()
     {
         clickToLaunch = true;
+        Debug.Log(setting.displayTutorial);
+        if (setting.displayTutorial)
+            panelFirstConnexion.gameObject.SetActive(true);
     }
     public void HideTrailer()
     {
@@ -265,6 +269,7 @@ public class UI_Managment : MonoBehaviourPun
         backgroundImage.SetActive(true);
         presentation.SetActive(false);
         Canvas.SetActive(true);
+       
     }
 
 
@@ -289,7 +294,7 @@ public class UI_Managment : MonoBehaviourPun
         SetDifficulty(difficulty);
         lobby.CreateRoom(setting.NB_PLAYER_MAX , false);
         //setting.NUMBER_EXPEDTION_MAX = numberExpeditionMax;
-        setting.FOGGY_ROOM = foggyRoom.isOn;
+/*        setting.FOGGY_ROOM = foggyRoom.isOn;
         setting.VIRUS_ROOM = virusRoom.isOn;
         setting.RANDOM_ROOM_ADDKEYS = randomRoomKeys.isOn;
         setting.HELL_ROOM = hellRoom.isOn;
@@ -297,7 +302,8 @@ public class UI_Managment : MonoBehaviourPun
         setting.DISPLAY_DISTANCE_T1 = true;
         setting.DISPLAY_OBSTACLE_MAP = true;
         setting.DISPLAY_KEY_MAP = displayKeyMap.isOn;
-        setting.LIMITED_TORCH = true;
+        setting.LIMITED_TORCH = true;*/
+
         SetCodeText();
         DisplayLoadingConnection();
         SendGameSettingSpciallyRoom();
@@ -309,7 +315,7 @@ public class UI_Managment : MonoBehaviourPun
         if (canChange)
         {
             SetDifficulty(difficulty2);
-            setting.FOGGY_ROOM = foggyRoom2.isOn;
+/*            setting.FOGGY_ROOM = foggyRoom2.isOn;
             setting.VIRUS_ROOM = virusRoom2.isOn;
             setting.RANDOM_ROOM_ADDKEYS = randomRoomKeys2.isOn;
             setting.HELL_ROOM = hellRoom2.isOn;
@@ -317,8 +323,8 @@ public class UI_Managment : MonoBehaviourPun
             setting.DISPLAY_DISTANCE_T1 = true;
             setting.DISPLAY_OBSTACLE_MAP = true;
             setting.DISPLAY_KEY_MAP = displayKeyMap2.isOn;
-            setting.LIMITED_TORCH = true;
-            photonView.RPC("SendGameSetting", RpcTarget.Others, difficulty2.GetComponent<Dropdown>().value, foggyRoom2.isOn, virusRoom2.isOn, hellRoom2.isOn, randomRoomKeys2.isOn, miniMap2.isOn, displayKeyMap2.isOn);
+            setting.LIMITED_TORCH = true;*/
+            //photonView.RPC("SendGameSetting", RpcTarget.Others, difficulty2.GetComponent<Dropdown>().value, foggyRoom2.isOn, virusRoom2.isOn, hellRoom2.isOn, randomRoomKeys2.isOn, miniMap2.isOn, displayKeyMap2.isOn);
         }
     }
 
@@ -418,14 +424,6 @@ public class UI_Managment : MonoBehaviourPun
     public void ActivateAllFormSetting( bool activate)
     {
         difficulty2.GetComponent<Dropdown>().interactable = activate;
-        foggyRoom2.interactable = activate;
-        virusRoom2.interactable = activate;
-        randomRoomKeys2.interactable = activate;
-        hellRoom2.interactable = activate;
-        miniMap2.interactable = activate;
-        displayKeyMap2.interactable = activate;
-
-
     }
 
     public void LauchWaitingRoom()
@@ -436,8 +434,11 @@ public class UI_Managment : MonoBehaviourPun
         Canvas.SetActive(false);
         waitingMap.SetActive(true);
         StartCoroutine(CoroutineDisplayChatInputMobile(true));
-
-
+        Debug.Log(lobby.matchmaking);
+        if (lobby.matchmaking)
+            DisplayMenuDoorMatchmaking(true);
+        else
+            DisplayMenuDoorLocalGame(true);
     }
 
    
@@ -594,13 +595,16 @@ public class UI_Managment : MonoBehaviourPun
     public void SetNbPlayerUI(int nbPlayer , int nbPlayerMax)
     {
         textNbPlayer.text = nbPlayer + " / " + nbPlayerMax;
-        if(nbPlayer < 4)
+        textNbPlayerMatchmaking.text = textNbPlayer.text;
+        if (nbPlayer < 4)
         {
             textNbPlayer.color = new Color(255, 0, 0);
+            textNbPlayerMatchmaking.color = textNbPlayer.color;
         }
         else
         {
             textNbPlayer.color = new Color(255, 255, 255);
+            textNbPlayerMatchmaking.color = textNbPlayer.color;
         }
     }
 
@@ -875,6 +879,17 @@ public class UI_Managment : MonoBehaviourPun
         launcGameInfoText.SetActive(!display);
     } 
 
+    public void DisplayMenuDoorMatchmaking(bool display)
+    {
+        panelDoorLocalGame.SetActive(!display);
+        panelDoorMatchmaking.SetActive(display);
+    }
+    public void DisplayMenuDoorLocalGame(bool display)
+    {
+        panelDoorMatchmaking.SetActive(!display);
+        panelDoorLocalGame.SetActive(display);
+    }
+
     public void DisplayReadyButtonOnly(bool display)
     {
         readyButton.SetActive(display);
@@ -901,6 +916,7 @@ public class UI_Managment : MonoBehaviourPun
     public void DisabledBackButton()
     {
         backButtonInDoor.GetComponent<Button>().interactable = false;
+        backButtonInDoormatchmaking.GetComponent<Button>().interactable = false;
     }
 
     public void OnClickChatButton()
@@ -911,9 +927,7 @@ public class UI_Managment : MonoBehaviourPun
     public void DisplayChatInputMobile(bool display)
     {
 
-         CanvasChatInput.SetActive(display);
-
-
+        CanvasChatInput.SetActive(display);
     }
 
     public IEnumerator CoroutineDisplayChatInputMobile(bool display)
@@ -1023,4 +1037,7 @@ public class UI_Managment : MonoBehaviourPun
     {
         setting.NB_IMPOSTOR = newNb;
     }
+
+
+
 }

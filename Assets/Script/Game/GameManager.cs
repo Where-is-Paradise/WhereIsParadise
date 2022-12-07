@@ -125,6 +125,8 @@ public class GameManager : MonoBehaviourPun
         setting = GameObject.FindGameObjectWithTag("Setting").GetComponent<Setting>();
         game.setting = setting;
         game.Launch(25, 25);
+        GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
+
         StartCoroutine(MasterClientCreateMap());
         /*        if (PhotonNetwork.IsMasterClient)
                 {
@@ -368,8 +370,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
-            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[2]);
+            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[3]);
             listIndexPower.RemoveAt(randomInt);
         }
 
@@ -2960,8 +2962,11 @@ public class GameManager : MonoBehaviourPun
                     if (!GetRoomOfBoss().GetComponent<Hexagone>().Room.isTraped)
                     {
                         game.key_counter++;
+                        game.nbTorch++;
                         gameManagerNetwork.SendAnimationAddKey();
                         ui_Manager.LaunchAnimationAddKey();
+                        gameManagerNetwork.SendTorchNumber(game.nbTorch);
+                        ui_Manager.SetTorchNumber();
                     }
                    
                 }
@@ -2970,8 +2975,11 @@ public class GameManager : MonoBehaviourPun
                     if (GetRoomOfBoss().GetComponent<Hexagone>().Room.isTraped)
                     {
                         game.key_counter--;
+                        game.nbTorch--;
                         gameManagerNetwork.SendAnimationBrokenKey();
                         ui_Manager.LaunchAnimationBrokenKey();
+                        gameManagerNetwork.SendTorchNumber(game.nbTorch);
+                        ui_Manager.SetTorchNumber();
                     }
                 }
                 gameManagerNetwork.SendKey(game.key_counter);
@@ -3137,33 +3145,33 @@ public class GameManager : MonoBehaviourPun
         }*/
 
         int randomMain = Random.Range(0, 8);
-        if(randomMain == 0 && setting.listTrialRoom[0])
+        if(randomMain == 0 && setting.listSpeciallyRoom[0])
         {
             game.dungeon.InsertChestRoom(room.Index);
             room.chest = true;
             return 0;
         }
-        if(randomMain == 1 && setting.listTrialRoom[1])
+        if(randomMain == 1 && setting.listSpeciallyRoom[1])
         {
             room.isSacrifice = true;
             return 2;
         }
-        if (randomMain == 2 && setting.listTrialRoom[3]) 
+        if (randomMain == 2 && setting.listSpeciallyRoom[3]) 
         {
             room.isNPC = true;
             return 10;
         }
-        if (randomMain == 3 && setting.listTrialRoom[4])
+        if (randomMain == 3 && setting.listSpeciallyRoom[4])
         {
             room.isResurection = true;
             return 11;
         }
-        if (randomMain == 4 && setting.listTrialRoom[5])
+        if (randomMain == 4 && setting.listSpeciallyRoom[5])
         {
             room.isPurification = true;
             return 12;
         }
-        if (randomMain == 5 && setting.listTrialRoom[6])
+        if (randomMain == 5 && setting.listSpeciallyRoom[6])
         {
             room.isPray = true;
             return 13;

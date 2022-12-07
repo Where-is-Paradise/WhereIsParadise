@@ -106,11 +106,9 @@ public class Game : ScriptableObject
         }*/
         if (dungeon.GetNumberOfPossiblityOfExit() < 7)
         {
-            Debug.Log(currentRoom.DistancePathFinding);
             key_counter = currentRoom.DistancePathFinding - 1;
             return;
         }
-        Debug.Log(currentRoom.DistancePathFinding);
         key_counter = currentRoom.DistancePathFinding;
 
     }
