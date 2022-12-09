@@ -193,6 +193,8 @@ public class ObjectImpostor : MonoBehaviour
                 }
                 break;
             case 1:
+                if (collision.GetComponent<PlayerGO>().haveToGoToExpedition)
+                    return;
                 MurderPower();
                 powerIsUsed = true;
                 gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
