@@ -232,4 +232,184 @@
 "menu_credit_team_6" :  "음악/사운드",
 
 
+
+
+"MISE A JOUR 0.8" : "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
+
+
+"menu_settingGame_main_0" : "타락한 영혼의 수",
+"menu_settingGame_main_1" : "키 번호",
+"menu_settingGame_main_2" : "토치 번호",
+"menu_settingGame_main_3" : "최소 플레이어 7명",
+
+"menu_settingGame_speciallyRoom_0" : "체스트룸",
+"menu_settingGame_speciallyRoom_1" : "희생의 방",
+"menu_settingGame_speciallyRoom_2" : "지옥의 방",
+"menu_settingGame_speciallyRoom_3" : "기도실",
+"menu_settingGame_speciallyRoom_4" : "제보실",
+"menu_settingGame_speciallyRoom_5" : "휴양실",
+"menu_settingGame_speciallyRoom_6" : "정화실",
+
+"menu_settingGame_trialRoom_0" : "가고일 룸",
+"menu_settingGame_trialRoom_1" : "다모클레스의 방",
+"menu_settingGame_trialRoom_2" : "도끼 루",
+"menu_settingGame_trialRoom_3" : "소드룸",
+"menu_settingGame_trialRoom_4" : "갓 데스 룸",
+"menu_settingGame_trialRoom_5" : "생물 방",
+"menu_settingGame_trialRoom_6" : "잃어버린 토치룸",
+"menu_settingGame_trialRoom_7" : "미로 방",
+
+"menu_settingGame_trapRoom_0" : "안개가 자욱한 방",
+"menu_settingGame_trapRoom_1" : "저주받은 방",
+"menu_settingGame_trapRoom_2" : "감옥",
+"menu_settingGame_trapRoom_3" : "체스트 트랩 룸",
+"menu_settingGame_trapRoom_4" : "중독된 방",
+"menu_settingGame_trapRoom_5" : "기도 함정실",
+
+"menu_settingGame_impostorObject_0" : "투명 물약",
+"menu_settingGame_impostorObject_1" : "사탄의 책",
+"menu_settingGame_impostorObject_2" : "사탄 칼",
+
+"menu_firstConnexion_0" : "섬기는 사람",
+
+
+"tutorial_autel_chest_0" : "열려면 상자를 선택해야 하지만 상자 중 하나가 비어 있음을 주의하십시오!",
+"tutorial_autel_chest_1" : "\n 하지만 상자 중 하나가 갇혀 있으니 조심하세요!",
+"tutorial_autel_chest_2" : "조심해, 이 방은 갇힐 수 있어..",
+
+"tutorial_autel_jall_1" : "당신의 팀이 당신의 방에 인접한 문 중 하나 또는 어떤 방의 문 두 개를 열면 당신을 풀어줄 수 있습니다.",
+
+"tutorial_autel_ax_0" : "도끼실",
+"tutorial_autel_ax_1" : "상대방에게 도끼를 던져야 합니다.",
+"tutorial_autel_ax_2" : "마지막 생존자는 선택한 탐험으로 보상을 받게 됩니다.",
+
+"tutorial_autel_sword_0" : "소드룸",
+"tutorial_autel_sword_1" : "검으로 상대를 때려야 합니다.",
+"tutorial_autel_sword_2" : "마지막 생존자는 선택한 탐험으로 보상을 받게 됩니다.",
+
+"tutorial_autel_damocles_0" : "다모클레스의 방",
+"tutorial_autel_damocles_1" : "다른 플레이어를 터치하여 Damocles의 검이 떨어지는 것을 방지하십시오.",
+"tutorial_autel_damolces_2" : "마지막 생존자는 선택한 탐험으로 보상을 받게 됩니다.",
+
+"tutorial_autel_deathNPC_0" : "신 죽음의 방",
+"tutorial_autel_deathNPC_1" : "죽음의 신에게 맞지 않도록.",
+"tutorial_autel_deathNPC_2" : "마지막 생존자는 선택한 탐사로 보상을 받습니다.",
+
+"tutorial_autel_lostTorch_0" : "잃어버린 토치룸",
+"tutorial_autel_lostTorch_1" : "상대방에게서 횃불을 훔치십시오.",
+"tutorial_autel_lostTorch_2" : "횃불을 가진 마지막 영혼은 그들이 선택한 탐험으로 보상을 받을 것입니다.",
+
+"tutorial_autel_monsters_0" : "생물 방",
+"tutorial_autel_monsters_1" : "생물의 공격을 피하고 검을 사용하여 제거할 수 있습니다.",
+"tutorial_autel_monsters_2" : "마지막 생존자는 선택한 탐험으로 보상을 받게 됩니다.",
+
+"tutorial_autel_labyrinth_0" : "미로 방",
+"tutorial_autel_labyrinth_1" : "먼저 숨겨진 미로 길을 찾아 횃불을 모으세요.",
+"tutorial_autel_labyrinth_2" : "횃불을 가장 먼저 모으는 영혼은 선택한 탐험으로 보상을 받습니다.",
+
+"tutorial_autel_purification_0" : "정화실",
+"tutorial_autel_purification_1" : "영혼을 정화할 수 있습니다.",
+"tutorial_autel_purification_2" : "정화된 영혼은 더 이상 저주받지 않습니다.",
+
+"tutorial_autel_resurection_0" : "휴양실",
+"tutorial_autel_resurection_1" : "희생된 영혼을 부활시킬 수 있습니다.",
+"tutorial_autel_resurection_2" : "사탄의 칼에 의해 제거된 영혼도 부활할 수 있습니다.",
+
+"tutorial_autel_pray_0" : "기도실",
+"tutorial_autel_pray_1" : "당신은 실마리를 위해 기도할 수 있습니다.",
+"tutorial_autel_pray_2" : "이 방이 갇힐 수 있으니 주의하세요.",
+
+"tutorial_autel_NPC_0" : "제보실",
+"tutorial_autel_NPC_1" : "이 정보원은 팀 구성원에 대한 정보를 공개합니다.",
+"tutorial_autel_NPC_2" : "가끔 제보자가 거짓말을 하는 경향이 있으니 주의하세요.",
+
+"tutorial_autel_trapPower_0" : "붉은 빛으로 둘러싸인 문 가까이로 이동합니다.",
+"tutorial_autel_trapPower_1" : "버튼을 사용하여 문 뒤의 방에 함정을 설치하십시오.",
+"tutorial_autel_trapPower_2" : "서로 다른 힘을 가진 여러 함정이 존재합니다.",
+
+"tutorial_autel_trapList_0" : "저주받은 방",
+"tutorial_autel_trapList_1" : "이 방은 팀의 의지와 상관없이 무작위로 문이 열립니다.",
+"tutorial_autel_trapList_2" : "안개가 자욱한 방",
+"tutorial_autel_trapList_3" : "이 함정을 사용하면 탐색 중에 거리를 숨길 수 있습니다.",
+"tutorial_autel_trapList_4" : "감옥",
+"tutorial_autel_trapList_5" : "이 방은 탐험하는 동안 영혼을 감금할 수 있습니다.",
+
+"tutorial_autel_trapList2_0" : "체스트 트랩 룸",
+"tutorial_autel_trapList2_1" : "좋은 상자를 수정하여 페널티를 추가할 수 있습니다.",
+"tutorial_autel_trapList2_2" : "중독된 방",
+"tutorial_autel_trapList2_3" : "이 트랩은 탐색할 때 거리 정보를 수정합니다.",
+"tutorial_autel_trapList2_4" : "기도실",
+"tutorial_autel_trapList2_5" : "기도실을 가두고 낙원의 방 위치를 변경할 수 있게 합니다.",
+
+"tutorial_autel_impostorObject_0" : "투명 물약",
+"tutorial_autel_impostorObject_1" : "투명화, 아군에게 사용 가능.",
+"tutorial_autel_impostorObject_2" : "사탄의 책",
+"tutorial_autel_impostorObject_3" : "길 잃은 영혼을 저주할 수 있습니다. (저주받은 길 잃은 영혼은 탐색할 때 잘못된 정보만 볼 수 있습니다)",
+"tutorial_autel_impostorObject_4" : "사탄 칼",
+"tutorial_autel_impostorObject_5" : "잃어버린 영혼을 제거할 수 있습니다.",
+
+"tutorial_echapMenu_button_9" : "타락한 영혼 아이템",
+"tutorial_echapMenu_button_10" : "트랩 룸",
+
+"tutorial_echapMenu_expedition_10" : "모든 영혼 또는 탐험가 영혼이 문 옆에 배치되면 팀 리더는 벽에 있는 탐험 버튼을 사용할 수 있습니다.",
+
+"tutorial_echapMenu_speciallyRoom_0" : "체스트룸",
+"tutorial_echapMenu_speciallyRoom_1" : "이 방에는 두 개의 상자가 있지만 그중 하나만 보상이 있습니다.",
+"tutorial_echapMenu_speciallyRoom_2" : "희생의 방",
+"tutorial_echapMenu_speciallyRoom_3" : "이 방에서 보상으로 열쇠를 얻기 위해 영혼을 희생할 수 있습니다.",
+"tutorial_echapMenu_speciallyRoom_4" : "휴양실",
+"tutorial_echapMenu_speciallyRoom_5" : "희생된 영혼을 구출할 수 있는 방입니다.",
+
+"tutorial_echapMenu_speciallyRoom2_0" : "정화실",
+"tutorial_echapMenu_speciallyRoom2_1" : "영혼을 정화할 수 있는 방입니다. (정화된 영혼은 더 이상 저주받지 않습니다)",
+"tutorial_echapMenu_speciallyRoom2_2" : "기도실",
+"tutorial_echapMenu_speciallyRoom2_3" : "이 방에서는 단서를 찾기 위해 기도할 수 있습니다.",
+"tutorial_echapMenu_speciallyRoom2_4" : "제보실",
+"tutorial_echapMenu_speciallyRoom2_5" : "이 방에는 팀원에 대한 정보를 누설하는 정보원이 있습니다. (때때로 그가 거짓말을 하는 경향이 있으니 조심하세요).",
+
+"tutorial_echapMenu_trialRoom_0" : "가고일 룸",
+"tutorial_echapMenu_trialRoom_1" : "마지막 생존자가 될 때까지 가고일이 보내는 모든 불덩어리를 피해야 합니다.",
+"tutorial_echapMenu_trialRoom_2" : "검실",
+"tutorial_echapMenu_trialRoom_3" : "당신은 당신의 검으로 상대를 쳐서 모든 상대를 제거해야 합니다.",
+"tutorial_echapMenu_trialRoom_4" : "도끼실",
+"tutorial_echapMenu_trialRoom_5" : "도끼를 던져 상대를 모두 제거해야 합니다.",
+"tutorial_echapMenu_trialRoom_6" : "다모클레스의 방",
+"tutorial_echapMenu_trialRoom_7" : "다른 플레이어를 터치하여 Damocles의 검이 떨어지는 것을 방지하십시오.",
+
+"tutorial_echapMenu_trialRoom2_0" : "갓 데스 룸",
+"tutorial_echapMenu_trialRoom2_1" : "사신의 공격을 피해야 합니다.",
+"tutorial_echapMenu_trialRoom2_2" : "잃어버린 토치룸",
+"tutorial_echapMenu_trialRoom2_3" : "시간이 다 될 때까지 횃불을 유지해야 합니다.",
+"tutorial_echapMenu_trialRoom2_4" : "생물 방",
+"tutorial_echapMenu_trialRoom2_5" : "당신은 생물을 피해야 합니다, 당신은 또한 당신의 칼로 그들을 제거할 수 있습니다.",
+"tutorial_echapMenu_trialRoom2_6" : "미로 방",
+"tutorial_echapMenu_trialRoom2_7" : "횃불로 가는 길을 가장 먼저 찾으십시오.",
+
+"tutorial_echapMenu_trapRoom_0" : "붉은 빛으로 둘러싸인 문 가까이로 이동.",
+"tutorial_echapMenu_trapRoom_1" : "버튼을 사용하여 문 뒤의 방에 함정을 설치하십시오.",
+"tutorial_echapMenu_trapRoom_2" : "서로 다른 힘을 가진 여러 함정이 존재합니다.",
+
+"tutorial_echapMenu_trapRoom2_0" : "저주받은 방",
+"tutorial_echapMenu_trapRoom2_1" : "이 방은 팀의 의지와 상관없이 무작위로 문이 열립니다.",
+"tutorial_echapMenu_trapRoom2_2" : "안개가 자욱한 방",
+"tutorial_echapMenu_trapRoom2_3" : "이 함정을 사용하면 탐색 중에 거리를 숨길 수 있습니다.",
+"tutorial_echapMenu_trapRoom2_4" : "감옥",
+"tutorial_echapMenu_trapRoom2_5" : "이 방에서는 탐험하는 동안 영혼을 가둘 수 있습니다.",
+
+"tutorial_echapMenu_trapRoom3_0" : "체스트 트랩 룸",
+"tutorial_echapMenu_trapRoom3_1" : "좋은 상자를 수정하여 페널티를 추가할 수 있습니다.",
+"tutorial_echapMenu_trapRoom3_2" : "중독된 방",
+"tutorial_echapMenu_trapRoom3_3" : "이 트랩은 탐색 시 거리 정보를 수정합니다.",
+"tutorial_echapMenu_trapRoom3_4" : "기도 함정실",
+"tutorial_echapMenu_trapRoom3_5" : "기도실을 가두어 천국방의 위치를 ​​변경할 수 있게 합니다.",
+
+"tutorial_echapMenu_impostorObject_0" : "투명 물약",
+"tutorial_echapMenu_impostorObject_1" : "투명화되어 아군에게 사용할 수 있습니다.",
+"tutorial_echapMenu_impostorObject_2" : "사탄의 책",
+"tutorial_echapMenu_impostorObject_3" : "길 잃은 영혼을 저주할 수 있습니다. (저주받은 길 잃은 영혼은 탐색할 때 잘못된 정보만 볼 수 있습니다)",
+"tutorial_echapMenu_impostorObject_4" : "사탄 칼",
+"tutorial_echapMenu_impostorObject_5" : "잃어버린 영혼을 제거할 수 있습니다.",
+
+
+
 }

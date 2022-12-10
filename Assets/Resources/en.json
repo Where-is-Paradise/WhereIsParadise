@@ -225,7 +225,181 @@
 "menu_credit_team_6" :  "Music / Sound",
 
 
+"MISE A JOUR 0.8" : "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
 
+
+"menu_settingGame_main_0" : "Number of Corrupted Soul",
+"menu_settingGame_main_1" : "Key number",
+"menu_settingGame_main_2" : "Torch number",
+"menu_settingGame_main_3" : "7 minimum players",
+
+"menu_settingGame_speciallyRoom_0" : "Chests room",
+"menu_settingGame_speciallyRoom_1" : "Sacrifice room",
+"menu_settingGame_speciallyRoom_2" : "Hell room",
+"menu_settingGame_speciallyRoom_3" : "Prayer room",
+"menu_settingGame_speciallyRoom_4" : "Informer room",
+"menu_settingGame_speciallyRoom_5" : "Resurection room",
+"menu_settingGame_speciallyRoom_6" : "Purification room",
+
+"menu_settingGame_trialRoom_0" : "Gargoyles room",
+"menu_settingGame_trialRoom_1" : "Damoclès room",
+"menu_settingGame_trialRoom_2" : "Axe room",
+"menu_settingGame_trialRoom_3" : "Sword room",
+"menu_settingGame_trialRoom_4" : "God Death room",
+"menu_settingGame_trialRoom_5" : "Creatures room",
+"menu_settingGame_trialRoom_6" : "Lost torch room",
+"menu_settingGame_trialRoom_7" : "labyrinth room",
+
+"menu_settingGame_trapRoom_0" : "Foggy room",
+"menu_settingGame_trapRoom_1" : "Cursed room",
+"menu_settingGame_trapRoom_2" : "Jail room",
+"menu_settingGame_trapRoom_3" : "Chest trap room",
+"menu_settingGame_trapRoom_4" : "Poisoned room",
+"menu_settingGame_trapRoom_5" : "Prayer trap room",
+
+"menu_settingGame_impostorObject_0" : "Invisibility potion",
+"menu_settingGame_impostorObject_1" : "Satanic book",
+"menu_settingGame_impostorObject_2" : "Satanic knife",
+
+"menu_firstConnexion_0" : "Server",
+
+
+"tutorial_autel_chest_0" : "You must choose a chest to open, but beware one of the chests is empty !",
+"tutorial_autel_chest_1" : "\n but beware one of the chests is trapped !",
+"tutorial_autel_chest_2" : "Be careful, this room can be trapped..",
+
+"tutorial_autel_jall_1" : "Your team can come and free you if they open one of the doors adjacent to your room or two doors of any room.",
+
+"tutorial_autel_ax_0" : "Axe room",
+"tutorial_autel_ax_1" : "You must throw your ax at your opponents.",
+"tutorial_autel_ax_2" : "The last survivor will be rewarded with an exploration of their choice.",
+
+"tutorial_autel_sword_0" : "Sword room",
+"tutorial_autel_sword_1" : "You must hit your opponents with your sword.",
+"tutorial_autel_sword_2" : "The last survivor will be rewarded with an exploration of their choice.",
+
+"tutorial_autel_damocles_0" : "Damoclès room",
+"tutorial_autel_damocles_1" : "Touch other players to prevent the Sword of Damocles from falling on you.",
+"tutorial_autel_damolces_2" : "The last survivor will be rewarded with an exploration of their choice.",
+
+"tutorial_autel_deathNPC_0" : "God death room",
+"tutorial_autel_deathNPC_1" : "Avoid getting hit by the death god.",
+"tutorial_autel_deathNPC_2" : "The last survivor will be rewarded with an exploration of their choice.",
+
+"tutorial_autel_lostTorch_0" : "Lost torch room",
+"tutorial_autel_lostTorch_1" : "Steal the torch from your opponents.",
+"tutorial_autel_lostTorch_2" : "The last soul to have the torch will be rewarded with an exploration of their choice.",
+
+"tutorial_autel_monsters_0" : "Creatures room",
+"tutorial_autel_monsters_1" : "Avoid getting hit by the creatures, you can use your sword to eliminate them.",
+"tutorial_autel_monsters_2" : "The last survivor will be rewarded with an exploration of their choice.",
+
+"tutorial_autel_labyrinth_0" : "Labyrinth room",
+"tutorial_autel_labyrinth_1" : "Find the hidden maze path first to collect the torch.",
+"tutorial_autel_labyrinth_2" : "The first soul to collect the torch will be rewarded with the exploration of their choice.",
+
+"tutorial_autel_purification_0" : "Purification Room",
+"tutorial_autel_purification_1" : "You can purify a soul.",
+"tutorial_autel_purification_2" : "A purified soul will no longer be cursed.",
+
+"tutorial_autel_resurection_0" : "Resurection room",
+"tutorial_autel_resurection_1" : "You can resurrect a sacrificed soul.",
+"tutorial_autel_resurection_2" : "A soul eliminated by the satanic knife can also be resurrected.",
+
+"tutorial_autel_pray_0" : "Prayer room",
+"tutorial_autel_pray_1" : "You can pray for a clue.",
+"tutorial_autel_pray_2" : "Be careful this room can be trapped.",
+
+"tutorial_autel_NPC_0" : "Informer room",
+"tutorial_autel_NPC_1" : "This informant will reveal information about a member of your team.",
+"tutorial_autel_NPC_2" : "Be careful sometimes the informant has a tendency to lie.",
+
+"tutorial_autel_trapPower_0" : "Move close to a door surrounded by a red glow.",
+"tutorial_autel_trapPower_1" : "Use the button to set your trap on the room behind the door.",
+"tutorial_autel_trapPower_2" : "Several traps exist, with different powers.",
+
+"tutorial_autel_trapList_0" : "Cursed room",
+"tutorial_autel_trapList_1" : "This room opens a door randomly, regardless of the will of the team.",
+"tutorial_autel_trapList_2" : "Foggy room",
+"tutorial_autel_trapList_3" : "This trap allows you to hide the distance during explorations.",
+"tutorial_autel_trapList_4" : "Jail room",
+"tutorial_autel_trapList_5" : "This room allows you to imprison a soul during exploration.",
+
+"tutorial_autel_trapList2_0" : "Chests trap room",
+"tutorial_autel_trapList2_1" : "Allows you to modify the good chest to add a penalty to it",
+"tutorial_autel_trapList2_2" : "Poisoned room",
+"tutorial_autel_trapList2_3" : "This trap modifies the information of the distance when exploring.",
+"tutorial_autel_trapList2_4" : "Prayer room",
+"tutorial_autel_trapList2_5" : "Traps a prayer room and allows you to change the location of the Paradise room.",
+
+"tutorial_autel_impostorObject_0" : "Invisibility Potion",
+"tutorial_autel_impostorObject_1" : "Allows you to become invisible, usable on an ally.",
+"tutorial_autel_impostorObject_2" : "Satanic book",
+"tutorial_autel_impostorObject_3" : "Allows you to curse a lost soul, (a cursed lost soul will only see false information when exploring).",
+"tutorial_autel_impostorObject_4" : "Satanic knife",
+"tutorial_autel_impostorObject_5" : "Allows you to eliminate a lost soul.",
+
+"tutorial_echapMenu_button_9" : "Corrupted Soul Items",
+"tutorial_echapMenu_button_10" : "Traps room",
+
+"tutorial_echapMenu_expedition_10" : "Once all the souls or explorer souls are placed next to their doors, the team leader can use the exploration button placed on the wall.",
+
+"tutorial_echapMenu_speciallyRoom_0" : "Chests room",
+"tutorial_echapMenu_speciallyRoom_1" : "In this room there are two chests, but only one of them has a reward.",
+"tutorial_echapMenu_speciallyRoom_2" : "Sacrifice room",
+"tutorial_echapMenu_speciallyRoom_3" : "In this room you can sacrifice a soul in order to have a key as a reward.",
+"tutorial_echapMenu_speciallyRoom_4" : "Resurection room",
+"tutorial_echapMenu_speciallyRoom_5" : "This room allows you to rescuse a sacrificed soul.",
+
+"tutorial_echapMenu_speciallyRoom2_0" : "Purification room",
+"tutorial_echapMenu_speciallyRoom2_1" : "This room allows you to purify a soul. (a purified soul will no longer be cursed)",
+"tutorial_echapMenu_speciallyRoom2_2" : "Prayer room",
+"tutorial_echapMenu_speciallyRoom2_3" : "This room allows you to pray in order to retrieve a clue.",
+"tutorial_echapMenu_speciallyRoom2_4" : "Informer room",
+"tutorial_echapMenu_speciallyRoom2_5" : "In this room is an informant who divulges information about a member of your team. (Be careful sometimes he tends to lie).",
+
+"tutorial_echapMenu_trialRoom_0" : "Gargoyles room",
+"tutorial_echapMenu_trialRoom_1" : "You must avoid all the fireballs sent by the gargoyles until you are the last survivor.",
+"tutorial_echapMenu_trialRoom_2" : "Swords room",
+"tutorial_echapMenu_trialRoom_3" : "You must eliminate all your opponents by hitting them with your sword.",
+"tutorial_echapMenu_trialRoom_4" : "Axe room",
+"tutorial_echapMenu_trialRoom_5" : "You must eliminate all your opponents by throwing your axes.",
+"tutorial_echapMenu_trialRoom_6" : "Damoclès room",
+"tutorial_echapMenu_trialRoom_7" : "Touch other players to prevent the Sword of Damocles from falling on you.",
+
+"tutorial_echapMenu_trialRoom2_0" : "God Death room ",
+"tutorial_echapMenu_trialRoom2_1" : "You must avoid getting hit by the Death God.",
+"tutorial_echapMenu_trialRoom2_2" : "Lost torch room",
+"tutorial_echapMenu_trialRoom2_3" : "You have to keep the torch until the time runs out.",
+"tutorial_echapMenu_trialRoom2_4" : "Creatures room",
+"tutorial_echapMenu_trialRoom2_5" : "You must avoid the creatures, you can also eliminate them with your sword.",
+"tutorial_echapMenu_trialRoom2_6" : "Labyrinth room",
+"tutorial_echapMenu_trialRoom2_7" : "Be the first to find the way to the torch.",
+
+"tutorial_echapMenu_trapRoom_0" : "Move close to a door surrounded by a red glow.",
+"tutorial_echapMenu_trapRoom_1" : "Use the button to set your trap on the room behind the door.",
+"tutorial_echapMenu_trapRoom_2" : "Several traps exist, with different powers.",
+
+"tutorial_echapMenu_trapRoom2_0" : "Cursed room",
+"tutorial_echapMenu_trapRoom2_1" : "This room opens a door randomly, regardless of the will of the team.",
+"tutorial_echapMenu_trapRoom2_2" : "Foggy room",
+"tutorial_echapMenu_trapRoom2_3" : "This trap allows you to hide the distance during explorations.",
+"tutorial_echapMenu_trapRoom2_4" : "Jail room",
+"tutorial_echapMenu_trapRoom2_5" : "This room allows you to imprison a soul during exploration.",
+
+"tutorial_echapMenu_trapRoom3_0" : "Chests trap room",
+"tutorial_echapMenu_trapRoom3_1" : "Allows you to modify the good chest to add a penalty to it.",
+"tutorial_echapMenu_trapRoom3_2" : "Poisoned room",
+"tutorial_echapMenu_trapRoom3_3" : "This trap modifies the information of the distance when exploring.",
+"tutorial_echapMenu_trapRoom3_4" : "Prayer trap room",
+"tutorial_echapMenu_trapRoom3_5" : "Traps a prayer room and allows you to change the location of the Heaven room.",
+
+"tutorial_echapMenu_impostorObject_0" : "Invisibility Potion",
+"tutorial_echapMenu_impostorObject_1" : "Allows you to become invisible, usable on an ally.",
+"tutorial_echapMenu_impostorObject_2" : "Satanic book",
+"tutorial_echapMenu_impostorObject_3" : "Allows you to curse a lost soul, (a cursed lost soul will only see false information when exploring).",
+"tutorial_echapMenu_impostorObject_4" : "Satanic knife",
+"tutorial_echapMenu_impostorObject_5" : "Allows you to eliminate a lost soul.",
 
 
 

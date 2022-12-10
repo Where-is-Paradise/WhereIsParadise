@@ -230,7 +230,7 @@
 
 
 
-"MISE A JOUR 0.5" : "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
+"MISE A JOUR 0.8" : "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
 
 
 "menu_settingGame_main_0" : "Nombre d'âme corrompues",
@@ -271,7 +271,7 @@
 
 "tutorial_autel_chest_0" : "Vous devez choisir un coffre à ouvrir, mais attention un des coffres est vide !",
 "tutorial_autel_chest_1" : "\n mais attention un des coffres est piégé !",
-"tutorial_autel_chest_2" : "Attention cette salle peut être piégé.",
+"tutorial_autel_chest_2" : "Attention cette salle peut être piégée.",
 
 "tutorial_autel_jall_1" : "Votre équipe peut venir vous libérer si elle ouvre une des portes adjacentes à votre salle ou deux portes de salle quelconque.",
 
@@ -284,7 +284,7 @@
 "tutorial_autel_sword_2" : "Le dernier survivant sera récompensé par une exploration de son choix.",
 
 "tutorial_autel_damocles_0" : "Salle de Damoclès",
-"tutorial_autel_damocles_1" : "Touchez les autres joueurs pour éviter que l'épée de Damoclès s'abbate sur vous.",
+"tutorial_autel_damocles_1" : "Touchez les autres joueurs pour éviter que l'épée de Damoclès s'abatte sur vous.",
 "tutorial_autel_damolces_2" : "Le dernier survivant sera récompensé par une exploration de son choix.",
 
 "tutorial_autel_deathNPC_0" : "Salle du Dieu de la Mort",
@@ -304,19 +304,19 @@
 "tutorial_autel_labyrinth_2" : "La première âme a récupérer la torche sera récompensé par l'exploration de son choix.",
 
 "tutorial_autel_purification_0" : "Salle de Purification",
-"tutorial_autel_purification_1" : "Vous pouvez purifé une âme.",
-"tutorial_autel_purification_2" : "Une âme purifié ne sera plus maudit.",
+"tutorial_autel_purification_1" : "Vous pouvez purifier une âme.",
+"tutorial_autel_purification_2" : "Une âme purifiée ne sera plus maudite.",
 
 "tutorial_autel_resurection_0" : "Salle de Resurection",
-"tutorial_autel_resurection_1" : "Vous pouvez résuscité une âme sacrifié.",
-"tutorial_autel_resurection_2" : "Une âme éliminé par le couteau satanique peut aussi être résuscité.",
+"tutorial_autel_resurection_1" : "Vous pouvez ressusciter une âme sacrifiée.",
+"tutorial_autel_resurection_2" : "Une âme éliminée par le couteau satanique peut aussi être ressuscitée.",
 
 "tutorial_autel_pray_0" : "Salle des prières",
 "tutorial_autel_pray_1" : "Vous pouvez prier pour récupérer un indice.",
 "tutorial_autel_pray_2" : "Attention cette salle peut être piégée.",
 
 "tutorial_autel_NPC_0" : "Salle de l'informateur",
-"tutorial_autel_NPC_1" : "Cette informateur va vous révéler une information concernant un membre de votre équipe.",
+"tutorial_autel_NPC_1" : "Cet informateur va vous révéler une information concernant un membre de votre équipe.",
 "tutorial_autel_NPC_2" : "Attention parfois l'informateur à tendance à mentir.",
 
 "tutorial_autel_trapPower_0" : "Déplacez-vous proche d'une porte entourée d'une lueur rouge.",
@@ -325,61 +325,61 @@
 
 "tutorial_autel_trapList_0" : "Salle maudite",
 "tutorial_autel_trapList_1" : "Cette salle ouvre une porte aléatoirement, peu importe la volonté de l'équipe.",
-"tutorial_autel_trapList_2" : "Salle embrumé",
-"tutorial_autel_trapList_3" : "Ce piège permet de caché la distance lors des explorations",
+"tutorial_autel_trapList_2" : "Salle embrumée",
+"tutorial_autel_trapList_3" : "Ce piège permet de cacher la distance lors des explorations",
 "tutorial_autel_trapList_4" : "Salle prison",
 "tutorial_autel_trapList_5" : "Cette salle permet d'emprisoner une âme lors de l'exploration.",
 
-"tutorial_autel_trapList2_0" : "Salle des coffres piégée",
-"tutorial_autel_trapList2_1" : "Piège une salle coffre et ajoute un coffre piégé parmis les deux.",
-"tutorial_autel_trapList2_2" : "Salle empoisoné",
+"tutorial_autel_trapList2_0" : "Salle des coffres piégés",
+"tutorial_autel_trapList2_1" : "Permet de modifier le bon coffre pour lui ajouter un malus.",
+"tutorial_autel_trapList2_2" : "Salle empoisonée",
 "tutorial_autel_trapList2_3" : "Ce piège modifie l'information de la distance lors de l'exploration.",
-"tutorial_autel_trapList2_4" : "Salle des prière piégée",
-"tutorial_autel_trapList2_5" : "Piège une salle des prières et permet de changé d'emplacement la salle du Paradis.",
+"tutorial_autel_trapList2_4" : "Salle des prières piégées",
+"tutorial_autel_trapList2_5" : "Piège une salle des prières et permet de changer d'emplacement la salle du Paradis.",
 
-"tutorial_autel_impostorObject_0" : "Potion d'invisiblité",
+"tutorial_autel_impostorObject_0" : "Potion d'invisibilité",
 "tutorial_autel_impostorObject_1" : "Vous permet de vous rendre invisible, utilisable sur un allié.",
 "tutorial_autel_impostorObject_2" : "Livre satanique",
-"tutorial_autel_impostorObject_3" : "Vous permet de maudire une âme égarée, ( une âme égaré maudit verra seulement des fausses informations lors des explorations).",
+"tutorial_autel_impostorObject_3" : "Vous permet de maudire une âme égarée, ( une âme égarée maudite verra seulement de fausses informations lors des explorations).",
 "tutorial_autel_impostorObject_4" : "Couteau satanique",
-"tutorial_autel_impostorObject_5" : "Vous permet d'éliminer une âme égaré.",
+"tutorial_autel_impostorObject_5" : "Vous permet d'éliminer une âme égarée.",
 
 "tutorial_echapMenu_button_9" : "Objets des âmes corrompues",
 "tutorial_echapMenu_button_10" : "Salles piéges",
 
-"tutorial_echapMenu_expedition_10" : "Une fois toutes l'âmes  ou les âmes explorateurs placés à coté de leurs portes, le chef d'équipe peut utiliser le bouton d'exploration placé sur le mur.",
+"tutorial_echapMenu_expedition_10" : "Une fois le ou les âmes explorateures placées à côté de leurs portes, le chef d'équipe peut utiliser le bouton d'exploration placé sur le mur.",
 
 "tutorial_echapMenu_speciallyRoom_0" : "Salle des coffres",
 "tutorial_echapMenu_speciallyRoom_1" : "Dans cette salle se trouve deux coffres, mais seulement l'un d'entre-eux possède une récompense.",
 "tutorial_echapMenu_speciallyRoom_2" : "Salle sacrifice",
-"tutorial_echapMenu_speciallyRoom_3" : "Dans cette vous pouvez sacrifié une âme afin d'avoir une clef en récompense.",
+"tutorial_echapMenu_speciallyRoom_3" : "Dans cette salle vous pouvez sacrifier une âme afin d'avoir une clef en récompense.",
 "tutorial_echapMenu_speciallyRoom_4" : "Salle de résurection",
-"tutorial_echapMenu_speciallyRoom_5" : "Cette salle vous permet de réscusité une âme sacrifié.",
+"tutorial_echapMenu_speciallyRoom_5" : "Cette salle vous permet de ressusciter une âme sacrifiée.",
 
 "tutorial_echapMenu_speciallyRoom2_0" : "Salle de purification",
-"tutorial_echapMenu_speciallyRoom2_1" : "Cette salle vous permet de purifié une âme. ( une âme purifié ne sera plus maudit)",
+"tutorial_echapMenu_speciallyRoom2_1" : "Cette salle vous permet de purifier une âme. (une âme purifiée ne sera plus maudite)",
 "tutorial_echapMenu_speciallyRoom2_2" : "Salle des prières",
 "tutorial_echapMenu_speciallyRoom2_3" : "Cette salle vous permet de prier afin de récupérer un indice.",
 "tutorial_echapMenu_speciallyRoom2_4" : "Salle de l'informateur",
-"tutorial_echapMenu_speciallyRoom2_5" : "Dans cette salle se trouve un informateur qui divulge une information concernant un membre de votre équipe. ( Attention parfois il a tendance à mentir).",
+"tutorial_echapMenu_speciallyRoom2_5" : "Dans cette salle se trouve un informateur qui divulgue une information concernant un membre de votre équipe. (Attention parfois il a tendance à mentir).",
 
 "tutorial_echapMenu_trialRoom_0" : "Salle des Gargouilles",
-"tutorial_echapMenu_trialRoom_1" : "Vous devez éviter toutes les boules de feu envoyé par les gargouilles jusqu'à que vous soyez le dernier survivant.",
+"tutorial_echapMenu_trialRoom_1" : "Vous devez éviter toutes les boules de feu envoyées par les gargouilles jusqu'à que vous soyez le dernier survivant.",
 "tutorial_echapMenu_trialRoom_2" : "Salle des épées",
 "tutorial_echapMenu_trialRoom_3" : "Vous devez éliminer tous vos adversaires en les touchant avec votre épée.",
 "tutorial_echapMenu_trialRoom_4" : "Salle des haches",
-"tutorial_echapMenu_trialRoom_5" : "Vous devez éliminer tous vos adversaires en lancant votre haches.",
+"tutorial_echapMenu_trialRoom_5" : "Vous devez éliminer tous vos adversaires en lançant votre hache.",
 "tutorial_echapMenu_trialRoom_6" : "Salle de Damolcès",
-"tutorial_echapMenu_trialRoom_7" : "Touchez les autres joueurs pour éviter que l'épée de Damoclès s'abbate sur vous.",
+"tutorial_echapMenu_trialRoom_7" : "Touchez les autres joueurs pour éviter que l'épée de Damoclès s'abatte sur vous.",
 
 "tutorial_echapMenu_trialRoom2_0" : "Salle du Dieu de la Mort",
 "tutorial_echapMenu_trialRoom2_1" : "Vous devez éviter de vous faire toucher par le Dieu de la Mort.",
 "tutorial_echapMenu_trialRoom2_2" : "Salle de la torche perdu",
 "tutorial_echapMenu_trialRoom2_3" : "Vous devez garder la torche jusqu'à la fin du temps imparti.",
 "tutorial_echapMenu_trialRoom2_4" : "Salle des créatures",
-"tutorial_echapMenu_trialRoom2_5" : "Vous devez évitez les créatures, vous pouvez aussi les éliminer avec votre épée.",
+"tutorial_echapMenu_trialRoom2_5" : "Vous devez éviter les créatures, vous pouvez aussi les éliminer avec votre épée.",
 "tutorial_echapMenu_trialRoom2_6" : "Salle du labyrinthe",
-"tutorial_echapMenu_trialRoom2_7" : "Soyez le premier a trouver le chemin vers la torche.",
+"tutorial_echapMenu_trialRoom2_7" : "Soyez le premier à trouver le chemin vers la torche.",
 
 "tutorial_echapMenu_trapRoom_0" : "Déplacez-vous proche d'une porte entourée d'une lueur rouge.",
 "tutorial_echapMenu_trapRoom_1" : "Utilisez le bouton pour poser votre piège sur la salle qui se trouve derrière la porte.",
@@ -388,22 +388,22 @@
 "tutorial_echapMenu_trapRoom2_0" : "Salle maudite",
 "tutorial_echapMenu_trapRoom2_1" : "Cette salle ouvre une porte aléatoirement, peu importe la volonté de l'équipe.",
 "tutorial_echapMenu_trapRoom2_2" : "Salle embrumée",
-"tutorial_echapMenu_trapRoom2_3" : "Ce piège permet de caché la distance lors des explorations.",
+"tutorial_echapMenu_trapRoom2_3" : "Ce piège permet de cacher la distance lors des explorations.",
 "tutorial_echapMenu_trapRoom2_4" : "Salle prison",
-"tutorial_echapMenu_trapRoom2_5" : "Cette salle permet d'emprisoner une âme lors de l'exploration.",
+"tutorial_echapMenu_trapRoom2_5" : "Cette salle permet d'emprisonner une âme lors de l'exploration.",
 
 "tutorial_echapMenu_trapRoom3_0" : "Salle des coffres piégée",
-"tutorial_echapMenu_trapRoom3_1" : "Piège une salle coffre et ajoute un coffre piégé parmis les deux.",
+"tutorial_echapMenu_trapRoom3_1" : "Piège un des deux coffres dans la salle des coffres.",
 "tutorial_echapMenu_trapRoom3_2" : "Salle empoisonée",
 "tutorial_echapMenu_trapRoom3_3" : "Ce piège modifie l'information de la distance lors de l'exploration.",
 "tutorial_echapMenu_trapRoom3_4" : "Salle des prières piégées",
-"tutorial_echapMenu_trapRoom3_5" : "CPiège une salle des prières et permet de changé d'emplacement la salle du Paradis.",
+"tutorial_echapMenu_trapRoom3_5" : "Piège une salle des prières et permet de changer d'emplacement la salle du Paradis.",
 
 "tutorial_echapMenu_impostorObject_0" : "Potion d'invisiblité",
 "tutorial_echapMenu_impostorObject_1" : "Vous permet de vous rendre invisible, utilisable sur un allié.",
 "tutorial_echapMenu_impostorObject_2" : "Livre satanique",
-"tutorial_echapMenu_impostorObject_3" : "Vous permet de maudire une âme égarée, ( une âme égaré maudit verra seulement des fausses informations lors des explorations).",
+"tutorial_echapMenu_impostorObject_3" : "Vous permet de maudire une âme égarée, (une âme égarée maudite verra seulement des fausses informations lors des explorations).",
 "tutorial_echapMenu_impostorObject_4" : "Couteau satanique",
-"tutorial_echapMenu_impostorObject_5" : "Vous permet d'éliminer une âme égaré.",
+"tutorial_echapMenu_impostorObject_5" : "Vous permet d'éliminer une âme égarée.",
 
   }
