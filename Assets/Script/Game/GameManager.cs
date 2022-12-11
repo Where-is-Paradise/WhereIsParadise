@@ -370,8 +370,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
-            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[3]);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
+            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[1]);
             listIndexPower.RemoveAt(randomInt);
         }
 

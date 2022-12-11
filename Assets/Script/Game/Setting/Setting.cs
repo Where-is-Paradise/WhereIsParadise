@@ -68,6 +68,7 @@ public class Setting : MonoBehaviour
 
     //tutorial
     public bool displayTutorial = true;
+    public bool tutorialImpostor = true;
 
     //Server
     public string region = "eu";

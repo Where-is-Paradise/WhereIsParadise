@@ -1160,7 +1160,7 @@ setting_button_echapMenu.SetActive(false);
             return;
         }
         
-        GameObject chestRoom = MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject;
+        GameObject chestRoom = MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").Find("Chests").gameObject;
         foreach (Chest chest in gameManager.game.currentRoom.chestList)
         {
             if (chest.isAward)
@@ -1185,7 +1185,6 @@ setting_button_echapMenu.SetActive(false);
             else
             {
                 GameObject chestRoomPenalty = chestRoom.transform.GetChild(chest.index).Find("Penalty").gameObject;
-                Debug.Log(chest.index);
                 if (gameManager.game.currentRoom.isTraped)
                 {
                     chestRoomPenalty.SetActive(display);
@@ -1210,7 +1209,7 @@ setting_button_echapMenu.SetActive(false);
 
     public void ResetChestRoom()
     {
-        GameObject chestRoom = MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject;
+        GameObject chestRoom = MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").Find("Chests").gameObject;
         for (int i = 0; i < chestRoom.transform.childCount; i++)
         {
             GameObject chestRoomAward = chestRoom.transform.GetChild(i).Find("Award").gameObject;
@@ -1273,7 +1272,7 @@ setting_button_echapMenu.SetActive(false);
 
     public void SetDistanceTextAwardChest(int indexChest)
     {
-        GameObject chestRoom = MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject;
+        GameObject chestRoom = MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").Find("Chests").gameObject;
 
         chestRoom.transform.GetChild(indexChest).Find("Award").Find("Distance").Find("Canvas").Find("PlusOne").GetComponent<Text>().text = gameManager.game.currentRoom.DistancePathFinding.ToString();
     }
@@ -1289,9 +1288,9 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayVoteChest(bool display)
     {
-        for (int i = 0; i < MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").childCount; i++)
+        for (int i = 0; i < MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").Find("Chests").childCount; i++)
         {
-            MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").GetChild(i).Find("VoteZone").gameObject.SetActive(display);
+            MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").Find("Chests").GetChild(i).Find("VoteZone").gameObject.SetActive(display);
         }
     }
 
@@ -1674,6 +1673,11 @@ setting_button_echapMenu.SetActive(false);
     public void HideSpeciallyDisplay()
     {
         GameObject.Find("Special").gameObject.SetActive(false);   
+    }
+
+    public void HideImgInMiddleOfSpeciallyRoom()
+    {
+
     }
 }
 

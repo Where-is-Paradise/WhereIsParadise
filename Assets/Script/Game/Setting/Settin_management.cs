@@ -433,20 +433,31 @@ public class Settin_management : MonoBehaviour
     public void LoadTutorial()
     {
         bool displayTutorial = true;
+        bool tutorialImpostor = true;
         try
         {
             QuickSaveReader.Create("tutorial")
-                      .Read<bool>("display_tutorial", (r) => { displayTutorial = r; });
+                      .Read<bool>("display_tutorial", (r) => { displayTutorial = r; })
+                      .Read<bool>("tutorial_impostor", (r) => { tutorialImpostor = r; });
         }
         catch (Exception e)
         {
-            SaveTutorial(true);
+            SaveTutorial(true , true);
         }
 
         setting.displayTutorial = displayTutorial;
-
+        setting.tutorialImpostor = tutorialImpostor;
     }
 
+    public void SaveTutorial(bool displayTutorial , bool tutorialImpostor)
+    {
+        QuickSaveWriter.Create("tutorial")
+                        .Write("display_tutorial", displayTutorial)
+                        .Write("tutorial_impostor", tutorialImpostor)
+                        .Commit();
+
+        QuickSaveRaw.LoadString("tutorial.json");
+    }
     public void SaveTutorial(bool displayTutorial)
     {
         QuickSaveWriter.Create("tutorial")
@@ -459,6 +470,10 @@ public class Settin_management : MonoBehaviour
     public void QuitTutorial()
     {
         SaveTutorial(false);
+    }
+    public void QuitTutorialImpostor()
+    {
+        SaveTutorial(false , false);
     }
 
 
@@ -579,7 +594,6 @@ public class Settin_management : MonoBehaviour
     {
         if (azerty)
         {
-            Debug.Log("sa passe azerty");
             setting.INPUT_MOVE_FORWARD = KeyCode.Z;
             InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Positive = KeyCode.Z;
             setting.INPUT_MOVE_BACKWARD = KeyCode.S;
@@ -592,7 +606,6 @@ public class Settin_management : MonoBehaviour
         }
         else
         {
-            Debug.Log("sa passe querty");
             setting.INPUT_MOVE_FORWARD = KeyCode.W;
             InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Positive = KeyCode.W;
             setting.INPUT_MOVE_BACKWARD = KeyCode.S;

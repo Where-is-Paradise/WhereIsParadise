@@ -9,6 +9,10 @@ public class NPCRoom : MonoBehaviourPun
     public bool isTrue = false;
     public bool playerChooseIsImpostor = false;
     public GameManager gameManager;
+    string informationOne = "n'est pas une âme égarée";
+    string informationTwo = "est une âme égarée";
+    string informationThree = "n'est pas une âme corrompue";
+    string informationFour = "est une âme corrompue";
     // Start is called before the first frame update
     void Start()
     {
@@ -77,11 +81,8 @@ public class NPCRoom : MonoBehaviourPun
 
     public string ChooseInformation()
     {
-        string informationOne = "n'est pas une âme égaré";
-        string informationTwo = "est une âme égaré";
-        string informationThree = "n'est pas une âme corrompue";
-        string informationFour = "est une âme corrompue";
 
+        Traduction();
         List<string> potentialString = new List<string>();
 
         if (isTrue && playerChooseIsImpostor) 
@@ -110,4 +111,15 @@ public class NPCRoom : MonoBehaviourPun
         return potentialString[randomIndex];
     }
 
+
+    public void Traduction()
+    {
+        if(gameManager.setting.langage == "en")
+        {
+            informationOne = "is not a lost soul";
+            informationTwo = "is a lost soul";
+            informationThree = "is not a corrupted soul";
+            informationFour = "is a corrupted soul";
+        }
+    }
 }

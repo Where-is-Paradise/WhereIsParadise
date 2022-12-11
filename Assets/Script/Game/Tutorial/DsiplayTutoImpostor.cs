@@ -30,7 +30,7 @@ public class DsiplayTutoImpostor : MonoBehaviour
 
     public void DisplayTutorial(int indexPanel)
     {
-        if (gameManager.setting.displayTutorial)
+        if (gameManager.setting.tutorialImpostor)
         {
             if (!gameManager.ui_Manager.listTutorialBool[indexPanel])
             {
