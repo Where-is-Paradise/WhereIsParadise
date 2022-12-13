@@ -101,13 +101,13 @@ public class AxRoom : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void ShotAxToDirection( float positionX, float positionY, float directionX, float directionY)
+    public void ShotAxToDirection( float positionX, float positionY, float directionX, float directionY , int indexPlayer)
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
 
         GameObject newAx = PhotonNetwork.Instantiate("Ax", new Vector3(positionX,positionY), Quaternion.identity);
-        newAx.GetComponent<Ax>().launcher = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
+        newAx.GetComponent<Ax>().SendLancher(indexPlayer);
         newAx.GetComponent<Ax>().SendSpeedAndDirection(5, directionX, directionY);
         newAx.GetComponent<Ax>().player = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
     }
@@ -115,7 +115,8 @@ public class AxRoom : MonoBehaviourPun
     public void SendShotAxToDirection()
     {
         Vector3 positionPlayer = gameManager.GetPlayerMineGO().transform.position;
-        photonView.RPC("ShotAxToDirection", RpcTarget.All , positionPlayer.x , positionPlayer.y, currentDirection.x, currentDirection.y);
+        int indexPlayer = gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID;
+        photonView.RPC("ShotAxToDirection", RpcTarget.All , positionPlayer.x , positionPlayer.y, currentDirection.x, currentDirection.y , indexPlayer);
     }
 
     public void DesactivateRoom()

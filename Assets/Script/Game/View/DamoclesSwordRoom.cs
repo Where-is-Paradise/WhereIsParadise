@@ -214,7 +214,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     {
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
         this.sword.transform.parent = this.transform;
-        this.sword.transform.position = new Vector3(0, 0);
+        this.sword.transform.localPosition = new Vector3(-9.59f, 3.25f);
         this.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         gameManager.CloseDoorWhenVote(false);
         gameManager.damoclesIsLaunch = true;

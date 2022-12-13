@@ -86,6 +86,7 @@ public class MonstersRoom : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             player.GetComponent<PlayerGO>().ResetHeart();
+            player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
         }
     }
 
@@ -134,7 +135,7 @@ public class MonstersRoom : MonoBehaviourPun
         gameManager.CloseDoorWhenVote(false);
         timerSpawnMonster = 5;
         StartCoroutine(CanMoveActiveCoroutine());
-        this.gameObject.SetActive(false);
+        
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(true);

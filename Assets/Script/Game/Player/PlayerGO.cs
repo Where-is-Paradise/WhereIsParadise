@@ -746,12 +746,16 @@ public class PlayerGO : MonoBehaviour
             chat.localPosition = new Vector3(561, 182);
             chat.Find("NormalChat").Find("ChatPanel").gameObject.SetActive(true);
             chat.Find("NormalChat").Find("ChatLeft").gameObject.SetActive(false);
+            chat.Find("ChatPanelMoreLarger").Find("ChatPanel").gameObject.SetActive(true);
+            chat.Find("ChatPanelMoreLarger").Find("ChatLeft").gameObject.SetActive(false);
         }
         else
         { 
             chat.localPosition = new Vector3(-223, 182);
             chat.Find("NormalChat").Find("ChatPanel").gameObject.SetActive(false);
             chat.Find("NormalChat").Find("ChatLeft").gameObject.SetActive(true);
+            chat.Find("ChatPanelMoreLarger").Find("ChatPanel").gameObject.SetActive(false);
+            chat.Find("ChatPanelMoreLarger").Find("ChatLeft").gameObject.SetActive(true);
         }
        
 

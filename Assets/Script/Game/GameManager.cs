@@ -370,8 +370,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
-            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[1]);
+            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[0]);
             listIndexPower.RemoveAt(randomInt);
         }
 
@@ -404,8 +404,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
-            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
+            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
+            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
             listIndexPower.RemoveAt(randomInt);
         }
     }
@@ -1201,6 +1201,8 @@ public class GameManager : MonoBehaviourPun
         {
             ui_Manager.DisplayInterrogationPoint();
         }
+
+        ui_Manager.HideImgInMiddleOfSpeciallyRoom(roomExpedition, false);
 /*        else
         {
             if(GetPlayerMineGO().GetComponent<PlayerGO>().isCursed || roomExpedition.isCursedTrap)
@@ -1313,6 +1315,7 @@ public class GameManager : MonoBehaviourPun
 
         ui_Manager.DisplayKeyPlusOne(false);
         ui_Manager.DisplayKeyAndTorch(true);
+        ui_Manager.HideImgInMiddleOfSpeciallyRoom(roomInExpe, true);
         SetRoomColor(roomInExpe, false);
         SetCurrentRoomColor();
         ui_Manager.HideDistanceRoom();
@@ -2463,7 +2466,9 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplaySpeciallyLevers(false, 0);
         ui_Manager.DisplayMainLevers(true);
         ui_Manager.DisplayAutelTutorialSpeciallyRoom(false);
+        ui_Manager.ChangeColorAllPlayerSkinToFoggy(false);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+
         UpdateColorDoor(room);
         if (room.explorationIsUsed)
         {
@@ -2478,7 +2483,6 @@ public class GameManager : MonoBehaviourPun
             if (room.speciallyPowerIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
-                ui_Manager.DisplayChestRoom(false);
                 isActuallySpecialityTime = false;
             }
             return;
@@ -2526,7 +2530,8 @@ public class GameManager : MonoBehaviourPun
         if (room.IsFoggy)
         {
             ui_Manager.DisplayFoggyRoom(true);
-            if(!room.explorationIsUsed)
+            ui_Manager.ChangeColorAllPlayerSkinToFoggy(true);
+            if (!room.explorationIsUsed)
                 ui_Manager.DisplayLeverExploration(true);
             ui_Manager.DisplayLeverVoteDoor(true);
             return;
@@ -2548,7 +2553,7 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplayDeathNPCRoom(false);
+                //ui_Manager.DisplayDeathNPCRoom(false);
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
@@ -2563,7 +2568,6 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplayDamoclesSwordRoom(false);
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
@@ -2578,7 +2582,6 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplayAxRoom(false);
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
@@ -2594,7 +2597,6 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplaySwordRoom(false);
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
@@ -2626,12 +2628,9 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplayMonstersRoom(false);
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
-
-
             }
             return;
         }
@@ -2699,7 +2698,6 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed || labyrinthIsUsed)
             {
-                ui_Manager.DisplayLabyrinthRoom(false);
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
@@ -2860,7 +2858,7 @@ public class GameManager : MonoBehaviourPun
         isActuallySpecialityTime = false;
         ui_Manager.DisplayAwardAndPenaltyForImpostor(false);
         ui_Manager.ResetAllPlayerLightAround();
-        //StartCoroutine(ResetAllPlayerLightAroundCoroutine());
+        StartCoroutine(ResetAllPlayerLightAroundCoroutine());
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         if (SamePositionAtBoss())
         {
@@ -3022,7 +3020,7 @@ public class GameManager : MonoBehaviourPun
         yield return new WaitForSeconds(4);
 
         ui_Manager.ResetChestRoom();
-        ui_Manager.DisplayChestRoom(false);
+        //ui_Manager.DisplayChestRoom(false);
         //CloseAllDoor(game.currentRoom, false);
     }
 

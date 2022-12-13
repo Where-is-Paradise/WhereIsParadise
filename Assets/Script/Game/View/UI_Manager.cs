@@ -846,7 +846,7 @@ setting_button_echapMenu.SetActive(false);
         foreach(GameObject player  in GameObject.FindGameObjectsWithTag("Player"))
         {
             player.transform.GetChild(1).GetChild(9).gameObject.SetActive(false);
-            player.transform.GetChild(1).GetChild(13).gameObject.SetActive(false);
+            player.transform.GetChild(1).GetChild(14).gameObject.SetActive(false);
         }
     }
 
@@ -1675,9 +1675,53 @@ setting_button_echapMenu.SetActive(false);
         GameObject.Find("Special").gameObject.SetActive(false);   
     }
 
-    public void HideImgInMiddleOfSpeciallyRoom()
+    public void HideImgInMiddleOfSpeciallyRoom(Room room, bool display)
     {
+        if (room.isPurification)
+        {
+            GameObject.Find("Special").transform.Find("PurificationRoom").Find("Status").gameObject.SetActive(display);
+            GameObject.Find("Special").transform.Find("PurificationRoom").Find("zone").gameObject.SetActive(display);
+        }
+        if (room.isResurection)
+        {
+            GameObject.Find("Special").transform.Find("ResurectionRoom").Find("Status").gameObject.SetActive(display);
+            GameObject.Find("Special").transform.Find("ResurectionRoom").Find("StatusRight").gameObject.SetActive(display);
+            GameObject.Find("Special").transform.Find("ResurectionRoom").Find("StatusLEFT").gameObject.SetActive(display);
+        }
+        if (room.isPray)
+        {
+            GameObject.Find("Special").transform.Find("PrayRoom").Find("Status").gameObject.SetActive(display);
+        }
+        if (room.isNPC)
+        {
+            GameObject.Find("Special").transform.Find("NPCRoom").Find("NPC").gameObject.SetActive(display);
+        }
 
+    }
+
+    public void ChangeColorAllPlayerSkinToFoggy(bool display)
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach(GameObject player in players)
+        {
+            if (display)
+            {
+                player.transform.Find("Perso").Find("Body_skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(false);        
+                player.transform.Find("Perso").Find("Body_skins").GetChild(0).gameObject.SetActive(true);
+                player.transform.Find("Perso").Find("Body_skins").GetChild(0).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.7f);
+            }
+            else
+            {
+                player.transform.Find("Perso").Find("Body_skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(true);
+                player.transform.Find("Perso").Find("Body_skins").GetChild(0).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                
+                if(player.GetComponent<PlayerGO>().indexSkin != 0)
+                    player.transform.Find("Perso").Find("Body_skins").GetChild(0).gameObject.SetActive(false);
+               
+            }
+
+                
+        }
     }
 }
 

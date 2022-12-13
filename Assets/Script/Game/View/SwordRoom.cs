@@ -148,6 +148,7 @@ public class SwordRoom : MonoBehaviourPun
         {
             player.GetComponent<PlayerGO>().isTouchBySword = false;
             player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
+            player.GetComponent<PlayerGO>().ResetHeart();
         }
     }
 

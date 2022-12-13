@@ -68,6 +68,7 @@ public class PrayRoom : MonoBehaviour
         else
             DisplayDistance();
 
+        gameManager.CloseDoorWhenVote(false);
         roomIsLaunched = false;
         gameManager.PrayIsUsed = true;
     }

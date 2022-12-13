@@ -14,6 +14,8 @@ public class DamoclesSword : MonoBehaviourPun
             return;
         if (!damoclesRoom.canChangePlayer)
             return;
+        if (!damoclesRoom.gameManager.damoclesIsLaunch)
+            return;
         if (collision.tag == "CollisionTrigerPlayer")
         {
             if (!damoclesRoom.currentPlayer)

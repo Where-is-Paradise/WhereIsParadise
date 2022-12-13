@@ -135,6 +135,7 @@ public class Sword : MonoBehaviourPun
                 }
             }
             player.GetComponent<PlayerGO>().isTouchByAx = false;
+            player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
         }
     }
 

@@ -230,6 +230,7 @@ public class Ax : MonoBehaviourPun
             }
             player.GetComponent<PlayerGO>().ResetHeart();
             player.GetComponent<PlayerGO>().isTouchByAx = false;
+            player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
         }
     }
 
@@ -250,5 +251,18 @@ public class Ax : MonoBehaviourPun
     {
         this.axRoom.DesactivateRoom();
         PhotonNetwork.Destroy(this.gameObject);
+    }
+
+    public void SendLancher(int indexPlayer)
+    {
+        photonView.RPC("SetLancher", RpcTarget.All, indexPlayer);
+    }
+
+    [PunRPC]
+    public void SetLancher(int indexPlayer)
+    {
+        Debug.LogError(indexPlayer); 
+        axRoom = GameObject.Find("AxRoom").GetComponent<AxRoom>();
+        launcher = axRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>();
     }
 }
