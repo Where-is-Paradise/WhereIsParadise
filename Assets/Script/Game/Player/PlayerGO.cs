@@ -245,14 +245,30 @@ public class PlayerGO : MonoBehaviour
             return;
         }
         TurnChat();
-        if (displayMessage)
+
+        if (!gameManager)
         {
-            this.transform.GetChild(0).GetChild(1).gameObject.SetActive(true);
+            if (displayMessage)
+            {
+                this.transform.GetChild(0).GetChild(1).gameObject.SetActive(true);
+            }
+            else
+            {
+                this.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
+            }
         }
         else
         {
-            this.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
+            if (displayMessage && !gameManager.game.currentRoom.IsFoggy)
+            {
+                this.transform.GetChild(0).GetChild(1).gameObject.SetActive(true);
+            }
+            else
+            {
+                this.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
+            }
         }
+      
 
         if (GameObject.Find("UI_Management"))
         {

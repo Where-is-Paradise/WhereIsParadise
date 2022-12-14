@@ -1766,11 +1766,21 @@ public class GameManagerNetwork : MonoBehaviourPun
                 door.transform.Find("RedLight").gameObject.SetActive(false);
                 continue;
             }
-
+            if (door.GetComponent<Door>().GetRoomBehind().isSpecial)
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
             door.transform.Find("RedLight").gameObject.SetActive(display);
         }
     }
 
+    public void SendDisplayLightAllAvailableDoorN2(bool display)
+    {
+        photonView.RPC("DisplayLightAllAvailableDoorN2", RpcTarget.All, display);
+    }
+
+    [PunRPC]
     public void DisplayLightAllAvailableDoorN2(bool display)
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower == -1)
@@ -1816,6 +1826,11 @@ public class GameManagerNetwork : MonoBehaviourPun
                 continue;
             }
             if (gameManager.OnePlayerHaveToGoToExpedition())
+            {
+                door.transform.Find("RedLight").gameObject.SetActive(false);
+                continue;
+            }
+            if(door.GetComponent<Door>().GetRoomBehind().isSpecial)
             {
                 door.transform.Find("RedLight").gameObject.SetActive(false);
                 continue;

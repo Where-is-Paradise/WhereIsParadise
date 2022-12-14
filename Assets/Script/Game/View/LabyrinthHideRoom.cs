@@ -75,6 +75,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
 
     public void LaunchLabyrintheRoom()
     {
+        gameManager.speciallyIsLaunch = true;
         StartCoroutine(LauchLabyrintheAfterTp());
     }
     public IEnumerator LauchLabyrintheAfterTp()
@@ -82,8 +83,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         yield return new WaitForSeconds(2);
       
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
-        gameManager.ui_Manager.DisplayKeyAndTorch(false);
-        gameManager.speciallyIsLaunch = true;
+        gameManager.ui_Manager.DisplayKeyAndTorch(false); 
         this.transform.Find("ListSeparation").Find("SeparationsMiddleUp").gameObject.SetActive(true);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(true);

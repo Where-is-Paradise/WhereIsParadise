@@ -220,7 +220,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         gameManager.damoclesIsLaunch = true;
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
     }
 
     public void GiveAwardToPlayer(GameObject lastPlayer)

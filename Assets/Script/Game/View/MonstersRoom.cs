@@ -50,6 +50,7 @@ public class MonstersRoom : MonoBehaviourPun
         DisplaySwordAllPlayer(true);
         DisplayHeartsFoAllPlayer(true);
         gameManager.speciallyIsLaunch = true;
+        canSpawn = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
@@ -60,8 +61,11 @@ public class MonstersRoom : MonoBehaviourPun
     {
         canSpawn = false;
         yield return new WaitForSeconds(timer);
-        SpawnMonster();
-        canSpawn = true;
+        if (roomIsLaunch)
+        {
+            SpawnMonster();
+            canSpawn = true;
+        }
     }
 
     public void SpawnMonster()
@@ -133,7 +137,8 @@ public class MonstersRoom : MonoBehaviourPun
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(false);
-        timerSpawnMonster = 5;
+        timerSpawnMonster = 1;
+        roomIsLaunch = false;
         StartCoroutine(CanMoveActiveCoroutine());
         
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)

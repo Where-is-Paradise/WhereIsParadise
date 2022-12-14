@@ -57,6 +57,8 @@ public class PowerImpostor : MonoBehaviourPun
             if (!collision.transform.parent.GetComponent<Door>().GetRoomBehind().isHide && 
                    !(collision.transform.parent.GetComponent<Door>().GetRoomBehind().chest && indexPower == 3))
                 return;
+            if (collision.transform.parent.GetComponent<Door>().GetRoomBehind().isSpecial)
+                return;
             if (collision.transform.parent.GetComponent<Door>().isOpenForAll)
                 return;
             if (collision.transform.parent.GetComponent<Door>().IsCloseNotPermantly)

@@ -1279,7 +1279,7 @@ public class GameManager : MonoBehaviourPun
             onePlayerInJail = true;
             nbKeyWhenJail = nbKeyBroken;
         }
-       
+        gameManagerNetwork.SendDisplayLightAllAvailableDoor(false);
 
         UpdateSpecialsRooms(roomExpedition);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
@@ -1381,7 +1381,7 @@ public class GameManager : MonoBehaviourPun
         Debug.Log(game.currentRoom.Index);
         UpdateSpecialsRooms(game.currentRoom);
         ui_Manager.timerMixExploration = true;
-        gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+        gameManagerNetwork.SendDisplayLightAllAvailableDoorN2(true);
         ResetDoorExploration();
         //CloseDoorExplorationWhenVote(false);
     }

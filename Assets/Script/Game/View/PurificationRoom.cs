@@ -31,10 +31,13 @@ public class PurificationRoom : MonoBehaviour
         {
             gameManager.game.currentRoom.speciallyPowerIsUsed = true;
             gameManager.PurificationIsUsed = true;
+            gameManager.ui_Manager.DisplaySpeciallyLevers(false, 10);
         }
-        gameManager.ui_Manager.DisplaySpeciallyLevers(false, 7);
-        //gameManager.UpdateSpecialsRooms(gameManager.game.currentRoom);
-
+        else
+        {
+            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 10);
+        }
+        gameManager.CloseDoorWhenVote(false);
     }
 
     public bool PurificationPlayer()

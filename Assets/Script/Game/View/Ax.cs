@@ -261,7 +261,6 @@ public class Ax : MonoBehaviourPun
     [PunRPC]
     public void SetLancher(int indexPlayer)
     {
-        Debug.LogError(indexPlayer); 
         axRoom = GameObject.Find("AxRoom").GetComponent<AxRoom>();
         launcher = axRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>();
     }

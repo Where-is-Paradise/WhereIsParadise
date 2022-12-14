@@ -792,6 +792,7 @@ public class PlayerNetwork : MonoBehaviourPun
 
     public void SendDisplayCrown(bool display)
     {
+       
         photonView.RPC("SetDisplayCrown", RpcTarget.All, display);
     }
 

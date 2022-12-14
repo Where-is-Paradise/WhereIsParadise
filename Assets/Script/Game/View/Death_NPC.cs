@@ -301,7 +301,7 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void HideAndResetNPC()
     {
-        this.gameObject.transform.Find("eyes").gameObject.SetActive(false);
+        //this.gameObject.transform.Find("eyes").gameObject.SetActive(false);
         this.gameObject.transform.Find("body_gfx").gameObject.SetActive(false);
         this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
         this.transform.position = new Vector3(0, 0, 0);
