@@ -257,7 +257,6 @@ public class UI_Managment : MonoBehaviourPun
     public void  OnclickIntro()
     {
         clickToLaunch = true;
-        Debug.Log(setting.displayTutorial);
         if (setting.displayTutorial)
             panelFirstConnexion.gameObject.SetActive(true);
     }
@@ -434,7 +433,6 @@ public class UI_Managment : MonoBehaviourPun
         Canvas.SetActive(false);
         waitingMap.SetActive(true);
         StartCoroutine(CoroutineDisplayChatInputMobile(true));
-        Debug.Log(lobby.matchmaking);
         if (lobby.matchmaking)
             DisplayMenuDoorMatchmaking(true);
         else

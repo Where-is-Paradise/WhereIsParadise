@@ -19,7 +19,6 @@ public class MonsterNPC : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-
         ChangeScaleForSituation();
         if (PhotonNetwork.IsMasterClient)
         {
@@ -30,6 +29,12 @@ public class MonsterNPC : MonoBehaviourPun
                     ChangeRandomTarget();
             }
         }
+
+        if (!monsterRoom)
+        {
+            this.GetComponent<SpriteRenderer>().enabled = false;
+            this.GetComponent<CapsuleCollider2D>().enabled = false;
+        }     
     }
 
     public void ChangeScaleForSituation()
@@ -156,7 +161,7 @@ public class MonsterNPC : MonoBehaviourPun
     [PunRPC]
     public void SetCanLunchExploration(int indexPlayer)
     {
-        monsterRoom.gameManager.game.nbTorch++;
+        //monsterRoom.gameManager.game.nbTorch++;
         monsterRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
         monsterRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
         monsterRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;

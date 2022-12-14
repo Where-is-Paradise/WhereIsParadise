@@ -231,7 +231,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     [PunRPC]
     public void SetCanLunchExploration(int indexPlayer)
     {
-        gameManager.game.nbTorch++;
+        //gameManager.game.nbTorch++;
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;

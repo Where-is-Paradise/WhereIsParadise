@@ -338,7 +338,6 @@ public class Lobby : MonoBehaviourPunCallbacks
         Debug.Log(isBackToWaitingRoom);
         if (returnCode == 32764 && isBackToWaitingRoom)
         {
-            Debug.Log("sa passe");
             ui_management.OnClickBackInWaitingRoom();
             return;
         }

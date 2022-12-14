@@ -262,7 +262,6 @@ public class Door : MonoBehaviour
             case 5:
                 return gameManager.game.currentRoom.down_Left_neighbour;
         }
-        Debug.Log(index);
         return null; 
     }
 }

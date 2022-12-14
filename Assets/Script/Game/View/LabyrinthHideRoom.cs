@@ -346,7 +346,6 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         else
         {
             retourErrorPathFindFunction = -1;
-            Debug.Log("-1 ££££");
             foreach(GameObject obstacle in listObstacles)
             {
                 obstacle.GetComponent<ObstacleLabyrinth>().parent = null;
@@ -457,7 +456,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
     [PunRPC]
     public void SetCanLunchExploration(int indexPlayer)
     {
-        gameManager.game.nbTorch++;
+        //gameManager.game.nbTorch++;
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
@@ -539,8 +538,6 @@ public class LabyrinthHideRoom : MonoBehaviourPun
                 pathOne.RemoveRange(0, pathOne.Count - 1);
             return;
         }
-       
-        Debug.Log(obstacleNeigbour.position_x + " " + obstacleNeigbour.position_y);
         obstacleNeigbour.parent = current;
         obstacleNeigbour.isEmpty = true;
         
@@ -551,7 +548,6 @@ public class LabyrinthHideRoom : MonoBehaviourPun
     {
         int invertX = Mathf.Abs(obstacleWithTorch.position_x - (width - 1 ));
         int invertY = Mathf.Abs(obstacleWithTorch.position_y - (height - 1));
-        Debug.Log(invertX + " " + invertY);
         inverseObstacleWithTorch = GetObtacleByPosition(invertX, invertY);
         inverseObstacleWithTorch.isObtacleToPathFinding = false;
         inverseObstacleWithTorch.isEmpty = true;
@@ -586,7 +582,6 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         }
         currentPath.Add(obstacleNeigbour);
         pathTwo.Add(obstacleNeigbour);
-        //Debug.Log(obstacleNeigbour.position_x + " " + obstacleNeigbour.position_y);
         obstacleNeigbour.parent = current;
         obstacleNeigbour.isEmpty = true;
 
@@ -623,7 +618,6 @@ public class LabyrinthHideRoom : MonoBehaviourPun
             return;
         }
         currentPath.Add(obstacleNeigbour);
-        Debug.Log(obstacleNeigbour.position_x + " " + obstacleNeigbour.position_y);
         obstacleNeigbour.parent = current;
         obstacleNeigbour.isEmpty = true;
 
@@ -649,7 +643,6 @@ public class LabyrinthHideRoom : MonoBehaviourPun
             return;
         }
         currentPath.Add(obstacleNeigbour);
-        //Debug.Log(obstacleNeigbour.position_x + " " + obstacleNeigbour.position_y);
         obstacleNeigbour.parent = current;
         obstacleNeigbour.isEmpty = true;
 

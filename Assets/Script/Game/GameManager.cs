@@ -225,6 +225,7 @@ public class GameManager : MonoBehaviourPun
         {
             ui_Manager.MixDistanceForExploration();
         }
+
     }
 
     public IEnumerator LauchVoteDoorCoroutine()
@@ -294,7 +295,7 @@ public class GameManager : MonoBehaviourPun
         {
             if (VerifyVote())
             {
-                gameManagerNetwork.SendVoteYesToExploration();
+                gameManagerNetwork.SendVoteYesToExploration(false);
             }
             else
             {
@@ -314,7 +315,7 @@ public class GameManager : MonoBehaviourPun
             {
                 if (VerifyVote())
                 {
-                    gameManagerNetwork.SendVoteYesToExploration();
+                    gameManagerNetwork.SendVoteYesToExploration(false);
                 }
                 else
                 {
@@ -330,7 +331,7 @@ public class GameManager : MonoBehaviourPun
         timer.ResetTimer();
         if (GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
         {
-            gameManagerNetwork.SendVoteYesToExploration();
+            gameManagerNetwork.SendVoteYesToExploration(true);
             GetPlayerMineGO().GetComponent<PlayerGO>().canLaunchExplorationLever = false;
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(false);
         }
@@ -404,8 +405,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
-            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
+            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
+            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
             listIndexPower.RemoveAt(randomInt);
         }
     }
@@ -981,10 +982,8 @@ public class GameManager : MonoBehaviourPun
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
         {
-            //Debug.Log(player.GetComponent<PhotonView>().ViewID);
             if (player.GetComponent<PhotonView>().IsMine)
             {
-                //Debug.Log(player.GetComponent<PhotonView>().ViewID);
                 return player;
             }
         }
@@ -1104,7 +1103,6 @@ public class GameManager : MonoBehaviourPun
             {
                 counterNo++;
             }
-            Debug.Log(player.GetComponent<PhotonView>().ViewID + " " +  player.GetComponent<PlayerGO>().vote_cp );
         }
         if (counterYes >= counterNo)
         {
@@ -1378,7 +1376,6 @@ public class GameManager : MonoBehaviourPun
             }
 
         }
-        Debug.Log(game.currentRoom.Index);
         UpdateSpecialsRooms(game.currentRoom);
         ui_Manager.timerMixExploration = true;
         gameManagerNetwork.SendDisplayLightAllAvailableDoorN2(true);
@@ -1496,7 +1493,6 @@ public class GameManager : MonoBehaviourPun
         }
         if (listDoorToTake.Count == 0)
         {
-            Debug.Log("sa passe");
             return "";
         }
             
@@ -2123,17 +2119,14 @@ public class GameManager : MonoBehaviourPun
         {
             if (room.IsTraversed)
             {
-                Debug.Log(game.dungeon.GetPathFindingDistance(room, game.dungeon.exit) + " " + game.key_counter);
                 if (game.dungeon.GetPathFindingDistance(room, game.dungeon.exit) <= (game.key_counter))
                 {
                     return true;
                 }
             }
         }
-        Debug.Log(game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) + " " + game.key_counter);
         if (game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) <= (game.key_counter))
         {
-            Debug.Log(game.currentRoom + " " + game.key_counter);
             return true;
         }
 
@@ -3101,7 +3094,6 @@ public class GameManager : MonoBehaviourPun
         }
         counterRoom++;
 
-        //Debug.Log(indexSpeciality);
         if (indexSpeciality > -1)
         {
             gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, indexSpeciality);

@@ -151,7 +151,6 @@ public class ObstacleLabyrinth : MonoBehaviourPun
             {
                 if (this.parent.SameObstacleByPosition(neigbour))
                     continue;
-                Debug.Log(neigbour.isEmpty + " " + this.parent.SameObstacleByPosition(neigbour));
             }
             if (neigbour.isEmpty)
                 return true;

@@ -249,15 +249,16 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.DisplayAllGost(display);
     }
 
-    public void SendVoteYesToExploration()
+    public void SendVoteYesToExploration(bool isAwardTrial)
     {
-        photonView.RPC("SetVoteYesToExploration", RpcTarget.All);
+        photonView.RPC("SetVoteYesToExploration", RpcTarget.All , isAwardTrial);
     }
 
     [PunRPC]
-    public void SetVoteYesToExploration()
+    public void SetVoteYesToExploration(bool isAwardTrial)
     {
-        gameManager.SetNbTorch(gameManager.game.current_expedition.Count);
+        if(!isAwardTrial)
+            gameManager.SetNbTorch(gameManager.game.current_expedition.Count);   
         if (gameManager.SamePositionAtBoss())
             gameManager.OpenDoorsToExpedition();
         gameManager.alreaydyExpeditionHadPropose = true;
@@ -687,7 +688,6 @@ public class GameManagerNetwork : MonoBehaviourPun
                 }
             }
         }
-        //Debug.LogError(door.GetComponent<Door>().nbVote + " " + door.GetComponent<Door>().doorName);
         player.transform.GetChild(1).GetChild(4).gameObject.SetActive(enter);
         player.GetComponent<PlayerGO>().hasVoteVD = enter;
     }
@@ -1010,8 +1010,6 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID == indexPlayer)
         {
             gameManager.game.key_counter = nbKey;
-            //gameManager.game.currentRoom = gameManager.game.GetRoomById(indexCurrentRoom);
-            //Debug.Log(gameManager.game.currentRoom.door_isOpen);
             gameManager.CloseAllDoor(gameManager.game.currentRoom, false);
             gameManager.OpenDoorMustBeOpen();
             gameManager.HidePlayerNotInSameRoom();
@@ -1039,10 +1037,6 @@ public class GameManagerNetwork : MonoBehaviourPun
             gameManager.gameManagerNetwork.SendHavetoGoToExpedition(false, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInExpedition = false;
-            //gameManager.GetPlayerMineGO().GetComponent<PlayerGO>(). = false;
-            /*
-                        Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(gameManager.game.currentRoom.GetPos_X(), gameManager.game.currentRoom.GetPos_Y());
-                        roomInPlayer.door_isOpen[indexDoor] = true;*/
 
 
         }
@@ -1328,11 +1322,10 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.fireBallIsLaunch = true;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
-        gameManager.game.nbTorch++;
+        //gameManager.game.nbTorch++;
 
         GameObject[] turrets = GameObject.FindGameObjectsWithTag("Turret");
 
-        Debug.Log(PhotonNetwork.IsMasterClient + " " + turrets.Length + " " + gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss);
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
@@ -1624,7 +1617,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetLaunchSwordRoom()
     {
-        GameObject.Find("SwordRoom").GetComponent<SwordRoom>().LaunchSwordRoom(); ;
+        if (GameObject.Find("SwordRoom"))
+            GameObject.Find("SwordRoom").GetComponent<SwordRoom>().LaunchSwordRoom(); ;
 
     }
     public void SendLaunchLostTorchRoom()
@@ -1636,7 +1630,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetLaunchLostTorchRoom()
     {
-        GameObject.Find("LostTorchRoom").GetComponent<LostTorchRoom>().StartLostTorchRoom();
+        if(GameObject.Find("LostTorchRoom"))
+            GameObject.Find("LostTorchRoom").GetComponent<LostTorchRoom>().StartLostTorchRoom();
 
     }
     public void SendLaunchMonsterRoom()
@@ -1648,7 +1643,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetLaunchMonsterRoom()
     {
-        GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>().StartMonstersRoom();
+        if (GameObject.Find("MonstersRoom"))
+            GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>().StartMonstersRoom();
     }
 
     public void SendLaunchPurificationRoom()
@@ -1901,7 +1897,6 @@ public class GameManagerNetwork : MonoBehaviourPun
        
         if (playerRevive.GetComponent<PhotonView>().IsMine)
         {
-            Debug.LogError("sa passe 0 ");
             if (!gameManager.SamePositionAtBoss())
             {
                 gameManager.game.currentRoom = gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room;
@@ -1912,7 +1907,6 @@ public class GameManagerNetwork : MonoBehaviourPun
                 gameManager.ui_Manager.HideDistanceRoom();
                 
                 gameManager.UpdateSpecialsRooms(gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
-                Debug.LogError("sa passe 1");
             }
         }
         

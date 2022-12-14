@@ -35,7 +35,6 @@ public class Hexagone : MonoBehaviourPun
     void Update()
     {
         if (room == null) {
-            //Debug.LogError("Room is null");
             return;
         }
         if(room.DistancePathFinding == -1)

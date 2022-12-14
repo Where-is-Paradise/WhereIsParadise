@@ -670,7 +670,8 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetCanLunchExploration()
     {
-        player.gameManager.game.nbTorch++;
+        Debug.Log(player.gameManager.game.nbTorch);
+        //player.gameManager.game.nbTorch++;
         player.gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
         player.gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }

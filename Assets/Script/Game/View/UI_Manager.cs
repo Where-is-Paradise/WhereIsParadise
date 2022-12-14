@@ -159,7 +159,8 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayMap()
     {
-       
+        
+
         if (!echap_menu.activeSelf)
         {
             map.SetActive(!map.activeSelf);
@@ -176,6 +177,8 @@ setting_button_echapMenu.SetActive(false);
         {
             Camera.main.orthographicSize = 5.1f;
         }
+        if (!map.activeSelf)
+            DesactivateInformationSpecallyRoomAllHexagone();
     }
 
     public void DisplayTimerInMap(bool active)
@@ -1704,6 +1707,8 @@ setting_button_echapMenu.SetActive(false);
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach(GameObject player in players)
         {
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
             if (display)
             {
                 player.transform.Find("Perso").Find("Body_skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(false);        
@@ -1718,10 +1723,62 @@ setting_button_echapMenu.SetActive(false);
                 if(player.GetComponent<PlayerGO>().indexSkin != 0)
                     player.transform.Find("Perso").Find("Body_skins").GetChild(0).gameObject.SetActive(false);
                
-            }
-
-                
+            }    
         }
+    }
+
+
+    public void DesactivateInformationSpecallyRoomAllHexagone()
+    {
+        foreach(Hexagone hexagone in gameManager.dungeon)
+        {
+            DiplayInformationHexagoneSpeciallyRoom(false, hexagone.GetComponent<Hexagone>());
+        }
+    }
+
+    public void DiplayInformationHexagoneSpeciallyRoom(bool display , Hexagone hexagone)
+    {
+        Room room = hexagone.Room;
+        if (!room)
+            return;
+        if (room.IsExit || room.IsHell || room.IsObstacle || room.IsInitiale || room.IsTraversed)
+            return;
+        if (room.isHide)
+        {
+            GameObject interogationPoint = hexagone.transform.Find("Integoration_point").gameObject;
+            interogationPoint.SetActive(display);
+            return;
+        }
+        GameObject Information_Speciality = hexagone.transform.Find("Information_Speciality").gameObject;
+        Information_Speciality.SetActive(display);
+        if (room.isAx)
+            Information_Speciality.transform.Find("Hexagone").Find("Ax").gameObject.SetActive(display);
+        if (room.isSword)
+            Information_Speciality.transform.Find("Hexagone").Find("Sword").gameObject.SetActive(display);
+        if (room.isSwordDamocles)
+            Information_Speciality.transform.Find("Hexagone").Find("Damocles").gameObject.SetActive(display);
+        if (room.isDeathNPC)
+            Information_Speciality.transform.Find("Hexagone").Find("GodDeath").gameObject.SetActive(display);
+        if (room.fireBall)
+            Information_Speciality.transform.Find("Hexagone").Find("Gargouille").gameObject.SetActive(display);
+        if (room.chest)
+            Information_Speciality.transform.Find("Hexagone").Find("Chest").gameObject.SetActive(display);
+        if (room.isSacrifice)
+            Information_Speciality.transform.Find("Hexagone").Find("Sacrifice").gameObject.SetActive(display);
+        if (room.isLostTorch)
+            Information_Speciality.transform.Find("Hexagone").Find("LostTorch").gameObject.SetActive(display);
+        if (room.isMonsters)
+            Information_Speciality.transform.Find("Hexagone").Find("Monsters").gameObject.SetActive(display);
+        if (room.isResurection)
+            Information_Speciality.transform.Find("Hexagone").Find("Resurection").gameObject.SetActive(display);
+        if (room.isPurification)
+            Information_Speciality.transform.Find("Hexagone").Find("Purification").gameObject.SetActive(display);
+        if (room.isPray)
+            Information_Speciality.transform.Find("Hexagone").Find("Pray").gameObject.SetActive(display);
+        if (room.isNPC)
+            Information_Speciality.transform.Find("Hexagone").Find("NPC").gameObject.SetActive(display);
+        if (room.isLabyrintheHide)
+            Information_Speciality.transform.Find("Hexagone").Find("Labyrinthe").gameObject.SetActive(display);
     }
 }
 

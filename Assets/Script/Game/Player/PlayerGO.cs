@@ -324,7 +324,6 @@ public class PlayerGO : MonoBehaviour
 
                         if (gameManager.VerificationExpedition(door_idPlayer))
                         {
-                            Debug.Log("propose expedition");
                             gameManager.ProposeExpedition(door_idPlayer);
                             gameManager.ui_Manager.DisplayMainLevers(false);
                             gameManager.gameManagerNetwork.SendDisplayMainLevers(false);
@@ -333,11 +332,13 @@ public class PlayerGO : MonoBehaviour
                         else
                         {
                             gameManager.ui_Manager.DisplayXzoneRed();
+                            Debug.Log("VerificationExpedition error");
                         }
                     }
                     else
                     {
                         gameManager.ui_Manager.DisplayXzoneRed();
+                        Debug.Log("alreaydyExpeditionHadPropose error or  gameManager.DoorParadiseOrHellisOpen");
                     }
                 }
                 launchExpeditionWithAnimation = false;
@@ -1480,7 +1481,7 @@ public class PlayerGO : MonoBehaviour
         }
 
 
-        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+        //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
         playerNetwork.SendWantToChangeBoss();
         changeBoss = false;
 
@@ -1505,10 +1506,8 @@ public class PlayerGO : MonoBehaviour
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
         {
-            //Debug.Log(player.GetComponent<PhotonView>().ViewID);
             if (player.GetComponent<PhotonView>().IsMine)
             {
-                //Debug.Log(player.GetComponent<PhotonView>().ViewID);
                 return player;
             }
         }
@@ -1525,7 +1524,7 @@ public class PlayerGO : MonoBehaviour
             return;
         if (gameManager.timer.timerLaunch)
         {
-            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
             return;
         }
         if (hasWinFireBallRoom)
@@ -1534,7 +1533,7 @@ public class PlayerGO : MonoBehaviour
         }
 
         canDisplayMap = isEnter;
-        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+        //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Map_panel").gameObject.SetActive(isEnter);
 
         if (isEnter)
@@ -1559,7 +1558,7 @@ public class PlayerGO : MonoBehaviour
         }
 
         canDisplayTutorial = isEnter;
-        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+        //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Tuto_panel").gameObject.SetActive(isEnter);
 
 
@@ -1634,7 +1633,8 @@ public class PlayerGO : MonoBehaviour
         if (gameManager.expeditionHasproposed || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed)
         {
             canLaunchExplorationLever = false;
-            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            GameObject.Find("Levers").transform.Find("Exploration_lever").Find("Hexagone").Find("HexagoneBiggerAndLight").gameObject.SetActive(false);
             gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(false);
             return;
         }
@@ -1643,7 +1643,8 @@ public class PlayerGO : MonoBehaviour
             return;
         }
         canLaunchExplorationLever = isEnter;
-        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+        //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+        GameObject.Find("Levers").transform.Find("Exploration_lever").Find("Hexagone").Find("HexagoneBiggerAndLight").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(isEnter);
 
         if (isEnter)
@@ -1666,7 +1667,8 @@ public class PlayerGO : MonoBehaviour
         if ((gameManager.expeditionHasproposed && gameManager.timer.timerLaunch) || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed)
         {
             canLaunchDoorVoteLever = false;
-            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            GameObject.Find("Levers").transform.Find("OpenDoor_lever").Find("Hexagone").Find("HexagoneBiggerAndLight").gameObject.SetActive(false);
             gameManager.ui_Manager.mobileCanvas.transform.Find("Door_panel").gameObject.SetActive(false);
             return;
         }
@@ -1679,7 +1681,8 @@ public class PlayerGO : MonoBehaviour
             return;
         }
         canLaunchDoorVoteLever = isEnter;
-        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+        //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+        GameObject.Find("Levers").transform.Find("OpenDoor_lever").Find("Hexagone").Find("HexagoneBiggerAndLight").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Door_panel").gameObject.SetActive(isEnter);
 
         if (isEnter)
@@ -1703,7 +1706,7 @@ public class PlayerGO : MonoBehaviour
         if (gameManager.voteChestHasProposed)
         {
             canLaunchSpeciallyRoomPower = false;
-            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
             gameManager.ui_Manager.DisplayUI_Mobile_SpecialRoom(false);
             return;
         }
@@ -1716,7 +1719,7 @@ public class PlayerGO : MonoBehaviour
             return;
         }
         canLaunchSpeciallyRoomPower = isEnter;
-        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+        //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.DisplayUI_Mobile_SpecialRoom(isEnter);
     }
 
@@ -1728,11 +1731,11 @@ public class PlayerGO : MonoBehaviour
         }
         if (isBoss)
         {
-            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
             return;
         }
         if (gameManager.expeditionHasproposed || gameManager.timer.timerLaunch || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed){
-            transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
             gameManager.ui_Manager.mobileCanvas.transform.Find("Change_Boss").gameObject.SetActive(false);
             return;
         }
@@ -1745,7 +1748,7 @@ public class PlayerGO : MonoBehaviour
   
 
         canLaunchChangeBoss = isEnter;
-        transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+        //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Change_Boss").gameObject.SetActive(isEnter);
 
     }

@@ -193,7 +193,6 @@ public class Death_NPC : MonoBehaviourPun
         if (TestLastPlayer())
         {
             GameObject lastPlayer = GetLastPlayer();
-            Debug.Log(lastPlayer.GetComponent<PhotonView>().ViewID);
             lastPlayer.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
             lastPlayer.gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
             photonView.RPC("SetCanLunchExploration", RpcTarget.All , lastPlayer.GetComponent<PhotonView>().ViewID);
@@ -208,7 +207,7 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void SetCanLunchExploration(int indexPlayer)
     {
-        gameManager.game.nbTorch++;
+        //gameManager.game.nbTorch++;
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
