@@ -2689,7 +2689,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
-            if (room.speciallyPowerIsUsed || labyrinthIsUsed)
+            if (room.speciallyPowerIsUsed )
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 ui_Manager.DisplayLeverVoteDoor(true);

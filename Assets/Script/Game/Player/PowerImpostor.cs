@@ -128,6 +128,7 @@ public class PowerImpostor : MonoBehaviourPun
         Door door = this.transform.parent.GetComponent<PlayerGO>().gameManager.GetDoorGo(indexDoor).GetComponent<Door>();
         door.GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
         door.transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+        this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(door.index);
     }
 
     public void SetRedColorPlayer(bool display)

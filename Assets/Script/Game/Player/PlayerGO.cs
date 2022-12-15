@@ -1707,6 +1707,7 @@ public class PlayerGO : MonoBehaviour
         {
             canLaunchSpeciallyRoomPower = false;
             //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            gameManager.ui_Manager.DisplayLightLeverSpeciallyRoom(false);
             gameManager.ui_Manager.DisplayUI_Mobile_SpecialRoom(false);
             return;
         }
@@ -1720,6 +1721,7 @@ public class PlayerGO : MonoBehaviour
         }
         canLaunchSpeciallyRoomPower = isEnter;
         //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
+        gameManager.ui_Manager.DisplayLightLeverSpeciallyRoom(isEnter);
         gameManager.ui_Manager.DisplayUI_Mobile_SpecialRoom(isEnter);
     }
 
