@@ -371,8 +371,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
-            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[0]);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
+           //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[0]);
             listIndexPower.RemoveAt(randomInt);
         }
 
@@ -405,8 +405,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
-            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
+            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
+            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
             listIndexPower.RemoveAt(randomInt);
         }
     }
@@ -712,8 +712,9 @@ public class GameManager : MonoBehaviourPun
         {    
             gameManagerNetwork.SendIsDiscorved(true, roomTeam.Index);
         }
-        InsertSpeciallyRoom(roomTeam);
-        gameManagerNetwork.SendOpenDoor(indexDoor, game.currentRoom.X, game.currentRoom.Y, isExpedition, roomTeam.GetIndex());
+        InsertSpeciallyRoom(roomTeam , isExpedition);
+        GameObject newDoor = GetDoorGo(indexDoor);
+        gameManagerNetwork.SendOpenDoor(indexDoor, game.currentRoom.X, game.currentRoom.Y, isExpedition, roomTeam.GetIndex() , newDoor.GetComponent<Door>().GetRoomBehind().Index);
     }
 
     public void OpenDoorsToExpedition()
@@ -772,7 +773,6 @@ public class GameManager : MonoBehaviourPun
         {
             timer.timerLaunch = true;
             expeditionHasproposed = true;
-            //ui_Manager.DisplayAllGost(true);
             gameManagerNetwork.SendDisplayAllGost(true);
             StartCoroutine(CoroutineLaunchExploration());
             
@@ -832,7 +832,7 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendBoss(playerBoss.GetId());
         }
 
-        //  set L'UI
+        GetBoss().GetComponent<PlayerNetwork>().SendDisplayCrown(true);
     }
 
     public void SendExpedition(int idPlayer, int idRoom)
@@ -1310,6 +1310,7 @@ public class GameManager : MonoBehaviourPun
         GetPlayerMineGO().GetComponent<PlayerGO>().position_X = game.currentRoom.X;
         GetPlayerMineGO().GetComponent<PlayerGO>().position_Y = game.currentRoom.Y;
         HidePlayerNotInSameRoom();
+        GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayWhiteLight(false);
 
         ui_Manager.DisplayKeyPlusOne(false);
         ui_Manager.DisplayKeyAndTorch(true);
@@ -1397,16 +1398,13 @@ public class GameManager : MonoBehaviourPun
         int i = 0;
         foreach (GameObject door in doors)
         {
-
             if (room.door_isOpen[i] && i == door.GetComponent<Door>().index)
             {
-                //door.GetComponent<Animator>().SetBool("open", true);
                 door.transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
                 door.GetComponent<Door>().isOpenForAll = true;
             }
             else
             {
-                //door.GetComponent<Animator>().SetBool("open", false);
                 door.transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
                 door.GetComponent<Door>().isOpenForAll = false;
             }
@@ -1753,7 +1751,7 @@ public class GameManager : MonoBehaviourPun
             {
                 boss = game.ChangeBoss();
                 counter++;
-            } while ((GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isSacrifice|| GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isInJail) && counter < 20 );
+            } while ((GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isSacrifice || GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isInJail) && counter < 20 );
             if(boss == null)
             {
                 boss = game.ChangeBoss();
@@ -1910,7 +1908,7 @@ public class GameManager : MonoBehaviourPun
             if (player.GetComponent<PhotonView>().ViewID != GetPlayerMineGO().GetComponent<PhotonView>().ViewID)
             {
                 PlayerGO other_player = player.GetComponent<PlayerGO>();
-                if (myPlayer.position_X == other_player.position_X && myPlayer.position_Y == other_player.position_Y && !other_player.isSacrifice)
+                if (myPlayer.position_X == other_player.position_X && myPlayer.position_Y == other_player.position_Y && !other_player.isSacrifice && !other_player.isInvisible)
                 {
                     player.transform.GetChild(0).gameObject.SetActive(true);
                     player.transform.GetChild(1).gameObject.SetActive(true);
@@ -2478,6 +2476,7 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 isActuallySpecialityTime = false;
             }
+            UpdateColorDoor(room);
             return;
         }
         if(room.fireBall)
@@ -2492,6 +2491,7 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
             }
+            UpdateColorDoor(room);
             return;
         }
         if(room.isSacrifice )
@@ -2508,6 +2508,7 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 isActuallySpecialityTime = false;
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.isJail)
@@ -2518,6 +2519,7 @@ public class GameManager : MonoBehaviourPun
             {
                 ui_Manager.DisplayJailRoom(false);
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.IsFoggy)
@@ -2527,6 +2529,7 @@ public class GameManager : MonoBehaviourPun
             if (!room.explorationIsUsed)
                 ui_Manager.DisplayLeverExploration(true);
             ui_Manager.DisplayLeverVoteDoor(true);
+            UpdateColorDoor(room);
             return;
         }
         if (room.IsVirus)
@@ -2536,6 +2539,7 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplayLeverExploration(true);
             ui_Manager.DisplayLeverVoteDoor(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            UpdateColorDoor(room);
             return;
         }
         if (room.isDeathNPC)
@@ -2551,6 +2555,7 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.isSwordDamocles)
@@ -2565,6 +2570,7 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.isAx)
@@ -2580,6 +2586,7 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
 
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.isSword)
@@ -2595,6 +2602,7 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
 
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.isLostTorch)
@@ -2611,6 +2619,7 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
 
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.isMonsters)
@@ -2625,6 +2634,7 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.isPurification)
@@ -2639,6 +2649,7 @@ public class GameManager : MonoBehaviourPun
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.isResurection)
@@ -2653,6 +2664,7 @@ public class GameManager : MonoBehaviourPun
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.isPray)
@@ -2667,6 +2679,7 @@ public class GameManager : MonoBehaviourPun
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.isNPC)
@@ -2681,6 +2694,7 @@ public class GameManager : MonoBehaviourPun
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.isLabyrintheHide)
@@ -2695,6 +2709,7 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
             }
+            UpdateColorDoor(room);
             return;
         }
         if (room.IsExit || room.IsHell)
@@ -2711,71 +2726,84 @@ public class GameManager : MonoBehaviourPun
     {
         if (!GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             return;
+       
         GameObject[] doors = TreeDoorById();
         if (!room.left_neighbour.isTraped )
         {
             doors[0].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
             doors[0].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[0].GetComponent<Door>().index, false);
         }
         else
         {
             doors[0].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
             doors[0].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[0].GetComponent<Door>().index, true);
         }
 
         if (!room.up_Left_neighbour.isTraped)
         {
             doors[1].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);        
             doors[1].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[1].GetComponent<Door>().index, false);
         }
         else
         {
             doors[1].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
             doors[1].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[1].GetComponent<Door>().index, true);
         }
 
         if (!room.up_Right_neighbour.isTraped)
         {
             doors[2].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
             doors[2].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[2].GetComponent<Door>().index, false);
         }
         else
         {
             doors[2].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
             doors[2].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[2].GetComponent<Door>().index, true);
         }
 
         if (!room.right_neighbour.isTraped)
         {
             doors[3].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
             doors[3].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[3].GetComponent<Door>().index, false);
         }
         else
         {
             doors[3].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
             doors[3].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[3].GetComponent<Door>().index , true);
         }
 
         if (!room.down_Right_neighbour.isTraped)
         {
             doors[4].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
             doors[4].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[4].GetComponent<Door>().index, false);
         }
         else
         {
             doors[4].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
             doors[4].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[4].GetComponent<Door>().index, true);
         }
 
         if (!room.down_Left_neighbour.isTraped)
         {
             doors[5].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
             doors[5].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[5].GetComponent<Door>().index, false);
         }
         else
         {
             doors[5].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
             doors[5].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[5].GetComponent<Door>().index, true);
         }
 
     }
@@ -3070,12 +3098,13 @@ public class GameManager : MonoBehaviourPun
         }
         CloseDoorWhenVote(false);
     }
-    public void InsertSpeciallyRoom(Room room)
+    public void InsertSpeciallyRoom(Room room, bool isInExpedition)
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if ( !(GetPlayerMineGO().GetComponent<PlayerGO>().isBoss || (GetPlayerMineGO().GetComponent<PlayerGO>().isChooseForExpedition &&  isInExpedition) ))
         {
             return;
         }
+
         if ((room.IsExit || room.IsHell || room.isSpecial || room.IsInitiale || room.isTraped) || !room.isHide)
         {
             return ;
@@ -3096,6 +3125,7 @@ public class GameManager : MonoBehaviourPun
 
         if (indexSpeciality > -1)
         {
+            room.isSpecial = true;
             gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, indexSpeciality);
             
         }
@@ -3111,31 +3141,7 @@ public class GameManager : MonoBehaviourPun
         {
             return -1;
         }
-/*        int randomMain = Random.Range(1, 101);
-        if (randomMain <= 70)
-        {
-            if (randomMain <= listProbalitySpecialyRoom[0] && setting.listSpeciallyRoom[0])
-            {
-                game.dungeon.InsertChestRoom(room.Index);
-                room.chest = true;
-                listProbalitySpecialyRoom[0] = listProbalitySpecialyRoom[0] - (listProbalitySpecialyRoom[0] / 2);
-                return 0;
-            }
-            if (randomMain > 35 && randomMain <= listProbalitySpecialyRoom[1] && setting.listSpeciallyRoom[1])
-            {
-                room.isNPC = true;
-                listProbalitySpecialyRoom[1] = (listProbalitySpecialyRoom[1] - (listProbalitySpecialyRoom[1] / 2)) + 35;
-                return 7;
-            }
-            if (randomMain > 57 && randomMain <= listProbalitySpecialyRoom[2] && setting.listSpeciallyRoom[2])
-            {
-                room.isSacrifice = true;
-                listProbalitySpecialyRoom[2] = 0;
-                return 2;
-            }
-        }*/
-
-        int randomMain = Random.Range(0, 8);
+        int randomMain = Random.Range(0, 6);
         if(randomMain == 0 && setting.listSpeciallyRoom[0])
         {
             game.dungeon.InsertChestRoom(room.Index);
@@ -3152,24 +3158,29 @@ public class GameManager : MonoBehaviourPun
             room.isNPC = true;
             return 10;
         }
-        if (randomMain == 3 && setting.listSpeciallyRoom[4])
+        if (randomMain == 3)
         {
-            room.isResurection = true;
-            return 11;
-        }
-        if (randomMain == 4 && setting.listSpeciallyRoom[5])
-        {
-            room.isPurification = true;
-            return 12;
-        }
-        if (randomMain == 5 && setting.listSpeciallyRoom[6])
-        {
-            room.isPray = true;
-            return 13;
-        }
+            int randomStatus = Random.Range(0, 3);
+            if(randomStatus == 0 && setting.listSpeciallyRoom[4])
+            {
+                room.isResurection = true;
+                return 11;
+            }
 
+            if (randomStatus == 1 && setting.listSpeciallyRoom[5])
+            {
+                room.isPurification = true;
+                return 12;
+            }
+            if (randomStatus == 2 && setting.listSpeciallyRoom[6])
+            {
+                room.isPray = true;
+                return 13;
+            } 
+        }
         return -1;
     }
+
     public int InsertSpeciallyN2(Room room)
     {
         if (room.HaveOneNeighbour())
@@ -3206,6 +3217,7 @@ public class GameManager : MonoBehaviourPun
         }
         if (randomMain == 5 && setting.listTrialRoom[6])
         {
+            room.isLostTorch = true;
             room.isLostTorch = true;
             return 7;
         }

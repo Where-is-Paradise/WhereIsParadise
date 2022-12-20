@@ -392,6 +392,8 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetResetSacrifice()
     {
         player.GetComponent<PlayerGO>().isSacrifice = false;
+        if (!player.gameManager.SamePositionAtBoss())
+            return;
         player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
         player.transform.Find("Collision").gameObject.SetActive(true);
         for (int i = 0; i < player.transform.childCount; i++)
@@ -408,22 +410,31 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetColorInvisible(bool invisible)
     {
+        player.isInvisible = invisible;
         if (!invisible)
         {
+            player.transform.Find("Perso").gameObject.SetActive(true);
             player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             player.transform.Find("Perso").Find("Eyes1").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             player.transform.Find("InfoCanvas").gameObject.SetActive(true);
+            player.transform.Find("Perso").Find("Crown").gameObject.SetActive(true);
+            player.transform.Find("Perso").gameObject.SetActive(true);
             return;
         }
         if (player.GetComponent<PhotonView>().IsMine)
         {
             player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+            player.transform.Find("Perso").Find("Light_around").gameObject.SetActive(false);
         }
         else{
+            player.transform.Find("Perso").gameObject.SetActive(false);
             player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0f);
             player.transform.Find("Perso").Find("Eyes1").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0f);
             player.transform.Find("InfoCanvas").gameObject.SetActive(false);
+            player.transform.Find("Perso").Find("Light_around").gameObject.SetActive(false);
+            player.transform.Find("Perso").Find("Crown").gameObject.SetActive(false);
         }
+      
     }
 
     public void SendResetVoteSacrifice()
@@ -670,8 +681,6 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetCanLunchExploration()
     {
-        Debug.Log(player.gameManager.game.nbTorch);
-        //player.gameManager.game.nbTorch++;
         player.gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
         player.gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
@@ -814,6 +823,8 @@ public class PlayerNetwork : MonoBehaviourPun
         player.GetComponent<PlayerGO>().isReady = isReady;
         player.transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(isReady);
     }
+
+
 
 
 }

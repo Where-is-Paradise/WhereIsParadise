@@ -20,7 +20,22 @@ public class MonsterNPC : MonoBehaviourPun
     void Update()
     {
         ChangeScaleForSituation();
-        if (PhotonNetwork.IsMasterClient)
+        if (!monsterRoom)
+        {
+            this.GetComponent<SpriteRenderer>().enabled = false;
+            this.GetComponent<CapsuleCollider2D>().enabled = false;
+            return;
+        }
+        else
+        {
+            if (!monsterRoom.gameManager.SamePositionAtBoss())
+            {
+                this.GetComponent<SpriteRenderer>().enabled = false;
+                this.GetComponent<CapsuleCollider2D>().enabled = false;
+                return;
+            }
+        }
+        if (monsterRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             MoveOnTarget();
             if (target)
@@ -30,11 +45,7 @@ public class MonsterNPC : MonoBehaviourPun
             }
         }
 
-        if (!monsterRoom)
-        {
-            this.GetComponent<SpriteRenderer>().enabled = false;
-            this.GetComponent<CapsuleCollider2D>().enabled = false;
-        }     
+     
     }
 
     public void ChangeScaleForSituation()
@@ -51,7 +62,9 @@ public class MonsterNPC : MonoBehaviourPun
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "CollisionTrigerPlayer")
+        if ( (monsterRoom && !monsterRoom.gameManager.SamePositionAtBoss()))
+            return;
+        if (collision.tag == "CollisionTrigerPlayer")
         {
             if (!collision.transform.parent.GetComponent<PhotonView>().IsMine)
                 return;
@@ -62,6 +75,8 @@ public class MonsterNPC : MonoBehaviourPun
 
     public void OnTriggerStay2D(Collider2D collision)
     {
+        if (monsterRoom && !monsterRoom.gameManager.SamePositionAtBoss())
+            return;
         if (collision.tag == "CollisionTrigerPlayer")
         {
             if (!collision.transform.parent.GetComponent<PhotonView>().IsMine)
@@ -113,7 +128,7 @@ public class MonsterNPC : MonoBehaviourPun
 
             if (TestLastPlayer())
             {
-                GiveAwardToPlayer(GetLastPlayer());
+                monsterRoom.GiveAwardToPlayer(GetLastPlayer());
                 photonView.RPC("SendDectivateRoom", RpcTarget.All);
             }
         }
@@ -153,20 +168,9 @@ public class MonsterNPC : MonoBehaviourPun
         return null;
     }
 
-    public void GiveAwardToPlayer(GameObject lastPlayer)
-    {
-        photonView.RPC("SetCanLunchExploration", RpcTarget.All, lastPlayer.GetComponent<PhotonView>().ViewID);
-    }
 
-    [PunRPC]
-    public void SetCanLunchExploration(int indexPlayer)
-    {
-        //monsterRoom.gameManager.game.nbTorch++;
-        monsterRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
-        monsterRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
-        monsterRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
-        monsterRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
-    }
+
+
 
     public void SetPlayerColor(GameObject player)
     {
@@ -188,17 +192,20 @@ public class MonsterNPC : MonoBehaviourPun
 
     public void SendDestroy()
     {
+        this.gameObject.SetActive(false);
         photonView.RPC("SetDestroy", RpcTarget.All);
     }
 
     [PunRPC]
     public void SetDestroy()
     {
-        Destroy(this.gameObject);
+        PhotonNetwork.Destroy(this.gameObject);
     }
     [PunRPC]
     public void SendDectivateRoom()
     {
+       if (!monsterRoom.gameManager.SamePositionAtBoss())
+            return;
         this.monsterRoom.DesactivateRoom();
     }
 }

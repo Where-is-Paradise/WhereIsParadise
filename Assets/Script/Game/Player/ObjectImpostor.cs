@@ -160,11 +160,10 @@ public class ObjectImpostor : MonoBehaviour
                 timerToUsing = 30;
                 break;
             case 1:
-                timerToUsing = 0;
-                //timerToUsing = 150;
+                timerToUsing = 250;
                 break;
             case 2:
-                timerToUsing = 70;
+                timerToUsing = 110;
                 break;
         }
         timerToUsing += initalTimerPlus;

@@ -37,7 +37,6 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             GameObject player = ChoosePlayerRandomly();
-            Debug.Log(player.GetComponent<PhotonView>().ViewID);
             SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
             CounterLaunch(10);
         }  
@@ -214,7 +213,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     {
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
         this.sword.transform.parent = this.transform;
-        this.sword.transform.localPosition = new Vector3(-9.59f, 3.25f);
+        this.sword.transform.localPosition = new Vector3(-35.55f, 5.23f);
         this.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         gameManager.CloseDoorWhenVote(false);
         gameManager.damoclesIsLaunch = true;
@@ -234,7 +233,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         //gameManager.game.nbTorch++;
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
-        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
+        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
 }

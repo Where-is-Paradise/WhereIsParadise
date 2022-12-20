@@ -131,6 +131,7 @@ public class AxRoom : MonoBehaviourPun
         photonView.RPC("SendSpeciallyPowerIsUsed", RpcTarget.All, true);
         photonView.RPC("SendResetSpeciallyIsLauch", RpcTarget.All );
         DisplayLineToShot(false);
+        
     }
     [PunRPC]
     public  void SetIsLaunch(bool isLaunch)
@@ -143,6 +144,7 @@ public class AxRoom : MonoBehaviourPun
     {
         DiplayAxForAllPlayer(display);
         DisplayHeartsFoAllPlayer(display);
+        StartCoroutine(ResetLineToShotCoroutine());
     }
 
     [PunRPC]
@@ -164,4 +166,9 @@ public class AxRoom : MonoBehaviourPun
         }
     }
 
+    public IEnumerator ResetLineToShotCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        gameManager.GetPlayerMineGO().transform.Find("Perso").Find("LineForAx").gameObject.SetActive(false);
+    }
 }

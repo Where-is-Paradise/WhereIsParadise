@@ -40,7 +40,7 @@ public class Death_NPC : MonoBehaviourPun
         {
             return;
         }
-        gameManager.speciallyIsLaunch = true;
+        photonView.RPC("SendSpeciallyIsLaucnh", RpcTarget.All);
         SetTargetOfPathFinding();
         StartCoroutine(ChangerSpeedCoroutine());
         photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, false) ;
@@ -52,10 +52,24 @@ public class Death_NPC : MonoBehaviourPun
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(ignore);
     }
 
+
+    [PunRPC]
+    public void SendSpeciallyIsLaucnh()
+    {
+        gameManager.speciallyIsLaunch = true;
+    }
+
     // Update is called once per frame
     void Update()
     {
         ChangeScaleForSituation();
+
+        if (!gameManager.SamePositionAtBoss())
+        {
+            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().enabled = false;
+            this.transform.Find("Faux").GetComponent<SpriteRenderer>().enabled = false;
+            this.GetComponent<CapsuleCollider2D>().enabled = false;
+        }
 
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
@@ -67,6 +81,10 @@ public class Death_NPC : MonoBehaviourPun
         }
         gameManager.CloseDoorWhenVote(true);
         SetTargetOfPathFinding();
+
+
+       
+
     }
 
     public void ChangeScaleForSituation()
@@ -207,8 +225,9 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void SetCanLunchExploration(int indexPlayer)
     {
-        //gameManager.game.nbTorch++;
-        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
+        if (!gameManager.SamePositionAtBoss())
+            return;
+        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
 
@@ -257,6 +276,9 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void ResetColorAllPlayer()
     {
+        if (!gameManager.SamePositionAtBoss())
+            return;
+
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
         {
@@ -282,17 +304,16 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void DesactivateNPC()
     {
-/*        this.gameObject.transform.Find("eyes").gameObject.SetActive(true);
-        this.gameObject.transform.Find("body_gfx").gameObject.SetActive(true);
-        this.gameObject.GetComponent<CapsuleCollider2D>().enabled = true;*/
-        gameManager.ChangeLeverDeathNPC();
+        if (!gameManager.SamePositionAtBoss())
+            return;
+        gameManager.ChangeLeverDeathNPC(); 
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(false);
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         this.gameObject.SetActive(false);
-        if(PhotonNetwork.IsMasterClient)
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             PhotonNetwork.Destroy(this.gameObject);
 
     }
@@ -300,7 +321,9 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void HideAndResetNPC()
     {
-        //this.gameObject.transform.Find("eyes").gameObject.SetActive(false);
+        if (!gameManager.SamePositionAtBoss())
+            return;
+        this.gameObject.transform.Find("Faux").gameObject.SetActive(false);
         this.gameObject.transform.Find("body_gfx").gameObject.SetActive(false);
         this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
         this.transform.position = new Vector3(0, 0, 0);

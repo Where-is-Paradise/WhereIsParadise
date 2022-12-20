@@ -21,7 +21,7 @@ public class MonstersRoom : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        if(roomIsLaunch && PhotonNetwork.IsMasterClient && canSpawn)
+        if(roomIsLaunch && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss && canSpawn)
             StartCoroutine(SpawnMonsterCouroutine(timerSpawnMonster));
 
         if (!roomIsLaunch || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchByMonster)
@@ -81,6 +81,9 @@ public class MonstersRoom : MonoBehaviourPun
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
         {
+            if (player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
+                continue;
+
             player.GetComponent<PlayerGO>().DisiplayHeartInitial(display);
         }
     }
@@ -128,7 +131,8 @@ public class MonstersRoom : MonoBehaviourPun
 
     public void DesactivateRoom()
     {
-        DestroyAllMonster();
+        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            DestroyAllMonster();
         DisplaySwordAllPlayer(false);
         ResetHeartForAllPlayer();
         ResetIsTouchByMonsterAllPlayer();
@@ -188,7 +192,7 @@ public class MonstersRoom : MonoBehaviourPun
         GameObject[] monsterList = GameObject.FindGameObjectsWithTag("Monster");
         foreach (GameObject monster in monsterList)
         {
-            Destroy(monster);
+            PhotonNetwork.Destroy(monster);
         }
     }
 
@@ -238,5 +242,21 @@ public class MonstersRoom : MonoBehaviourPun
     {
         yield return new WaitForSeconds(2);
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
+    }
+
+    public void GiveAwardToPlayer(GameObject lastPlayer)
+    {
+        photonView.RPC("SetCanLunchExploration", RpcTarget.All, lastPlayer.GetComponent<PhotonView>().ViewID);
+    }
+
+    [PunRPC]
+    public void SetCanLunchExploration(int indexPlayer)
+    {
+        if (!gameManager.SamePositionAtBoss())
+            return;
+        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
+        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
+        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
+        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
 }

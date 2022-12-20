@@ -72,14 +72,14 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (gameManager.game.GetBoss())
         {
             gameManager.game.GetBoss().SetIsBoss(false);
+            gameManager.GetBoss().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
             gameManager.GetBoss().GetComponent<PlayerGO>().isBoss = false;
+            
         }
        
         gameManager.game.SetBoss(indexNewBoss);
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().isBoss = true;
-        //gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().isBoss = true ;
-        //gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().LaunchTimerBoss();
-        //gameManager.ui_Manager.SetDescriptionLoadPage("Boss choice..", 0.1f);
+        gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerNetwork>().SendDisplayCrown(true);
 
     }
 
@@ -887,13 +887,13 @@ public class GameManagerNetwork : MonoBehaviourPun
     }
 
 
-    public void SendOpenDoor(int indexDoor, int x_room, int y_room, bool isExpedition, int indexRoomTeam)
+    public void SendOpenDoor(int indexDoor, int x_room, int y_room, bool isExpedition, int indexRoomTeam , int indexRoomBehind)
     {
-        photonView.RPC("SetOpenDoor", RpcTarget.All, indexDoor, x_room, y_room, isExpedition, indexRoomTeam);
+        photonView.RPC("SetOpenDoor", RpcTarget.All, indexDoor, x_room, y_room, isExpedition, indexRoomTeam, indexRoomBehind);
     }
 
     [PunRPC]
-    public void SetOpenDoor(int indexDoor, int x_room, int y_room, bool isExpedition, int indexRoomTeam)
+    public void SetOpenDoor(int indexDoor, int x_room, int y_room, bool isExpedition, int indexRoomTeam , int indexRoomBehind)
     {
         if (!isExpedition)
         {
@@ -901,17 +901,15 @@ public class GameManagerNetwork : MonoBehaviourPun
             Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
             roomInPlayer.door_isOpen[indexDoor] = true;
             int indexNeWDoor3 = gameManager.GetIndexDoorAfterCrosse(indexDoor);
-            GameObject newDoor = gameManager.GetDoorGo(indexDoor);
-            newDoor.GetComponent<Door>().GetRoomBehind().door_isOpen[indexNeWDoor3] = true;
-/*            Room roomInPlayer = gameManager.game.dungeon.GetRoomByPosition(x_room, y_room);
-            roomInPlayer.door_isOpen[indexDoor] = true;*/
-
+            gameManager.game.dungeon.GetRoomByIndex(indexRoomBehind).door_isOpen[indexNeWDoor3] = true;
             Room roomTeam2 = gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam);
+
+
             if (roomTeam2.isJail)
             {
                 roomTeam2.speciallyPowerIsUsed = true;
             }
-                
+     
         }
 
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInJail)
@@ -952,8 +950,12 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetIsInJail(bool isInJail, int indexPlayer , int indexRoom)
     {
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isInJail = isInJail;
-        if(!isInJail)
+        if (!isInJail)
+        {
             gameManager.game.dungeon.GetRoomByIndex(indexRoom).speciallyPowerIsUsed = !isInJail;
+            gameManager.GetPlayerMineGO().transform.Find("collisionTriger").gameObject.SetActive(true);
+        }
+          
     }
 
     public void SendKeyNumber()
@@ -1097,6 +1099,7 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendActiveZoneVoteChest()
     {
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
         photonView.RPC("SetActiveZoneVoteChest", RpcTarget.All);
     }
 
@@ -1105,6 +1108,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.voteChestHasProposed = true;
         gameManager.ui_Manager.ActiveZoneVoteChest(true);
+        gameManager.CloseDoorWhenVote(true);
         StartCoroutine(gameManager.LaunchTimerChest());
     }
 
@@ -1549,6 +1553,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetChangeLeverDeathNPC()
     {
+        if (!gameManager.SamePositionAtBoss())
+            return;
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         gameManager.UpdateSpecialsRooms(gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
         gameManager.ui_Manager.DisplayMainLevers(true);
@@ -1899,7 +1905,9 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
             if (!gameManager.SamePositionAtBoss())
             {
+                
                 gameManager.game.currentRoom = gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room;
+                Debug.LogError(gameManager.game.currentRoom.Index);
                 gameManager.CloseAllDoor(gameManager.game.currentRoom, false);
                 gameManager.SetDoorNoneObstacle(gameManager.game.currentRoom);
                 gameManager.SetDoorObstacle(gameManager.game.currentRoom);

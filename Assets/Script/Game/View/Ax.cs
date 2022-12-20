@@ -24,6 +24,20 @@ public class Ax : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
+        if (!axRoom)
+        {
+            this.GetComponent<SpriteRenderer>().enabled = false;
+            this.GetComponent<CircleCollider2D>().enabled = false;
+            return;
+        }
+
+        if(axRoom && !axRoom.gameManager.SamePositionAtBoss())
+        {
+            this.GetComponent<SpriteRenderer>().enabled = false;
+            this.GetComponent<CircleCollider2D>().enabled = false;
+            return;
+        }
+
 
         if (!axRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
@@ -196,7 +210,7 @@ public class Ax : MonoBehaviourPun
         //axRoom.gameManager.game.nbTorch++;
         axRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
         axRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
-        axRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
+        axRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
         axRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
 

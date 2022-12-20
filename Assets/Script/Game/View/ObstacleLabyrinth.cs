@@ -90,7 +90,23 @@ public class ObstacleLabyrinth : MonoBehaviourPun
             }
 
         }
-        
+
+        if (!labyrinthRoom)
+        {
+            this.GetComponent<SpriteRenderer>().enabled = false;
+            this.GetComponent<BoxCollider2D>().enabled = false;
+            this.transform.Find("Torch").gameObject.SetActive(false);
+        }
+        else
+        {
+            if (!labyrinthRoom.gameManager.SamePositionAtBoss())
+            {
+                this.GetComponent<SpriteRenderer>().enabled = false;
+                this.GetComponent<BoxCollider2D>().enabled = false;
+                this.transform.Find("Torch").gameObject.SetActive(false);
+            }
+        }
+
     }
 
     public void OnTriggerEnter2D(Collider2D collision)

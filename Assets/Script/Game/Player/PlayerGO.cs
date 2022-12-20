@@ -135,6 +135,7 @@ public class PlayerGO : MonoBehaviour
     public Room roomUsedWhenCursed;
 
     public bool isInvincible = false;
+    public bool isInvisible = false;
     private void Awake()
     {
         displayChatInput = false;
@@ -268,7 +269,12 @@ public class PlayerGO : MonoBehaviour
                 this.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
             }
         }
-      
+
+        if (isInJail)
+        {
+            this.transform.Find("collisionTriger").gameObject.SetActive(false);
+        }
+
 
         if (GameObject.Find("UI_Management"))
         {
@@ -291,8 +297,8 @@ public class PlayerGO : MonoBehaviour
         {
             gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
             
-            if(!gameManager.isActuallySpecialityTime)
-                SetSkinBoss(isBoss);
+/*            if(!gameManager.isActuallySpecialityTime)
+                SetSkinBoss(isBoss);*/
             if (!hideImpostorInformation)
                 SetSkinImpostor(isImpostor);
             else
@@ -313,6 +319,7 @@ public class PlayerGO : MonoBehaviour
                 if (!gameManager.paradiseIsFind && !gameManager.hellIsFind)
                     InputExplorationAnimation();
             }
+            
             if (launchExpeditionWithAnimation || gameManager.launchExpedtion_inputButton)
             {
                 if (!gameManager.paradiseIsFind && !gameManager.hellIsFind)
@@ -332,13 +339,13 @@ public class PlayerGO : MonoBehaviour
                         else
                         {
                             gameManager.ui_Manager.DisplayXzoneRed();
-                            Debug.Log("VerificationExpedition error");
+                            Debug.LogError("VerificationExpedition error");
                         }
                     }
                     else
                     {
                         gameManager.ui_Manager.DisplayXzoneRed();
-                        Debug.Log("alreaydyExpeditionHadPropose error or  gameManager.DoorParadiseOrHellisOpen");
+                        Debug.LogError("alreaydyExpeditionHadPropose error or  gameManager.DoorParadiseOrHellisOpen");
                     }
                 }
                 launchExpeditionWithAnimation = false;
@@ -609,6 +616,14 @@ public class PlayerGO : MonoBehaviour
 
     public void DisplayNamePlayer(bool display)
     {
+        if (display)
+        {
+            if (this.isInvisible)
+            {
+                return;
+            }
+        }
+            
         this.transform.Find("InfoCanvas").Find("PlayerName").gameObject.SetActive(display);
     }
 
@@ -1783,6 +1798,8 @@ public class PlayerGO : MonoBehaviour
 
     public void DisplayHeartInSituation()
     {
+        if (!gameManager.SamePositionAtBoss())
+            return;
         if (this.lifeTrialRoom == 2)
         {
             this.transform.Find("Life").Find("TwoHeart").gameObject.SetActive(true);
@@ -1813,5 +1830,11 @@ public class PlayerGO : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         this.isInvincible = false;
+    }
+
+    public void SetCanLaunchExplorationCoroutine(bool canLaunch)
+    {
+        
+        canLaunchExplorationLever = true;
     }
 }

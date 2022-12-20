@@ -1709,6 +1709,8 @@ setting_button_echapMenu.SetActive(false);
         {
             if (player.GetComponent<PlayerGO>().isSacrifice)
                 continue;
+            if (player.GetComponent<PlayerGO>().isInvisible)
+                continue;
             if (display)
             {
                 player.transform.Find("Perso").Find("Body_skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(false);        
@@ -1817,57 +1819,111 @@ setting_button_echapMenu.SetActive(false);
             lever.transform.Find("LabyrinthRoom").Find("Light").gameObject.SetActive(display);
     }
 
-    public void SetRedColorDoorTrapedSpeciallyRoom(int indexDoor)
+    public void SetRedColorDoorTrapedSpeciallyRoom(int indexDoor , bool display)
     {
         //Door door = gameManager.GetDoorGo(indexDoor).GetComponent<Door>();
         Room room = gameManager.game.currentRoom;
         
         if (room.chest)
         {
+            if (!GameObject.Find("ChestRoom"))
+                return;
             GameObject doors = GameObject.Find("ChestRoom").transform.Find("Doors").gameObject;
             doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(155, 0, 0);
+            if (!display)
+            {
+                doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            }
         }
        
         if (room.IsVirus)
         {
+            if (!GameObject.Find("VirusRoom"))
+                return;
             GameObject doors = GameObject.Find("VirusRoom").transform.Find("Doors").gameObject;
-            doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(155, 0, 0);
+            doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            if (!display)
+            {
+                doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(123f/255, 35f/255, 35f/255);
+            }
         }
             
         if (room.isDeathNPC)
         {
+            if (!GameObject.Find("DeathNPCRoom"))
+                return;
             GameObject doors = GameObject.Find("DeathNPCRoom").transform.Find("Doors").gameObject;
             doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            if (!display)
+            {
+                doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            }
         }
         if (room.isSwordDamocles)
         {
+            if (!GameObject.Find("DamoclesSwordRoom"))
+                return;
             GameObject doors = GameObject.Find("DamoclesSwordRoom").transform.Find("Doors").gameObject;
             doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            if (!display)
+            {
+                doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            }
         }
         if (room.isAx)
         {
+            if (!GameObject.Find("AxRoom"))
+                return;
             GameObject doors = GameObject.Find("AxRoom").transform.Find("Doors").gameObject;
             doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            if (!display)
+            {
+                doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            }
         }
         if (room.isSword)
         {
+            if (!GameObject.Find("SwordRoom"))
+                return;
             GameObject doors = GameObject.Find("SwordRoom").transform.Find("Doors").gameObject;
             doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            if (!display)
+            {
+                doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(115f/255, 115f/255, 115f/255);
+            }
         }
         if (room.isMonsters)
         {
+            if (!GameObject.Find("MonstersRoom"))
+                return;
             GameObject doors = GameObject.Find("MonstersRoom").transform.Find("Doors").gameObject;
             doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(155, 0, 0);
+            if (!display)
+            {
+                doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color((118f/255), (100f/255), (100f/255));
+            }
         }
         if (room.isNPC)
         {
+            if (!GameObject.Find("NPCRoom"))
+                return;
             GameObject doors = GameObject.Find("NPCRoom").transform.Find("Doors").gameObject;
             doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            if (!display)
+            {
+                doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(132f/255, 132f/255, 132f/255);
+            }
         }
         if (room.isLabyrintheHide)
         {
+            if (!GameObject.Find("LabyrinthHideRoom"))
+                return;
             GameObject doors = GameObject.Find("LabyrinthHideRoom").transform.Find("Doors").gameObject;
             doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            if (!display)
+            {
+                doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(111f/255, 111f/255, 111f/255);
+            }
         }
     }
 }

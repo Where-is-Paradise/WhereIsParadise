@@ -51,7 +51,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         if (!roomIsLaunched)
             return;
@@ -87,7 +87,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         this.transform.Find("ListSeparation").Find("SeparationsMiddleUp").gameObject.SetActive(true);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(true);
-        if (PhotonNetwork.IsMasterClient)
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             SpawnObtacles();
             AddNeighboursToEachObstacle();
@@ -434,18 +434,30 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         GameObject playerWinner = gameManager.GetPlayer(indexPlayer);
         GiveAwardToPlayer(playerWinner);
         SendResetColor();
-        SendHideAllObstacles();
+        photonView.RPC("SendHideAllObtacles", RpcTarget.All);
         photonView.RPC("SendSpeciallyPowerIsUsed", RpcTarget.All, true);
 
 
     }
-    public void SendHideAllObstacles()
-    {
-        this.transform.Find("ListObstacle").gameObject.SetActive(false);
-        this.transform.Find("ListSeparation").gameObject.SetActive(false);
+
+
+    [PunRPC]
+    public void SendHideAllObtacles() {
+        if (!gameManager.SamePositionAtBoss())
+            return;
+
+        DestroyAllObstacle();
         gameManager.ui_Manager.DisplayKeyAndTorch(true);
         gameManager.speciallyIsLaunch = false;
         this.transform.Find("ListSeparation").Find("SeparationsMiddleUp").gameObject.SetActive(false);
+    }
+
+    public void DestroyAllObstacle()
+    {
+        for(int i = 0; i < this.transform.Find("ListObstacle").childCount; i++)
+        {
+            Destroy(this.transform.Find("ListObstacle").GetChild(i).gameObject) ;
+        }
     }
 
     public void GiveAwardToPlayer(GameObject lastPlayer)
@@ -459,7 +471,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         //gameManager.game.nbTorch++;
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
-        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().canLaunchExplorationLever = true;
+        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
     public void SendResetColor()

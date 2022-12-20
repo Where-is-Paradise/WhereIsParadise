@@ -2132,6 +2132,7 @@ MonoBehaviour:
   distanceCursed: 0
   roomUsedWhenCursed: {fileID: 0}
   isInvincible: 0
+  isInvisible: 0
 --- !u!114 &7384524027293410437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4774,7 +4775,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &523250120582018824
 Transform:
   m_ObjectHideFlags: 0
