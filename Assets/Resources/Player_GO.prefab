@@ -2133,6 +2133,7 @@ MonoBehaviour:
   roomUsedWhenCursed: {fileID: 0}
   isInvincible: 0
   isInvisible: 0
+  isAlreaySerCanLauchLeverExplorationCouroutine: 0
 --- !u!114 &7384524027293410437
 MonoBehaviour:
   m_ObjectHideFlags: 0

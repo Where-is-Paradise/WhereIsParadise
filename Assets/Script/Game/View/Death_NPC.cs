@@ -7,6 +7,8 @@ using UnityEngine;
 public class Death_NPC : MonoBehaviourPun
 {
     public GameManager gameManager;
+
+    public bool CanHideDeathGod = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,11 +42,13 @@ public class Death_NPC : MonoBehaviourPun
         {
             return;
         }
+        SetMaxSpeed(2);
         photonView.RPC("SendSpeciallyIsLaucnh", RpcTarget.All);
         SetTargetOfPathFinding();
         StartCoroutine(ChangerSpeedCoroutine());
         photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, false) ;
         //StartCoroutine(UpdatePositionCoroutine());
+        StartCoroutine(CanHideDeathGodCoroutine());
     }
     [PunRPC]
     public void SendIgnoreCollisionPlayer(bool ignore)
@@ -57,6 +61,7 @@ public class Death_NPC : MonoBehaviourPun
     public void SendSpeciallyIsLaucnh()
     {
         gameManager.speciallyIsLaunch = true;
+        gameManager.deathNPCIsLaunch = true;
     }
 
     // Update is called once per frame
@@ -64,7 +69,7 @@ public class Death_NPC : MonoBehaviourPun
     {
         ChangeScaleForSituation();
 
-        if (!gameManager.SamePositionAtBoss())
+        if (!gameManager.SamePositionAtBoss() && CanHideDeathGod)
         {
             this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().enabled = false;
             this.transform.Find("Faux").GetComponent<SpriteRenderer>().enabled = false;
@@ -85,6 +90,13 @@ public class Death_NPC : MonoBehaviourPun
 
        
 
+    }
+
+
+    public IEnumerator CanHideDeathGodCoroutine()
+    {
+        yield return new WaitForSeconds(0.2f);
+        CanHideDeathGod = true;  
     }
 
     public void ChangeScaleForSituation()
@@ -129,7 +141,7 @@ public class Death_NPC : MonoBehaviourPun
     {
         GameObject playerTarget = GetPlayerWithMinDistance();
         SetIndexTarget(playerTarget.GetComponent<PhotonView>().ViewID);
-        SetMaxSpeed(4f);
+        //SetMaxSpeed(4f);
     }
 
     public IEnumerator ChangerSpeedCoroutine()
@@ -137,7 +149,6 @@ public class Death_NPC : MonoBehaviourPun
         yield return new WaitForSeconds(1);
         if (gameManager.deathNPCIsLaunch)
         {
-            this.GetComponent<AIPath>().maxSpeed += 0.1f;
             float newSpeed = this.GetComponent<AIPath>().maxSpeed + 0.1f;
             SetMaxSpeed(newSpeed);
             StartCoroutine(ChangerSpeedCoroutine());
@@ -189,22 +200,26 @@ public class Death_NPC : MonoBehaviourPun
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss || !gameManager.deathNPCIsLaunch)
+        if (!gameManager.deathNPCIsLaunch)
         {
             return;
         }
 
-        if (collision.gameObject.tag == "CollisionTrigerPlayer")
+        if (collision.gameObject.tag == "Player")
         {
-            Collider2D parent = collision.transform.parent.GetComponent<Collider2D>();
-            DeathTouchPlayerEvent(parent);
+
+            if (!collision.gameObject.GetComponent<PhotonView>().IsMine)
+                return;
+            DeathTouchPlayerEvent(collision.gameObject) ;
         }
 
     }
 
-    public void DeathTouchPlayerEvent(Collider2D collision)
+    public void DeathTouchPlayerEvent(GameObject collision)
     {
         SetTargetOfPathFinding();
         SetPlayerColor(collision);
@@ -231,7 +246,7 @@ public class Death_NPC : MonoBehaviourPun
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
 
-    public void SetPlayerColor(Collider2D collision)
+    public void SetPlayerColor(GameObject collision)
     {
         collision.gameObject.GetComponent<PlayerNetwork>().SendIstouchByDeath(true);
         collision.gameObject.GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
@@ -321,6 +336,7 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void HideAndResetNPC()
     {
+        gameManager.deathNPCIsLaunch = false;
         if (!gameManager.SamePositionAtBoss())
             return;
         this.gameObject.transform.Find("Faux").gameObject.SetActive(false);
@@ -329,7 +345,7 @@ public class Death_NPC : MonoBehaviourPun
         this.transform.position = new Vector3(0, 0, 0);
         this.GetComponent<AIPath>().destination = new Vector3(0, 0, 0);
         this.GetComponent<AIPath>().maxSpeed = 0;
-        gameManager.deathNPCIsLaunch = false;
+       
     }
 
     public IEnumerator CouroutineDesactivateAll()

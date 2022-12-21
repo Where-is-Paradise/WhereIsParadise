@@ -1132,10 +1132,6 @@ setting_button_echapMenu.SetActive(false);
     {
         if (display)
         {
-            if (gameManager.game.currentRoom.speciallyPowerIsUsed)
-            {
-                return;
-            }
             if (gameManager.game.currentRoom.IsExit)
             {
                 return;
@@ -1148,7 +1144,7 @@ setting_button_echapMenu.SetActive(false);
         MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject.SetActive(display);
         DisplaySpeciallyLevers(display,0);
 
-        if(!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
+        if(!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation && !gameManager.game.currentRoom.speciallyPowerIsUsed)
             DisplayAwardAndPenaltyForImpostor(display);
       
         if (!display)
@@ -1707,15 +1703,15 @@ setting_button_echapMenu.SetActive(false);
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach(GameObject player in players)
         {
-            if (player.GetComponent<PlayerGO>().isSacrifice)
+            if (player.GetComponent<PlayerGO>().isSacrifice && !player.GetComponent<PhotonView>().IsMine)
                 continue;
-            if (player.GetComponent<PlayerGO>().isInvisible)
+            if (player.GetComponent<PlayerGO>().isInvisible && !player.GetComponent<PhotonView>().IsMine)
                 continue;
             if (display)
             {
                 player.transform.Find("Perso").Find("Body_skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(false);        
                 player.transform.Find("Perso").Find("Body_skins").GetChild(0).gameObject.SetActive(true);
-                player.transform.Find("Perso").Find("Body_skins").GetChild(0).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.7f);
+                player.transform.Find("Perso").Find("Body_skins").GetChild(0).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.9f);
             }
             else
             {
@@ -1829,7 +1825,7 @@ setting_button_echapMenu.SetActive(false);
             if (!GameObject.Find("ChestRoom"))
                 return;
             GameObject doors = GameObject.Find("ChestRoom").transform.Find("Doors").gameObject;
-            doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(155, 0, 0);
+            doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(150f/255, 0, 0);
             if (!display)
             {
                 doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
@@ -1897,7 +1893,7 @@ setting_button_echapMenu.SetActive(false);
             if (!GameObject.Find("MonstersRoom"))
                 return;
             GameObject doors = GameObject.Find("MonstersRoom").transform.Find("Doors").gameObject;
-            doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(155, 0, 0);
+            doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(155f/255, 0, 0);
             if (!display)
             {
                 doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color((118f/255), (100f/255), (100f/255));
@@ -1924,6 +1920,27 @@ setting_button_echapMenu.SetActive(false);
             {
                 doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(111f/255, 111f/255, 111f/255);
             }
+        }
+        if (room.isSacrifice)
+        {
+            if (!GameObject.Find("SacrificeRoom"))
+                return;
+            GameObject doors = GameObject.Find("SacrificeRoom").transform.Find("Doors").gameObject;
+            doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+            if (!display)
+            {
+                doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            }
+        }
+    }
+    public void DisplayLetterInSkull(bool display)
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+
+        foreach(GameObject door in doors)
+        {
+            door.transform.Find("Canvas").Find("Text").gameObject.SetActive(display);
+            door.transform.Find("Canvas").Find("Image").gameObject.SetActive(display);
         }
     }
 }

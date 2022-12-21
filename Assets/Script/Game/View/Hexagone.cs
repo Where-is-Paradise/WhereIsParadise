@@ -137,8 +137,6 @@ public class Hexagone : MonoBehaviourPun
 
     public void OnClickToLight()
     {
-        if (this.room.IsTraversed)
-            return;
         if (this.room.IsObstacle)
             return;
         if (this.isLightByOther)

@@ -136,6 +136,8 @@ public class PlayerGO : MonoBehaviour
 
     public bool isInvincible = false;
     public bool isInvisible = false;
+
+    public bool isAlreaySerCanLauchLeverExplorationCouroutine = false;
     private void Awake()
     {
         displayChatInput = false;
@@ -270,10 +272,10 @@ public class PlayerGO : MonoBehaviour
             }
         }
 
-        if (isInJail)
+/*        if (isInJail)
         {
             this.transform.Find("collisionTriger").gameObject.SetActive(false);
-        }
+        }*/
 
 
         if (GameObject.Find("UI_Management"))
@@ -436,7 +438,7 @@ public class PlayerGO : MonoBehaviour
             }
             if (displayTutorial)
             {
-                if (gameManager.game.currentRoom.isSpecial)
+                if (gameManager.game.currentRoom.isSpecial || gameManager.game.currentRoom.isTraped || (gameManager.GetDoorExpedition(gameManager.GetPlayerMine().GetId()) && gameManager.GetDoorExpedition(gameManager.GetPlayerMine().GetId()).isTraped)) 
                 {
                     DisplayTutorialSpecial();
                 }
@@ -584,13 +586,59 @@ public class PlayerGO : MonoBehaviour
             if (gameManager.game.currentRoom.IsFoggy)
             {
                 DisplayNamePlayer(false);
+                if (GetComponent<PhotonView>().IsMine)
+                {
+                    if (this.isInvisible || this.isSacrifice)
+                    {;
+                        IncreaseTransparency(true);
+                    }
+                        
+                }
+                
             }
             else
             {
                 DisplayNamePlayer(true);
+                if (GetComponent<PhotonView>().IsMine)
+                {
+                    if (this.isInvisible || this.isSacrifice)
+                    {
+                        IncreaseTransparency(false);
+                    }
+                        
+                }
             }
         }
+
+        if (GetComponent<PhotonView>().IsMine)
+        {
+            if (!isAlreaySerCanLauchLeverExplorationCouroutine)
+            {
+                if (hasWinFireBallRoom && isChooseForExpedition && !canLaunchExplorationLever)
+                {
+                    StartCoroutine(SetCanLauchExplorationLeverCoroutine());
+                }   
+            }
+
+        }
     }
+
+    public IEnumerator SetCanLauchExplorationLeverCoroutine()
+    {
+        yield return new WaitForSeconds(2);
+        canLaunchExplorationLever = true;
+        isAlreaySerCanLauchLeverExplorationCouroutine = true;
+    }
+
+    public void IncreaseTransparency(bool increase)
+    {
+        
+        if(increase)
+            this.transform.Find("Perso").Find("Body_skins").GetChild(0).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.2f);
+        else
+            this.transform.Find("Perso").Find("Body_skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+    }
+
 
     public void SetZIndexByPositionY()
     {

@@ -371,8 +371,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
-           //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[0]);
+            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[1]);
             listIndexPower.RemoveAt(randomInt);
         }
 
@@ -405,8 +405,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
-            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
+            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
+            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
             listIndexPower.RemoveAt(randomInt);
         }
     }
@@ -1276,6 +1276,11 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.timerMixExploration = true;
             onePlayerInJail = true;
             nbKeyWhenJail = nbKeyBroken;
+            if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            {
+                ChangeBoss();
+            }
+
         }
         gameManagerNetwork.SendDisplayLightAllAvailableDoor(false);
 
@@ -2214,6 +2219,11 @@ public class GameManager : MonoBehaviourPun
 
     }
 
+    public void SendLoose()
+    {
+        gameManagerNetwork.SendLoose();
+    }
+
 
     public IEnumerator CouroutineOpenDoorParadise()
     {
@@ -2458,7 +2468,9 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplayMainLevers(true);
         ui_Manager.DisplayAutelTutorialSpeciallyRoom(false);
         ui_Manager.ChangeColorAllPlayerSkinToFoggy(false);
+        ui_Manager.DisplayLetterInSkull(false);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+        
 
         UpdateColorDoor(room);
         if (room.explorationIsUsed)
@@ -2515,6 +2527,7 @@ public class GameManager : MonoBehaviourPun
         {
             ui_Manager.DisplayJailRoom(true);
             ui_Manager.HideDistanceRoom();
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             if (room.speciallyPowerIsUsed)
             {
                 ui_Manager.DisplayJailRoom(false);
@@ -2894,9 +2907,9 @@ public class GameManager : MonoBehaviourPun
         game.dungeon.rooms[GetRoomOfBoss().GetComponent<Hexagone>().Room.Index].speciallyPowerIsUsed = true;
         CloseDoorWhenVote(false);
         speciallyIsLaunch = false;
-        if (game.key_counter <= 0 && !HaveMoreKeyInTraversedRoom())
+        if (game.key_counter <= 0 && !HaveMoreKeyInTraversedRoom() && GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            Loose();
+            SendLoose();
         }
     }
     public IEnumerator ResetAllPlayerLightAroundCoroutine()

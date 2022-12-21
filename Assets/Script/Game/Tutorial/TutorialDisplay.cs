@@ -22,6 +22,11 @@ public class TutorialDisplay : MonoBehaviour
             return;
         if (!gameManager.game.currentRoom)
             return;
+/*        if (gameManager.GetDoorExpedition(gameManager.GetPlayerMine().GetId()).isJail)
+        {
+            uiManager.DisplayAutelTutorialSpeciallyRoom(true);
+            return;
+        }*/
         if (gameManager.speciallyIsLaunch || gameManager.game.currentRoom.speciallyPowerIsUsed)
         {
             uiManager.DisplayAutelTutorialSpeciallyRoom(false);

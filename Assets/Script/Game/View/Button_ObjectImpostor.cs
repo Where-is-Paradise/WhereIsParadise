@@ -21,6 +21,8 @@ public class Button_ObjectImpostor : MonoBehaviour
 
     public void OnClickObject()
     {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isSacrifice)
+            return;
         gameManager.GetPlayerMineGO().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().UsePower();
         gameManager.GetPlayerMineGO().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().isClickedInButtonPower = true;
         StartCoroutine(ResetClickObjectCoroutine());
@@ -33,6 +35,8 @@ public class Button_ObjectImpostor : MonoBehaviour
     }
     public void OnClickPowerTrap()
     {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isSacrifice)
+            return;
         gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().UsePowerTrapInDoor();
     }
 }

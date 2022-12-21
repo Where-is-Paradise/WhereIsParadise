@@ -50,6 +50,7 @@ public class ResurectionRoom : MonoBehaviourPun
             return;
         }
         gameManager.gameManagerNetwork.SendRelaunchRoom();
+        gameManager.CloseDoorWhenVote(false);
 
     }
 

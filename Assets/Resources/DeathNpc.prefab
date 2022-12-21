@@ -139,8 +139,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.2199005, y: -0.26586223}
-  m_Size: {x: 2.277262, y: 2.6017222}
+  m_Offset: {x: 0.07, y: 0.16288936}
+  m_Size: {x: 1.5715457, y: 1.7442214}
   m_Direction: 0
 --- !u!114 &4695169022583446951
 MonoBehaviour:
@@ -186,7 +186,7 @@ MonoBehaviour:
   radius: 2.58
   height: 2
   canMove: 1
-  maxSpeed: 2
+  maxSpeed: 20
   gravity: {x: 0, y: 0, z: 0}
   groundMask:
     serializedVersion: 2
@@ -197,10 +197,10 @@ MonoBehaviour:
   orientation: 1
   enableRotation: 0
   autoRepath:
-    mode: 1
+    mode: 2
     interval: 0.4
     sensitivity: 10
-    maximumInterval: 2
+    maximumInterval: 1
     visualizeSensitivity: 0
   targetCompatibility: {fileID: 0}
   maxAcceleration: 30
@@ -267,6 +267,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
+  CanHideDeathGod: 0
 --- !u!114 &4695169022583446954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,7 +352,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4695169022583446946}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1

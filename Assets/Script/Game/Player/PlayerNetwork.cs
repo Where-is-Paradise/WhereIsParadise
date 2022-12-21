@@ -417,7 +417,8 @@ public class PlayerNetwork : MonoBehaviourPun
             player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             player.transform.Find("Perso").Find("Eyes1").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             player.transform.Find("InfoCanvas").gameObject.SetActive(true);
-            player.transform.Find("Perso").Find("Crown").gameObject.SetActive(true);
+            if(player.isBoss)
+                player.transform.Find("Perso").Find("Crown").gameObject.SetActive(true);
             player.transform.Find("Perso").gameObject.SetActive(true);
             return;
         }
@@ -772,6 +773,7 @@ public class PlayerNetwork : MonoBehaviourPun
                 break;
         }
         room.isTraped = true;
+        
         player.transform.Find("PowerImpostor").GetComponent<PowerImpostor>().powerIsUsed = true;
     }
 

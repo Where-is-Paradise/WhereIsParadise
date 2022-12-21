@@ -1937,7 +1937,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.ResurectionIsUsed = true;
         //gameManager.UpdateSpecialsRooms(this.gameManager.game.currentRoom);
-        gameManager.ui_Manager.DisplaySpeciallyLevers(false, 7);
+        gameManager.ui_Manager.DisplaySpeciallyLevers(true, 11);
     }
 
     public void RevivePlayer(GameObject player)
@@ -1951,4 +1951,15 @@ public class GameManagerNetwork : MonoBehaviourPun
         this.gameManager.game.currentRoom.speciallyPowerIsUsed = true;
     }
 
+
+    public void SendLoose()
+    {
+        photonView.RPC("SetLoose", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLoose()
+    {
+        this.gameManager.Loose();
+    }
 }
