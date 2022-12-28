@@ -37,6 +37,7 @@ public class Setting : MonoBehaviour
 
     // server
     public string codeRoom;
+    public string oldCodeRoom;
     public bool isMatchmaking = false;
     public float version = 0.48f;
 

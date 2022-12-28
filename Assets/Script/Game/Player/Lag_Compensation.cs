@@ -36,10 +36,20 @@ public class Lag_Compensation : MonoBehaviour, IPunObservable
     // Update is called once per frame
     void Update()
     {
-        if (!GetComponent<PhotonView>().IsMine)
+        if(this.tag == "Player")
         {
-            this.GetComponent<Rigidbody2D>().position = Vector3.MoveTowards(this.GetComponent<Rigidbody2D>().position, networkPosition, Time.fixedDeltaTime);
-        
+            if (!GetComponent<PhotonView>().IsMine)
+            {
+                this.GetComponent<Rigidbody2D>().position = Vector3.MoveTowards(this.GetComponent<Rigidbody2D>().position, networkPosition, Time.fixedDeltaTime);
+
+            }
+        }
+       if(this.tag == "GodDeath")
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                this.GetComponent<Rigidbody2D>().position = Vector3.MoveTowards(this.GetComponent<Rigidbody2D>().position, networkPosition, Time.fixedDeltaTime);
+            }
         }
     }
 }

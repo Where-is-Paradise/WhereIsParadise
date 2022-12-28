@@ -6,16 +6,19 @@ using UnityEngine;
 
 public class PowerImpostor : MonoBehaviourPun
 {
+    public GameManager gameManager;
     public int indexPower;
     public bool powerIsUsed = false;
     public bool isNearOfDoor = false;
     public float timerToUsing;
     public bool canUsed = false;
- 
+    
+
     public Collider2D collision;
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame

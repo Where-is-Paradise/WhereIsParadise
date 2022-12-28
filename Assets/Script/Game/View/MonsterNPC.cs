@@ -88,6 +88,12 @@ public class MonsterNPC : MonoBehaviourPun
 
     public void MoveOnTarget()
     {
+        if (!target)
+        {
+            ChangeRandomTarget();
+            return;
+        }
+
         float vectorX = target.transform.position.x - this.transform.position.x;
         float vectorY = target.transform.position.y - this.transform.position.y;
 

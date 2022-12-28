@@ -65,6 +65,19 @@ public class PlayerNetwork : MonoBehaviourPun
         player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).gameObject.SetActive(true);
     }
 
+    public void SendDisplayHorn(bool display)
+    {
+        photonView.RPC("SetDisplayHorn", RpcTarget.All, display);
+    }
+
+    [PunRPC]
+    public void SetDisplayHorn(bool display)
+    {
+        if (!player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+        player.transform.Find("Perso").Find("Horns").gameObject.SetActive(display);
+    }
+
     public void SendOnclickToExpedition()
     {
         photonView.RPC("SetOnclickToExpedition", RpcTarget.All);
@@ -381,6 +394,8 @@ public class PlayerNetwork : MonoBehaviourPun
             player.GetComponent<PlayerGO>().gameManager.game.key_counter++;
             player.gameManager.ui_Manager.LaunchAnimationAddKey();
         }
+
+        player.gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
     }
 
     public void SendResetSacrifice()
@@ -827,6 +842,29 @@ public class PlayerNetwork : MonoBehaviourPun
     }
 
 
+    public void SendGlobalVariabel(bool isImpostor, bool isSacrifice, bool isInJail, bool isInvisible)
+    {
+        photonView.RPC("SetGlobalVariabel", RpcTarget.All, isImpostor, isSacrifice, isInJail, isInvisible);
+    }
 
+    [PunRPC]
+    public void SetGlobalVariabel(bool isImpostor, bool isSacrifice, bool isInJail, bool isInvisible)
+    {
+        player.isImpostor = isImpostor;
+        player.isSacrifice = isSacrifice;
+        player.isInJail = isInJail;
+        player.isInvisible = isInvisible;
+    }
+    public void SendDungeonPosition(int positionX, int positionY)
+    {
+        photonView.RPC("SetDungeonPosition", RpcTarget.All, positionX, positionY);
+    }
+
+    [PunRPC]
+    public void SetDungeonPosition(int positionX, int positionY)
+    {
+        player.position_X = positionX;
+        player.position_Y = positionY;
+    }
 
 }

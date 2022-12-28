@@ -138,6 +138,9 @@ public class PlayerGO : MonoBehaviour
     public bool isInvisible = false;
 
     public bool isAlreaySerCanLauchLeverExplorationCouroutine = false;
+
+    // is for recon
+
     private void Awake()
     {
         displayChatInput = false;
@@ -1242,6 +1245,8 @@ public class PlayerGO : MonoBehaviour
 
     public void SetSkinImpostor(bool isImpostor)
     {
+        if (!gameManager.GetPlayerMine())
+            return;
         if (gameManager.GetPlayerMine().GetIsImpostor() && this.GetComponent<PhotonView>().IsMine)
         {
             foreach(GameObject impostor in GameObject.FindGameObjectsWithTag("Player"))

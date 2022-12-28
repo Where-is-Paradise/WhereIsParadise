@@ -103,9 +103,10 @@ GameObject:
   - component: {fileID: 4695169022583446955}
   - component: {fileID: 4695169022583446958}
   - component: {fileID: 4695169022583446959}
+  - component: {fileID: 6474057703425119100}
   m_Layer: 0
   m_Name: DeathNpc
-  m_TagString: Untagged
+  m_TagString: GodDeath
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -289,6 +290,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 4695169022583446955}
   - {fileID: 4695169022583446958}
+  - {fileID: 6474057703425119100}
   sceneViewId: 39
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -327,7 +329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 0
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 1
 --- !u!114 &4695169022583446958
 MonoBehaviour:
@@ -361,6 +363,20 @@ CircleCollider2D:
   m_Offset: {x: 0.13609995, y: -0.63}
   serializedVersion: 2
   m_Radius: 1.0252678
+--- !u!114 &6474057703425119100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4695169022583446946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 501ed4f03eaec714b810bc9c722e1e6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkPosition: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &4695169023555382417
 GameObject:
   m_ObjectHideFlags: 0

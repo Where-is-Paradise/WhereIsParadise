@@ -61,11 +61,12 @@ public class Lobby : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.AutomaticallySyncScene = true;
         //PhotonNetwork.LocalCleanPhotonView()
-        PhotonNetwork.MaxResendsBeforeDisconnect = 10;
+        //PhotonNetwork.MaxResendsBeforeDisconnect = 10;
 
-        
+        PhotonNetwork.OfflineMode = false;
         PhotonNetwork.ConnectUsingSettings();
-        //PhotonNetwork.ConnectToRegion("eu");
+        //PhotonNetwork.ConnectToRegion("eu");  
+        
     }
 
 
@@ -73,6 +74,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.Disconnect();
         PhotonNetwork.ConnectToRegion(setting.region);
+        PhotonNetwork.OfflineMode = false;
     }
 
 
@@ -119,13 +121,14 @@ public class Lobby : MonoBehaviourPunCallbacks
         print("Connected");
         Debug.Log(PhotonNetwork.CloudRegion);
         base.OnConnectedToMaster();
-
+        
         if (GameObject.Find("Setting_backWaitingRoom"))
         {
             if (GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().isBackToWaitingRoom)
             {
                 isBackToWaitingRoom = true;
                 oldCode = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().codeRoom;
+                setting.oldCodeRoom = oldCode;
                 oldPlayerName = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().playerName;
                 matchmaking = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().isMatchmaking;
                 index_skin = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().indexSkin;
@@ -212,6 +215,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         ui_management.SetNbPlayerUI(1, maxPlayer);
         code2 = GenerateCodeRoom(5);
         setting.codeRoom = code2;
+        setting.oldCodeRoom = code;
     }
 
     public void CreateRoomBack()
@@ -251,6 +255,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         this.code = code;
         Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
         setting.codeRoom = code2;
+        setting.oldCodeRoom = code;
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -550,7 +555,9 @@ public class Lobby : MonoBehaviourPunCallbacks
         ResetAllPlayerReady();
         //ui_management.launchChrono.Play();
         PhotonNetwork.CurrentRoom.IsVisible = false;
-        yield return new WaitForSeconds(15);
+        
+
+       yield return new WaitForSeconds(15);
         ResetAllPlayerReady();
         OnclikStartGame();
     }

@@ -1498,6 +1498,25 @@ public class GameManagerNetwork : MonoBehaviourPun
         door.GetComponent<Door>().letter_displayed = false;
     }
 
+
+    public void SendCancelDoorExploration(int indexDoor)
+    {
+        photonView.RPC("SetCancelDoorExploration", RpcTarget.All, indexDoor);
+    }
+
+    [PunRPC]
+    public void SetCancelDoorExploration(int indexDoor)
+    {
+        GameObject door = gameManager.GetDoorGo(indexDoor);
+        door.transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
+        door.GetComponent<Door>().old_player = null;
+        door.GetComponent<Door>().player = null;
+        door.GetComponent<Door>().isOpen = false;
+        door.GetComponent<Door>().counterPlayerInDoorZone = 0;
+        door.GetComponent<Door>().letter_displayed = false;
+        gameManager.ui_Manager.DisplayGostPlayer(indexDoor, false, 0);
+    }
+
     public void SendHexagoneNewPower(int indexHexagone, int indexPower)
     {
         photonView.RPC("SetHexagoneNewPower", RpcTarget.All, indexHexagone, indexPower);
@@ -1961,5 +1980,16 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetLoose()
     {
         this.gameManager.Loose();
+    }
+
+    public void SendUpdateDataPlayer(int indexPlayer)
+    {
+        photonView.RPC("SetUpdateDataPlayer", RpcTarget.All, indexPlayer);
+    }
+
+    [PunRPC]
+    public void SetUpdateDataPlayer(int indexPlayer)
+    {
+        gameManager.UpdataDataPlayer(indexPlayer);
     }
 }

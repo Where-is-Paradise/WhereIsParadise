@@ -63,7 +63,12 @@ public class ObjectImpostor : MonoBehaviour
             else
                 DisplayButtonCanUsed(false);
         }
-    
+
+        if(gameManager.timer.timeLeft < 0 && !cantTemporyUsed)
+        {
+            cantTemporyUsed = true;
+        }
+
     }
 
     public void UsePower()
@@ -189,6 +194,7 @@ public class ObjectImpostor : MonoBehaviour
                     gameManager.ui_Manager.DisplayN2PotionObject(false);
                     gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
                     powerIsUsed = true;
+                    gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
                     isInvisible = false;
                 }
                 break;
@@ -198,6 +204,7 @@ public class ObjectImpostor : MonoBehaviour
                 MurderPower();
                 powerIsUsed = true;
                 gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
+                gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
                 break;
             case 2:
                 CursedPower();
@@ -219,6 +226,7 @@ public class ObjectImpostor : MonoBehaviour
                     gameManager.ui_Manager.DisplayN2PotionObject(false);
                     gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
                     powerIsUsed = true;
+                    gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
                     isOtherToInvisible = false;
                 }
                 break;

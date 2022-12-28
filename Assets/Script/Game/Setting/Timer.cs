@@ -41,9 +41,6 @@ public class Timer : MonoBehaviour
             transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
             
         }
-        
-        
-
     }
 
     public void LaunchTimer(float time , bool displayTimer)

@@ -96,6 +96,7 @@ public class UI_Manager : MonoBehaviour
     public GameObject panelInWaiting;
 
     public GameObject canvasInGame;
+    public GameObject ReconnexionPanel;
 
     // Start is called before the first frame update
     void Start()
@@ -1942,6 +1943,11 @@ setting_button_echapMenu.SetActive(false);
             door.transform.Find("Canvas").Find("Text").gameObject.SetActive(display);
             door.transform.Find("Canvas").Find("Image").gameObject.SetActive(display);
         }
+    }
+
+    public void DisplayReconnexionPanel(bool display)
+    {
+        ReconnexionPanel.SetActive(display);
     }
 }
 
