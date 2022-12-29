@@ -1572,7 +1572,7 @@ setting_button_echapMenu.SetActive(false);
             return;
         canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).gameObject.SetActive(true);
         DisplayTrapPowerButtonDesactivateTime(true, 30);
-        StartCoroutine(gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().CanUsedTimerCoroutine());
+        //StartCoroutine(gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().CanUsedTimerCoroutine());
     }
     public void DisplayObjectPowerImpostorInGame()
     {

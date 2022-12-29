@@ -1992,4 +1992,16 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.UpdataDataPlayer(indexPlayer);
     }
+
+    public void SendChangeBoss()
+    {
+
+        photonView.RPC("SetChangeBoss", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetChangeBoss()
+    {
+        gameManager.ChangeBoss();
+    }
 }

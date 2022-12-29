@@ -7,7 +7,25 @@ public class RoomData : ScriptableObject
 
     public int indexRoom;
     public bool speciallyPowerIsUsed;
-
+    public bool isChest;
+    public bool isSacrifice;
+    public bool isJail;
+    public bool isVirus;
+    public bool isFireball;
+    public bool isFoggy;
+    public bool isDeathNPC;
+    public bool isSwordDamocles;
+    public bool isAx;
+    public bool isSword;
+    public bool isLostTorch;
+    public bool isMonsters;
+    public bool isPurification;
+    public bool isResurection;
+    public bool isPray;
+    public bool isNPC;
+    public bool isLabyrinthHide;
+    public bool isCursedTrap;
+    public bool isTrap;
 
     public void Init(int indexRoom , bool speciallyPowerIsUsed )
     {

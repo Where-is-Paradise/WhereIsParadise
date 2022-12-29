@@ -18,6 +18,7 @@ public class PlayerData : ScriptableObject
     public int indexSkin;
     public bool hasWinFireBallRoom;
     public string userId;
+    public int Old_viewId;
 
     // impostor
     public int indexPowerTrap;

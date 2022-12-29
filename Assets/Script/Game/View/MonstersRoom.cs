@@ -21,7 +21,9 @@ public class MonstersRoom : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        if(roomIsLaunch && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss && canSpawn)
+        if (!gameManager.speciallyIsLaunch)
+            return;
+        if (roomIsLaunch && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss && canSpawn)
             StartCoroutine(SpawnMonsterCouroutine(timerSpawnMonster));
 
         if (!roomIsLaunch || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchByMonster)
@@ -258,5 +260,14 @@ public class MonstersRoom : MonoBehaviourPun
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
+    }
+
+    public void DisplayLeverToRelauch()
+    {
+        if (!GameObject.FindGameObjectWithTag("Monster"))
+        {
+            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 9);
+            roomIsLaunch = false;
+        }
     }
 }

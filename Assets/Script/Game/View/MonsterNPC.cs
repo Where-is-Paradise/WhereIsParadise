@@ -156,6 +156,15 @@ public class MonsterNPC : MonoBehaviourPun
         return false;
     }
 
+    public void Victory()
+    {
+        if (TestLastPlayer())
+        {
+            monsterRoom.GiveAwardToPlayer(GetLastPlayer());
+            photonView.RPC("SendDectivateRoom", RpcTarget.All);
+        }
+    }
+
     public GameObject GetLastPlayer()
     {
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");

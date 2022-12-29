@@ -10,7 +10,8 @@ public class PowerImpostor : MonoBehaviourPun
     public int indexPower;
     public bool powerIsUsed = false;
     public bool isNearOfDoor = false;
-    public float timerToUsing;
+    public float timerToUsing = 30;
+    public bool timerLaunch = false;
     public bool canUsed = false;
     
 
@@ -19,16 +20,34 @@ public class PowerImpostor : MonoBehaviourPun
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        GetTimerToUsingByIndex(indexPower);
+        StartCoroutine(CanUsedTimerCoroutine());
     }
 
     // Update is called once per frame
     void Update()
     {
         indexPower = this.transform.parent.GetComponent<PlayerGO>().indexPower;
+        ExecuteTimer();
+        
     }
+
+    public void ExecuteTimer()
+    {
+        if (timerLaunch)
+        {
+            timerToUsing -= Time.deltaTime;
+            if (timerToUsing < 0)
+            {
+                timerLaunch = false;
+
+            }
+        }
+    }
+
     public IEnumerator CanUsedTimerCoroutine()
     {
-        yield return new WaitForSeconds(30);
+        yield return new WaitForSeconds(timerToUsing);
         DisplayButtonDesactivateTimer(false, 0);
         canUsed = true;
         if (!this.transform.parent.GetComponent<PlayerGO>().gameManager.timer.timerLaunch &&

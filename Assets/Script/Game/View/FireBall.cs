@@ -157,6 +157,50 @@ public class FireBall : MonoBehaviourPun
         PhotonNetwork.Destroy(this.gameObject);
     }
 
+    public void Victory()
+    {
+
+        if(TestLastPlayer())
+        {
+            GameObject playerWin = GetPlayerRemaning();
+            photonView.RPC("ResetIsTouchFireBall", RpcTarget.All);
+            //playerWin.gameObject.GetComponent<PlayerGO>().DisplayCharacter(true);
+            playerWin.gameObject.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.SendDisplayFireBallRoom(false);
+            playerWin.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedition();
+            playerWin.gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
+            playerWin.gameObject.GetComponent<PlayerNetwork>().SendCanLaunchExploration();
+            playerWin.gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
+            if (gameManager.setting.displayTutorial)
+            {
+                if (!gameManager.ui_Manager.listTutorialBool[23])
+                {
+                    gameManager.ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
+                    gameManager.ui_Manager.tutorial_parent.SetActive(true);
+                    gameManager.ui_Manager.tutorial[23].SetActive(true);
+                    gameManager.ui_Manager.listTutorialBool[23] = true;
+                }
+
+            }
+        }
+    }
+
+    public bool TestLastPlayer()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchByFireBall || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+                    || player.GetComponent<PlayerGO>().isSacrifice)
+            {
+                counter++;
+            }
+        }
+        if (counter == (listPlayer.Length - 1))
+            return true;
+        return false;
+    }
+
 
     public GameObject GetPlayerRemaning()
     {

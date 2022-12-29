@@ -865,6 +865,8 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.position_X = positionX;
         player.position_Y = positionY;
+
+        player.gameManager.HidePlayerNotInSameRoom();
     }
 
 }

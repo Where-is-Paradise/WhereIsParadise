@@ -11,6 +11,8 @@ public class AxRoom : MonoBehaviourPun
     public Vector3 currentDirection = new Vector3(0,0,0);
     public bool isLaunch = false;
     public bool canShoot = true;
+
+    public bool beforeLastDisconnect = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +22,12 @@ public class AxRoom : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
+        if (!gameManager.speciallyIsLaunch)
+        {
+            DisplayLineToShot(false);
+            return;
+        }
+            
         if (!isLaunch)
             return;
         if (Input.GetMouseButton(0) && !isPreparedToLauch && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchByAx)
@@ -170,5 +178,11 @@ public class AxRoom : MonoBehaviourPun
     {
         yield return new WaitForSeconds(0.5f);
         gameManager.GetPlayerMineGO().transform.Find("Perso").Find("LineForAx").gameObject.SetActive(false);
+    }
+
+    public IEnumerator DesactivateRoomCoroutine()
+    {
+        yield return new WaitForSeconds(2);
+        DesactivateRoom();
     }
 }

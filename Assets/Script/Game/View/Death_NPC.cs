@@ -237,6 +237,21 @@ public class Death_NPC : MonoBehaviourPun
        
     }
 
+    public void Victory()
+    {
+        if (TestLastPlayer())
+        {
+            GameObject lastPlayer = GetLastPlayer();
+            lastPlayer.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
+            lastPlayer.gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
+            photonView.RPC("SetCanLunchExploration", RpcTarget.All, lastPlayer.GetComponent<PhotonView>().ViewID);
+            photonView.RPC("HideAndResetNPC", RpcTarget.All);
+            photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, true);
+            StartCoroutine(CouroutineDesactivateAll());
+            gameManager.deathNPCIsLaunch = false;
+        }
+    }
+
     [PunRPC]
     public void SetCanLunchExploration(int indexPlayer)
     {

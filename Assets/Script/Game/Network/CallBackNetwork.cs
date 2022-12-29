@@ -84,6 +84,10 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         {
             gameManager.ChangeBoss();
         }
+        if (gameManager.speciallyIsLaunch)
+        {
+            gameManager.TestLastPlayerSpeciallayRoom();
+        }
     }
 
     public IEnumerator HideZoneCouroutine()
@@ -218,12 +222,24 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
     {
         base.OnPlayerEnteredRoom(newPlayer);
         SendDataAllPlayer();
-        SendDataRoom();
-        SendGlobalData();
+        StartCoroutine(SendDataRoomCouroutine());
+        StartCoroutine(SendGlobalDataCoroutine());
         gameManager.HidePlayerNotInSameRoom();
         StartCoroutine(CouroutineHidePlayerNoteSameRoom());
         StartCoroutine(CouroutineHidePlayerNoteSameRoomN2());
         StartCoroutine(AddPlayerInListCoroutine());
+
+        if (gameManager.game.currentRoom.isAx)
+        {
+            if (GameObject.Find("AxRoom"))
+            {
+                if (GameObject.Find("AxRoom").GetComponent<AxRoom>().beforeLastDisconnect)
+                {
+                    StartCoroutine(GameObject.Find("AxRoom").GetComponent<AxRoom>().DesactivateRoomCoroutine());
+                }
+            }
+           
+        }
     }
 
     public IEnumerator AddPlayerInListCoroutine()
@@ -265,16 +281,22 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
        
     }
 
-    public void SendDataRoom()
+    public IEnumerator SendDataRoomCouroutine()
     {
-        foreach(Room room in gameManager.game.dungeon.rooms)
+        yield return new WaitForSeconds(2);
+        foreach (Room room in gameManager.game.dungeon.rooms)
         {
             dataGame.SendRoomData(room.Index, room.speciallyPowerIsUsed);
+            dataGame.SendSpecialityRoom(room.Index, room.chest, room.isSacrifice, room.isJail, room.IsVirus, room.fireBall,
+                room.IsFoggy, room.isDeathNPC, room.isSwordDamocles, room.isAx, room.isSword, room.isLostTorch, room.isMonsters, 
+                room.isPurification, room.isResurection, room.isPray, room.isNPC, room.isLabyrintheHide, room.isCursedTrap, room.isTraped);
+                
         }
     }
 
-    public void SendGlobalData()
+    public IEnumerator SendGlobalDataCoroutine()
     {
+        yield return new WaitForSeconds(2);
         dataGame.SendGlobalData(gameManager.labyrinthIsUsed,
             gameManager.NPCIsUsed, gameManager.PrayIsUsed,
             gameManager.ResurectionIsUsed, gameManager.PurificationIsUsed, gameManager.game.key_counter, gameManager.game.nbTorch);

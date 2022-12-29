@@ -50,6 +50,16 @@ public class Sword : MonoBehaviourPun
         }
     }
 
+    public void Victory()
+    {
+        if (TestLastPlayer())
+        {
+            GiveAwardToPlayer(GetLastPlayer());
+            SendResetColor();
+            DesactivateSwordRoom();
+        }
+    }
+
     public void SetPlayerColor(GameObject player)
     {
         player.gameObject.GetComponent<PlayerNetwork>().SendIstouchByWord(true);

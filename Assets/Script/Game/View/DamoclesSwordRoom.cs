@@ -129,6 +129,16 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         }
     }
 
+    public void Victory()
+    {
+        if (TestLastPlayer())
+        {
+            GiveAwardToPlayer(GetLastPlayer());
+            SendResetColor();
+            photonView.RPC("DesactivateDamoclesSwordRoom", RpcTarget.All);
+        }
+    }
+
     [PunRPC]
     public void KillCurrentPlayer()
     {

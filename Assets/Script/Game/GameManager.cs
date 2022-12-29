@@ -751,7 +751,7 @@ public class GameManager : MonoBehaviourPun
         foreach (Expedition expe in game.current_expedition)
         {
 
-            GameObject[] players = listPlayerTab;
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
             foreach (GameObject player in players)
             {
@@ -3432,5 +3432,49 @@ public class GameManager : MonoBehaviourPun
     public void UpdataDataPlayer(int indexPlayer)
     {
         dataGame.SetDataPlayerById(indexPlayer);
+    }
+
+    public void TestLastPlayerSpeciallayRoom()
+    {
+        if (GetPlayerMineGO().GetComponent<PlayerGO>().isInJail)
+            return;
+        if (GetPlayerMineGO().GetComponent<PlayerGO>().isSacrifice)
+            return;
+
+        if (game.currentRoom.fireBall)
+        {
+            GameObject.Find("FireBall(Clone)").GetComponent<FireBall>().Victory();
+            GameObject.Find("FireBallRoom").GetComponent<FireBallRoom>().DisplayLeverToRelauch();
+        }
+        if (game.currentRoom.isSword)
+        {
+            GetPlayerMineGO().transform.Find("Perso").Find("Sword").Find("Final").GetComponent<Sword>().Victory();
+        }
+        if (game.currentRoom.isSwordDamocles)
+        {
+            GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().Victory();
+        }
+        if (game.currentRoom.isDeathNPC)
+        {
+            GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>().DisplayLeverToRelauch();
+            if(GameObject.Find("DeathNpc(Clone)"))
+                GameObject.Find("DeathNpc(Clone)").GetComponent<Death_NPC>().Victory();
+            
+        }
+        if (game.currentRoom.isAx)
+        {
+            GameObject.Find("Ax").GetComponent<Ax>().Victory();
+        }
+
+        if (game.currentRoom.isMonsters)
+        {
+            GameObject.Find("MonsterInRoom").GetComponent<MonsterNPC>().Victory();
+            GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>().DisplayLeverToRelauch();
+        }
+        if (game.currentRoom.isLabyrintheHide)
+        {
+            StartCoroutine(GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthHideRoom>().DisplayLeverToRelauch());
+        }
+
     }
 }

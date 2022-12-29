@@ -156,7 +156,17 @@ public class Ax : MonoBehaviourPun
         }
     }
 
-
+    public void Victory()
+    {
+        if (TestLastPlayer())
+        {
+            GiveAwardToPlayer(GetLastPlayer());
+            SendResetColor();
+            DesactivateAxRoom();
+            axRoom.beforeLastDisconnect = true;
+        }
+        
+    }
 
     public void SetPlayerColor(GameObject player)
     {

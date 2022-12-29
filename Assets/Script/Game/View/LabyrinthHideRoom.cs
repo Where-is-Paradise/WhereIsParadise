@@ -98,6 +98,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
             SetListObstacleBorderWithoutTorch();
             waySize = Random.Range(15, 60);
             roomIsLaunched = true;
+            gameManager.speciallyIsLaunch = true;
         }
     }
 
@@ -660,5 +661,15 @@ public class LabyrinthHideRoom : MonoBehaviourPun
 
         GetNeigbourUntilFalseExit(obstacleNeigbour);
     }
-    
+
+    public IEnumerator DisplayLeverToRelauch()
+    {
+        yield return new WaitForSeconds(1);
+        if (this.transform.Find("ListObstacle").childCount == 0)
+        {
+            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 14);
+            roomIsLaunched = false;
+        }
+    }
+
 }

@@ -2349,6 +2349,7 @@ MonoBehaviour:
   powerIsUsed: 0
   isNearOfDoor: 0
   timerToUsing: 0
+  timerLaunch: 0
   canUsed: 0
   collision: {fileID: 0}
 --- !u!114 &208173725058215940
