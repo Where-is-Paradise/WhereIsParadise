@@ -239,6 +239,10 @@ public class Death_NPC : MonoBehaviourPun
 
     public void Victory()
     {
+        if (LastPlayerDoesNotExist())
+        {
+            gameManager.RandomWinFireball();
+        }
         if (TestLastPlayer())
         {
             GameObject lastPlayer = GetLastPlayer();
@@ -282,6 +286,23 @@ public class Death_NPC : MonoBehaviourPun
             return true;
         return false;
     }
+    public bool LastPlayerDoesNotExist()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchByDeath || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+                    || player.GetComponent<PlayerGO>().isSacrifice)
+            {
+                counter++;
+            }
+        }
+        if (counter == listPlayer.Length)
+            return true;
+        return false;
+    }
+
     public GameObject GetLastPlayer()
     {
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");

@@ -144,6 +144,22 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetHasWinFireBallRoom(bool hasWinFireBall)
     {
         player.hasWinFireBallRoom = hasWinFireBall;
+        PowerImpostor playerPowerImpostorTrap = player.transform.Find("PowerImpostor").GetComponent<PowerImpostor>();
+        ObjectImpostor playerObjectImpostor = player.transform.Find("ImpostorObject").GetComponent<ObjectImpostor>();
+        if (player.GetComponent<PhotonView>().IsMine)
+        {
+            player.gameManager.dataGame.SetDataPlayerMine(player.GetComponent<PhotonView>().ViewID, player.transform.position.x, player.transform.position.y,
+           player.position_X, player.position_Y, player.isImpostor, player.isBoss, player.isSacrifice, player.isInJail, player.isInvisible,
+           player.indexSkin, player.playerName, player.hasWinFireBallRoom, userId, playerPowerImpostorTrap.indexPower, playerPowerImpostorTrap.powerIsUsed,
+           playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, player.isInExpedition);
+        }
+        else
+        {
+            player.gameManager.dataGame.SetDataOtherPlayers(player.GetComponent<PhotonView>().ViewID, player.transform.position.x, player.transform.position.y,
+          player.position_X, player.position_Y, player.isImpostor, player.isBoss, player.isSacrifice, player.isInJail, player.isInvisible,
+          player.indexSkin, player.playerName, player.hasWinFireBallRoom, userId);
+        }
+       
     }
 
     public void SendVoteToSacrifice(bool hasVote)

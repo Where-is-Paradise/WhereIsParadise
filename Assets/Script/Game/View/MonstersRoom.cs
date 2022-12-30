@@ -23,6 +23,15 @@ public class MonstersRoom : MonoBehaviourPun
     {
         if (!gameManager.speciallyIsLaunch)
             return;
+      
+        if (gameManager.ui_Manager.MainRoomGraphic.transform.Find("Levers").transform.Find("OpenDoor_lever").gameObject.activeSelf)
+        {
+            gameManager.speciallyIsLaunch = false;
+            roomIsLaunch = false;
+            DestroyAllMonster();
+            return;
+        }
+            
         if (roomIsLaunch && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss && canSpawn)
             StartCoroutine(SpawnMonsterCouroutine(timerSpawnMonster));
 

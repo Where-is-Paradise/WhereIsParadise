@@ -204,6 +204,16 @@ public class GameManagerNetwork : MonoBehaviourPun
             gameManager.DesactivateColliderDoorToExplorater(roomIndex, playerIndex);
     }
 
+    public void SendExpeditionHadPropose(bool hadPropose)
+    {
+        photonView.RPC("SetExpeditionHadPropose", RpcTarget.All, hadPropose);
+    }
+
+    [PunRPC]
+    public void SetExpeditionHadPropose(bool hadPropose)
+    {
+        gameManager.expeditionHasproposed = hadPropose;
+    }
 
     public void LaunchTimerExpedition()
     {
@@ -2003,5 +2013,16 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetChangeBoss()
     {
         gameManager.ChangeBoss();
+    }
+
+    public void SendChangementParadiseBool(bool paradiseHadChange)
+    {
+        photonView.RPC("SetChangementParadiseBool", RpcTarget.All , paradiseHadChange);
+    }
+
+    [PunRPC]
+    public void SetChangementParadiseBool(bool paradiseHadChange)
+    {
+        gameManager.paradiseHasChange = paradiseHadChange;
     }
 }

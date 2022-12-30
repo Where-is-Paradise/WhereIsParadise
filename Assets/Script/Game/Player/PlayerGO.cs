@@ -1134,11 +1134,15 @@ public class PlayerGO : MonoBehaviour
         }
 
         gameManager.gameManagerNetwork.SendCloseDoorWhenVote();
-        gameManager.gameManagerNetwork.SendDisplaySpeciallyLevers(false, 0);
+        StartCoroutine(HideLeverCouroutine());
         //gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
     }
 
-
+    public IEnumerator HideLeverCouroutine()
+    {
+        yield return new WaitForSeconds(0.2f);
+        gameManager.gameManagerNetwork.SendDisplaySpeciallyLevers(false, 0);
+    }
 
 
 
@@ -1599,7 +1603,6 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-
         canDisplayMap = isEnter;
         //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Map_panel").gameObject.SetActive(isEnter);

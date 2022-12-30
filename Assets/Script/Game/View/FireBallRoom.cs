@@ -19,9 +19,9 @@ public class FireBallRoom : MonoBehaviour
 
     public void DisplayLeverToRelauch()
     {
-        if (!GameObject.FindGameObjectWithTag("FireBall"))
+        if (!GameObject.FindGameObjectWithTag("FireBall") && gameManager.fireBallIsLaunch)
         {
-            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 0);
+            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 2);
             gameManager.fireBallIsLaunch = false;
         }
     }

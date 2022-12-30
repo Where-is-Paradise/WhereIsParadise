@@ -38,7 +38,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
             playerMineN2.position_X, playerMineN2.position_Y, playerMineN2.isImpostor, playerMineN2.isBoss, playerMineN2.isSacrifice,
             playerMineN2.isInJail, playerMineN2.isInvisible, playerMineN2.indexSkin, playerMineN2.playerName, playerMineN2.hasWinFireBallRoom,
             playerMineN2.GetComponent<PlayerNetwork>().userId, playerPowerImpostorTrap.indexPower, playerPowerImpostorTrap.powerIsUsed,
-            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed);
+            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, playerMineN2.isInExpedition);
 
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
@@ -64,7 +64,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
                 playerMineN2.position_X, playerMineN2.position_Y, playerMineN2.isImpostor, playerMineN2.isBoss, playerMineN2.isSacrifice,
                 playerMineN2.isInJail, playerMineN2.isInvisible, playerMineN2.indexSkin, playerMineN2.playerName, playerMineN2.hasWinFireBallRoom,
                 playerMineN2.GetComponent<PlayerNetwork>().userId, playerPowerImpostorTrap.indexPower, playerPowerImpostorTrap.powerIsUsed,
-            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed);
+            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, playerMineN2.isInExpedition);
         }
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
@@ -95,7 +95,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
                 playerMineN2.position_X, playerMineN2.position_Y, playerMineN2.isImpostor, playerMineN2.isBoss, playerMineN2.isSacrifice,
                 playerMineN2.isInJail, playerMineN2.isInvisible, playerMineN2.indexSkin, playerMineN2.playerName, playerMineN2.hasWinFireBallRoom,
                 playerMineN2.GetComponent<PlayerNetwork>().userId, playerPowerImpostorTrap.indexPower, playerPowerImpostorTrap.powerIsUsed,
-            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed);
+            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, playerMineN2.isInExpedition);
         }
         else
         {
@@ -149,9 +149,21 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         gameManager.ui_Manager.SetNBKey();
         gameManager.ui_Manager.SetTorchNumber();
 
-        foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        foreach (PlayerData otherPlayerData in listOtherPlayer)
         {
-            player.GetComponent<PlayerGO>().SetSkin(GetPlayerByIndex(player.GetComponent<PhotonView>().ViewID).indexSkin);
+            GameObject otherPlayerGO = gameManager.GetPlayer(otherPlayerData.viewId);
+            PlayerGO otherPlayer = otherPlayerGO.GetComponent<PlayerGO>();
+            otherPlayer.GetComponent<PlayerNetwork>().SendindexSkin(otherPlayerData.indexSkin);
+        }
+
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInExpedition)
+        {
+            gameManager.UpdateSpecialsRooms(gameManager.game.currentRoom);
+           
+            gameManager.SetDoorNoneObstacle(gameManager.game.currentRoom);
+            gameManager.SetDoorObstacle(gameManager.game.currentRoom);
+            gameManager.CloseAllDoor(gameManager.game.currentRoom, false);
+            gameManager.GetPlayerMine().SetIsInExpedition(false);
         }
     } 
 
@@ -226,6 +238,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
             otherPlayer.indexSkin = otherPlayerData.indexSkin;
             otherPlayer.playerName = otherPlayerData.namePlayer;
             otherPlayer.hasWinFireBallRoom = false;
+            otherPlayer.GetComponent<PlayerNetwork>().userId = otherPlayerData.userId;
             DontDestroyOnLoad(otherPlayer);
         }
 
@@ -304,7 +317,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
     public void SetDataPlayerMine(int viewId, float positionX, float positionY, int positionDungeonX,
         int positionDungeonY, bool isImpostor, bool isBoss, bool isSacrifice, bool isInJail,
         bool isInvisible, int indexSkin, string namePlayer, bool hasWinFireBallRoom, string userId, int indexPowerTrap, bool powerIsUsed,
-        int indexObject, bool objectIsUsed)
+        int indexObject, bool objectIsUsed, bool isInExpedition)
     {
         playerDataMine.positionMineX = positionX;
         playerDataMine.positionMineY = positionY;
@@ -323,6 +336,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         playerDataMine.powerIsUsed = powerIsUsed;
         playerDataMine.indexObject = indexObject;
         playerDataMine.objectIsUsed = objectIsUsed;
+        playerDataMine.isInExpedition = isInExpedition;
 
     }
 
@@ -359,19 +373,22 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         otherPlayer.userId = userId;
     }
 
-    public void SendRoomData(int indexRoom, bool speciallyPowerIsUsed)
+    public void SendRoomData(int indexRoom, bool speciallyPowerIsUsed, bool isEnd)
     {
-        photonView.RPC("SetRoomData", RpcTarget.All, indexRoom, speciallyPowerIsUsed);
+        photonView.RPC("SetRoomData", RpcTarget.All, indexRoom, speciallyPowerIsUsed, isEnd);
     }
 
     [PunRPC]
-    public void SetRoomData(int indexRoom, bool speciallyPowerIsUsed)
+    public void SetRoomData(int indexRoom, bool speciallyPowerIsUsed, bool isEnd)
     {
         if(!GetRoomByIndex(indexRoom))
             listRoom.Add(RoomData.CreateInstance(indexRoom, speciallyPowerIsUsed));
         GetRoomByIndex(indexRoom).speciallyPowerIsUsed = speciallyPowerIsUsed;
-
-        hasRecuperateRoomDataN2 = true;
+        if (isEnd)
+        {
+            hasRecuperateRoomDataN2 = true;
+        }
+            
     }
 
     public void SendGlobalData(bool labyrinthIsUsed, bool npcIsUsed,

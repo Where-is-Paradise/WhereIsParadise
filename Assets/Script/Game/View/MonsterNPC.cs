@@ -156,8 +156,29 @@ public class MonsterNPC : MonoBehaviourPun
         return false;
     }
 
+    public bool LastPlayerDoesNotExist()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchByMonster || !monsterRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+                    || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
+            {
+                counter++;
+            }
+        }
+        if (counter == listPlayer.Length)
+            return true;
+        return false;
+    }
+
     public void Victory()
     {
+        if (LastPlayerDoesNotExist())
+        {
+            monsterRoom.gameManager.RandomWinFireball();
+        }
         if (TestLastPlayer())
         {
             monsterRoom.GiveAwardToPlayer(GetLastPlayer());

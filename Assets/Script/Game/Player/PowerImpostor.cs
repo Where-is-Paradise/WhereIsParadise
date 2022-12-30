@@ -193,7 +193,7 @@ public class PowerImpostor : MonoBehaviourPun
                 timerToUsing = 30;
                 break;
         }
-        timerToUsing += initalTimerPlus;
+        //timerToUsing += initalTimerPlus;
     }
 
     public void DisplayButtonDesactivateTimer(bool display, float timer)

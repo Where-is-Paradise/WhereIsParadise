@@ -52,6 +52,10 @@ public class Sword : MonoBehaviourPun
 
     public void Victory()
     {
+        if (LastPlayerDoesNotExist())
+        {
+            swordRoom.gameManager.RandomWinFireball();
+        }
         if (TestLastPlayer())
         {
             GiveAwardToPlayer(GetLastPlayer());
@@ -79,6 +83,23 @@ public class Sword : MonoBehaviourPun
             }
         }
         if (counter == (listPlayer.Length - 1))
+            return true;
+        return false;
+    }
+
+    public bool LastPlayerDoesNotExist()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchBySword || !swordRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+                    || player.GetComponent<PlayerGO>().isSacrifice)
+            {
+                counter++;
+            }
+        }
+        if (counter == listPlayer.Length)
             return true;
         return false;
     }

@@ -1949,6 +1949,11 @@ setting_button_echapMenu.SetActive(false);
     {
         ReconnexionPanel.SetActive(display);
     }
+
+    public void DisplayInterogationPoint()
+    {
+        text_distance_room.GetComponent<Text>().text = "?";
+    }
 }
 
 

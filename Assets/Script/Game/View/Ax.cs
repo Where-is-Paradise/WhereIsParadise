@@ -30,15 +30,12 @@ public class Ax : MonoBehaviourPun
             this.GetComponent<CircleCollider2D>().enabled = false;
             return;
         }
-
         if(axRoom && !axRoom.gameManager.SamePositionAtBoss())
         {
             this.GetComponent<SpriteRenderer>().enabled = false;
             this.GetComponent<CircleCollider2D>().enabled = false;
             return;
         }
-
-
         if (!axRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
@@ -48,7 +45,10 @@ public class Ax : MonoBehaviourPun
         {
             PhotonNetwork.Destroy(this.gameObject);
         }
-
+        if(speed == 0)
+        {
+            PhotonNetwork.Destroy(this.gameObject);
+        }
     }
 
     public IEnumerator ActiveColliderCoroutine()
@@ -158,6 +158,10 @@ public class Ax : MonoBehaviourPun
 
     public void Victory()
     {
+        if (LastPlayerDoesNotExist())
+        {
+            axRoom.gameManager.RandomWinFireball();
+        }
         if (TestLastPlayer())
         {
             GiveAwardToPlayer(GetLastPlayer());
@@ -187,6 +191,23 @@ public class Ax : MonoBehaviourPun
             }
         }
         if (counter == (listPlayer.Length - 1))
+            return true;
+        return false;
+    }
+
+    public bool LastPlayerDoesNotExist()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchByAx || !axRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+                    || player.GetComponent<PlayerGO>().isSacrifice)
+            {
+                counter++;
+            }
+        }
+        if (counter == listPlayer.Length)
             return true;
         return false;
     }

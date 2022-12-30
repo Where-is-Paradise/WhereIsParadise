@@ -71,6 +71,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         gameManager.UpdateListPlayerGO();
         gameManager.SetTABToList(gameManager.listPlayerTab, gameManager.listPlayer);
         Door doorExplorate = gameManager.GetDoorExplorator(player.GetComponent<PhotonView>().ViewID);
+        Debug.Log("doorExplorate : " + doorExplorate.index);
         if(doorExplorate)
             gameManager.CancelDoorExplorationWhenDisconnection(doorExplorate.index);
 
@@ -84,7 +85,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         {
             gameManager.ChangeBoss();
         }
-        if (gameManager.speciallyIsLaunch)
+        if (gameManager.speciallyIsLaunch || gameManager.fireBallIsLaunch)
         {
             gameManager.TestLastPlayerSpeciallayRoom();
         }
@@ -284,13 +285,14 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
     public IEnumerator SendDataRoomCouroutine()
     {
         yield return new WaitForSeconds(2);
+        int counter = 1;
         foreach (Room room in gameManager.game.dungeon.rooms)
         {
-            dataGame.SendRoomData(room.Index, room.speciallyPowerIsUsed);
+            dataGame.SendRoomData(room.Index, room.speciallyPowerIsUsed, counter == gameManager.game.dungeon.rooms.Count) ;
             dataGame.SendSpecialityRoom(room.Index, room.chest, room.isSacrifice, room.isJail, room.IsVirus, room.fireBall,
                 room.IsFoggy, room.isDeathNPC, room.isSwordDamocles, room.isAx, room.isSword, room.isLostTorch, room.isMonsters, 
                 room.isPurification, room.isResurection, room.isPray, room.isNPC, room.isLabyrintheHide, room.isCursedTrap, room.isTraped);
-                
+            counter++;
         }
     }
 

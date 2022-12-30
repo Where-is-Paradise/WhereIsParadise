@@ -19,6 +19,7 @@ public class PlayerData : ScriptableObject
     public bool hasWinFireBallRoom;
     public string userId;
     public int Old_viewId;
+    public bool isInExpedition;
 
     // impostor
     public int indexPowerTrap;
