@@ -139,6 +139,9 @@ public class PlayerGO : MonoBehaviour
 
     public bool isAlreaySerCanLauchLeverExplorationCouroutine = false;
 
+    private float oldHorizontal;
+    private float oldVertical;
+
     // is for recon
 
     private void Awake()
@@ -163,6 +166,8 @@ public class PlayerGO : MonoBehaviour
         // Used to prevent multi tap on mobile
 
         enhanceOwners();
+/*        if(this.GetComponent<PhotonView>().IsMine)
+            StartCoroutine(SendPositionCoroutine());*/
 
     }
 
@@ -223,12 +228,27 @@ public class PlayerGO : MonoBehaviour
             return;
         }
 
+        if ( gameManager && gameManager.speciallyIsLaunch)
+        {
+            this.GetComponent<PhotonTransformViewClassic>().enabled = true;
+            this.GetComponent<PhotonRigidbody2DView>().enabled = false;
+           
+        }
+        else
+        {
+            this.GetComponent<PhotonTransformViewClassic>().enabled = false;
+            this.GetComponent<PhotonRigidbody2DView>().enabled = true;
+        }
+
         if (GetComponent<PhotonView>().IsMine && canMove)
         {
             handlePlayerMove();
         }
 
-        
+        if (gameManager)
+        {
+            SetIconDeath();
+        }
     }
 
 
@@ -758,11 +778,19 @@ public class PlayerGO : MonoBehaviour
         oldPosition = transform.position;
         float horizontal = InputManager.GetAxis("Horizontal");
         float vertical = InputManager.GetAxis("Vertical");
-/*        if(Mathf.Abs(InputManager.GetAxis("Horizontal")) + Mathf.Abs(InputManager.GetAxis("Vertical")) > 1f)
+        /*        if(Mathf.Abs(InputManager.GetAxis("Horizontal")) + Mathf.Abs(InputManager.GetAxis("Vertical")) > 1f)
+                {
+                    horizontal = 0.5f * Mathf.Sign(InputManager.GetAxis("Horizontal"));
+                    vertical = 0.5f * Mathf.Sign(InputManager.GetAxis("Vertical")); ;
+                }*/
+        //Debug.Log(horizontal + " " + vertical);
+       
+        if (horizontal > 0.9  && vertical > 0.9)
         {
-            horizontal = 0.5f * Mathf.Sign(InputManager.GetAxis("Horizontal"));
-            vertical = 0.5f * Mathf.Sign(InputManager.GetAxis("Vertical")); ;
-        }*/
+            horizontal = 0.7f;
+            vertical = 0.7f;
+        }
+       
         this.transform.Translate(
             new Vector3(
                 horizontal * movementlControlSpeed * 1.3f * Time.deltaTime,
@@ -770,12 +798,42 @@ public class PlayerGO : MonoBehaviour
                 0
             )
         );
-/*        if(horizontal > 0 || vertical > 0)
-            movement = transform.position - oldPosition;*/
 
+        /*        if(horizontal > 0 || vertical > 0)
+                    movement = transform.position - oldPosition;*/
+
+        //GetComponent<PlayerNetwork>().SendHorizontalAndVertical(horizontal, vertical);
+        if (gameManager && gameManager.speciallyIsLaunch)
+        {
+            InputDownORUp();
+
+        }
+       
 
     }
 
+   
+    
+    public void InputDownORUp()
+    {
+        float horizontal = InputManager.GetAxis("Horizontal");
+        float vertical = InputManager.GetAxis("Vertical");
+
+        if(((oldHorizontal == 0 && Mathf.Abs(horizontal) > 0)  || (oldHorizontal >  0 && horizontal < 0 ) ||(oldHorizontal < 0 && horizontal > 0))
+            || ( oldVertical == 0 && Mathf.Abs(vertical) > 0 || (oldVertical > 0 && vertical < 0) || (oldVertical < 0 && vertical > 0)))
+        {
+            this.GetComponent<PlayerNetwork>().SendSpacePosition(this.transform.position.x, this.transform.position.y);
+        }
+        oldHorizontal = horizontal;
+        oldVertical = vertical;
+    }
+
+    public IEnumerator SendPositionCoroutine()
+    {
+        yield return new WaitForSeconds(0.25f);
+        this.GetComponent<PlayerNetwork>().SendSpacePosition(this.transform.position.x, this.transform.position.y);
+        StartCoroutine(SendPositionCoroutine());
+    }
 
     private void handleMobileMove()
     {
@@ -1195,6 +1253,18 @@ public class PlayerGO : MonoBehaviour
     {
         this.indexSkin = indexSkin;
         SetPlayerNameServer();
+    }
+
+    public void SetIconDeath()
+    {
+        if (isSacrifice)
+        {
+            this.transform.Find("Perso").transform.Find("DeadIcon").gameObject.SetActive(true);
+        }
+        else
+        {
+            this.transform.Find("Perso").transform.Find("DeadIcon").gameObject.SetActive(false);
+        }
     }
 
     public void DisplayCharacter(bool display)
@@ -1892,5 +1962,6 @@ public class PlayerGO : MonoBehaviour
     {
         
         canLaunchExplorationLever = true;
+        StartCoroutine(gameManager.VerifyBugExplorationCouroutine());
     }
 }

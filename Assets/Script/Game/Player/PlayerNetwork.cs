@@ -885,4 +885,44 @@ public class PlayerNetwork : MonoBehaviourPun
         player.gameManager.HidePlayerNotInSameRoom();
     }
 
+    public void SendHorizontalAndVertical(float horizontal, float vertical)
+    {
+        float[] tabFloat = new float[2];
+        tabFloat[0] = horizontal;
+        tabFloat[1] = vertical;
+
+        float speed = Mathf.Max(tabFloat);
+        if(Mathf.Abs(speed) < 0.35)
+        {
+            photonView.RPC("SetHorizontalAndVertical", RpcTarget.All, true);
+        }
+        else
+        {
+            photonView.RPC("SetHorizontalAndVertical", RpcTarget.All, false);
+        }
+        //this.GetComponent<PhotonTransformViewClassic>().SetSynchronizedValues(new Vector3(speed,speed), 0);
+        //this.GetComponent<PhotonTransformViewClassic>().
+    }
+
+    [PunRPC]
+    public void SetHorizontalAndVertical(bool activeRigibody)
+    {
+        this.GetComponent<PhotonTransformViewClassic>().enabled = !activeRigibody;
+        this.GetComponent<PhotonRigidbody2DView>().enabled = activeRigibody;
+    }
+
+    public void SendSpacePosition(float x, float y)
+    {
+        photonView.RPC("SetSpacePosition", RpcTarget.Others,x,y);
+    }
+
+    [PunRPC]
+    public void SetSpacePosition(float x, float y)
+    {
+        Vector3 newPosition = new Vector3(x, y);
+        //Vector3.Translate(this.GetComponent<Rigidbody2D>().position, newPosition, Time.deltaTime);
+        Vector3 distance = newPosition  - this.transform.position ;
+        this.transform.Translate(distance * 10 * Time.deltaTime);
+    }
+
 }

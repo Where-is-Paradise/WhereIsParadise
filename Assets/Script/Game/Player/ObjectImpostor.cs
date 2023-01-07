@@ -44,7 +44,10 @@ public class ObjectImpostor : MonoBehaviour
         if (powerIsReset)
             return;
         if(indexPower == 0)
+        {
             GetAllSituationToResetInvisiblity();
+        }
+            
 
         GetAllSituationToCanUsed();
         ChangeScaleByPlayer();
@@ -78,6 +81,8 @@ public class ObjectImpostor : MonoBehaviour
         if (powerIsUsed)
             return;
         if (indexPower != 0)
+            return;
+        if (cantTemporyUsed)
             return;
         if (colliderIsImpostor && !isOtherToInvisible) 
         {
@@ -165,8 +170,8 @@ public class ObjectImpostor : MonoBehaviour
                 timerToUsing = 30;
                 break;
             case 1:
-                //timerToUsing = 250;
-                timerToUsing = 30;
+                timerToUsing = 250;
+                //timerToUsing = 30;
                 break;
             case 2:
                 timerToUsing = 110;
@@ -187,7 +192,8 @@ public class ObjectImpostor : MonoBehaviour
                     DisplayInvisibleResetButton(true);
                     isInvisible = true;
                 }
-                else {
+                else 
+                {
                     ResetInvisiblityPower();
                     DisplayButtonCanUsed(false);
                     DisplayInvisibleResetButton(false);

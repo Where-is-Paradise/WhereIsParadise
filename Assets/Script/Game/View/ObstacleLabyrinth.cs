@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class ObstacleLabyrinth : MonoBehaviourPun
 {
+    public int index;
     public int position_x;
     public int position_y;
     public bool isEmpty = false;
@@ -27,6 +28,7 @@ public class ObstacleLabyrinth : MonoBehaviourPun
     public List<ObstacleLabyrinth> listNeigbourNoneObstaclePathFinding;
 
     public float timerLight = 100;
+    public int zIndex = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -106,7 +108,7 @@ public class ObstacleLabyrinth : MonoBehaviourPun
                 this.transform.Find("Torch").gameObject.SetActive(false);
             }
         }
-
+        this.GetComponent<SpriteRenderer>().sortingOrder = zIndex;
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -118,6 +120,11 @@ public class ObstacleLabyrinth : MonoBehaviourPun
             //labyrinthRoom.DesactivateAllObtacle();
             if (!isEmpty)
                 return;
+            if (!collision.transform.parent.GetComponent<PhotonView>().IsMine)
+                return;
+            if (AllMyNeibourIsNotEmpty())
+                return;
+            SendIsTouchByPlayer(true);
             isTouchByPlayer = true;
         }
     }
@@ -148,9 +155,7 @@ public class ObstacleLabyrinth : MonoBehaviourPun
 
     public void ResetListNeibourNoneObstacle()
     {
-
         listNeigbourNoneObstaclePathFinding.RemoveRange(0, listNeigbourNoneObstaclePathFinding.Count);
-
     }
 
     public ObstacleLabyrinth GetRandomNeigbourNoneObstacle()
@@ -199,7 +204,7 @@ public class ObstacleLabyrinth : MonoBehaviourPun
 
     public void SendData(bool isEmpty , bool hasTorch , bool isMiddle)
     {
-        photonView.RPC("SetData", RpcTarget.All, isEmpty  , hasTorch , isMiddle);
+        photonView.RPC("SetData", RpcTarget.Others, isEmpty  , hasTorch , isMiddle);
     }
 
     [PunRPC]
@@ -219,7 +224,6 @@ public class ObstacleLabyrinth : MonoBehaviourPun
 
     public void SendInitiationData(int i, int j)
     {
-      
         photonView.RPC("SetInitiationData", RpcTarget.All, i, j);
     }
 
@@ -234,5 +238,26 @@ public class ObstacleLabyrinth : MonoBehaviourPun
         this.position_x = j;
         this.position_y = i;
     }
+    public void SendIsTouchByPlayer(bool isTouchByPlayer)
+    {
+        labyrinthRoom.SendObstacleIsTouchByIndex(index, isTouchByPlayer);
+    }
 
+    public bool AllMyNeibourIsNotEmpty()
+    {
+        if (isMiddle)
+            return false;
+        int counter = 0;
+        foreach(ObstacleLabyrinth obstacle in listNeigbour)
+        {
+            if (obstacle.isTouchByPlayer || obstacle.isMiddle)
+            {
+                return false;
+            }
+            counter++;
+        }
+        if(counter == 3)
+            return false;
+        return true;
+    }
 }

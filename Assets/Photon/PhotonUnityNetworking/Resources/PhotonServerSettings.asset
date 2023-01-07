@@ -23,10 +23,10 @@ MonoBehaviour:
     Port: 0
     ProxyServer: 
     Protocol: 0
-    EnableProtocolFallback: 1
+    EnableProtocolFallback: 0
     AuthMode: 0
-    EnableLobbyStatistics: 1
-    NetworkLogging: 1
+    EnableLobbyStatistics: 0
+    NetworkLogging: 5
   DevRegion: 
   PunLogging: 2
   EnableSupportLogger: 0

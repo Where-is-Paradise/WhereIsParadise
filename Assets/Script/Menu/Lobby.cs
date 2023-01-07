@@ -41,6 +41,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     {
         matchmaking = false;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        PhotonNetwork.UseAlternativeUdpPorts = true;
         ConnectToMaster();
         index_skin = Random.Range(0, 7);
         setting = GameObject.Find("Setting").GetComponent<Setting>();

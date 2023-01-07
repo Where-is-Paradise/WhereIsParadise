@@ -239,12 +239,13 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.MixDistanceForExploration();
         }
 
-/*        if(timerStart && !VerifyHasWinFireBall() && (!speciallyIsLaunch || !fireBallIsLaunch) && 
-            !ThereIsLever() && !timer.timerLaunch && !OnePlayerHaveToGoToExpedition() && !game.currentRoom.IsHell && !game.currentRoom.IsExit)
-        {
-            RandomWinFireball();
-        }*/
+        /*        if(timerStart && !VerifyHasWinFireBall() && (!speciallyIsLaunch || !fireBallIsLaunch) && 
+                    !ThereIsLever() && !timer.timerLaunch && !OnePlayerHaveToGoToExpedition() && !game.currentRoom.IsHell && !game.currentRoom.IsExit)
+                {
+                    RandomWinFireball();
+                }*/
 
+       
     }
 
     public IEnumerator CouroutineTimerStart()
@@ -431,8 +432,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
-            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
+            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
+            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[0]);
             listIndexPower.RemoveAt(randomInt);
         }
     }
@@ -2624,7 +2625,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayDamoclesSwordRoom(true);
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-            isActuallySpecialityTime = true;
+             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
@@ -3596,5 +3597,29 @@ public class GameManager : MonoBehaviourPun
         players[randomInt].GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
         players[randomInt].GetComponent<PlayerNetwork>().SendCanLaunchExploration();
        
+    }
+
+    public IEnumerator VerifyBugExplorationCouroutine()
+    {
+        yield return new WaitForSeconds(1.5f);
+        if (GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
+        {
+            if (alreaydyExpeditionHadPropose)
+            {
+                if (GetPlayerMineGO().GetComponent<PlayerGO>().canLaunchExplorationLever)
+                {
+                    alreaydyExpeditionHadPropose = false;
+                }
+            }
+            else
+            {
+                if (!GetPlayerMineGO().GetComponent<PlayerGO>().canLaunchExplorationLever)
+                {
+                    GetPlayerMineGO().GetComponent<PlayerGO>().canLaunchExplorationLever = true;
+                }
+            }
+            
+        }
+
     }
 }

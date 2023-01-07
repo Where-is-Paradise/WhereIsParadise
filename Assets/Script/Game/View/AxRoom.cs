@@ -65,6 +65,11 @@ public class AxRoom : MonoBehaviourPun
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(true);
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            gameManager.gameManagerNetwork.SendActivateAllObstacles(true ,this.name);
+            //gameManager.ui_Manager.SetRandomObstacles(this.gameObject);
+        }
         
     }
 
@@ -118,6 +123,12 @@ public class AxRoom : MonoBehaviourPun
         newAx.GetComponent<Ax>().SendLancher(indexPlayer);
         newAx.GetComponent<Ax>().SendSpeedAndDirection(5, directionX, directionY);
         newAx.GetComponent<Ax>().player = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
+        Debug.Log(newAx.GetComponent<Ax>().GetNumberLastPlayer());
+        if (newAx.GetComponent<Ax>().GetNumberLastPlayer() == 2)
+        {
+            newAx.GetComponent<Ax>().SendBounds(6);
+        }
+
     }
 
     public void SendShotAxToDirection()
@@ -153,6 +164,7 @@ public class AxRoom : MonoBehaviourPun
         DiplayAxForAllPlayer(display);
         DisplayHeartsFoAllPlayer(display);
         StartCoroutine(ResetLineToShotCoroutine());
+        gameManager.gameManagerNetwork.SendActivateAllObstacles(false, this.name);
     }
 
     [PunRPC]

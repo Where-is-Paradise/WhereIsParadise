@@ -25,6 +25,7 @@ TagManager:
   - Monster
   - Ax
   - GodDeath
+  - Obstacle
   layers:
   - Default
   - TransparentFX

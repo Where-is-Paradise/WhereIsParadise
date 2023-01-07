@@ -257,8 +257,12 @@ public class UI_Managment : MonoBehaviourPun
     public void  OnclickIntro()
     {
         clickToLaunch = true;
-        if (setting.displayTutorial)
+        if (setting.firstTimePanel)
+        {
             panelFirstConnexion.gameObject.SetActive(true);
+            setting.firstTimePanel = true;
+        }
+          
     }
     public void HideTrailer()
     {

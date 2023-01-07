@@ -2025,4 +2025,15 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.paradiseHasChange = paradiseHadChange;
     }
+
+    public void SendActivateAllObstacles(bool display, string nameObject)
+    {
+        photonView.RPC("SetActivateAllObstacles", RpcTarget.All, display, nameObject);
+    }
+
+    [PunRPC]
+    public void SetActivateAllObstacles(bool display, string nameObject)
+    {
+        gameManager.ui_Manager.DesactivateAllobstacles(nameObject, display);
+    }
 }

@@ -106,6 +106,7 @@ MonoBehaviour:
   axRoom: {fileID: 0}
   player: {fileID: 0}
   nbBounds: 0
+  maxBoudns: 1
   canChangeDirection: 1
   launcher: {fileID: 0}
 --- !u!114 &2793397278095793249

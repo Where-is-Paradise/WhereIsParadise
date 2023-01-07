@@ -42,6 +42,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
     public bool DataObstacleAreSent = false;
     public bool roomIsLaunched = false;
 
+    public GameObject obstaclePrefab;
     // Start is called before the first frame update
     void Start()
     {   
@@ -87,11 +88,12 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         this.transform.Find("ListSeparation").Find("SeparationsMiddleUp").gameObject.SetActive(true);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(true);
+ 
+        SpawnObtacles();
+        AddNeighboursToEachObstacle();
+        DesactivateObstaclesInMiddle();
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            SpawnObtacles();
-            AddNeighboursToEachObstacle();
-            DesactivateObstaclesInMiddle();
             SetListObstacleBorder();
             AddTorch();
             SetInvertTorchPosition();
@@ -104,14 +106,22 @@ public class LabyrinthHideRoom : MonoBehaviourPun
 
     public void SpawnObtacles()
     {
+        int counter = 0;
+        int zIndex = -26;
         for(int i= 0; i< height; i++)
         { 
             for (int j =0; j < width; j++)
             {
-                GameObject newObstacle = PhotonNetwork.Instantiate("Obstacle", this.transform.Find("ListObstacle").position , Quaternion.identity);
-                newObstacle.GetComponent<ObstacleLabyrinth>().SendInitiationData(i,j);
+                GameObject newObstacle = Instantiate(obstaclePrefab, this.transform.Find("ListObstacle").position, Quaternion.identity);
+                //newObstacle.GetComponent<ObstacleLabyrinth>().SendInitiationData(i,j);
+                newObstacle.GetComponent<ObstacleLabyrinth>().SetInitiationData(i,j);
+                newObstacle.GetComponent<ObstacleLabyrinth>().index = counter;
+                newObstacle.GetComponent<ObstacleLabyrinth>().zIndex = zIndex;
                 listObstacles.Add(newObstacle);
+                counter++;
+                
             }
+            zIndex = zIndex + 6;
         }
     }
 
@@ -249,7 +259,8 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         foreach (GameObject obstacle in listObstacles)
         {
             ObstacleLabyrinth obtacleComponenet = obstacle.GetComponent<ObstacleLabyrinth>();
-            obtacleComponenet.SendData(obtacleComponenet.isEmpty , obtacleComponenet.hasTorch , obtacleComponenet.isMiddle);
+            //obtacleComponenet.SendData(obtacleComponenet.isEmpty , obtacleComponenet.hasTorch , obtacleComponenet.isMiddle);
+            SendObstacleDataByIndex(obtacleComponenet.index, obtacleComponenet.isEmpty, obtacleComponenet.hasTorch, obtacleComponenet.isMiddle);
         }
         DataObstacleAreSent = true;
     }
@@ -446,7 +457,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
     public void SendHideAllObtacles() {
         if (!gameManager.SamePositionAtBoss())
             return;
-
+        ResetListObstacle();
         DestroyAllObstacle();
         gameManager.ui_Manager.DisplayKeyAndTorch(true);
         gameManager.speciallyIsLaunch = false;
@@ -672,4 +683,46 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         }
     }
 
+    public ObstacleLabyrinth GetObstacleByIndex(int index)
+    {
+        foreach(GameObject obstacle in listObstacles)
+        {
+            if(obstacle.GetComponent<ObstacleLabyrinth>().index == index)
+            {
+                return obstacle.GetComponent<ObstacleLabyrinth>();
+            }
+        }
+        return null;
+    }
+
+    public void SendObstacleDataByIndex(int index,bool isEmpty , bool hasTorch, bool isMiddle )
+    {
+        photonView.RPC("SetObstacleDataByIndex", RpcTarget.Others, index, isEmpty, hasTorch, isMiddle);
+    }
+
+    [PunRPC]
+    public void SetObstacleDataByIndex(int index, bool isEmpty, bool hasTorch, bool isMiddle)
+    {
+        ObstacleLabyrinth obstacle = GetObstacleByIndex(index);
+        obstacle.isEmpty = isEmpty;
+        obstacle.hasTorch = hasTorch;
+        obstacle.isMiddle = isMiddle;
+    }
+
+    public void SendObstacleIsTouchByIndex(int index, bool isTouch)
+    {
+        photonView.RPC("SetObstacleIsTouchByIndex", RpcTarget.Others, index, isTouch);
+    }
+
+    [PunRPC]
+    public void SetObstacleIsTouchByIndex(int index, bool isTouch)
+    {
+        ObstacleLabyrinth obstacle = GetObstacleByIndex(index);
+        obstacle.isTouchByPlayer = isTouch;
+    }
+
+    public void ResetListObstacle()
+    {
+        listObstacles.RemoveRange(0, listObstacles.Count);
+    }
 }

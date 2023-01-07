@@ -7,8 +7,11 @@ using UnityEngine;
 public class Death_NPC : MonoBehaviourPun
 {
     public GameManager gameManager;
-
+    public GameObject godDeath2;
     public bool CanHideDeathGod = false;
+
+    private float oldHorizontal;
+    private float oldVertical;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,8 +21,13 @@ public class Death_NPC : MonoBehaviourPun
         {
             gameManager.TeleportAllPlayerInRoomOfBoss();
             StartCoroutine(StartDeathNPCRoomAfterTeleportation());
+            //StartCoroutine(SendPostionCouroutine());
+            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().enabled = false;
+            this.transform.Find("Faux").GetComponent<SpriteRenderer>().enabled = false;
+            this.GetComponent<CapsuleCollider2D>().enabled = false;
+            Instantiate(godDeath2, this.transform.position, Quaternion.identity);
         }
-            
+
     }
 
 
@@ -42,13 +50,14 @@ public class Death_NPC : MonoBehaviourPun
         {
             return;
         }
-        SetMaxSpeed(2);
+        SetMaxSpeed(3);
         photonView.RPC("SendSpeciallyIsLaucnh", RpcTarget.All);
         SetTargetOfPathFinding();
         StartCoroutine(ChangerSpeedCoroutine());
         photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, false) ;
         //StartCoroutine(UpdatePositionCoroutine());
         StartCoroutine(CanHideDeathGodCoroutine());
+        //Instantiate(godDeath2, this.transform.position, Quaternion.identity);
     }
     [PunRPC]
     public void SendIgnoreCollisionPlayer(bool ignore)
@@ -75,7 +84,7 @@ public class Death_NPC : MonoBehaviourPun
             this.transform.Find("Faux").GetComponent<SpriteRenderer>().enabled = false;
             this.GetComponent<CapsuleCollider2D>().enabled = false;
         }
-
+      
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
@@ -87,8 +96,8 @@ public class Death_NPC : MonoBehaviourPun
         gameManager.CloseDoorWhenVote(true);
         SetTargetOfPathFinding();
 
+        ChangeDirectionBrutally();
 
-       
 
     }
 
@@ -211,7 +220,6 @@ public class Death_NPC : MonoBehaviourPun
 
         if (collision.gameObject.tag == "Player")
         {
-
             if (!collision.gameObject.GetComponent<PhotonView>().IsMine)
                 return;
             DeathTouchPlayerEvent(collision.gameObject) ;
@@ -365,7 +373,10 @@ public class Death_NPC : MonoBehaviourPun
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         this.gameObject.SetActive(false);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
             PhotonNetwork.Destroy(this.gameObject);
+        }
+           
 
     }
 
@@ -392,5 +403,48 @@ public class Death_NPC : MonoBehaviourPun
         photonView.RPC("DesactivateNPC", RpcTarget.All);
     }
 
+    public void ChangeSizeCollision()
+    {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            GetComponent<CapsuleCollider2D>().size = new Vector2(1.57f, 1.7f);
+        }
+        else
+        {
+            GetComponent<CapsuleCollider2D>().size = new Vector2(2.7f, 1.7f);
+        }
+    }
 
+    public IEnumerator SendPostionCouroutine()
+    {
+        yield return new WaitForSeconds(0.75f);
+        SendPosition(this.transform.position.x, this.transform.position.y);
+
+        StartCoroutine(SendPostionCouroutine());
+    }
+    public void SendPosition(float x, float y)
+    {
+        photonView.RPC("SetPosition", RpcTarget.Others,x,y);
+    }
+    [PunRPC]
+    public void SetPosition(float x, float y)
+    {
+        this.transform.position = new Vector3(x, y);
+
+    }
+
+
+    public void ChangeDirectionBrutally()
+    {
+        float horizontal = GetComponent<Rigidbody2D>().velocity.y;
+        float vertical = GetComponent<Rigidbody2D>().velocity.x;
+
+        if (((oldHorizontal == 0 && Mathf.Abs(horizontal) > 0) || (oldHorizontal > 0 && horizontal < 0) || (oldHorizontal < 0 && horizontal > 0))
+            || (oldVertical == 0 && Mathf.Abs(vertical) > 0 || (oldVertical > 0 && vertical < 0) || (oldVertical < 0 && vertical > 0)))
+        {
+            SendPosition(this.transform.position.x, this.transform.position.y);
+        }
+        oldHorizontal = horizontal;
+        oldVertical = vertical;
+    }
 }

@@ -1954,6 +1954,25 @@ setting_button_echapMenu.SetActive(false);
     {
         text_distance_room.GetComponent<Text>().text = "?";
     }
+
+    public void SetRandomObstacles(GameObject speciallyRoom)
+    {
+        speciallyRoom.transform.Find("Obstacles").gameObject.SetActive(true);
+       
+    }
+    public void DesactivateAllobstacles(string nameObject, bool display)
+    {
+        GameObject.Find(nameObject).transform.Find("Obstacles").gameObject.SetActive(display);
+        GameObject speciallyRoom = GameObject.Find(nameObject);
+        if (display)
+        {
+            for (int i = 0; i < speciallyRoom.transform.Find("Obstacles").childCount; i++)
+            {
+                if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                    speciallyRoom.transform.Find("Obstacles").GetChild(i).GetComponent<Obstacle>().LaunchRandomDesactive();
+            }
+        }
+    }
 }
 
 

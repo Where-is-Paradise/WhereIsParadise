@@ -10,6 +10,7 @@ public class Ax : MonoBehaviourPun
     public AxRoom axRoom;
     public PlayerGO player;
     public int nbBounds = 0;
+    public int maxBoudns = 1;
     public bool canChangeDirection = true;
     public PlayerGO launcher;
     // Start is called before the first frame update
@@ -41,7 +42,7 @@ public class Ax : MonoBehaviourPun
             return;
         }
         this.GetComponent<Rigidbody2D>().velocity = direction * speed;
-        if(nbBounds == 1)
+        if(nbBounds == maxBoudns)
         {
             PhotonNetwork.Destroy(this.gameObject);
         }
@@ -62,6 +63,10 @@ public class Ax : MonoBehaviourPun
         if (!axRoom || !axRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
+        }
+        if(nameWallColsion.gameObject.tag  == "Obstacle")
+        {
+            PhotonNetwork.Destroy(this.gameObject);
         }
 
         IsTouchPlayer(nameWallColsion);
@@ -145,7 +150,8 @@ public class Ax : MonoBehaviourPun
             if (collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom == 0)
             {
                 SetPlayerColor(collision.gameObject);
-
+                if (GetNumberLastPlayer() == 2)
+                    nbBounds = 4;
                 if (TestLastPlayer())
                 {
                     GiveAwardToPlayer(GetLastPlayer());
@@ -153,6 +159,7 @@ public class Ax : MonoBehaviourPun
                     DesactivateAxRoom();
                 }
             }
+            //PhotonNetwork.Destroy(this.gameObject);
         }
     }
 
@@ -193,6 +200,20 @@ public class Ax : MonoBehaviourPun
         if (counter == (listPlayer.Length - 1))
             return true;
         return false;
+    }
+    public int GetNumberLastPlayer()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchByAx || !axRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+                    || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
+            {
+                counter++;
+            }
+        }
+        return listPlayer.Length - counter;
     }
 
     public bool LastPlayerDoesNotExist()
@@ -308,5 +329,16 @@ public class Ax : MonoBehaviourPun
     {
         axRoom = GameObject.Find("AxRoom").GetComponent<AxRoom>();
         launcher = axRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>();
+    }
+
+    public void SendBounds(int bounds)
+    {
+        photonView.RPC("SetBounds", RpcTarget.All, bounds);
+    }
+
+    [PunRPC]
+    public void SetBounds(int bounds)
+    {
+        maxBoudns = bounds;
     }
 }

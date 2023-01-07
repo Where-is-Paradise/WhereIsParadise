@@ -36,6 +36,8 @@ public class LostTorchRoom : MonoBehaviourPun
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(true);
         StartCoroutine(TimerCouroutine());
+        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            gameManager.gameManagerNetwork.SendActivateAllObstacles(true, this.name);
     }
     public void SpawnLostTorch()
     {
@@ -79,6 +81,7 @@ public class LostTorchRoom : MonoBehaviourPun
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(false);
+        gameManager.gameManagerNetwork.SendActivateAllObstacles(false, this.name);
     }
 
     public void AssignAwardToPlayer()

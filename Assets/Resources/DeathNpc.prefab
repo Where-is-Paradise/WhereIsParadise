@@ -141,7 +141,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.07, y: 0.16288936}
-  m_Size: {x: 1.5715457, y: 1.7442214}
+  m_Size: {x: 2.71, y: 1.7442214}
   m_Direction: 0
 --- !u!114 &4695169022583446951
 MonoBehaviour:
@@ -268,6 +268,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
+  godDeath2: {fileID: 880268685445116128, guid: f2d5e3fcb912979449ca555bf3e69881,
+    type: 3}
   CanHideDeathGod: 0
 --- !u!114 &4695169022583446954
 MonoBehaviour:
@@ -329,8 +331,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 0
-  m_TeleportEnabled: 1
-  m_TeleportIfDistanceGreaterThan: 0.5
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 1
 --- !u!114 &4695169022583446958
 MonoBehaviour:
   m_ObjectHideFlags: 0

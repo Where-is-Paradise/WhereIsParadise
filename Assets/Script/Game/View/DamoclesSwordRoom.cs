@@ -36,6 +36,8 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
+            gameManager.ui_Manager.SetRandomObstacles(this.gameObject);
+            gameManager.gameManagerNetwork.SendActivateAllObstacles(true, this.name);
             GameObject player = ChoosePlayerRandomly();
             SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
             CounterLaunch(10);
@@ -251,6 +253,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         gameManager.damoclesIsLaunch = true;
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
+        gameManager.gameManagerNetwork.SendActivateAllObstacles(false, this.gameObject.name);
         //this.gameObject.SetActive(false);
     }
 

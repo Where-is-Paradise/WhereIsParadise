@@ -70,6 +70,7 @@ public class Setting : MonoBehaviour
     //tutorial
     public bool displayTutorial = true;
     public bool tutorialImpostor = true;
+    public bool firstTimePanel = true;
 
     //Server
     public string region = "eu";
@@ -133,7 +134,6 @@ public class Setting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 
 

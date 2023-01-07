@@ -21,7 +21,7 @@ public class Settin_management : MonoBehaviour
     public GameObject resolution;
     public GameObject fullscren;
     public GameObject serverRegion;
-    public int current_index_fullscreenMode = 0;
+    public int current_index_fullscreenMode = 1;
     public List<GameObject> fullScreeMode;
 
     // Audio
@@ -43,7 +43,8 @@ public class Settin_management : MonoBehaviour
     public GameObject panelLanguageReset;
     public bool serverRegionIsUpdated = false;
 
-    
+    public GameObject resolutionFirstConnexion;
+    public GameObject languageFistConnexion;
 
     // Start is called before the first frame update
     void Start()
@@ -51,7 +52,9 @@ public class Settin_management : MonoBehaviour
        
         //SaveLanguage();
         //Screen.SetResolution(1920, 1080,true);
-        SetTextDropDownResolution();
+        SetTextDropDownResolution(resolution.GetComponent<Dropdown>());
+        if(resolutionFirstConnexion)
+            SetTextDropDownResolution(resolutionFirstConnexion.GetComponent<Dropdown>());
         setting = GameObject.Find("Setting").GetComponent<Setting>();
         if(input_manager)
             DontDestroyOnLoad(input_manager);
@@ -92,9 +95,9 @@ public class Settin_management : MonoBehaviour
     }
 
 
-    public void SetTextDropDownResolution()
+    public void SetTextDropDownResolution(Dropdown m_Dropdown)
     {
-        Dropdown m_Dropdown = resolution.GetComponent<Dropdown>();
+        //Dropdown m_Dropdown = resolution.GetComponent<Dropdown>();
         Resolution[] resolutions = Screen.resolutions;
         List<string> resolution_string = new List<string>();
         for (int i = 0; i < resolutions.Length; i++)
@@ -141,12 +144,16 @@ public class Settin_management : MonoBehaviour
 
     public void OnClickApplyLanguage()
     {
+        if (setting.canUpdate)
+            return;
         Dropdown language_dropdown = language.GetComponent<Dropdown>();
         int language_index = language_dropdown.value;
         setting.langage = setting.listLangage[language_index];
         SaveLanguage(setting.langage);
 
-        StartCoroutine(CoroutineReset(1));
+        setting.canUpdate = true;
+        StartCoroutine(SetCanUpdateCouroutine());
+        //StartCoroutine(CoroutineReset(1));
     }
 
     public void SetLanguageDropdown()
@@ -425,8 +432,13 @@ public class Settin_management : MonoBehaviour
     {
         if (setting)
         {  
-            TextAsset jsonTextFile = Resources.Load<TextAsset>(setting.langage);
-            System.IO.File.WriteAllText(Path.Combine(Application.persistentDataPath, "QuickSave/" + setting.langage + ".json"), jsonTextFile.text);
+           
+            foreach(string language in setting.listLangage)
+            {
+                TextAsset jsonTextFile = Resources.Load<TextAsset>(language);
+                System.IO.File.WriteAllText(Path.Combine(Application.persistentDataPath, "QuickSave/" + language + ".json"), jsonTextFile.text);
+            }
+           
         } 
     }
 
@@ -434,26 +446,30 @@ public class Settin_management : MonoBehaviour
     {
         bool displayTutorial = true;
         bool tutorialImpostor = true;
+        bool firstTimePanel = true;
         try
         {
             QuickSaveReader.Create("tutorial")
                       .Read<bool>("display_tutorial", (r) => { displayTutorial = r; })
-                      .Read<bool>("tutorial_impostor", (r) => { tutorialImpostor = r; });
+                      .Read<bool>("tutorial_impostor", (r) => { tutorialImpostor = r; })
+                      .Read<bool>("first_time_panel", (r) => { firstTimePanel = r; });
         }
         catch (Exception e)
         {
-            SaveTutorial(true , true);
+            SaveTutorial(true, true, true);
         }
 
         setting.displayTutorial = displayTutorial;
         setting.tutorialImpostor = tutorialImpostor;
+        setting.firstTimePanel = firstTimePanel;
     }
 
-    public void SaveTutorial(bool displayTutorial , bool tutorialImpostor)
+    public void SaveTutorial(bool displayTutorial , bool tutorialImpostor, bool firstTimePanel)
     {
         QuickSaveWriter.Create("tutorial")
                         .Write("display_tutorial", displayTutorial)
                         .Write("tutorial_impostor", tutorialImpostor)
+                        .Write("first_time_panel", firstTimePanel)
                         .Commit();
 
         QuickSaveRaw.LoadString("tutorial.json");
@@ -473,7 +489,12 @@ public class Settin_management : MonoBehaviour
     }
     public void QuitTutorialImpostor()
     {
-        SaveTutorial(false , false);
+        SaveTutorial(false , false, false);
+    }
+
+    public void QuitFirstPanel()
+    {
+        SaveTutorial(setting.displayTutorial, setting.tutorialImpostor, false);
     }
 
 
@@ -572,7 +593,7 @@ public class Settin_management : MonoBehaviour
         Screen.SetResolution(resolutions[resolution_int].width, resolutions[resolution_int].height,
             setting.fullscreen);
         Camera.main.orthographicSize = 5.1f;
-        SetFullScreenMode(current_index_fullscreenMode);
+        SetFullScreenMode(1);
         SaveVideo();
 
     }
@@ -580,6 +601,7 @@ public class Settin_management : MonoBehaviour
     public void OnClickApplyLanguageWithoutReset(Dropdown language_dropdown)
     {
         //Dropdown language_dropdown = language.GetComponent<Dropdown>();
+        
         int language_index = language_dropdown.value;
         setting.langage = setting.listLangage[language_index];
         SaveLanguage(setting.langage);
@@ -588,6 +610,14 @@ public class Settin_management : MonoBehaviour
     {
         setting.canUpdate = true;
         ChangeControlToAzerty(azerty.isOn);
+        DisplayInputTextInEachPanel();
+        StartCoroutine(SetCanUpdateCouroutine());
+    }
+
+    public IEnumerator SetCanUpdateCouroutine()
+    {
+        yield return new WaitForSeconds(5);
+        setting.canUpdate = false;
     }
 
     public void ChangeControlToAzerty(bool azerty)
