@@ -391,6 +391,29 @@ public class PlayerNetwork : MonoBehaviourPun
         {
             player.GetComponent<PlayerGO>().gameManager.ChangeBoss();
         }
+        StartCoroutine(HidePlayerCouroutine());
+        if (keyPlus)
+        {
+            player.GetComponent<PlayerGO>().gameManager.game.key_counter++;
+            player.gameManager.ui_Manager.LaunchAnimationAddKey();
+        }
+
+        player.gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
+        LaunchSacrificeAnimation();
+    }
+
+    public void LaunchSacrificeAnimation()
+    {
+        player.canMove = false;
+        player.transform.Find("DeathPlayerAnimation").GetComponent<Animator>().SetBool("death", true);
+        player.old_y_position = player.transform.position.y;
+        StartCoroutine(player.CanMoveActiveCoroutine());
+        StartCoroutine(player.MovingDeathAnimationWaitCouroutine());
+    }
+
+    public IEnumerator HidePlayerCouroutine()
+    {
+        yield return new WaitForSeconds(4);
         if (player.GetComponent<PhotonView>().IsMine)
         {
             player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
@@ -403,15 +426,10 @@ public class PlayerNetwork : MonoBehaviourPun
             {
                 player.transform.GetChild(i).gameObject.SetActive(false);
             }
-
+            
         }
-        if (keyPlus)
-        {
-            player.GetComponent<PlayerGO>().gameManager.game.key_counter++;
-            player.gameManager.ui_Manager.LaunchAnimationAddKey();
-        }
-
-        player.gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
+       
+        player.transform.Find("DeathPlayerAnimation").GetComponent<Animator>().SetBool("death", false);
     }
 
     public void SendResetSacrifice()

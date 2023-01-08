@@ -170,8 +170,8 @@ public class ObjectImpostor : MonoBehaviour
                 timerToUsing = 30;
                 break;
             case 1:
-                timerToUsing = 250;
-                //timerToUsing = 30;
+                //timerToUsing = 250;
+                timerToUsing = 10;
                 break;
             case 2:
                 timerToUsing = 110;

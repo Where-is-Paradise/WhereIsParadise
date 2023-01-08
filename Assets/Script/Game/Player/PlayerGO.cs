@@ -142,6 +142,11 @@ public class PlayerGO : MonoBehaviour
     private float oldHorizontal;
     private float oldVertical;
 
+    public bool animationDeath = false;
+    public bool animationDeathUpFinish = false;
+    public bool animationDeathDownFinis = false;
+    public float old_y_position;
+
     // is for recon
 
     private void Awake()
@@ -644,6 +649,18 @@ public class PlayerGO : MonoBehaviour
             }
 
         }
+        if(GetComponent<PhotonView>().IsMine)
+        if (animationDeath)
+        {
+            if(!animationDeathUpFinish)
+                MovingUpForDeathAnimation();
+            if (animationDeathUpFinish)
+            {
+              
+                MovingDownForDeathAnimation();
+            }
+        }
+       
     }
 
     public IEnumerator SetCanLauchExplorationLeverCoroutine()
@@ -1964,4 +1981,37 @@ public class PlayerGO : MonoBehaviour
         canLaunchExplorationLever = true;
         StartCoroutine(gameManager.VerifyBugExplorationCouroutine());
     }
+
+    public IEnumerator MovingDeathAnimationWaitCouroutine()
+    {
+        yield return new WaitForSeconds(2.81f);
+        animationDeath = true;
+    }
+
+    public void MovingUpForDeathAnimation()
+    {
+        this.transform.Find("Perso").Translate(new Vector3(0, 2.3f * Time.deltaTime));
+        Debug.Log(Mathf.Abs(this.transform.position.y - old_y_position));
+        if(Mathf.Abs(transform.Find("Perso").position.y - old_y_position) > 0.32f)
+        {
+            animationDeathUpFinish = true;
+            old_y_position = this.transform.Find("Perso").position.y;
+        }
+    }
+
+    public void MovingDownForDeathAnimation()
+    {
+        this.transform.Find("Perso").Translate(new Vector3(0, -3.5f * Time.deltaTime));
+        if (Mathf.Abs(old_y_position - transform.Find("Perso").position.y)  > 1.7f)
+        {
+            animationDeathDownFinis = true;
+            animationDeath = false;
+        }
+    }
+    public IEnumerator CanMoveActiveCoroutine()
+    {
+        yield return new WaitForSeconds(4);
+        canMove = true;
+    }
+
 }
