@@ -40,7 +40,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
             gameManager.gameManagerNetwork.SendActivateAllObstacles(true, this.name);
             GameObject player = ChoosePlayerRandomly();
             SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
-            CounterLaunch(10);
+            CounterLaunch(15);
         }  
     }
 

@@ -950,6 +950,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                 gameManager.UpdateSpecialsRooms(gameManager.game.currentRoom);
             }       
         }
+
     }
     public void SendIsInJail(bool isInJail, int indexPlayer , int indexRoom)
     {
@@ -982,6 +983,10 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.LaunchAnimationBrokenKey();
         gameManager.alreaydyExpeditionHadPropose = false;
         gameManager.nbKeyBroken++;
+        if(gameManager.game.key_counter == 0 && !gameManager.HaveMoreKeyInTraversedRoom())
+        {
+            StartCoroutine(gameManager.CouroutineSacrificeAllPlayer());
+        }
     }
 
 

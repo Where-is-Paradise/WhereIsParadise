@@ -386,7 +386,7 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetDeathSacrifice(bool keyPlus)
     {
-        player.GetComponent<PlayerGO>().isSacrifice = true;
+        
         if (player.GetComponent<PlayerGO>().isBoss)
         {
             player.GetComponent<PlayerGO>().gameManager.ChangeBoss();
@@ -406,19 +406,33 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.canMove = false;
         player.transform.Find("DeathPlayerAnimation").GetComponent<Animator>().SetBool("death", true);
+        player.transform.Find("DeathPlayerAnimation").GetComponent<CircleCollider2D>().enabled = true;
+        if (player.transform.position.y < -2.35f)
+            player.transform.position = new Vector3(this.transform.position.x , -2f);
+        if(player.transform.position.x < -6.6f)
+            player.transform.position = new Vector3(-6.6f, this.transform.position.y);
+        if(player.transform.position.x > 6.6)
+            player.transform.position = new Vector3(6.6f, this.transform.position.y);
         player.old_y_position = player.transform.position.y;
         StartCoroutine(player.CanMoveActiveCoroutine());
         StartCoroutine(player.MovingDeathAnimationWaitCouroutine());
+        GetComponent<PhotonTransformViewClassic>().m_PositionModel.SynchronizeEnabled = false;
+        GetComponent<PhotonRigidbody2DView>().enabled = false;
+        GetComponent<Lag_Compensation>().enabled = false;
+        
     }
 
     public IEnumerator HidePlayerCouroutine()
     {
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(5);
         if (player.GetComponent<PhotonView>().IsMine)
         {
+            player.transform.Find("InfoCanvas").gameObject.SetActive(true);
+            player.transform.Find("Perso").gameObject.SetActive(true);
             player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
             player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
             player.transform.Find("Collision").gameObject.SetActive(false);
+            player.SetIconDeath(true);
         }
         else
         {
@@ -428,8 +442,9 @@ public class PlayerNetwork : MonoBehaviourPun
             }
             
         }
-       
+        player.GetComponent<PlayerGO>().isSacrifice = true;
         player.transform.Find("DeathPlayerAnimation").GetComponent<Animator>().SetBool("death", false);
+        player.transform.Find("DeathPlayerAnimation").GetComponent<CircleCollider2D>().enabled = false;
     }
 
     public void SendResetSacrifice()
@@ -449,6 +464,7 @@ public class PlayerNetwork : MonoBehaviourPun
         {
             player.transform.GetChild(i).gameObject.SetActive(true);
         }
+        player.SetIconDeath(false);
     }
 
     public void SendColorInvisible(bool invisible)

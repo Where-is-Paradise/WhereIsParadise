@@ -113,6 +113,8 @@ public class GameManager : MonoBehaviourPun
     public bool timerStart = false;
 
     public bool paradiseHasChange = false;
+
+    public bool alreadySacrifice = false;
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -1900,7 +1902,11 @@ public class GameManager : MonoBehaviourPun
         if (!OnePlayerFindParadise && ((game.key_counter == 0 && !game.currentRoom.IsExit && !game.currentRoom.chest && !game.currentRoom.isSacrifice)
             || game.currentRoom.IsHell || isAlreadyLoose))
         {
-            if (!HaveMoreKeyInTraversedRoom() || game.currentRoom.IsHell)
+            if (!HaveMoreKeyInTraversedRoom() )
+            {
+                SacrificeAllLostSoul();
+            }
+            if (game.currentRoom.IsHell)
             {
                 Loose();
             }
@@ -3621,5 +3627,27 @@ public class GameManager : MonoBehaviourPun
             
         }
 
+    }
+
+    public IEnumerator CouroutineSacrificeAllPlayer()
+    {
+        yield return new WaitForSeconds(15);
+        if(!alreadySacrifice)
+            SacrificeAllLostSoul();
+    }
+
+    public void SacrificeAllLostSoul()
+    {
+        if (!GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        {
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDeathSacrifice(false);
+        }
+        alreadySacrifice = true;
+        StartCoroutine(CouroutineDisplayEndPanel());
+    }
+    public IEnumerator CouroutineDisplayEndPanel()
+    {
+        yield return new WaitForSeconds(5);
+        ui_Manager.DisplayBlackScreenToDemonWhenAllGone();
     }
 }

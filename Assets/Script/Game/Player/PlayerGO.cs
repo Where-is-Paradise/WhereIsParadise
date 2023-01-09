@@ -233,27 +233,27 @@ public class PlayerGO : MonoBehaviour
             return;
         }
 
-        if ( gameManager && gameManager.speciallyIsLaunch)
+/*        if (!isSacrifice)
         {
-            this.GetComponent<PhotonTransformViewClassic>().enabled = true;
-            this.GetComponent<PhotonRigidbody2DView>().enabled = false;
-           
-        }
-        else
-        {
-            this.GetComponent<PhotonTransformViewClassic>().enabled = false;
-            this.GetComponent<PhotonRigidbody2DView>().enabled = true;
-        }
+            if (gameManager && gameManager.speciallyIsLaunch)
+            {
+                this.GetComponent<PhotonTransformViewClassic>().enabled = true;
+                this.GetComponent<PhotonRigidbody2DView>().enabled = false;
+
+            }
+            else
+            {
+                this.GetComponent<PhotonTransformViewClassic>().enabled = false;
+                this.GetComponent<PhotonRigidbody2DView>().enabled = true;
+            }
+        }*/
+        
 
         if (GetComponent<PhotonView>().IsMine && canMove)
         {
             handlePlayerMove();
         }
 
-        if (gameManager)
-        {
-            SetIconDeath();
-        }
     }
 
 
@@ -616,7 +616,7 @@ public class PlayerGO : MonoBehaviour
                 DisplayNamePlayer(false);
                 if (GetComponent<PhotonView>().IsMine)
                 {
-                    if (this.isInvisible || this.isSacrifice)
+                    if ((this.isInvisible || this.isSacrifice))
                     {;
                         IncreaseTransparency(true);
                     }
@@ -629,7 +629,7 @@ public class PlayerGO : MonoBehaviour
                 DisplayNamePlayer(true);
                 if (GetComponent<PhotonView>().IsMine)
                 {
-                    if (this.isInvisible || this.isSacrifice)
+                    if ((this.isInvisible || this.isSacrifice))
                     {
                         IncreaseTransparency(false);
                     }
@@ -649,14 +649,14 @@ public class PlayerGO : MonoBehaviour
             }
 
         }
-        if(GetComponent<PhotonView>().IsMine)
+
         if (animationDeath)
         {
-            if(!animationDeathUpFinish)
+           
+            if (!animationDeathUpFinish)
                 MovingUpForDeathAnimation();
             if (animationDeathUpFinish)
             {
-              
                 MovingDownForDeathAnimation();
             }
         }
@@ -840,16 +840,19 @@ public class PlayerGO : MonoBehaviour
             || ( oldVertical == 0 && Mathf.Abs(vertical) > 0 || (oldVertical > 0 && vertical < 0) || (oldVertical < 0 && vertical > 0)))
         {
             this.GetComponent<PlayerNetwork>().SendSpacePosition(this.transform.position.x, this.transform.position.y);
+            StartCoroutine(SendPositionCoroutine(0.2f));
+            StartCoroutine(SendPositionCoroutine(0.5f));
         }
         oldHorizontal = horizontal;
         oldVertical = vertical;
     }
 
-    public IEnumerator SendPositionCoroutine()
+
+    public IEnumerator SendPositionCoroutine(float time)
     {
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(time);
         this.GetComponent<PlayerNetwork>().SendSpacePosition(this.transform.position.x, this.transform.position.y);
-        StartCoroutine(SendPositionCoroutine());
+        //StartCoroutine(SendPositionCoroutine());
     }
 
     private void handleMobileMove()
@@ -1272,16 +1275,9 @@ public class PlayerGO : MonoBehaviour
         SetPlayerNameServer();
     }
 
-    public void SetIconDeath()
+    public void SetIconDeath(bool display)
     {
-        if (isSacrifice)
-        {
-            this.transform.Find("Perso").transform.Find("DeadIcon").gameObject.SetActive(true);
-        }
-        else
-        {
-            this.transform.Find("Perso").transform.Find("DeadIcon").gameObject.SetActive(false);
-        }
+        this.transform.Find("Perso").transform.Find("DeadIcon").gameObject.SetActive(display);
     }
 
     public void DisplayCharacter(bool display)
@@ -1991,9 +1987,10 @@ public class PlayerGO : MonoBehaviour
     public void MovingUpForDeathAnimation()
     {
         this.transform.Find("Perso").Translate(new Vector3(0, 2.3f * Time.deltaTime));
-        Debug.Log(Mathf.Abs(this.transform.position.y - old_y_position));
-        if(Mathf.Abs(transform.Find("Perso").position.y - old_y_position) > 0.32f)
+        this.transform.Find("InfoCanvas").Translate(new Vector3(0, 2.3f * Time.deltaTime));
+        if (Mathf.Abs(transform.Find("Perso").position.y - old_y_position) > 0.32f)
         {
+           
             animationDeathUpFinish = true;
             old_y_position = this.transform.Find("Perso").position.y;
         }
@@ -2001,17 +1998,26 @@ public class PlayerGO : MonoBehaviour
 
     public void MovingDownForDeathAnimation()
     {
-        this.transform.Find("Perso").Translate(new Vector3(0, -3.5f * Time.deltaTime));
-        if (Mathf.Abs(old_y_position - transform.Find("Perso").position.y)  > 1.7f)
+        this.transform.Find("Perso").Translate(new Vector3(0, -5f * Time.deltaTime));
+        this.transform.Find("InfoCanvas").Translate(new Vector3(0, -5f * Time.deltaTime));
+        if (Mathf.Abs(old_y_position - transform.Find("Perso").position.y)  > 1.5f)
         {
+            this.transform.Find("Perso").gameObject.SetActive(false);
+            this.transform.Find("InfoCanvas").gameObject.SetActive(false);
             animationDeathDownFinis = true;
             animationDeath = false;
         }
     }
     public IEnumerator CanMoveActiveCoroutine()
     {
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(4.5f);
         canMove = true;
+        if (GetComponent<PhotonView>().IsMine)
+        {
+            this.transform.Find("Perso").localPosition = new Vector3(0, 0);
+            this.transform.Find("InfoCanvas").localPosition = new Vector3(-0.812f, -0.14f);
+            this.transform.Translate(new Vector3(0, -0.75f));
+        }
     }
 
 }
