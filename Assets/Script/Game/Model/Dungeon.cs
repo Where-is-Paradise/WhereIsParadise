@@ -74,16 +74,16 @@ public class Dungeon : ScriptableObject
                 room.isHide = true;
                 continue;
             }
-                
+
             int randomSpeciallity = Random.Range(0, 14);
-            //randomSpeciallity = 1;
+            randomSpeciallity = 7;
             if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
                 room.chest = true;
             if (randomSpeciallity == 1 && setting.listSpeciallyRoom[1])
                 room.isSacrifice = true;
             if (randomSpeciallity == 2 && setting.listTrialRoom[0])
                 room.fireBall = true;
-            if (randomSpeciallity == 3 && setting.listTrialRoom[3]) 
+            if (randomSpeciallity == 3 && setting.listTrialRoom[3])
                 room.isAx = true;
             if (randomSpeciallity == 4 && setting.listTrialRoom[4])
                 room.isSword = true;
@@ -361,8 +361,8 @@ public class Dungeon : ScriptableObject
 
     private Room GetInitialRoom()
     {
-        int X_reference = Random.Range(width/5, width - (width / 5));
-        int Y_reference = Random.Range( height/5, height - (height /5));
+        int X_reference = Random.Range(width / 5, width - (width / 5));
+        int Y_reference = Random.Range(height / 5, height - (height / 5));
 
         foreach (Room room in rooms)
         {
@@ -542,7 +542,7 @@ public class Dungeon : ScriptableObject
         }
     }
 
-    
+
 
 
     public void SetUpChests(Room room)
@@ -552,7 +552,7 @@ public class Dungeon : ScriptableObject
 
         //int randomAward = 2;
 
-        if(randomIndex == 0)
+        if (randomIndex == 0)
         {
             room.chestList.Add(Chest.CreateInstance(0, true, randomAward));
             room.chestList.Add(Chest.CreateInstance(1, false, randomAward));
@@ -562,7 +562,7 @@ public class Dungeon : ScriptableObject
             room.chestList.Add(Chest.CreateInstance(0, false, randomAward));
             room.chestList.Add(Chest.CreateInstance(1, true, randomAward));
         }
-       
+
 
     }
 
@@ -602,7 +602,7 @@ public class Dungeon : ScriptableObject
         return false;
     }
 
-    public List<Room> GetListRoomByDistance(Room room , int distance)
+    public List<Room> GetListRoomByDistance(Room room, int distance)
     {
         List<Room> listRoomWithCorrectDistance = new List<Room>();
         foreach (Room roomIndex in rooms)
@@ -620,7 +620,7 @@ public class Dungeon : ScriptableObject
                 continue;
             }
             int distanceIndex = GetPathFindingDistance(roomIndex, room);
-            if(distanceIndex != distance)
+            if (distanceIndex != distance)
             {
                 continue;
             }
@@ -648,7 +648,7 @@ public class Dungeon : ScriptableObject
     {
         foreach (Room room in rooms)
         {
-            if(room.distance_pathFinding_initialRoom > (exit.distance_pathFinding_initialRoom + 3))
+            if (room.distance_pathFinding_initialRoom > (exit.distance_pathFinding_initialRoom + 3))
             {
                 room.IsObstacle = true;
                 room.isTooFar = true;

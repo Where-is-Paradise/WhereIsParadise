@@ -144,6 +144,8 @@ public class Ax : MonoBehaviourPun
                 return;
             if (collision.gameObject.GetComponent<PlayerGO>().isInvincible)
                 return;
+            if (collision.gameObject.GetComponent<PlayerGO>().isTouchByAx)
+                return;
             collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom--;
             collision.gameObject.GetComponent<PlayerNetwork>()
                 .SendLifeTrialRoom(collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom);

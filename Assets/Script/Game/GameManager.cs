@@ -1904,7 +1904,7 @@ public class GameManager : MonoBehaviourPun
         {
             if (!HaveMoreKeyInTraversedRoom() )
             {
-                SacrificeAllLostSoul();
+                StartCoroutine(SacrificeAllLostSoul());
             }
             if (game.currentRoom.IsHell)
             {
@@ -3164,6 +3164,7 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject turret in turrets)
         {
             turret.GetComponent<Turret>().DestroyFireBalls();
+            turret.GetComponent<Turret>().canFire = false;
         }
         CloseDoorWhenVote(false);
     }
@@ -3633,11 +3634,13 @@ public class GameManager : MonoBehaviourPun
     {
         yield return new WaitForSeconds(15);
         if(!alreadySacrifice)
-            SacrificeAllLostSoul();
+            StartCoroutine(SacrificeAllLostSoul());
     }
 
-    public void SacrificeAllLostSoul()
+    public IEnumerator SacrificeAllLostSoul()
     {
+        ui_Manager.HideSpeciallyDisplay();
+        yield return new WaitForSeconds(4);
         if (!GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDeathSacrifice(false);
@@ -3649,5 +3652,15 @@ public class GameManager : MonoBehaviourPun
     {
         yield return new WaitForSeconds(5);
         ui_Manager.DisplayBlackScreenToDemonWhenAllGone();
+    }
+
+    public void ActivateCollisionTPOfAllDoor(bool activate)
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+
+        foreach(GameObject door in doors)
+        {
+            door.transform.Find("teleportation").gameObject.SetActive(activate);
+        }
     }
 }

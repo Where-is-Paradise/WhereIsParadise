@@ -28,14 +28,13 @@ public class Turret : MonoBehaviourPun
         if (!gameManager.fireBallIsLaunch)
             return;
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-        {
             return;
-        }
         if (gameManager.ui_Manager.MainRoomGraphic.transform.Find("Levers").transform.Find("OpenDoor_lever").gameObject.activeSelf)
         {
             gameManager.speciallyIsLaunch = false;
             gameManager.fireBallIsLaunch = false;
             DestroyFireBalls();
+            gameManager.ActivateCollisionTPOfAllDoor(true);
             return;
         }
 
@@ -46,27 +45,24 @@ public class Turret : MonoBehaviourPun
         }
     }
 
-    public void LaunchTurret()
+    public void LaunchTurret(int frequency)
     {
         switch (categorie)
         {
             case 0:
-                frequency = 6 + index;
                 SendFrequency(frequency);
                 break;
             case 1:
-                frequency = Random.Range(0.25f + index, 1.5f + index);
                 SendFrequency(frequency);
                 break;
             case 2:
-                frequency = 2.5f + index;
                 SendFrequency(frequency);
                 break;
         }
         /*        frequency = Random.Range(0.25f + index, 1.5f + index);
                 SendFrequency(frequency);*/
         gameManager.CloseDoorWhenVote(true);
-
+        gameManager.ActivateCollisionTPOfAllDoor(false);
     }
 
     public void ShotFireBall()
@@ -75,19 +71,17 @@ public class Turret : MonoBehaviourPun
         fireball.GetComponent<FireBall>().direction = -this.transform.up;
         fireball.transform.parent = this.gameObject.transform;
         fireball.GetComponent<FireBall>().SendParent(fireball.transform.parent.GetComponent<Turret>().index);
+        fireball.GetComponent<FireBall>().turretParent = this.gameObject;
         RandomSpeedCategoriFireball(fireball);
         switch (categorie)
         {
             case 0:
-                frequency = 6 * index;
                 SendFrequency(frequency);
                 break;
             case 1:
-                frequency = 2.5f * index;
                 SendFrequency(frequency);
                 break;
             case 2:
-                frequency = Random.Range(0.25f + index, 1.5f + index);
                 SendFrequency(frequency);
                 break;
         }
@@ -135,7 +129,8 @@ public class Turret : MonoBehaviourPun
         {
             return;
         }
-        StartCoroutine(CoroutineFrequency(frequency));
+        int newFrequency = Random.Range(1, 6);
+        StartCoroutine(CoroutineFrequency(newFrequency));
     }
 
     public void DestroyFireBalls()
@@ -217,6 +212,7 @@ public class Turret : MonoBehaviourPun
             }
             gameManager.fireBallIsLaunch = false;
             gameManager.speciallyIsLaunch = false;
+            gameManager.ActivateCollisionTPOfAllDoor(true);
         }
     }
 

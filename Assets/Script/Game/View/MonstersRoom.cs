@@ -65,7 +65,7 @@ public class MonstersRoom : MonoBehaviourPun
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
-
+        gameManager.ActivateCollisionTPOfAllDoor(false);
     }
 
     public IEnumerator SpawnMonsterCouroutine( float timer)
@@ -152,6 +152,7 @@ public class MonstersRoom : MonoBehaviourPun
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(false);
+        gameManager.ActivateCollisionTPOfAllDoor(true);
         timerSpawnMonster = 1;
         roomIsLaunch = false;
         StartCoroutine(CanMoveActiveCoroutine());

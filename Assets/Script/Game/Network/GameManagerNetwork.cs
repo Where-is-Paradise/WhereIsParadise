@@ -983,10 +983,10 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.LaunchAnimationBrokenKey();
         gameManager.alreaydyExpeditionHadPropose = false;
         gameManager.nbKeyBroken++;
-        if(gameManager.game.key_counter == 0 && !gameManager.HaveMoreKeyInTraversedRoom())
+/*        if(gameManager.game.key_counter == 0 && !gameManager.HaveMoreKeyInTraversedRoom())
         {
             StartCoroutine(gameManager.CouroutineSacrificeAllPlayer());
-        }
+        }*/
     }
 
 
@@ -1327,6 +1327,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.fireBallIsLaunch = false;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = !display;
+        gameManager.ActivateCollisionTPOfAllDoor(true);
     }
 
     public void SendLaunchFireBallRoom()
@@ -1356,8 +1357,10 @@ public class GameManagerNetwork : MonoBehaviourPun
             {
                 turret.GetComponent<Turret>().therenotMasterClient = true;
             }
-            turret.GetComponent<Turret>().LaunchTurret();
-            turret.GetComponent<Turret>().categorie = categorieFireball;
+            int randomfrequency = Random.Range(1, 6);
+            turret.GetComponent<Turret>().LaunchTurret(randomfrequency);
+            turret.GetComponent<Turret>().categorie = 1;
+            turret.GetComponent<Turret>().frequency = randomfrequency;
         }
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
@@ -1994,7 +1997,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetLoose()
     {
-        this.gameManager.Loose();
+        StartCoroutine(this.gameManager.SacrificeAllLostSoul());
     }
 
     public void SendUpdateDataPlayer(int indexPlayer)

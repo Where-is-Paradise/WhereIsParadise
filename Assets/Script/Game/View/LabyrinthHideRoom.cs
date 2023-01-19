@@ -77,6 +77,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
     public void LaunchLabyrintheRoom()
     {
         gameManager.speciallyIsLaunch = true;
+        gameManager.ActivateCollisionTPOfAllDoor(false);
         StartCoroutine(LauchLabyrintheAfterTp());
     }
     public IEnumerator LauchLabyrintheAfterTp()
@@ -461,6 +462,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         DestroyAllObstacle();
         gameManager.ui_Manager.DisplayKeyAndTorch(true);
         gameManager.speciallyIsLaunch = false;
+        gameManager.ActivateCollisionTPOfAllDoor(true);
         this.transform.Find("ListSeparation").Find("SeparationsMiddleUp").gameObject.SetActive(false);
     }
 

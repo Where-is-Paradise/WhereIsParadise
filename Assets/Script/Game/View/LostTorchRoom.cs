@@ -33,6 +33,7 @@ public class LostTorchRoom : MonoBehaviourPun
         yield return new WaitForSeconds(2);
         SpawnLostTorch();
         gameManager.speciallyIsLaunch = true;
+        gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(true);
         StartCoroutine(TimerCouroutine());
@@ -79,6 +80,7 @@ public class LostTorchRoom : MonoBehaviourPun
         timerFinish = false;
         this.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         gameManager.speciallyIsLaunch = false;
+        gameManager.ActivateCollisionTPOfAllDoor(true);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(false);
         gameManager.gameManagerNetwork.SendActivateAllObstacles(false, this.name);

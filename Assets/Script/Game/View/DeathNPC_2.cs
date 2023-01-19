@@ -8,6 +8,10 @@ public class DeathNPC_2 : MonoBehaviour
 {
     public Death_NPC godDeath;
     public float speed;
+    public bool isTranparencying = false;
+    public bool isInvertTranparencying = false;
+    public float tranparency = 255;
+    public List<GameObject> listObstacle; 
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +20,14 @@ public class DeathNPC_2 : MonoBehaviour
             this.gameObject.SetActive(false);
         speed = godDeath.GetComponent<AIPath>().maxSpeed * 0.9f;
         Physics2D.IgnoreCollision(godDeath.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), true);
+        for(int i =0; i < GameObject.Find("DeathNPCRoom").transform.Find("Obstacles").childCount ; i++)
+        {
+            listObstacle.Add(GameObject.Find("DeathNPCRoom").transform.Find("Obstacles").GetChild(i).gameObject);
+        }
+        foreach (GameObject obstacle in listObstacle)
+        {
+            Physics2D.IgnoreCollision(obstacle.GetComponent<CircleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), true);
+        }
        
     }
 
@@ -24,8 +36,12 @@ public class DeathNPC_2 : MonoBehaviour
     {
         MoveOnTarget();
         speed = godDeath.GetComponent<AIPath>().maxSpeed * 0.9f;
-
         ChangeScaleForSituation();
+        ChangeTransparencyToInvisibilty();
+        if (speed < 0.2f)
+        {
+            this.transform.localScale = godDeath.transform.localScale;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -46,7 +62,46 @@ public class DeathNPC_2 : MonoBehaviour
         }
 
     }
+    public void ChangeTransparencyToInvisibilty()
+    {
+        if (godDeath.isInvisible && !isTranparencying)
+        {
+            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency/255);
+            this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency/255);
+            tranparency = (tranparency - 2f );
+            if (tranparency < 0)
+            {
+                isTranparencying = true;
+                isInvertTranparencying = false;
+            }
+               
+   
+        }
+        if (!godDeath.isInvisible && !isInvertTranparencying)
+        {
+            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency/255);
+            this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency/255);
+            tranparency = (tranparency + 2f) ;
+            if (tranparency > 255)
+            {
+                isInvertTranparencying = true;
+                isTranparencying = false;
+            }
+                
+        }
+    }
 
+    public void ChangeToInvisible()
+    {
+        if (godDeath.isInvisible)
+        {
+            //isTranparencying = true;
+        }
+        else
+        {
+            //isInvertTranparencying = true;
+        }
+    }
 
 
     public void MoveOnTarget()

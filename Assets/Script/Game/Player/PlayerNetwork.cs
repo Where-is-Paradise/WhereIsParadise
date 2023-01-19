@@ -404,7 +404,12 @@ public class PlayerNetwork : MonoBehaviourPun
 
     public void LaunchSacrificeAnimation()
     {
+        GetComponent<PhotonTransformViewClassic>().m_PositionModel.SynchronizeEnabled = false;
+        GetComponent<PhotonRigidbody2DView>().enabled = false;
+        GetComponent<Lag_Compensation>().enabled = false;
         player.canMove = false;
+        if (!player.gameManager.SamePositionAtMine(player.GetComponent<PhotonView>().ViewID))
+            return;
         player.transform.Find("DeathPlayerAnimation").GetComponent<Animator>().SetBool("death", true);
         player.transform.Find("DeathPlayerAnimation").GetComponent<CircleCollider2D>().enabled = true;
         if (player.transform.position.y < -2.35f)
@@ -416,9 +421,7 @@ public class PlayerNetwork : MonoBehaviourPun
         player.old_y_position = player.transform.position.y;
         StartCoroutine(player.CanMoveActiveCoroutine());
         StartCoroutine(player.MovingDeathAnimationWaitCouroutine());
-        GetComponent<PhotonTransformViewClassic>().m_PositionModel.SynchronizeEnabled = false;
-        GetComponent<PhotonRigidbody2DView>().enabled = false;
-        GetComponent<Lag_Compensation>().enabled = false;
+        
         
     }
 

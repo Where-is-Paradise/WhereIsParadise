@@ -67,7 +67,7 @@ public class Settin_management : MonoBehaviour
         LoadLanguage();
         LoadTutorial();
 
-        SetFullScreenModeListView();
+        //SetFullScreenModeListView();
         SetLanguageDropdown();
 
         SetGlobalVolume();
@@ -137,7 +137,7 @@ public class Settin_management : MonoBehaviour
         Screen.SetResolution(resolutions[resolution_int].width, resolutions[resolution_int].height,
             setting.fullscreen);
         Camera.main.orthographicSize = 5.1f;
-        SetFullScreenMode(current_index_fullscreenMode);
+        //SetFullScreenMode(current_index_fullscreenMode);
         SaveVideo();
         
     }
@@ -591,7 +591,7 @@ public class Settin_management : MonoBehaviour
         setting.resolution_height_index = resolution_int;
         setting.fullscreen = fullscren.transform.GetChild(0).GetComponent<Image>().enabled;
         Screen.SetResolution(resolutions[resolution_int].width, resolutions[resolution_int].height,
-            setting.fullscreen);
+            true);
         Camera.main.orthographicSize = 5.1f;
         SetFullScreenMode(1);
         SaveVideo();

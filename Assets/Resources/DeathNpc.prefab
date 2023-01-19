@@ -271,6 +271,10 @@ MonoBehaviour:
   godDeath2: {fileID: 880268685445116128, guid: f2d5e3fcb912979449ca555bf3e69881,
     type: 3}
   CanHideDeathGod: 0
+  isInvisible: 0
+  isTranparencying: 0
+  isInvertTranparencying: 0
+  tranparency: 255
 --- !u!114 &4695169022583446954
 MonoBehaviour:
   m_ObjectHideFlags: 0

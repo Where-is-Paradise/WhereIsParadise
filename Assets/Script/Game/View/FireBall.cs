@@ -7,13 +7,19 @@ public class FireBall : MonoBehaviourPun
 {
     public float speed = 0;
     public Vector2 direction = new Vector2(0,0);
+    public GameObject turretParent;
 
     private GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        StartCoroutine(CoroutineActiveCollision(0.2f));
+        //StartCoroutine(CoroutineActiveCollision(0.2f));
+
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
+        Physics2D.IgnoreCollision(this.GetComponent<CircleCollider2D>(), turretParent.GetComponent<BoxCollider2D>(), true);
+        StartCoroutine(ActiveCollisionTurretCouroutine());
         //speed = Random.Range(2, 10);
     }
 
@@ -44,6 +50,8 @@ public class FireBall : MonoBehaviourPun
 
     public void ChangeDirection(Collider2D nameWallColsion)
     {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
         string nameWall = nameWallColsion.gameObject.name;
         if (nameWall == "Left" || nameWall == "Right" 
             || (CollisionDoor(nameWallColsion) && nameWall == "A")
@@ -94,8 +102,10 @@ public class FireBall : MonoBehaviourPun
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        ChangeDirection(collision);
         if (collision.gameObject.tag == "Player")
         {
+            
             if (!collision.gameObject.GetComponent<PhotonView>().IsMine)
             {
                 return;
@@ -147,14 +157,15 @@ public class FireBall : MonoBehaviourPun
             {
                 return;
             }
-            ChangeDirection(collision);
+            
         }
     }
 
     public void SendDestroy()
     {
         //photonView.RPC("SetDestoy", RpcTarget.All);
-        PhotonNetwork.Destroy(this.gameObject);
+        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            PhotonNetwork.Destroy(this.gameObject);
     }
 
     public void Victory()
@@ -256,6 +267,24 @@ public class FireBall : MonoBehaviourPun
             player.GetComponent<PlayerGO>().isTouchByFireBall = false;
             player.GetComponent<PlayerGO>().hasWinFireBallRoom = false;
         }
+        StartCoroutine(CouroutineResetPlayerColor());
+    }
+
+    public IEnumerator CouroutineResetPlayerColor()
+    {
+        yield return new WaitForSeconds(1);
+        List<GameObject> players = gameManager.GetPlayerSameRoom(gameManager.GetBoss().GetComponent<PhotonView>().ViewID);
+        foreach (GameObject player in players)
+        {
+            if (gameManager.SamePositionAtBoss() && !player.GetComponent<PlayerGO>().isSacrifice && !player.GetComponent<PlayerGO>().isInJail)
+                player.GetComponent<PlayerGO>().DisplayCharacter(true);
+        }
+        GameObject[] players2 = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players2)
+        {
+            player.GetComponent<PlayerGO>().isTouchByFireBall = false;
+            player.GetComponent<PlayerGO>().hasWinFireBallRoom = false;
+        }
     }
 
     public void SendParent(int indexParent)
@@ -272,10 +301,19 @@ public class FireBall : MonoBehaviourPun
             if(parent.GetComponent<Turret>().index == indexParent)
             {
                 this.transform.parent = parent.transform;
+                turretParent = parent.gameObject;
             }
         }
+        Physics2D.IgnoreCollision(this.GetComponent<CircleCollider2D>(), turretParent.GetComponent<BoxCollider2D>(), true);
+        StartCoroutine(ActiveCollisionTurretCouroutine());
     }
 
+    public IEnumerator ActiveCollisionTurretCouroutine()
+    {
+        yield return new WaitForSeconds(1);
+        Debug.LogError("sa passe tinkete");
+        Physics2D.IgnoreCollision(this.GetComponent<CircleCollider2D>(), turretParent.GetComponent<BoxCollider2D>(), false) ;
+    }
 
 
 }

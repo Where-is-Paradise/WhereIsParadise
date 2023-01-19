@@ -14946,7 +14946,7 @@ MonoBehaviour:
   resolution_width_index: 0
   resolution_height_index: 0
   fullscreen: 1
-  fullscreenMode: 0
+  fullscreenMode: 1
   langage: en
   listLangage: []
   canUpdate: 0
@@ -15181,7 +15181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowMaskGraphic: 0
+  m_ShowMaskGraphic: 1
 --- !u!114 &511116644
 MonoBehaviour:
   m_ObjectHideFlags: 0

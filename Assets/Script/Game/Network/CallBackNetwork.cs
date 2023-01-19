@@ -36,7 +36,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
-        PhotonNetwork.NetworkingClient.LoadBalancingPeer.MaximumTransferUnit = 576;
+        
         Debug.LogError(cause);
         dataGame.isDisconnect = true;
         if (cause.ToString() != "DisconnectByClientLogic")

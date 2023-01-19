@@ -137,15 +137,17 @@ public class PowerImpostor : MonoBehaviourPun
         this.transform.parent.GetComponent<PlayerNetwork>().SendInsertPowerToDoor(room.Index, indexPower);
         this.transform.parent.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.DisplayLightAllAvailableDoor(false);
         SetRedColorPlayer(false);
-        photonView.RPC("SetRedColorDoor", RpcTarget.All, collision.transform.parent.GetComponent<Door>().index);
+        photonView.RPC("SetRedColorDoor", RpcTarget.All, collision.transform.parent.GetComponent<Door>().index, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
         DisplayButtonCanUsed(false);
     }
 
 
     [PunRPC]
-    public void SetRedColorDoor(int indexDoor)
+    public void SetRedColorDoor(int indexDoor, int indexPlayer)
     {
         if (!this.transform.parent.GetComponent<PlayerGO>().gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || indexPower == -1)
+            return;
+        if (!gameManager.SamePositionAtMine(indexPlayer))
             return;
         Door door = this.transform.parent.GetComponent<PlayerGO>().gameManager.GetDoorGo(indexDoor).GetComponent<Door>();
         door.GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);

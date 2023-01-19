@@ -59,7 +59,7 @@ public class Setting : MonoBehaviour
     //video
     public int resolution_width_index = 0;
     public int resolution_height_index = 0;
-    public bool fullscreen = false;
+    public bool fullscreen = true;
     public int fullscreenMode = 0;
 
     //languge

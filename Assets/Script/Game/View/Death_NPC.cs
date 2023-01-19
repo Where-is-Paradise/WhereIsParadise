@@ -9,7 +9,10 @@ public class Death_NPC : MonoBehaviourPun
     public GameManager gameManager;
     public GameObject godDeath2;
     public bool CanHideDeathGod = false;
-
+    public bool isInvisible = false;
+    public bool isTranparencying = false;
+    public bool isInvertTranparencying = false;
+    public float tranparency = 255;
     private float oldHorizontal;
     private float oldVertical;
     // Start is called before the first frame update
@@ -37,6 +40,7 @@ public class Death_NPC : MonoBehaviourPun
        
         yield return new WaitForSeconds(2);
         gameManager.deathNPCIsLaunch = true;
+        StartCoroutine(SetNotInvisibleCoroutine());
         StartDeathNPCRoom();
     }
     public void StartDeathNPCRoom()
@@ -71,20 +75,21 @@ public class Death_NPC : MonoBehaviourPun
     {
         gameManager.speciallyIsLaunch = true;
         gameManager.deathNPCIsLaunch = true;
+        gameManager.ActivateCollisionTPOfAllDoor(false);
     }
 
     // Update is called once per frame
     void Update()
     {
         ChangeScaleForSituation();
-
+        ChangeTransparencyToInvisibilty();
         if (!gameManager.SamePositionAtBoss() && CanHideDeathGod)
         {
             this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().enabled = false;
             this.transform.Find("Faux").GetComponent<SpriteRenderer>().enabled = false;
             this.GetComponent<CapsuleCollider2D>().enabled = false;
         }
-      
+        
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
@@ -97,10 +102,67 @@ public class Death_NPC : MonoBehaviourPun
         SetTargetOfPathFinding();
 
         ChangeDirectionBrutally();
-
+        
 
     }
 
+    public void ChangeTransparencyToInvisibilty()
+    {
+        if (isInvisible && !isTranparencying)
+        {
+            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+            this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+            tranparency = (tranparency - 2f);
+            if (tranparency < 0)
+            {
+                isTranparencying = true;
+                isInvertTranparencying = false;
+            }
+
+
+        }
+        if (!isInvisible && !isInvertTranparencying)
+        {
+            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+            this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+            tranparency = (tranparency + 2f);
+            if (tranparency > 255)
+            {
+                isInvertTranparencying = true;
+                isTranparencying = false;
+            }
+
+        }
+    }
+
+
+
+
+    public IEnumerator SetIsInvisibleCoroutine()
+    {
+        if (this.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            photonView.RPC("SendIsInvisible", RpcTarget.All, true);
+            int randomInt = Random.Range(2, 7);
+            yield return new WaitForSeconds(randomInt);
+            StartCoroutine(SetNotInvisibleCoroutine());
+        }     
+    }
+    public IEnumerator SetNotInvisibleCoroutine()
+    {
+        if (this.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            photonView.RPC("SendIsInvisible", RpcTarget.All, false);
+            yield return new WaitForSeconds(1.2f);
+            StartCoroutine(SetIsInvisibleCoroutine());
+        }
+    }
+
+    [PunRPC]
+    public void SendIsInvisible(bool isInvisible)
+    {
+        this.isInvisible = isInvisible;
+    }
 
     public IEnumerator CanHideDeathGodCoroutine()
     {
@@ -368,6 +430,7 @@ public class Death_NPC : MonoBehaviourPun
         gameManager.ChangeLeverDeathNPC(); 
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
         gameManager.speciallyIsLaunch = false;
+        gameManager.ActivateCollisionTPOfAllDoor(true);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(false);
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;

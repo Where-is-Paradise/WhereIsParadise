@@ -42,6 +42,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         matchmaking = false;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         PhotonNetwork.UseAlternativeUdpPorts = true;
+        PhotonNetwork.NetworkingClient.LoadBalancingPeer.MaximumTransferUnit = 400;
         ConnectToMaster();
         index_skin = Random.Range(0, 7);
         setting = GameObject.Find("Setting").GetComponent<Setting>();
@@ -63,7 +64,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
         //PhotonNetwork.LocalCleanPhotonView()
         //PhotonNetwork.MaxResendsBeforeDisconnect = 10;
-
+        
         PhotonNetwork.OfflineMode = false;
         PhotonNetwork.ConnectUsingSettings();
         //PhotonNetwork.ConnectToRegion("eu");  

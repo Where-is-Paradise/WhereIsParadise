@@ -33,6 +33,7 @@ public class SwordRoom : MonoBehaviourPun
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         roomIsLaunched = true;
         gameManager.speciallyIsLaunch = true;
+        gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(true);
     }
@@ -132,6 +133,7 @@ public class SwordRoom : MonoBehaviourPun
         roomIsLaunched = false;
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         gameManager.speciallyIsLaunch = false;
+        gameManager.ActivateCollisionTPOfAllDoor(true);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(false);
         StartCoroutine(CanMoveActiveCoroutine());

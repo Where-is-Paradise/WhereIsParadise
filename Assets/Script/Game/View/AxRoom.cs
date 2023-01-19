@@ -63,6 +63,7 @@ public class AxRoom : MonoBehaviourPun
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         isLaunch = true;
         gameManager.speciallyIsLaunch = true;
+        gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(true);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
@@ -178,6 +179,7 @@ public class AxRoom : MonoBehaviourPun
     public void SendResetSpeciallyIsLauch()
     {
         gameManager.speciallyIsLaunch = false;
+        gameManager.ActivateCollisionTPOfAllDoor(true);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(false);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)

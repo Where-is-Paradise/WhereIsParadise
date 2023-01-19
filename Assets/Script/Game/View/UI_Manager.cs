@@ -1672,7 +1672,8 @@ setting_button_echapMenu.SetActive(false);
     }
     public void HideSpeciallyDisplay()
     {
-        GameObject.Find("Special").gameObject.SetActive(false);   
+        GameObject.Find("Special").gameObject.SetActive(false);
+        DisplayLightLeverSpeciallyRoom(false);
     }
 
     public void HideImgInMiddleOfSpeciallyRoom(Room room, bool display)

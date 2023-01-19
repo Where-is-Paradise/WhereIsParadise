@@ -10,6 +10,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     public GameObject currentPlayer = null;
     public GameObject sword;
     public bool canChangePlayer = true;
+    public bool isAnimation = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,6 +34,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         gameManager.CloseDoorWhenVote(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
         gameManager.speciallyIsLaunch = true;
+        gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
@@ -113,22 +115,28 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     public IEnumerator CouroutineAnimationDeath()
     {
         canChangePlayer = false;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.4f);
         SetPlayerColor(this.currentPlayer);
         GameObject player = ChoosePlayerRandomly();
         SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
+        photonView.RPC("SendCanChangePlayer", RpcTarget.All, true);
         canChangePlayer = true;
         if (TestLastPlayer())
         {
             GiveAwardToPlayer(GetLastPlayer());
             SendResetColor();
             photonView.RPC("DesactivateDamoclesSwordRoom", RpcTarget.All);
-            
         }
         else
         {
-            StartCoroutine(TimerCouroutine(10f));
+            StartCoroutine(TimerCouroutine(15f));
         }
+    }
+
+    [PunRPC]
+    public void SendCanChangePlayer(bool newCanChangePlayer)
+    {
+        canChangePlayer = newCanChangePlayer;
     }
 
     public void Victory()
@@ -150,8 +158,12 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     [PunRPC]
     public void KillCurrentPlayer()
     {
-        sword.transform.localPosition = new Vector3(0, 0);
-        this.currentPlayer.GetComponent<PlayerGO>().isDeadBySwordDamocles = true;
+        if (canChangePlayer)
+        {
+            sword.transform.localPosition = new Vector3(0, 0);
+            this.currentPlayer.GetComponent<PlayerGO>().isDeadBySwordDamocles = true;
+            canChangePlayer = false;
+        }
     }
 
     public void SetPlayerColor(GameObject player)
@@ -252,6 +264,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         gameManager.CloseDoorWhenVote(false);
         gameManager.damoclesIsLaunch = true;
         gameManager.speciallyIsLaunch = false;
+        gameManager.ActivateCollisionTPOfAllDoor(true);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.gameManagerNetwork.SendActivateAllObstacles(false, this.gameObject.name);
         //this.gameObject.SetActive(false);
