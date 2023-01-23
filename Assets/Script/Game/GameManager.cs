@@ -258,7 +258,7 @@ public class GameManager : MonoBehaviourPun
 
     public IEnumerator LauchVoteDoorCoroutine()
     {
-        yield return new WaitForSeconds(5.05f);
+        yield return new WaitForSeconds(5.4f);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         //StartCoroutine(ui_Manager.DesactivateLightAroundPlayers());
         GameObject door = GetDoorWithMajority();
@@ -412,7 +412,6 @@ public class GameManager : MonoBehaviourPun
             listIndexPower.Add(0);
         if (setting.listObjectImpostor[1])
             listIndexPower.Add(1);
-        if (setting.listObjectImpostor[2])
         if (setting.listObjectImpostor[2])
             listIndexPower.Add(2);
         if (listIndexPower.Count == 1)
@@ -3260,11 +3259,11 @@ public class GameManager : MonoBehaviourPun
 
         int randomMain = Random.Range(0, 8);
         //randomMain = 7;
-        if (randomMain == 0 && setting.listTrialRoom[0])
+/*        if (randomMain == 0 && setting.listTrialRoom[0])
         {
             room.fireBall = true;
             return 1;
-        }
+        }*/
         if (randomMain == 1 && setting.listTrialRoom[1])
         {
             room.isDeathNPC = true;

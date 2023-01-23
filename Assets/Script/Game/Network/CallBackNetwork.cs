@@ -71,11 +71,8 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         gameManager.UpdateListPlayerGO();
         gameManager.SetTABToList(gameManager.listPlayerTab, gameManager.listPlayer);
         Door doorExplorate = gameManager.GetDoorExplorator(player.GetComponent<PhotonView>().ViewID);
-        Debug.Log("doorExplorate : " + doorExplorate.index);
         if(doorExplorate)
             gameManager.CancelDoorExplorationWhenDisconnection(doorExplorate.index);
-
-
         if (dataGame.GetPlayerByIndex(player.GetComponent<PhotonView>().ViewID).hasWinFireBallRoom)
             gameManager.ResetLeverDisconnect();
         if (gameManager.timer.timerLaunch)
@@ -132,7 +129,8 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         Debug.Log(" join room");
         dataGame.InstantiatePlayerMine();
- 
+        if (gameManager.ui_Manager.blackWallPaper.activeSelf)
+            gameManager.ui_Manager.blackWallPaper.SetActive(false);
     }
 
 

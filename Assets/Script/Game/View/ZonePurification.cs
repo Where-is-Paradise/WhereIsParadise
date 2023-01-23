@@ -18,7 +18,10 @@ public class ZonePurification : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        
+        if (currentPlayer)
+            this.transform.Find("collider").gameObject.SetActive(true);
+        else
+            this.transform.Find("collider").gameObject.SetActive(false);
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -31,11 +34,12 @@ public class ZonePurification : MonoBehaviourPun
             return;
         if (collision.transform.parent.GetComponent<PlayerGO>().isSacrifice)
             return;
-        if (currentPlayer && !currentPlayer.GetComponent<PhotonView>().IsMine)
-        {
-            photonView.RPC("SendSecondPlayer", RpcTarget.All, collision.transform.parent.GetComponent<PhotonView>().ViewID);
-            return;
-        }
+        /*        if (currentPlayer && !currentPlayer.GetComponent<PhotonView>().IsMine)
+                {
+                    photonView.RPC("SendSecondPlayer", RpcTarget.All, collision.transform.parent.GetComponent<PhotonView>().ViewID);
+                    return;
+                }*/
+        Physics2D.IgnoreCollision(this.transform.Find("collider").GetComponent<CircleCollider2D>(), collision.transform.parent.GetComponent<CapsuleCollider2D>(), true);
         photonView.RPC("SendCurrentPlayer", RpcTarget.All, collision.transform.parent.GetComponent<PhotonView>().ViewID);
         SetColorPlayerZone(collision.transform.parent.GetComponent<PlayerGO>(), true);
     }
@@ -50,11 +54,11 @@ public class ZonePurification : MonoBehaviourPun
             return;
         if (collision.transform.parent.GetComponent<PlayerGO>().isSacrifice)
             return;
-        if (currentPlayer && !currentPlayer.GetComponent<PhotonView>().IsMine)
+/*        if (currentPlayer && !currentPlayer.GetComponent<PhotonView>().IsMine)
         {
             photonView.RPC("SendSecondPlayer", RpcTarget.All, collision.transform.parent.GetComponent<PhotonView>().ViewID);
             return;
-        }
+        }*/
         photonView.RPC("SendCurrentPlayer", RpcTarget.All, collision.transform.parent.GetComponent<PhotonView>().ViewID);
         SetColorPlayerZone(collision.transform.parent.GetComponent<PlayerGO>(), true);
     }
@@ -67,26 +71,24 @@ public class ZonePurification : MonoBehaviourPun
             return;
         if (collision.transform.parent.GetComponent<PlayerGO>().isSacrifice)
             return;
-        if (secondPlayer && currentPlayer.GetComponent<PhotonView>().IsMine)
-        {
-            SetColorPlayerZone(currentPlayer.GetComponent<PlayerGO>(), false);
-            currentPlayer = secondPlayer;
-            photonView.RPC("SendCurrentPlayer", RpcTarget.All, currentPlayer.GetComponent<PhotonView>().ViewID);
-            photonView.RPC("ResetSecondPlayer", RpcTarget.All);
-            SetColorPlayerZone(currentPlayer.GetComponent<PlayerGO>(), true);
-            return;
-        }
-        if (secondPlayer && secondPlayer.GetComponent<PhotonView>().IsMine)
-        {
-            SetColorPlayerZone(secondPlayer.GetComponent<PlayerGO>(), false);
-            photonView.RPC("ResetSecondPlayer", RpcTarget.All);
-            return;
-        }
-        if (!secondPlayer)
-        {
-            photonView.RPC("ResetCurrentPlayer", RpcTarget.All);
-            SetColorPlayerZone(collision.transform.parent.GetComponent<PlayerGO>(), false);
-        }
+        /*        if (secondPlayer && currentPlayer.GetComponent<PhotonView>().IsMine)
+                {
+                    SetColorPlayerZone(currentPlayer.GetComponent<PlayerGO>(), false);
+                    currentPlayer = secondPlayer;
+                    photonView.RPC("SendCurrentPlayer", RpcTarget.All, currentPlayer.GetComponent<PhotonView>().ViewID);
+                    photonView.RPC("ResetSecondPlayer", RpcTarget.All);
+                    SetColorPlayerZone(currentPlayer.GetComponent<PlayerGO>(), true);
+                    return;
+                }
+                if (secondPlayer && secondPlayer.GetComponent<PhotonView>().IsMine)
+                {
+                    SetColorPlayerZone(secondPlayer.GetComponent<PlayerGO>(), false);
+                    photonView.RPC("ResetSecondPlayer", RpcTarget.All);
+                    return;
+                }*/
+        Physics2D.IgnoreCollision(this.transform.Find("collider").GetComponent<CircleCollider2D>(), collision.transform.parent.GetComponent<CapsuleCollider2D>(), false);
+        photonView.RPC("ResetCurrentPlayer", RpcTarget.All);
+        SetColorPlayerZone(collision.transform.parent.GetComponent<PlayerGO>(), false);
     }
 
 

@@ -15,6 +15,7 @@ public class ObjectImpostor : MonoBehaviour
     public bool cantTemporyUsed = false;
     public bool powerIsReset = false;
     public Collider2D collision;
+    public PlayerGO otherplayerInvisble;
     public bool isClickedInButtonPower = false;
     public bool isInvisible = false;
     public bool isNearOfPlayer = false;
@@ -170,8 +171,8 @@ public class ObjectImpostor : MonoBehaviour
                 timerToUsing = 30;
                 break;
             case 1:
-                timerToUsing = 300;
-                //timerToUsing = 10;
+                //timerToUsing = 300;
+                timerToUsing = 10;
                 break;
             case 2:
                 timerToUsing = 110;
@@ -246,6 +247,7 @@ public class ObjectImpostor : MonoBehaviour
     public void InvisibilityPowerOtherPlayer()
     {
         collision.transform.parent.GetComponent<PlayerNetwork>().SendColorInvisible(true);
+        otherplayerInvisble = collision.transform.parent.GetComponent<PlayerGO>();
         //isInvisible = true;
     }
 
@@ -257,7 +259,7 @@ public class ObjectImpostor : MonoBehaviour
     public void ResetOtherInvisiblityPower()
     {
         if(collision)
-            collision.transform.parent.GetComponent<PlayerNetwork>().SendColorInvisible(false);
+            otherplayerInvisble.GetComponent<PlayerNetwork>().SendColorInvisible(false);
     }
 
     public void MurderPower()
@@ -285,7 +287,7 @@ public class ObjectImpostor : MonoBehaviour
         {
             ResetInvisiblityPower();
             ResetOtherInvisiblityPower();
-            DisplayInvisibleResetButton(false);
+            //DisplayInvisibleResetButton(false);
             DisplayButtonCanUsed(false);
             gameManager.ui_Manager.DisplayN2PotionObject(false);
             gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
@@ -296,7 +298,7 @@ public class ObjectImpostor : MonoBehaviour
         {
             ResetInvisiblityPower();
             ResetOtherInvisiblityPower();
-            DisplayInvisibleResetButton(false);
+            //DisplayInvisibleResetButton(false);
             DisplayButtonCanUsed(false);
             gameManager.ui_Manager.DisplayN2PotionObject(false);
             gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
@@ -307,7 +309,7 @@ public class ObjectImpostor : MonoBehaviour
         {
             ResetInvisiblityPower();
             ResetOtherInvisiblityPower();
-            DisplayInvisibleResetButton(false);
+            //DisplayInvisibleResetButton(false);
             DisplayButtonCanUsed(false);
             gameManager.ui_Manager.DisplayN2PotionObject(false);
             gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
@@ -318,7 +320,7 @@ public class ObjectImpostor : MonoBehaviour
         {
             ResetInvisiblityPower();
             ResetOtherInvisiblityPower();
-            DisplayInvisibleResetButton(false);
+            //DisplayInvisibleResetButton(false);
             DisplayButtonCanUsed(false);
             gameManager.ui_Manager.DisplayN2PotionObject(false);
             gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
@@ -329,7 +331,7 @@ public class ObjectImpostor : MonoBehaviour
         {
             ResetInvisiblityPower();
             ResetOtherInvisiblityPower();
-            DisplayInvisibleResetButton(false);
+            //DisplayInvisibleResetButton(false);
             DisplayButtonCanUsed(false);
             gameManager.ui_Manager.DisplayN2PotionObject(false);
             gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
@@ -391,6 +393,8 @@ public class ObjectImpostor : MonoBehaviour
         }
         if (cantTemporyUsed)
         {
+            if (isOtherToInvisible)
+                return;
             gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
             gameManager.ui_Manager.DisplayObjectPowerBigger(false);
             return;

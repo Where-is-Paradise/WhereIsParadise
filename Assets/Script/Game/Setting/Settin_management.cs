@@ -53,8 +53,8 @@ public class Settin_management : MonoBehaviour
         //SaveLanguage();
         //Screen.SetResolution(1920, 1080,true);
         SetTextDropDownResolution(resolution.GetComponent<Dropdown>());
-        if(resolutionFirstConnexion)
-            SetTextDropDownResolution(resolutionFirstConnexion.GetComponent<Dropdown>());
+/*        if(resolutionFirstConnexion)
+            SetTextDropDownResolution(resolutionFirstConnexion.GetComponent<Dropdown>());*/
         setting = GameObject.Find("Setting").GetComponent<Setting>();
         if(input_manager)
             DontDestroyOnLoad(input_manager);
@@ -590,8 +590,8 @@ public class Settin_management : MonoBehaviour
         setting.resolution_width_index = resolution_int;
         setting.resolution_height_index = resolution_int;
         setting.fullscreen = fullscren.transform.GetChild(0).GetComponent<Image>().enabled;
-        Screen.SetResolution(resolutions[resolution_int].width, resolutions[resolution_int].height,
-            true);
+/*        Screen.SetResolution(resolutions[resolution_int].width, resolutions[resolution_int].height,
+            true);*/
         Camera.main.orthographicSize = 5.1f;
         SetFullScreenMode(1);
         SaveVideo();

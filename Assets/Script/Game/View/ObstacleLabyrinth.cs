@@ -115,6 +115,8 @@ public class ObstacleLabyrinth : MonoBehaviourPun
     {
         if(collision.tag == "CollisionTrigerPlayer")
         {
+            if (collision.transform.parent.GetComponent<PlayerGO>().isSacrifice)
+                return;
             if (hasTorch)
                 DesactivateRoom(collision);
             //labyrinthRoom.DesactivateAllObtacle();

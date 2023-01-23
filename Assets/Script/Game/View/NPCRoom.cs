@@ -9,10 +9,12 @@ public class NPCRoom : MonoBehaviourPun
     public bool isTrue = false;
     public bool playerChooseIsImpostor = false;
     public GameManager gameManager;
-    string informationOne = "n'est pas une âme égarée";
-    string informationTwo = "est une âme égarée";
-    string informationThree = "n'est pas une âme corrompue";
-    string informationFour = "est une âme corrompue";
+
+
+    string informationOne = "is not a lost soul";
+    string informationTwo = "is a lost soul";
+    string informationThree = "is not a corrupted soul";
+    string informationFour = "is a corrupted soul";
     // Start is called before the first frame update
     void Start()
     {
@@ -49,6 +51,8 @@ public class NPCRoom : MonoBehaviourPun
         yield return new WaitForSeconds(5);
         this.transform.Find("NPC").Find("SquareMessage").gameObject.SetActive(false);
         gameManager.NPCIsUsed = true;
+        gameManager.CloseDoorWhenVote(false);
+        
     }
 
     public void GenerateAndSetMessage()
@@ -114,12 +118,13 @@ public class NPCRoom : MonoBehaviourPun
 
     public void Traduction()
     {
-        if(gameManager.setting.langage == "en")
+        Debug.LogError(gameManager.setting.langage);
+        if(gameManager.setting.langage == "fr")
         {
-            informationOne = "is not a lost soul";
-            informationTwo = "is a lost soul";
-            informationThree = "is not a corrupted soul";
-            informationFour = "is a corrupted soul";
+            informationOne = "n'est pas une âme égarée";
+            informationTwo = "est une âme égarée";
+            informationThree = "n'est pas une âme corrompue";
+            informationFour = "est une âme corrompue";
         }
     }
 }

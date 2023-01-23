@@ -408,14 +408,23 @@ setting_button_echapMenu.SetActive(false);
         {
             blackWallPaper.SetActive(display);
             blackWallPaper.GetComponent<Image>().color = new Color(255, 255, 255, 0);
+            if(display)
+                StartCoroutine(HideBlackSreenCoroutine());
         }
         else
         {
             whiteWallPaper.SetActive(display);
             whiteWallPaper.GetComponent<Image>().color = new Color(0, 0, 0, 0);
         }
+        
     }
 
+    public IEnumerator HideBlackSreenCoroutine()
+    {
+        yield return new WaitForSeconds(1.2f);
+        if (blackWallPaper.activeSelf)
+            DisplayBlackScreen(false, true);
+    }
 
     public void TransitionToBlack(float t, GameObject wallPaper)
     {

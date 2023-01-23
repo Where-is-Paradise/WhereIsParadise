@@ -121,6 +121,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
         photonView.RPC("SendCanChangePlayer", RpcTarget.All, true);
         canChangePlayer = true;
+        Debug.LogError("sa passe");
         if (TestLastPlayer())
         {
             GiveAwardToPlayer(GetLastPlayer());
@@ -158,12 +159,9 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     [PunRPC]
     public void KillCurrentPlayer()
     {
-        if (canChangePlayer)
-        {
-            sword.transform.localPosition = new Vector3(0, 0);
-            this.currentPlayer.GetComponent<PlayerGO>().isDeadBySwordDamocles = true;
-            canChangePlayer = false;
-        }
+        sword.transform.localPosition = new Vector3(0, 0);
+        this.currentPlayer.GetComponent<PlayerGO>().isDeadBySwordDamocles = true;
+        //canChangePlayer = false;
     }
 
     public void SetPlayerColor(GameObject player)

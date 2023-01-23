@@ -14,12 +14,12 @@ public class LostTorchRoom : MonoBehaviourPun
     void Start()
     {
         lostTorch = this.transform.Find("Torch").GetComponent<LostTorch>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
 
@@ -53,7 +53,7 @@ public class LostTorchRoom : MonoBehaviourPun
     {
         GameObject spawn = listSpawn.transform.GetChild(indexSpawn).gameObject;
         this.transform.Find("Torch").gameObject.SetActive(true);
-        this.transform.position = spawn.transform.position;
+        this.transform.Find("Torch").transform.localPosition = spawn.transform.localPosition;
     }
 
     public IEnumerator TimerCouroutine()
@@ -75,7 +75,7 @@ public class LostTorchRoom : MonoBehaviourPun
         lostTorch.currentPlayer = null;
         lostTorch.transform.parent = this.transform;
         lostTorch.gameObject.SetActive(false);
-        lostTorch.transform.position = new Vector3(0, 0);
+        lostTorch.transform.localPosition = new Vector3(0, 0);
         lostTorch.transform.Find("CollisionTorch").GetComponent<CapsuleCollider2D>().enabled = true;
         timerFinish = false;
         this.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
