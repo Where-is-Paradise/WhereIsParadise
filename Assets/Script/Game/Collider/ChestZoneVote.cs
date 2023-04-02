@@ -9,6 +9,7 @@ public class ChestZoneVote : MonoBehaviour
     public int indexChest = 0;
 
     public GameManager gameManager;
+    public bool canSend = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,7 +40,7 @@ public class ChestZoneVote : MonoBehaviour
         {
             return;
         }
-
+        StartCoroutine(CouroutineTimerCanSend());
         gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, true, false);
 
     }
@@ -82,6 +83,19 @@ public class ChestZoneVote : MonoBehaviour
         {
             return;
         }
-        gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, false, true);
+        if (canSend)
+        {
+            gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, false, true);
+            canSend = false;
+        }
+                
+    }
+
+    public IEnumerator CouroutineTimerCanSend()
+    {
+        yield return new WaitForSeconds(0.5f);
+        canSend = true;
+        if (gameManager.timer.timerLaunch)
+            StartCoroutine(CouroutineTimerCanSend());
     }
 }

@@ -66,6 +66,7 @@ public class Settin_management : MonoBehaviour
 #endif
         LoadLanguage();
         LoadTutorial();
+        LoadWelcome();
 
         //SetFullScreenModeListView();
         SetLanguageDropdown();
@@ -464,6 +465,8 @@ public class Settin_management : MonoBehaviour
         setting.firstTimePanel = firstTimePanel;
     }
 
+    
+
     public void SaveTutorial(bool displayTutorial , bool tutorialImpostor, bool firstTimePanel)
     {
         QuickSaveWriter.Create("tutorial")
@@ -497,6 +500,31 @@ public class Settin_management : MonoBehaviour
         SaveTutorial(setting.displayTutorial, setting.tutorialImpostor, false);
     }
 
+    public void SaveWelcome(bool welcome)
+    {
+        QuickSaveWriter.Create("welcome")
+                .Write("welcome", welcome)
+                .Commit();
+        setting.welcome = welcome;    
+        QuickSaveRaw.LoadString("welcome.json");
+    }
+
+    public void LoadWelcome()
+    {
+
+        bool displayWelcome = true;
+        try
+        {
+            QuickSaveReader.Create("welcome")
+                      .Read<bool>("welcome", (r) => { displayWelcome = r; });
+        }
+        catch (Exception e)
+        {
+            SaveWelcome(true);
+        }
+
+        setting.welcome = displayWelcome;
+    }
 
     public void SetFullScreenMode(int index)
     {
@@ -587,15 +615,31 @@ public class Settin_management : MonoBehaviour
     {
         int resolution_int = resolution_dropdown.value;
         Resolution[] resolutions = Screen.resolutions;
-        setting.resolution_width_index = resolution_int;
-        setting.resolution_height_index = resolution_int;
+        setting.resolution_width_index = GetIndexByResolution(Screen.currentResolution.width , Screen.currentResolution.height);
+        setting.resolution_height_index = GetIndexByResolution(Screen.currentResolution.width, Screen.currentResolution.height);
         setting.fullscreen = fullscren.transform.GetChild(0).GetComponent<Image>().enabled;
-/*        Screen.SetResolution(resolutions[resolution_int].width, resolutions[resolution_int].height,
-            true);*/
+
+        Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height,
+            true);
         Camera.main.orthographicSize = 5.1f;
         SetFullScreenMode(1);
         SaveVideo();
 
+    }
+
+    public int GetIndexByResolution(int width, int height)
+    {
+        Resolution[] resolutions = Screen.resolutions;
+        int index = 0;
+        foreach(Resolution resolution in resolutions)
+        {
+            if(resolution.width == width && resolution.height == height)
+            {
+                return index;
+            }
+            index++;
+        }
+        return index + 7;
     }
 
     public void OnClickApplyLanguageWithoutReset(Dropdown language_dropdown)

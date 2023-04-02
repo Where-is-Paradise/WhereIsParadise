@@ -62,7 +62,7 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.indexSkin = indexSkin;
         player.DesactivateAllSkin();
-        player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).gameObject.SetActive(true);
+        player.transform.Find("Skins").GetChild(indexSkin).gameObject.SetActive(true);
     }
 
     public void SendDisplayHorn(bool display)
@@ -75,7 +75,7 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         if (!player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             return;
-        player.transform.Find("Perso").Find("Horns").gameObject.SetActive(display);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Horns").gameObject.SetActive(display);
     }
 
     public void SendOnclickToExpedition()
@@ -87,7 +87,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetOnclickToExpedition()
     {
         GetComponent<PlayerGO>().isChooseForExpedition = !GetComponent<PlayerGO>().isChooseForExpedition;
-        this.transform.GetChild(1).GetChild(4).gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
+        this.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
         if (GetComponent<PlayerGO>().isChooseForExpedition)
         {
             transform.GetChild(3).GetComponent<BoxCollider2D>().enabled = true;
@@ -117,7 +117,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetResetClickToExpedition()
     {
         GetComponent<PlayerGO>().isChooseForExpedition = false;
-        this.transform.GetChild(1).GetChild(4).gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
+        this.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
         transform.GetChild(3).GetComponent<BoxCollider2D>().enabled = false;
     }
 
@@ -130,7 +130,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetOnclickToExpedtionN2()
     {
         GetComponent<PlayerGO>().isChooseForExpedition = true;
-        this.transform.GetChild(1).GetChild(4).gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
+        this.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
         transform.GetChild(3).GetComponent<BoxCollider2D>().enabled = true;
 
     }
@@ -431,8 +431,8 @@ public class PlayerNetwork : MonoBehaviourPun
         if (player.GetComponent<PhotonView>().IsMine)
         {
             player.transform.Find("InfoCanvas").gameObject.SetActive(true);
-            player.transform.Find("Perso").gameObject.SetActive(true);
-            player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+            player.transform.Find("Skins").GetChild(player.indexSkin).gameObject.SetActive(true);
+            player.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
             player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
             player.transform.Find("Collision").gameObject.SetActive(false);
             player.SetIconDeath(true);
@@ -461,7 +461,7 @@ public class PlayerNetwork : MonoBehaviourPun
         player.GetComponent<PlayerGO>().isSacrifice = false;
         if (!player.gameManager.SamePositionAtBoss())
             return;
-        player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+        player.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
         player.transform.Find("Collision").gameObject.SetActive(true);
         for (int i = 0; i < player.transform.childCount; i++)
         {
@@ -481,27 +481,27 @@ public class PlayerNetwork : MonoBehaviourPun
         player.isInvisible = invisible;
         if (!invisible)
         {
-            player.transform.Find("Perso").gameObject.SetActive(true);
-            player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
-            player.transform.Find("Perso").Find("Eyes1").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+            player.transform.Find("Skins").GetChild(player.indexSkin).gameObject.SetActive(true);
+            player.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Eyes1").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             player.transform.Find("InfoCanvas").gameObject.SetActive(true);
             if(player.isBoss)
-                player.transform.Find("Perso").Find("Crown").gameObject.SetActive(true);
-            player.transform.Find("Perso").gameObject.SetActive(true);
+                player.transform.Find("Skins").GetChild(player.indexSkin).Find("Crown").gameObject.SetActive(true);
+            player.transform.Find("Skins").GetChild(player.indexSkin).gameObject.SetActive(true);
             return;
         }
         if (player.GetComponent<PhotonView>().IsMine)
         {
-            player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
-            player.transform.Find("Perso").Find("Light_around").gameObject.SetActive(false);
+            player.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(false);
         }
         else{
-            player.transform.Find("Perso").gameObject.SetActive(false);
-            player.transform.Find("Perso").Find("Body_skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0f);
-            player.transform.Find("Perso").Find("Eyes1").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0f);
+            player.transform.Find("Skins").GetChild(player.indexSkin).gameObject.SetActive(false);
+            player.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0f);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Eyes1").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0f);
             player.transform.Find("InfoCanvas").gameObject.SetActive(false);
-            player.transform.Find("Perso").Find("Light_around").gameObject.SetActive(false);
-            player.transform.Find("Perso").Find("Crown").gameObject.SetActive(false);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(false);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Crown").gameObject.SetActive(false);
         }
       
     }
@@ -521,7 +521,7 @@ public class PlayerNetwork : MonoBehaviourPun
             playeritem.GetComponent<PlayerGO>().nbVoteSacrifice = 0;
             playeritem.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").GetComponent<Text>().text = playeritem.GetComponent<PlayerGO>().nbVoteSacrifice.ToString();
             playeritem.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
-            playeritem.transform.Find("Perso").Find("Light_red").gameObject.SetActive(false);
+            playeritem.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_red").gameObject.SetActive(false);
         }
         player.GetComponent<PlayerGO>().gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         player.GetComponent<PlayerGO>().gameManager.UpdateSpecialsRooms(player.GetComponent<PlayerGO>().gameManager.game.currentRoom);
@@ -562,7 +562,7 @@ public class PlayerNetwork : MonoBehaviourPun
         }
         this.transform.Find("ActivityCanvas").Find("Ready_V").gameObject.SetActive(vote_V);
         this.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(!vote_V);
-        this.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
+        this.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(true);
 
     }
 
@@ -719,13 +719,13 @@ public class PlayerNetwork : MonoBehaviourPun
         {
             int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
             player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
-            player.transform.Find("Perso").Find("Sword").gameObject.SetActive(false);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Sword").gameObject.SetActive(false);
         }
         else
         {
             player.transform.GetChild(0).gameObject.SetActive(false);
             player.transform.GetChild(1).gameObject.SetActive(false);
-            player.transform.Find("Perso").Find("Sword").gameObject.SetActive(false);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Sword").gameObject.SetActive(false);
         }
     }
 
@@ -739,7 +739,7 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         if (!player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || !player.GetComponent<PhotonView>().IsMine)
             return;
-            player.transform.Find("Perso").Find("Light_red").gameObject.SetActive(display);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_red").gameObject.SetActive(display);
     }
 
     public void SendCanLaunchExploration()
@@ -764,7 +764,7 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.GetComponent<PlayerGO>().isCursed = isCursed;
         if(player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
-            player.transform.Find("Perso").Find("Light_Cursed").gameObject.SetActive(isCursed);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_Cursed").gameObject.SetActive(isCursed);
     }
 
     public void SendDistanceCursed(int distanceCursed, int indexRoom)
@@ -867,7 +867,7 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetDisplayWhiteLight(bool display)
     {
-        player.transform.Find("Perso").Find("Light_around").gameObject.SetActive(display);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(display);
     }
 
     public void SendDisplayCrown(bool display)
@@ -879,7 +879,8 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetDisplayCrown(bool display)
     {
-        player.transform.Find("Perso").Find("Crown").gameObject.SetActive(display);
+        if(player)
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Crown").gameObject.SetActive(display);
     }
 
     public void SendIsReady(bool isReady)
@@ -962,4 +963,26 @@ public class PlayerNetwork : MonoBehaviourPun
         this.transform.Translate(distance * 10 * Time.deltaTime);
     }
 
+    public void SendChangeSystemtoUpdatePosition(int indexPlayer, bool inferior)
+    {
+        photonView.RPC("SetChangeSystemToUpdatePosition", RpcTarget.Others, indexPlayer, inferior);
+    }
+
+    [PunRPC]
+    public void SetChangeSystemToUpdatePosition(int indexPlayer, bool inferior)
+    {
+        if(player.GetComponent<PhotonView>().ViewID == indexPlayer)
+        {
+            if (inferior)
+            {
+                this.GetComponent<PhotonTransformViewClassic>().enabled = false;
+                this.GetComponent<PhotonTransformView>().enabled = true;
+            }
+            else
+            {
+                this.GetComponent<PhotonTransformViewClassic>().enabled = true;
+                this.GetComponent<PhotonTransformView>().enabled = false;
+            }
+        }
+    }
 }

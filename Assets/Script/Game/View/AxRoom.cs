@@ -85,7 +85,7 @@ public class AxRoom : MonoBehaviourPun
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach(GameObject player in listPlayer)
         {
-            player.transform.Find("Perso").Find("Ax").gameObject.SetActive(display);
+            player.transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("Ax").gameObject.SetActive(display);
         }
     }
 
@@ -100,7 +100,7 @@ public class AxRoom : MonoBehaviourPun
 
     public void DisplayLineToShot(bool display)
     {
-        gameManager.GetPlayerMineGO().transform.Find("Perso").Find("LineForAx").gameObject.SetActive(display);
+        gameManager.GetPlayerMineGO().transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("LineForAx").gameObject.SetActive(display);
     }
     public void UpdatePositionAndRotationOfLineByMouse()
     {
@@ -110,7 +110,7 @@ public class AxRoom : MonoBehaviourPun
         Vector3 direction = wPos - gameManager.GetPlayerMineGO().transform.position;
         float radius = 1;
         direction = Vector3.ClampMagnitude(direction, radius);
-        gameManager.GetPlayerMineGO().transform.Find("Perso").Find("LineForAx").position = (gameManager.GetPlayerMineGO().transform.position + direction) ;
+        gameManager.GetPlayerMineGO().transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("LineForAx").position = (gameManager.GetPlayerMineGO().transform.position + direction) ;
         currentDirection = direction;
     }
 
@@ -191,7 +191,7 @@ public class AxRoom : MonoBehaviourPun
     public IEnumerator ResetLineToShotCoroutine()
     {
         yield return new WaitForSeconds(0.5f);
-        gameManager.GetPlayerMineGO().transform.Find("Perso").Find("LineForAx").gameObject.SetActive(false);
+        gameManager.GetPlayerMineGO().transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("LineForAx").gameObject.SetActive(false);
     }
 
     public IEnumerator DesactivateRoomCoroutine()

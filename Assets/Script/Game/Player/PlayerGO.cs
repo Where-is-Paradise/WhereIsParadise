@@ -206,7 +206,7 @@ public class PlayerGO : MonoBehaviour
     {
         if (animateEyes)
         {
-            this.transform.GetChild(1).GetChild(0).GetComponent<Animator>().SetBool("OpenEyes", true); ;
+            //this.transform.Find("Skins").GetChild(indexSkin).Find("Eyes1").GetComponent<Animator>().SetBool("OpenEyes", true); ;
             animateEyes = false;
         }
         gameObject.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = playerName;
@@ -259,7 +259,7 @@ public class PlayerGO : MonoBehaviour
 
     void Update()
     {
-        if (GameObject.Find("Lobby_Manager"))
+/*        if (GameObject.Find("Lobby_Manager"))
         {
             if (this.GetComponent<PhotonView>().IsMine && !GameObject.Find("Lobby_Manager").GetComponent<Lobby>().matchmaking)
             {
@@ -269,7 +269,7 @@ public class PlayerGO : MonoBehaviour
                     GetComponent<PlayerNetwork>().SendDisplayCrown(false);
             }
 
-        }
+        }*/
 
         if (isMovingAutomaticaly)
         {
@@ -336,7 +336,7 @@ public class PlayerGO : MonoBehaviour
 
             if (gameManager.timer.timerFinish && !gameManager.alreadyPass)
             {
-                this.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
+                this.transform.Find("Skins").GetChild(indexSkin).Find("Light_around").gameObject.SetActive(false);
                 gameManager.alreadyPass = true;
                 StartCoroutine(CoroutineIsChooseForExpedition());
 
@@ -398,8 +398,7 @@ public class PlayerGO : MonoBehaviour
                         if (!gameManager.OnePlayerHaveToGoToExpedition())
                         {
                             gameManager.ActiveZoneDoor();
-                            gameManager.gameManagerNetwork.SendDisplayMainLevers(false);
-                           
+                       
 
                         }
                         else
@@ -573,7 +572,7 @@ public class PlayerGO : MonoBehaviour
         {
             if ((gameManager.expeditionHasproposed || gameManager.voteDoorHasProposed) && !isAlreadyHide)
             {
-                this.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
+                this.transform.Find("Skins").GetChild(indexSkin).Find("Light_around").gameObject.SetActive(false);
                 isAlreadyHide = true;
                 GetComponent<PlayerGO>().isChooseForExpedition = false;
                 transform.GetChild(3).GetComponent<BoxCollider2D>().enabled = false;
@@ -674,9 +673,9 @@ public class PlayerGO : MonoBehaviour
     {
         
         if(increase)
-            this.transform.Find("Perso").Find("Body_skins").GetChild(0).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.2f);
+            this.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.2f);
         else
-            this.transform.Find("Perso").Find("Body_skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+            this.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
     }
 
 
@@ -801,32 +800,37 @@ public class PlayerGO : MonoBehaviour
                     vertical = 0.5f * Mathf.Sign(InputManager.GetAxis("Vertical")); ;
                 }*/
         //Debug.Log(horizontal + " " + vertical);
-       
-        if (horizontal > 0.9  && vertical > 0.9)
+
+        if (Mathf.Abs(horizontal)+ Mathf.Abs(vertical) > 1.1f)
         {
-            horizontal = 0.7f;
-            vertical = 0.7f;
+
+            horizontal *= 0.9f;
+            vertical *= 0.9f;
         }
-       
+
+
+
         this.transform.Translate(
             new Vector3(
-                horizontal * movementlControlSpeed * 1.3f * Time.deltaTime,
-                vertical * movementlControlSpeed * 1.3f * Time.deltaTime,
+                horizontal,
+                vertical,
                 0
-            )
+            ) * movementlControlSpeed * Time.deltaTime
         );
+
+        //this.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(new Vector3(horizontal, vertical)) * movementlControlSpeed;
 
         /*        if(horizontal > 0 || vertical > 0)
                     movement = transform.position - oldPosition;*/
 
         //GetComponent<PlayerNetwork>().SendHorizontalAndVertical(horizontal, vertical);
+        // permit to teleport when mini game
         if (gameManager && gameManager.speciallyIsLaunch)
         {
             InputDownORUp();
 
         }
-       
-
+        
     }
 
    
@@ -901,7 +905,7 @@ public class PlayerGO : MonoBehaviour
         Transform chat = transform.Find("InfoCanvas").Find("ChatPanel");
         if (chat.gameObject.activeSelf)
             return;
-        Transform perso = transform.Find("Perso");
+        Transform perso = transform.Find("Skins").GetChild(indexSkin);
         if (perso.localScale.x < 0)
         {
             chat.localPosition = new Vector3(561, 182);
@@ -925,7 +929,7 @@ public class PlayerGO : MonoBehaviour
 
     private void turnLeft()
     {
-        Transform perso = transform.Find("Perso");
+        Transform perso = transform.Find("Skins").GetChild(indexSkin);
         perso.localScale = new Vector3(
             Mathf.Abs(perso.localScale.x),
             perso.localScale.y
@@ -935,7 +939,7 @@ public class PlayerGO : MonoBehaviour
 
     private void turnRight()
     {
-        Transform perso = transform.Find("Perso");
+        Transform perso = transform.Find("Skins").GetChild(indexSkin);
         perso.localScale = new Vector3(
             -Mathf.Abs(perso.localScale.x),
             perso.localScale.y
@@ -1018,7 +1022,7 @@ public class PlayerGO : MonoBehaviour
         {
             if (collision.CompareTag("Zone_vote"))
             {
-                this.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
+                this.transform.Find("Skins").GetChild(indexSkin).Find("Light_around").gameObject.SetActive(true);
                 if (collision.name == "vote_X")
                 {
                     GetComponent<PlayerNetwork>().SendVoteExplorationDisplay(false);
@@ -1032,7 +1036,7 @@ public class PlayerGO : MonoBehaviour
             if (collision.CompareTag("Door"))
             {
                 collisionInDoorIndex = collision.GetComponent<Door>().index;
-                GetComponent<PlayerNetwork>().SendCollisionDoorIndex(collisionInDoorIndex);
+                //GetComponent<PlayerNetwork>().SendCollisionDoorIndex(collisionInDoorIndex);
             }
         }
 
@@ -1233,13 +1237,13 @@ public class PlayerGO : MonoBehaviour
 
         if (collision.CompareTag("Zone_vote"))
         {
-            this.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
+            this.transform.Find("Skins").GetChild(indexSkin).Find("Light_around").gameObject.SetActive(false);
             GetComponent<PlayerNetwork>().SendHideVoteExplorationDisplay();
         }
         if (collision.CompareTag("Door"))
         {
             collisionInDoorIndex = -1;
-            GetComponent<PlayerNetwork>().SendCollisionDoorIndex(-1);
+            //GetComponent<PlayerNetwork>().SendCollisionDoorIndex(-1);
         }
         if (collision.gameObject.tag == "Lever")
         {
@@ -1277,7 +1281,7 @@ public class PlayerGO : MonoBehaviour
 
     public void SetIconDeath(bool display)
     {
-        this.transform.Find("Perso").transform.Find("DeadIcon").gameObject.SetActive(display);
+        this.transform.Find("Skins").GetChild(indexSkin).transform.Find("DeadIcon").gameObject.SetActive(display);
     }
 
     public void DisplayCharacter(bool display)
@@ -1339,7 +1343,7 @@ public class PlayerGO : MonoBehaviour
             foreach(GameObject impostor in GameObject.FindGameObjectsWithTag("Player"))
             {
                 if(impostor.GetComponent<PlayerGO>().isImpostor)
-                    impostor.transform.GetChild(1).GetChild(2).gameObject.SetActive(isImpostor);
+                    impostor.transform.Find("Skins").GetChild(impostor.GetComponent<PlayerGO>().indexSkin).Find("Horns").gameObject.SetActive(isImpostor);
             }
            
         }
@@ -1349,7 +1353,7 @@ public class PlayerGO : MonoBehaviour
     private IEnumerator Wait(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
-        this.transform.GetChild(1).GetChild(0).GetComponent<Animator>().SetBool("OpenEyes", false);
+        this.transform.Find("Skins").GetChild(indexSkin).Find("Eyes1").GetComponent<Animator>().SetBool("OpenEyes", false);
         animateEyes = true;
         AnimateEyes();
     }
@@ -1362,9 +1366,9 @@ public class PlayerGO : MonoBehaviour
 
     public void DesactivateAllSkin()
     {
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < transform.Find("Skins").childCount; i++)
         {
-            transform.GetChild(1).GetChild(1).GetChild(i).gameObject.SetActive(false);
+            transform.Find("Skins").GetChild(i).gameObject.SetActive(false);
         }
 
     }
@@ -1483,7 +1487,7 @@ public class PlayerGO : MonoBehaviour
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice = !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lastPlayerIndexVote = this.GetComponent<PhotonView>().ViewID;
         GetComponent<PlayerNetwork>().SendVoteToSacrifice(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice);
-        transform.Find("Perso").Find("Light_red").gameObject.SetActive(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice);
+        transform.Find("Skins").GetChild(indexSkin).Find("Light_red").gameObject.SetActive(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice);
     }
 
     public void DisplayChat(bool display)
@@ -1604,15 +1608,15 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (gameManager && (gameManager.expeditionHasproposed || gameManager.timer.timerLaunch || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed))
+        if (gameManager && !gameManager.isLoading && (gameManager.expeditionHasproposed || gameManager.timer.timerLaunch || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed))
         {
-            playerNetwork.SendResetWantToChangeBoss();
+            //playerNetwork.SendResetWantToChangeBoss();
             changeBoss = false;
             return;
         }
         if (gameManager && gameManager.fireBallIsLaunch)
         {
-            playerNetwork.SendResetWantToChangeBoss();
+            //playerNetwork.SendResetWantToChangeBoss();
             changeBoss = false;
             return;
         }
@@ -1622,7 +1626,7 @@ public class PlayerGO : MonoBehaviour
         }
         if (isBoss)
         {
-            playerNetwork.SendResetWantToChangeBoss();
+            //playerNetwork.SendResetWantToChangeBoss();
             changeBoss = false;
             return;
         }
@@ -1986,23 +1990,23 @@ public class PlayerGO : MonoBehaviour
 
     public void MovingUpForDeathAnimation()
     {
-        this.transform.Find("Perso").Translate(new Vector3(0, 2.3f * Time.deltaTime));
+        this.transform.Find("Skins").GetChild(indexSkin).Translate(new Vector3(0, 2.3f * Time.deltaTime));
         this.transform.Find("InfoCanvas").Translate(new Vector3(0, 2.3f * Time.deltaTime));
-        if (Mathf.Abs(transform.Find("Perso").position.y - old_y_position) > 0.32f)
+        if (Mathf.Abs(transform.Find("Skins").GetChild(indexSkin).position.y - old_y_position) > 0.32f)
         {
            
             animationDeathUpFinish = true;
-            old_y_position = this.transform.Find("Perso").position.y;
+            old_y_position = this.transform.Find("Skins").GetChild(indexSkin).position.y;
         }
     }
 
     public void MovingDownForDeathAnimation()
     {
-        this.transform.Find("Perso").Translate(new Vector3(0, -5f * Time.deltaTime));
+        this.transform.Find("Skins").GetChild(indexSkin).Translate(new Vector3(0, -5f * Time.deltaTime));
         this.transform.Find("InfoCanvas").Translate(new Vector3(0, -5f * Time.deltaTime));
-        if (Mathf.Abs(old_y_position - transform.Find("Perso").position.y)  > 1.5f)
+        if (Mathf.Abs(old_y_position - transform.Find("Skins").GetChild(indexSkin).position.y)  > 1.5f)
         {
-            this.transform.Find("Perso").gameObject.SetActive(false);
+            this.transform.Find("Skins").GetChild(indexSkin).gameObject.SetActive(false);
             this.transform.Find("InfoCanvas").gameObject.SetActive(false);
             animationDeathDownFinis = true;
             animationDeath = false;
@@ -2014,7 +2018,7 @@ public class PlayerGO : MonoBehaviour
         canMove = true;
         if (GetComponent<PhotonView>().IsMine)
         {
-            this.transform.Find("Perso").localPosition = new Vector3(0, 0);
+            this.transform.transform.Find("Skins").GetChild(indexSkin).localPosition = new Vector3(0, 0);
             this.transform.Find("InfoCanvas").localPosition = new Vector3(-0.812f, -0.14f);
             this.transform.Translate(new Vector3(0, -0.75f));
         }

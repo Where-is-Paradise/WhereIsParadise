@@ -20,7 +20,7 @@ public class LostTorch : MonoBehaviourPun
     {
         if (currentPlayer)
         {
-            float sign_x = this.transform.parent.transform.Find("Perso").localScale.x / Mathf.Abs(this.transform.parent.transform.Find("Perso").localScale.x);
+            float sign_x = this.transform.parent.transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).localScale.x / Mathf.Abs(this.transform.parent.transform.Find("Perso").localScale.x);
             this.transform.localScale = new Vector3(-sign_x * Mathf.Abs(this.transform.localScale.x),this.transform.localScale.y);
             if(this.transform.localScale.x < 0)
             {

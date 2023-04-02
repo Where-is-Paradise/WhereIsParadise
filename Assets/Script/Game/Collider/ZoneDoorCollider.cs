@@ -6,6 +6,7 @@ using UnityEngine;
 public class ZoneDoorCollider : MonoBehaviour
 {
     public GameManager gameManager;
+    public bool canSend = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +38,7 @@ public class ZoneDoorCollider : MonoBehaviour
         {
             return;
         }
-
+        StartCoroutine(CouroutineTimerCanSend());
         int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
         gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, true, false);
  
@@ -83,9 +84,23 @@ public class ZoneDoorCollider : MonoBehaviour
         {
             return;
         }
-        int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
-        gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, false, true);
-
+       
+        if (canSend)
+        {
+           
+            int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
+            gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, false, true);
+            canSend = false;
+        }
+       
     }
 
+
+    public IEnumerator CouroutineTimerCanSend()
+    {
+        yield return new WaitForSeconds(0.5f);
+        canSend = true;
+        if(gameManager.timer.timerLaunch)
+            StartCoroutine(CouroutineTimerCanSend());
+    }
 }

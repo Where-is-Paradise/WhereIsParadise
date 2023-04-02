@@ -159,7 +159,7 @@ public class PowerImpostor : MonoBehaviourPun
     {
 
         //this.transform.parent.GetComponent<PlayerNetwork>().SendRedColor(display);
-        this.transform.parent.Find("Perso").Find("Light_red").gameObject.SetActive(display);
+        this.transform.parent.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("Light_red").gameObject.SetActive(display);
     }
 
 

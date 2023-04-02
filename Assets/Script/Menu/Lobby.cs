@@ -36,6 +36,8 @@ public class Lobby : MonoBehaviourPunCallbacks
     int index_skin = 0;
 
     public Setting setting;
+
+    public bool isConnected= false;
     // Use this  initialization
     void Start()
     {
@@ -43,12 +45,14 @@ public class Lobby : MonoBehaviourPunCallbacks
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         PhotonNetwork.UseAlternativeUdpPorts = true;
         PhotonNetwork.NetworkingClient.LoadBalancingPeer.MaximumTransferUnit = 400;
-        ConnectToMaster();
-        index_skin = Random.Range(0, 7);
+        //ConnectToMaster();
+        //index_skin = Random.Range(0, 7);
+        index_skin = 2;
         setting = GameObject.Find("Setting").GetComponent<Setting>();
         setting.INDEX_SKIN = index_skin;
        
         StartCoroutine(GetText());
+        ConnectToMaster();
     }
 
     // Update is called once per frame
@@ -74,7 +78,8 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public void ConnectToMasterInSpecificRegion()
     {
-        PhotonNetwork.Disconnect();
+        //PhotonNetwork.Disconnect();
+        //PhotonNetwork.BestRegionSummaryInPreferences
         PhotonNetwork.ConnectToRegion(setting.region);
         PhotonNetwork.OfflineMode = false;
     }
@@ -100,7 +105,7 @@ public class Lobby : MonoBehaviourPunCallbacks
             {
                 ListVersion newVersion = JsonUtility.FromJson<ListVersion>(www.downloadHandler.text);
 
-                if (newVersion.response[0].major == 0 && newVersion.response[0].minor == 5 && newVersion.response[0].revision == 0)
+                if (newVersion.response[0].major == setting.major && newVersion.response[0].minor == setting.minor && newVersion.response[0].revision == setting.revision)
                 {
                     versionIsCorrect = true;
                 }
@@ -117,11 +122,43 @@ public class Lobby : MonoBehaviourPunCallbacks
         }
     }
 
+    
+
+    public IEnumerator CouroutineConnexionCreateRoom()
+    {
+        ConnectToMasterInSpecificRegion();
+        yield return new WaitForSeconds(5);
+        if (!isConnected)
+            StartCoroutine(CouroutineConnexionCreateRoom());
+        else
+            ui_management.OnClickCreateLobby();
+    }
+
+    public IEnumerator CouroutineConnexionJoinRoom()
+    {
+        ConnectToMasterInSpecificRegion();
+        yield return new WaitForSeconds(5);
+        if (!isConnected)
+            StartCoroutine(CouroutineConnexionJoinRoom());
+        else
+            ui_management.OnClickJoinLobby();
+    }
+    public IEnumerator CouroutineConnexionMatchmaking()
+    {
+        ConnectToMasterInSpecificRegion();
+        yield return new WaitForSeconds(5);
+        if (!isConnected)
+            StartCoroutine(CouroutineConnexionJoinRoom());
+        else
+            ui_management.OnClickJoinLobby();
+    }
+
 
     public override void OnConnectedToMaster()
     {
         print("Connected");
-        Debug.Log(PhotonNetwork.CloudRegion);
+        Debug.LogError(PhotonNetwork.CloudRegion);
+        isConnected = true;
         base.OnConnectedToMaster();
         
         if (GameObject.Find("Setting_backWaitingRoom"))
@@ -145,10 +182,11 @@ public class Lobby : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
-        print("Disconnected : " + cause.ToString());
+        Debug.LogError("Disconnected : " + cause.ToString());
+        isConnected = false;
         if (cause.ToString().Equals("DnsExceptionOnConnect"))
         {
-            StartCoroutine(reconnect());
+            //StartCoroutine(reconnect());
             ui_management.DisplayErrorPanel("Disconnection..");
         }
         else
@@ -156,8 +194,9 @@ public class Lobby : MonoBehaviourPunCallbacks
             matchmaking = false;
             // 
             ui_management.canChange = false;
-            
-             ConnectToMaster();
+
+            //ConnectToMaster();
+            StartCoroutine(reconnect());
         }
         
         
@@ -166,6 +205,7 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public IEnumerator reconnect()
     {
+        Debug.LogError("Reconnexion..");
         yield return new WaitForSeconds(4f);
         ConnectToMaster();
     }
@@ -342,7 +382,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     {
         Debug.Log(returnCode);
         matchmaking = false;
-        Debug.Log(isBackToWaitingRoom);
+        Debug.Log(isBackToWaitingRoom + " " + code);
         if (returnCode == 32764 && isBackToWaitingRoom)
         {
             ui_management.OnClickBackInWaitingRoom();
@@ -534,10 +574,10 @@ public class Lobby : MonoBehaviourPunCallbacks
                 return false;
             }
         }
-/*        if (players.Length < 4)
+        if (players.Length < 4)
         {
             return false;
-        }*/
+        }
         return true;
     }
 

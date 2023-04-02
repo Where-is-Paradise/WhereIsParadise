@@ -22,7 +22,7 @@ public class Lag_Compensation : MonoBehaviour, IPunObservable
             networkPosition = (Vector3)stream.ReceiveNext();
             GetComponent<Rigidbody2D>().velocity = (Vector3)stream.ReceiveNext();
 
-            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
+            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
             networkPosition  += (this.velocity * lag);
         }
     }

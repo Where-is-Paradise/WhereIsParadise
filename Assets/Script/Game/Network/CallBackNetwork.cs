@@ -206,13 +206,11 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.Reconnect())
             {
-                Time.timeScale = 1;
                 Debug.Log("Successful reconnected!", this);
             }
         }
         else
         {
-            Time.timeScale = 1;
             Debug.Log("Successful reconnected and joined!", this);
         }
     }

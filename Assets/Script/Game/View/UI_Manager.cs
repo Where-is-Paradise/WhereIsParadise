@@ -485,7 +485,7 @@ setting_button_echapMenu.SetActive(false);
         //waitingPage_PowerImpostor.SetActive(true);
         //int launchTimer = 20;
         int launchTimer = 2;
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower == -1 || true)
+        if (true)
         {
             Camera.main.orthographicSize = 5.1f;
             gameManager.gameIsReady = true;
@@ -858,8 +858,8 @@ setting_button_echapMenu.SetActive(false);
     {
         foreach(GameObject player  in GameObject.FindGameObjectsWithTag("Player"))
         {
-            player.transform.GetChild(1).GetChild(9).gameObject.SetActive(false);
-            player.transform.GetChild(1).GetChild(14).gameObject.SetActive(false);
+            player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_blue").gameObject.SetActive(false);
+            player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_redDark").gameObject.SetActive(false);
         }
     }
 
@@ -959,7 +959,7 @@ setting_button_echapMenu.SetActive(false);
 
         foreach(GameObject player in listPlayer)
         {
-            player.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
+            player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(false);
         }
     }
     public void DesactivateLightAroundPlayersN2()
@@ -968,7 +968,7 @@ setting_button_echapMenu.SetActive(false);
 
         foreach (GameObject player in listPlayer)
         {
-            player.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
+            player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(false);
         }
     }
 
@@ -991,7 +991,7 @@ setting_button_echapMenu.SetActive(false);
         foreach(GameObject player in listPlayer)
         {
             if(player.GetComponent<PlayerGO>().isImpostor)
-                player.transform.GetChild(1).GetChild(2).gameObject.SetActive(true);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Horns").gameObject.SetActive(true);
         }
     }
     public void ShowAllDataInMap()
@@ -1537,7 +1537,7 @@ setting_button_echapMenu.SetActive(false);
         {
             if (player.GetComponent<PlayerGO>().isImpostor)
             {
-                player.gameObject.transform.Find("Perso").Find("Horns").gameObject.SetActive(hide);
+                player.gameObject.transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("Horns").gameObject.SetActive(hide);
             }
         }
 
@@ -1695,12 +1695,11 @@ setting_button_echapMenu.SetActive(false);
         if (room.isResurection)
         {
             GameObject.Find("Special").transform.Find("ResurectionRoom").Find("Status").gameObject.SetActive(display);
-            GameObject.Find("Special").transform.Find("ResurectionRoom").Find("StatusRight").gameObject.SetActive(display);
-            GameObject.Find("Special").transform.Find("ResurectionRoom").Find("StatusLEFT").gameObject.SetActive(display);
         }
         if (room.isPray)
         {
             GameObject.Find("Special").transform.Find("PrayRoom").Find("Status").gameObject.SetActive(display);
+            GameObject.Find("Special").transform.Find("PrayRoom").Find("ZonesPray").gameObject.SetActive(display);
         }
         if (room.isNPC)
         {
@@ -1720,17 +1719,17 @@ setting_button_echapMenu.SetActive(false);
                 continue;
             if (display)
             {
-                player.transform.Find("Perso").Find("Body_skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(false);        
-                player.transform.Find("Perso").Find("Body_skins").GetChild(0).gameObject.SetActive(true);
-                player.transform.Find("Perso").Find("Body_skins").GetChild(0).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.9f);
+/*                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(false);        
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(true);*/
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.9f);
             }
             else
             {
-                player.transform.Find("Perso").Find("Body_skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(true);
-                player.transform.Find("Perso").Find("Body_skins").GetChild(0).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                //player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(true);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
                 
-                if(player.GetComponent<PlayerGO>().indexSkin != 0)
-                    player.transform.Find("Perso").Find("Body_skins").GetChild(0).gameObject.SetActive(false);
+/*                if(player.GetComponent<PlayerGO>().indexSkin != 0)
+                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(false);*/
                
             }    
         }

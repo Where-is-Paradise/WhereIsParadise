@@ -115,7 +115,7 @@ public class MonstersRoom : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             if (!player.GetComponent<PlayerGO>().isSacrifice && !player.GetComponent<PlayerGO>().isInJail)
-                player.transform.Find("Perso").Find("SwordMonster").gameObject.SetActive(display);
+                player.transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").gameObject.SetActive(display);
         }
     }
     public void CanAttack()
@@ -212,9 +212,9 @@ public class MonstersRoom : MonoBehaviourPun
     public IEnumerator DisplayInitial(int indexPlayer)
     {
         yield return new WaitForSeconds(0.4f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("Initial").gameObject.SetActive(true);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Initial").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = false;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().canMove = true;
         canAttack = true;
     }
@@ -222,30 +222,30 @@ public class MonstersRoom : MonoBehaviourPun
     [PunRPC]
     public void DisplayMiddleOne(int indexPlayer)
     {
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("Initial").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("middle1").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Initial").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle1").gameObject.SetActive(true);
         StartCoroutine(DisplayMiddleTwo(indexPlayer));
     }
     public IEnumerator DisplayMiddleTwo(int indexPlayer)
     {
         yield return new WaitForSeconds(0.01f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("middle1").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("middle2").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle1").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle2").gameObject.SetActive(true);
         StartCoroutine(DisplayMiddleThree(indexPlayer));
     }
     public IEnumerator DisplayMiddleThree(int indexPlayer)
     {
         yield return new WaitForSeconds(0.01f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("middle2").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("middle3").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle2").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle3").gameObject.SetActive(true);
         StartCoroutine(DisplayFinal(indexPlayer));
     }
     public IEnumerator DisplayFinal(int indexPlayer)
     {
         yield return new WaitForSeconds(0.01f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("middle3").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = true;
-        gameManager.GetPlayer(indexPlayer).transform.Find("Perso").Find("SwordMonster").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = true;
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle3").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = true;
         StartCoroutine(DisplayInitial(indexPlayer));
     }
 

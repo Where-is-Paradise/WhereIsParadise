@@ -71,9 +71,15 @@ public class Setting : MonoBehaviour
     public bool displayTutorial = true;
     public bool tutorialImpostor = true;
     public bool firstTimePanel = true;
+    public bool welcome = true;
 
     //Server
     public string region = "eu";
+
+    //version
+    public int major = 0;
+    public int minor = 0;
+    public int revision = 0;
 
     // Start is called before the first frame update
     void Start()

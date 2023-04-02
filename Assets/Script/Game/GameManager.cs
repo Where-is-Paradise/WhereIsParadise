@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviourPun
 
     public UI_Manager ui_Manager;
     public Dictionary<int, int> door_idPlayer;
+    public Dictionary<int, int> door_idPlayer_voteDoor;
     public Timer timer;
     public Room roomTeam;
     public Room hell;
@@ -128,6 +129,7 @@ public class GameManager : MonoBehaviourPun
         timer.LaunchTimer(10, false);
         //Camera.main.aspect = 1920 / 1080f;
         door_idPlayer = new Dictionary<int, int>();
+        door_idPlayer_voteDoor = new Dictionary<int, int>();
         game = Game.CreateInstance(listPlayer);
         listPlayer = new List<PlayerDun>();
         listPlayerTab = GameObject.FindGameObjectsWithTag("Player");
@@ -433,8 +435,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
-            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
+            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
+            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
             listIndexPower.RemoveAt(randomInt);
         }
     }
@@ -1791,7 +1793,7 @@ public class GameManager : MonoBehaviourPun
             {
                 boss = game.ChangeBoss();
                 counter++;
-            } while ((GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isSacrifice || GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isInJail) && counter < 20);
+            } while (!GetPlayer(boss.GetId()) && (GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isSacrifice || GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isInJail) && counter < 20);
             if (boss == null)
             {
                 boss = game.ChangeBoss();
@@ -3528,7 +3530,8 @@ public class GameManager : MonoBehaviourPun
         }
         if (game.currentRoom.isSword)
         {
-            GetPlayerMineGO().transform.Find("Perso").Find("Sword").Find("Final").GetComponent<Sword>().Victory();
+            int indexSkin = GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin;
+            GetPlayerMineGO().transform.Find("Skins").GetChild(indexSkin).Find("Sword").Find("Final").GetComponent<Sword>().Victory();
         }
         if (game.currentRoom.isSwordDamocles)
         {

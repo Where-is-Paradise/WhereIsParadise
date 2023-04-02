@@ -171,8 +171,8 @@ public class ObjectImpostor : MonoBehaviour
                 timerToUsing = 30;
                 break;
             case 1:
-                //timerToUsing = 300;
-                timerToUsing = 10;
+                timerToUsing = 300;
+                //timerToUsing = 10;
                 break;
             case 2:
                 timerToUsing = 110;
@@ -344,6 +344,8 @@ public class ObjectImpostor : MonoBehaviour
     }
     public void GetAllSituationToCanUsed()
     {
+        if (!gameManager)
+            return;
         if (gameManager.timer.timerLaunch)
         {
             cantTemporyUsed = true;
@@ -370,7 +372,7 @@ public class ObjectImpostor : MonoBehaviour
 
     public void ChangeScaleByPlayer()
     {
-        float scale_x = this.transform.parent.Find("Perso").localScale.x;
+        float scale_x = this.transform.parent.Find("Skins").GetChild(player.indexSkin).localScale.x;
         if (scale_x > 0)
             this.transform.localScale = new Vector3(Mathf.Abs(this.transform.localScale.x), this.transform.localScale.y);
         else

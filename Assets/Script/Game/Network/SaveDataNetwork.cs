@@ -117,7 +117,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
             gameManager.SetTABToList(GameObject.FindGameObjectsWithTag("Player"), gameManager.listPlayer);
             SetBoss();
             StartCoroutine(UpdateView());
-            SendPlayerMineGo();
+            //SendPlayerMineGo();
             gameManager.HidePlayerNotInSameRoom();
             gameManager.CloseAllDoor(gameManager.game.currentRoom, false) ;
             isDisconnect = false;
@@ -151,7 +151,11 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
 
         foreach (PlayerData otherPlayerData in listOtherPlayer)
         {
+            if (!otherPlayerData)
+                continue;
             GameObject otherPlayerGO = gameManager.GetPlayer(otherPlayerData.viewId);
+            if (otherPlayerGO)
+                continue;
             PlayerGO otherPlayer = otherPlayerGO.GetComponent<PlayerGO>();
             otherPlayer.GetComponent<PlayerNetwork>().SendindexSkin(otherPlayerData.indexSkin);
         }
@@ -225,7 +229,11 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         foreach (PlayerData otherPlayerData in listOtherPlayer)
         {
             // GameObject otherPlayerGO = PhotonNetwork.Instantiate("Player_GO", new Vector3(otherPlayerData.positionMineX, otherPlayerData.positionMineY, -1), Quaternion.identity);
+            if (!otherPlayerData)
+                return;
             GameObject otherPlayerGO  = gameManager.GetPlayer(otherPlayerData.viewId);
+            if (!otherPlayerGO)
+                return;
             PlayerGO otherPlayer = otherPlayerGO.GetComponent<PlayerGO>();
             otherPlayer.position_X = otherPlayerData.positionMineX_dungeon;
             otherPlayer.position_Y = otherPlayerData.positionMineY_dungeon;

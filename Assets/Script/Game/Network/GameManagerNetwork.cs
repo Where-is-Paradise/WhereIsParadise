@@ -664,6 +664,9 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
     }
 
+
+
+
     public void SendCollisionZoneVoteDoor(int indexPlayer, int indexDoor, bool enter, bool stay)
     {
         photonView.RPC("SetCollisionZoneVoteDoor", RpcTarget.All, indexPlayer, indexDoor, enter, stay);
@@ -680,7 +683,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (stay)
         {
             if(gameManager.voteDoorHasProposed)
-                player.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(true);
             return;
         }
         if (enter)
@@ -698,7 +701,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                 }
             }
         }
-        player.transform.GetChild(1).GetChild(4).gameObject.SetActive(enter);
+        player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(enter);
         player.GetComponent<PlayerGO>().hasVoteVD = enter;
     }
 
@@ -778,7 +781,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         GameObject player = gameManager.GetPlayer(indexPlayer);
         if (stay)
         {
-            player.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
+            player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(true);
             player.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(true);
         }
         else
@@ -787,13 +790,13 @@ public class GameManagerNetwork : MonoBehaviourPun
             {
                 gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote++;
                 //player.GetComponent<PlayerGO>().hasVoteVD = true;
-                //player.transform.GetChild(1).GetChild(4).gameObject.SetActive(true);
+                //player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(true);
             }
             else
             { 
                 gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote--;
                 //player.GetComponent<PlayerGO>().hasVoteVD = false;
-                player.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(false);
                 player.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(false);
 
             }
@@ -829,9 +832,9 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
            
             if (indexChest == 1)
-                player.transform.Find("Perso").Find("Light_redDark").gameObject.SetActive(true);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_redDark").gameObject.SetActive(true);
             else
-                player.transform.GetChild(1).GetChild(9).gameObject.SetActive(true);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_blue").gameObject.SetActive(true);
         }
         else
         {
@@ -841,18 +844,18 @@ public class GameManagerNetwork : MonoBehaviourPun
                 chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote++;
                 
                 if (indexChest == 1)
-                    player.transform.Find("Perso").Find("Light_redDark").gameObject.SetActive(true);
+                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_redDark").gameObject.SetActive(true);
                 else
-                    player.transform.GetChild(1).GetChild(9).gameObject.SetActive(true);
+                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_blue").gameObject.SetActive(true);
             }
             else
             {
                 chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote--;
                 
                 if (indexChest == 1)
-                    player.transform.Find("Perso").Find("Light_redDark").gameObject.SetActive(false);
+                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_redDark").gameObject.SetActive(false);
                 else
-                    player.transform.GetChild(1).GetChild(9).gameObject.SetActive(false);
+                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_blue").gameObject.SetActive(false);
 
             }
         }
@@ -997,7 +1000,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetisChooseForExpedition(int indexPlayer)
     {
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isChooseForExpedition = false;
-        this.transform.GetChild(1).GetChild(4).gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
+        this.transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
     }
 
     

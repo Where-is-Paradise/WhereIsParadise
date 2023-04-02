@@ -8,6 +8,7 @@ public class x_zone_colider : MonoBehaviour
     public int nbVote = 0;
 
     public GameManager gameManager;
+    public bool canSend = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +44,7 @@ public class x_zone_colider : MonoBehaviour
         {
             return;
         }
+        StartCoroutine(CouroutineTimerCanSend());
         gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(collision.GetComponent<PhotonView>().ViewID, true, false);
 
     }
@@ -87,8 +89,19 @@ public class x_zone_colider : MonoBehaviour
         {
             return;
         }
-        
-        gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(collision.GetComponent<PhotonView>().ViewID, false, true);
 
+        if (canSend)
+        {
+            gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(collision.GetComponent<PhotonView>().ViewID, false, true);
+            canSend = false;
+        }
+    }
+
+    public IEnumerator CouroutineTimerCanSend()
+    {
+        yield return new WaitForSeconds(0.5f);
+        canSend = true;
+        if (gameManager.timer.timerLaunch)
+            StartCoroutine(CouroutineTimerCanSend());
     }
 }

@@ -122,6 +122,7 @@ public class UI_Managment : MonoBehaviourPun
 
     public GameObject panelLanguageReset;
     public GameObject panelFirstConnexion;
+    public GameObject panelWelcome;
 
     public Version_http version;
     float k = -1;
@@ -143,20 +144,20 @@ public class UI_Managment : MonoBehaviourPun
 
         // limité le nb de joueur
 
-        /*        if (PhotonNetwork.IsMasterClient &&  !lobby.matchmaking && buttonStartGame)
-                {
-                    if ((lobby.nbPlayer > 3 && lobby.nbPlayer < 9) || GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerGO>().playerName == "Homertimes   ")
-                    {
-                        buttonStartGame.SetActive(true);
-                    }
-                    else
-                    {
-                        buttonStartGame.SetActive(false);
-                    }
+/*        if (PhotonNetwork.IsMasterClient && !lobby.matchmaking && buttonStartGame)
+        {
+            if ((lobby.nbPlayer > 3 && lobby.nbPlayer < 9) || GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerGO>().playerName == "Homertimes   ")
+            {
+                buttonStartGame.SetActive(true);
+            }
+            else
+            {
+                buttonStartGame.SetActive(false);
+            }
 
-                    //buttonStartGame.SetActive(true);
+            //buttonStartGame.SetActive(true);
 
-                }*/
+        }*/
 
         // display StartButton when masterclient
 
@@ -264,6 +265,21 @@ public class UI_Managment : MonoBehaviourPun
         }
           
     }
+
+    public void OnClickFirstConnexionPanel()
+    {
+        StartCoroutine(DisplayCoroutineWelcomePanel());
+    }
+
+    public IEnumerator DisplayCoroutineWelcomePanel()
+    {
+        yield return new WaitForSeconds(1);
+        if (setting.welcome)
+        {
+            panelWelcome.SetActive(true);
+        }
+    }
+
     public void HideTrailer()
     {
         trailer.gameObject.SetActive(false);
@@ -291,9 +307,22 @@ public class UI_Managment : MonoBehaviourPun
         joinLobby_panel.SetActive(!joinLobby_panel.activeSelf);
     }
 
+    public void OnclickCreateLobby2()
+    {
+        StartCoroutine(lobby.CouroutineConnexionCreateRoom());
+    }
+    public void OnclickJoinRoom2()
+    {
+        StartCoroutine(lobby.CouroutineConnexionJoinRoom());
+    }
+    public void OnclickMatchmaking2()
+    {
+        StartCoroutine(lobby.CouroutineConnexionMatchmaking());
+    }
+
     public void OnClickCreateLobby()
     {
-
+        
         SetDifficulty(difficulty);
         lobby.CreateRoom(setting.NB_PLAYER_MAX , false);
         //setting.NUMBER_EXPEDTION_MAX = numberExpeditionMax;
@@ -309,7 +338,7 @@ public class UI_Managment : MonoBehaviourPun
 
         SetCodeText();
         DisplayLoadingConnection();
-        SendGameSettingSpciallyRoom();
+        //SendGameSettingSpciallyRoom();
         canChange = true;
     }
 
@@ -477,7 +506,7 @@ public class UI_Managment : MonoBehaviourPun
     public void OnClickJoinLobby()
     {
         string code = code_in_input.text;
-
+        Debug.Log(code);
         lobby.ConnectToRoom(code);
         isLoadingConnection = true;
         pannel_loadingConnection.SetActive(true);
