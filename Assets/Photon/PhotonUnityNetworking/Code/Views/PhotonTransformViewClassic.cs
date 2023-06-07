@@ -88,6 +88,7 @@ namespace Photon.Pun
 
             transform.localPosition = this.m_PositionControl.UpdatePosition(transform.localPosition);
         }
+        
 
         void UpdateRotation()
         {

@@ -907,14 +907,17 @@ setting_button_echapMenu.SetActive(false);
 
     public void ResumeImpostor()
     {
-        List<string> listImpostorsName = gameManager.listNamePlayerImpostor;
+        List<GameObject> listImpostorsName = gameManager.GetAllImpostor();
         if (gameManager.numberPlayer < 5)
         {
             resumePanel.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
             resumePanel.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
             resumePanel.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
-            resumePanel.transform.GetChild(0).GetChild(3).GetChild(1).GetComponent<Text>().text = listImpostorsName[0];
-
+            resumePanel.transform.GetChild(0).GetChild(3).GetChild(1).GetComponent<Text>().text = listImpostorsName[0].GetComponent<PlayerGO>().playerName;
+            resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("Image").GetComponent<Image>().sprite = 
+                listImpostorsName[0].transform.Find("Skins").GetChild(listImpostorsName[0].GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().sprite;
+            resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("eye").gameObject.SetActive(listImpostorsName[0].transform.Find("Skins")
+                .GetChild(listImpostorsName[0].GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.activeSelf);
         }
         else
         {
@@ -923,14 +926,20 @@ setting_button_echapMenu.SetActive(false);
                 resumePanel.transform.GetChild(0).GetChild(2).gameObject.SetActive(true);
                 for (int i = 0; i < 3; i++)
                 {
-                    resumePanel.transform.GetChild(0).GetChild(i).GetChild(1).GetComponent<Text>().text = listImpostorsName[i];
+                    resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("Image").GetComponent<Image>().sprite =
+                        listImpostorsName[i].transform.Find("Skins").GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().sprite;
+                    resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("eye").gameObject.SetActive(listImpostorsName[i].transform.Find("Skins")
+                        .GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.activeSelf);
                 }
             }
             else
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    resumePanel.transform.GetChild(0).GetChild(i).GetChild(1).GetComponent<Text>().text = listImpostorsName[i];
+                    resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("Image").GetComponent<Image>().sprite =
+                        listImpostorsName[i].transform.Find("Skins").GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().sprite;
+                    resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("eye").gameObject.SetActive(listImpostorsName[i].transform.Find("Skins")
+                        .GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.activeSelf);
                 }
             }
         }
@@ -1027,7 +1036,7 @@ setting_button_echapMenu.SetActive(false);
                 hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
 
             hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(display);
-
+            Debug.Log(" sa passe le frero");
         }
        
         if (room.isOldParadise)
@@ -1098,16 +1107,20 @@ setting_button_echapMenu.SetActive(false);
                 if (!display)
                 {
                     door.transform.GetChild(5).GetComponent<CapsuleCollider2D>().enabled = true;
-                    for(int i = 0; i < door.transform.GetChild(5).GetChild(1).GetChild(1).childCount; i++)
-                    {
-                        door.transform.GetChild(5).GetChild(1).GetChild(1).GetChild(i).gameObject.SetActive(false);
-                    }
+                    door.transform.Find("Player_gost").Find("Perso").Find("Skin").gameObject.SetActive(false);
                 }
                 door.transform.GetChild(5).gameObject.SetActive(display);
                 door.transform.GetChild(5).GetChild(0).GetChild(0).GetComponent<Text>().text = playerName;
 
-                if(display)
-                    door.transform.GetChild(5).GetChild(1).GetChild(1).GetChild(player.indexSkin).gameObject.SetActive(display);
+                if (display)
+                {
+                    door.transform.Find("Player_gost").Find("Perso").Find("Skin").gameObject.SetActive(display);
+                    door.transform.Find("Player_gost").Find("Perso").Find("Skin").GetComponent<SpriteRenderer>().sprite =
+                        player.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().sprite;
+
+                }
+                    //door.transform.GetChild(5).GetChild(1).GetChild(1).GetChild(player.indexSkin).gameObject.SetActive(display);
+             
             }
  
         }
@@ -1131,11 +1144,7 @@ setting_button_echapMenu.SetActive(false);
         GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
         foreach (GameObject door in doors)
         {
-            for (int i = 0; i < 6; i++)
-            {
-                door.transform.GetChild(5).gameObject.SetActive(false);
-                door.transform.GetChild(5).GetChild(1).GetChild(1).GetChild(i).gameObject.SetActive(false);
-            }
+            door.transform.Find("Player_gost").gameObject.SetActive(false);
         }
     }
     public void DisplayChestRoom(bool display)
@@ -1260,6 +1269,13 @@ setting_button_echapMenu.SetActive(false);
         }
         MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").GetChild(indexSpecially).gameObject.SetActive(display);
         MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").gameObject.SetActive(display);
+    }
+    public void HideAllLever()
+    {
+        for (int i = 0; i < MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").childCount; i++)
+        {
+            MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").GetChild(i).gameObject.SetActive(false);
+        }
     }
 
     public void DisplayMainLevers(bool display)
@@ -1402,7 +1418,7 @@ setting_button_echapMenu.SetActive(false);
                 //gameManager.HidePlayerNotInSameRoom(player.GetComponent<PhotonView>().ViewID, false);
                 player.transform.GetChild(0).gameObject.SetActive(false);
                 player.transform.GetChild(1).gameObject.SetActive(false);
-                player.transform.GetChild(1).GetChild(1).GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             }
             player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
         }
@@ -1682,7 +1698,8 @@ setting_button_echapMenu.SetActive(false);
     public void HideSpeciallyDisplay()
     {
         GameObject.Find("Special").gameObject.SetActive(false);
-        DisplayLightLeverSpeciallyRoom(false);
+        HideAllLever();
+        //DisplayLightLeverSpeciallyRoom(false);
     }
 
     public void HideImgInMiddleOfSpeciallyRoom(Room room, bool display)
@@ -1719,18 +1736,14 @@ setting_button_echapMenu.SetActive(false);
                 continue;
             if (display)
             {
-/*                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(false);        
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(true);*/
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.9f);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().enabled = false;
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.SetActive(true);
             }
             else
             {
-                //player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(true);
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
-                
-/*                if(player.GetComponent<PlayerGO>().indexSkin != 0)
-                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).gameObject.SetActive(false);*/
-               
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().enabled = true;
+                if (player.GetComponent<PlayerGO>().indexSkin != 0)
+                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.SetActive(false);
             }    
         }
     }
@@ -1792,6 +1805,8 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayLightLeverSpeciallyRoom(bool display)
     {
         Room room = gameManager.game.currentRoom;
+        if (!GameObject.Find("SpeciallyRoom_lever"))
+            return;
         GameObject lever = GameObject.Find("SpeciallyRoom_lever").transform.Find("Specially").gameObject;
         if (room.chest)
             lever.transform.Find("Chest").Find("Light").gameObject.SetActive(display);

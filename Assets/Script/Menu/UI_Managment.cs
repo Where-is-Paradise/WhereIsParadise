@@ -307,18 +307,6 @@ public class UI_Managment : MonoBehaviourPun
         joinLobby_panel.SetActive(!joinLobby_panel.activeSelf);
     }
 
-    public void OnclickCreateLobby2()
-    {
-        StartCoroutine(lobby.CouroutineConnexionCreateRoom());
-    }
-    public void OnclickJoinRoom2()
-    {
-        StartCoroutine(lobby.CouroutineConnexionJoinRoom());
-    }
-    public void OnclickMatchmaking2()
-    {
-        StartCoroutine(lobby.CouroutineConnexionMatchmaking());
-    }
 
     public void OnClickCreateLobby()
     {
@@ -724,7 +712,7 @@ public class UI_Managment : MonoBehaviourPun
     }
 
 
-    public void OnClickBackInWaitingRoom()
+    public void OnClickBackInWaitingRoom(bool deco)
     {
         //createLobby_panel.SetActive(true);
         mainMenu_lobby.SetActive(true);
@@ -739,7 +727,8 @@ public class UI_Managment : MonoBehaviourPun
         panelErrorCode.SetActive(false);
         lobby.matchmaking = false;
         canChange = false;
-        PhotonNetwork.LeaveRoom();
+        if(!deco)
+            PhotonNetwork.LeaveRoom();
 
 
 /*        foreach (GameObject objectDonDesroy in this.gameObject.scene.GetRootGameObjects())
@@ -988,7 +977,7 @@ public class UI_Managment : MonoBehaviourPun
         {
             
             PhotonNetwork.Disconnect();
-            OnClickBackInWaitingRoom();
+            OnClickBackInWaitingRoom(false);
             DisplayErrorPanel("Your game version is too old");
         }
     }

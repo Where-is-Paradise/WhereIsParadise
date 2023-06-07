@@ -22,13 +22,13 @@ public class CollisionTorch : MonoBehaviourPun
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "CollisionTrigerPlayer")
+/*        if(collision.tag == "CollisionTrigerPlayer")
         {
             if (!collision.transform.parent.GetComponent<PhotonView>().IsMine)
                 return;
             isTaken = true;
             CollisionWithPlayer(collision);
-        }
+        }*/
     }
 
     public void  CollisionWithPlayer(Collider2D collision)

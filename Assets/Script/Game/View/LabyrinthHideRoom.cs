@@ -195,6 +195,8 @@ public class LabyrinthHideRoom : MonoBehaviourPun
 
     public void SetListObstacleBorder()
     {
+        if (listObstaclesborder.Count > 0) 
+            listObstaclesborder.RemoveRange(0, listObstaclesborder.Count - 1);
         foreach (GameObject obstacle in listObstacles)
         {
             ObstacleLabyrinth obtacleComponenet = obstacle.GetComponent<ObstacleLabyrinth>();
@@ -464,6 +466,11 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         gameManager.speciallyIsLaunch = false;
         gameManager.ActivateCollisionTPOfAllDoor(true);
         this.transform.Find("ListSeparation").Find("SeparationsMiddleUp").gameObject.SetActive(false);
+        roomIsLaunched = false;
+        pathIsFinish = false;
+        pathFalseOneIsFinish = false;
+        DataObstacleAreSent = false;
+
     }
 
     public void DestroyAllObstacle()
@@ -506,7 +513,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
             if (player.GetComponent<PhotonView>().IsMine)
             {
                 int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
-                player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                player.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             }
             else
             {

@@ -659,6 +659,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         if (gameManager.AllPlayerGoneToHell() && (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isSacrifice))
         {
+            Debug.Log(" sa passe frero ");
             gameManager.ui_Manager.DisplayBlackScreenToDemonWhenAllGone();
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionHell = true;
         }
@@ -1436,6 +1437,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.speciallyIsLaunch = isLaunch;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(isLaunch);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendResetClickToExpedition();
+        gameManager.ui_Manager.DisplayMainLevers(!isLaunch);
     }
     public void SendUpdateNeighbourSpeciality(int indexRoom , int indexSpeciality)
     {
@@ -2047,4 +2049,6 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.ui_Manager.DesactivateAllobstacles(nameObject, display);
     }
+
+
 }

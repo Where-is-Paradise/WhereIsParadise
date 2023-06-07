@@ -116,12 +116,15 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     {
         canChangePlayer = false;
         yield return new WaitForSeconds(0.4f);
-        SetPlayerColor(this.currentPlayer);
-        GameObject player = ChoosePlayerRandomly();
-        SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
-        photonView.RPC("SendCanChangePlayer", RpcTarget.All, true);
-        canChangePlayer = true;
-        Debug.LogError("sa passe");
+        if (this.currentPlayer)
+        {
+            SetPlayerColor(this.currentPlayer);
+            GameObject player = ChoosePlayerRandomly();
+            SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
+            photonView.RPC("SendCanChangePlayer", RpcTarget.All, true);
+            canChangePlayer = true;
+
+        } 
         if (TestLastPlayer())
         {
             GiveAwardToPlayer(GetLastPlayer());
@@ -160,6 +163,11 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     public void KillCurrentPlayer()
     {
         sword.transform.localPosition = new Vector3(0, 0);
+        if (!this.currentPlayer)
+        {
+            //SendCurrentPlayer(gameManager.GetRandomPlayerID());
+            return;
+        }      
         this.currentPlayer.GetComponent<PlayerGO>().isDeadBySwordDamocles = true;
         //canChangePlayer = false;
     }
@@ -238,7 +246,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
             if (player.GetComponent<PhotonView>().IsMine)
             {
                 int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
-                player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                player.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             }
             else
             {

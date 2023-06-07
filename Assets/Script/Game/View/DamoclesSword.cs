@@ -8,6 +8,13 @@ public class DamoclesSword : MonoBehaviourPun
     public DamoclesSwordRoom damoclesRoom;
     public bool canChangePlayer = true;
 
+    public void Update()
+    {
+        if (GameObject.Find("Waiting_map"))
+        {
+            Destroy(this.gameObject);
+        }        
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!damoclesRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().damoclesSwordIsAbove)

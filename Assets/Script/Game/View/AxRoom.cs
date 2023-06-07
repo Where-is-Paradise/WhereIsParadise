@@ -85,7 +85,7 @@ public class AxRoom : MonoBehaviourPun
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach(GameObject player in listPlayer)
         {
-            player.transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("Ax").gameObject.SetActive(display);
+            player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Ax").gameObject.SetActive(display);
         }
     }
 

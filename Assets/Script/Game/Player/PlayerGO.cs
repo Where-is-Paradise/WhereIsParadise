@@ -9,6 +9,7 @@ public class PlayerGO : MonoBehaviour
 {
 
     public float movementlControlSpeed = 1;
+    public float decreaseSpeed = 1;
     public string playerName;
     public bool isMovingAutomaticaly = true;
     public Vector3 oldPosition;
@@ -147,7 +148,12 @@ public class PlayerGO : MonoBehaviour
     public bool animationDeathDownFinis = false;
     public float old_y_position;
 
+
+    public bool positionSended = false;
+    public float x_sended = 0;
+    public float y_sended = 0;
     // is for recon
+
 
     private void Awake()
     {
@@ -253,7 +259,8 @@ public class PlayerGO : MonoBehaviour
         {
             handlePlayerMove();
         }
-
+/*        if (!GetComponent<PhotonView>().IsMine && positionSended)
+            TranslateSpacePositionWhenUpdated(x_sended, y_sended);*/
     }
 
 
@@ -680,14 +687,12 @@ public class PlayerGO : MonoBehaviour
 
 
     public void SetZIndexByPositionY()
-    {
-        for (int i = 0; i < this.transform.GetChild(1).GetChild(1).childCount; i++)
+    {  
+        if (this.transform.Find("Skins").GetChild(indexSkin).gameObject.activeSelf)
         {
-            if (this.transform.GetChild(1).GetChild(1).GetChild(i).gameObject.activeSelf)
-            {
-                this.transform.GetChild(1).GetChild(1).GetChild(i).GetComponent<SpriteRenderer>().sortingOrder = ((int)(this.transform.position.y * 10)) * -1;
-            }
+            this.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().sortingOrder = ((int)(this.transform.position.y * 10)) * -1;
         }
+
     }
 
 
@@ -787,54 +792,96 @@ public class PlayerGO : MonoBehaviour
     private void handleDesktopMove()
     {
         turnPlayer();
-
-
-        //this.GetComponent<BoxCollider2D>().enabled = true;
         this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, -1);
         oldPosition = transform.position;
         float horizontal = InputManager.GetAxis("Horizontal");
         float vertical = InputManager.GetAxis("Vertical");
-        /*        if(Mathf.Abs(InputManager.GetAxis("Horizontal")) + Mathf.Abs(InputManager.GetAxis("Vertical")) > 1f)
-                {
-                    horizontal = 0.5f * Mathf.Sign(InputManager.GetAxis("Horizontal"));
-                    vertical = 0.5f * Mathf.Sign(InputManager.GetAxis("Vertical")); ;
-                }*/
-        //Debug.Log(horizontal + " " + vertical);
 
-        if (Mathf.Abs(horizontal)+ Mathf.Abs(vertical) > 1.1f)
+        if ((gameManager && gameManager.speciallyIsLaunch))
         {
 
-            horizontal *= 0.9f;
-            vertical *= 0.9f;
+            if (Input.GetKey(KeyCode.Z))
+            {
+                Vector2 direction = new Vector2(0, 1);
+                if (Input.GetKey(KeyCode.D))
+                {
+                    direction = new Vector2(0.6f, 0.6f);
+                    //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
+                }
+                if (Input.GetKey(KeyCode.Q))
+                {
+                    direction = new Vector2(-0.6f, 0.6f);
+                    //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
+                }
+                this.transform.Translate( direction * (movementlControlSpeed  )* Time.deltaTime);
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                Vector2 direction = new Vector2(0, -1);
+                if (Input.GetKey(KeyCode.D))
+                {
+                    direction = new Vector2(0.6f, -0.6f);
+                    //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
+                }
+                if (Input.GetKey(KeyCode.Q))
+                {
+                    direction = new Vector2(-0.6f, -0.6f);
+                    //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
+                }
+                this.transform.Translate(direction * (movementlControlSpeed) * Time.deltaTime);
+            }
+            if(!Input.GetKey(KeyCode.Z) && !Input.GetKey(KeyCode.S))
+            {
+                if (Input.GetKey(KeyCode.D))
+                {
+                    Vector2 direction = new Vector2(1, 0);
+                    this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
+                }
+                if (Input.GetKey(KeyCode.Q))
+                {
+                    Vector2 direction = new Vector2(-1, 0);
+                    this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
+                }
+            }
+           
+            decreaseSpeed = 1;
+
         }
+        else
+        {
 
+            if (Mathf.Abs(horizontal) + Mathf.Abs(vertical) > 1.1f)
+            {
 
-
-        this.transform.Translate(
+                horizontal *= 0.9f;
+                vertical *= 0.9f;
+            }
+            this.transform.Translate(
             new Vector3(
                 horizontal,
                 vertical,
                 0
             ) * movementlControlSpeed * Time.deltaTime
         );
-
-        //this.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(new Vector3(horizontal, vertical)) * movementlControlSpeed;
-
-        /*        if(horizontal > 0 || vertical > 0)
-                    movement = transform.position - oldPosition;*/
-
-        //GetComponent<PlayerNetwork>().SendHorizontalAndVertical(horizontal, vertical);
+        }
         // permit to teleport when mini game
         if (gameManager && gameManager.speciallyIsLaunch)
         {
             InputDownORUp();
-
+            SendChangeSyncFunction(true);
+/*           */
+        }
+        else
+        {
+            SendChangeSyncFunction(false);
         }
         
     }
 
-   
-    
+   public void SendChangeSyncFunction(bool change)
+    {
+        GetComponent<PlayerNetwork>().SendChangeSyncFunction(change);
+    }
     public void InputDownORUp()
     {
         float horizontal = InputManager.GetAxis("Horizontal");
@@ -843,7 +890,7 @@ public class PlayerGO : MonoBehaviour
         if(((oldHorizontal == 0 && Mathf.Abs(horizontal) > 0)  || (oldHorizontal >  0 && horizontal < 0 ) ||(oldHorizontal < 0 && horizontal > 0))
             || ( oldVertical == 0 && Mathf.Abs(vertical) > 0 || (oldVertical > 0 && vertical < 0) || (oldVertical < 0 && vertical > 0)))
         {
-            this.GetComponent<PlayerNetwork>().SendSpacePosition(this.transform.position.x, this.transform.position.y);
+            this.GetComponent<PlayerNetwork>().SendSpacePosition(this.transform.position.x, this.transform.position.y, this.GetComponent<PhotonView>().ViewID);
             StartCoroutine(SendPositionCoroutine(0.2f));
             StartCoroutine(SendPositionCoroutine(0.5f));
         }
@@ -855,8 +902,19 @@ public class PlayerGO : MonoBehaviour
     public IEnumerator SendPositionCoroutine(float time)
     {
         yield return new WaitForSeconds(time);
-        this.GetComponent<PlayerNetwork>().SendSpacePosition(this.transform.position.x, this.transform.position.y);
-        //StartCoroutine(SendPositionCoroutine());
+        this.GetComponent<PlayerNetwork>().SendSpacePosition(this.transform.position.x, this.transform.position.y, this.GetComponent<PhotonView>().ViewID);
+    }
+
+    public void TranslateSpacePositionWhenUpdated(float x , float y)
+    {
+        Vector3 newPosition = new Vector3(x, y);
+        Vector3 distance = newPosition - this.transform.position;
+        this.transform.Translate(distance * 8f * Time.deltaTime);
+        Debug.Log(Mathf.Abs(distance.x) + Mathf.Abs(distance.y));
+        if(Mathf.Abs(distance.x) + Mathf.Abs(distance.y) < 0.03f)
+        {
+            positionSended = false;
+        }
     }
 
     private void handleMobileMove()
@@ -1291,11 +1349,11 @@ public class PlayerGO : MonoBehaviour
         if (display)
         {
             if (gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
-                transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             return;
         }
         if (gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
-            transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+            transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
     }
 
     public void SetPlayerNameServer()
@@ -1370,10 +1428,7 @@ public class PlayerGO : MonoBehaviour
         {
             transform.Find("Skins").GetChild(i).gameObject.SetActive(false);
         }
-
     }
-
-
 
 
     public void OnMouseOver()

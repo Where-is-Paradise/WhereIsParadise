@@ -38,21 +38,25 @@ public class Lobby : MonoBehaviourPunCallbacks
     public Setting setting;
 
     public bool isConnected= false;
+
+    public string nearServer = "";
+
+    public Settin_management settingManagement;
     // Use this  initialization
     void Start()
     {
         matchmaking = false;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        PhotonNetwork.UseAlternativeUdpPorts = true;
         PhotonNetwork.NetworkingClient.LoadBalancingPeer.MaximumTransferUnit = 400;
         //ConnectToMaster();
         //index_skin = Random.Range(0, 7);
-        index_skin = 2;
+        index_skin = 0;
         setting = GameObject.Find("Setting").GetComponent<Setting>();
         setting.INDEX_SKIN = index_skin;
        
         StartCoroutine(GetText());
         ConnectToMaster();
+        
     }
 
     // Update is called once per frame
@@ -70,20 +74,26 @@ public class Lobby : MonoBehaviourPunCallbacks
         //PhotonNetwork.MaxResendsBeforeDisconnect = 10;
         
         PhotonNetwork.OfflineMode = false;
+
+        //PhotonNetwork.ConnectUsingSettings();
+        //ConnectToMasterInSpecificRegion();
+        if(setting.region != "")
+            PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = setting.region;
         PhotonNetwork.ConnectUsingSettings();
-        //PhotonNetwork.ConnectToRegion("eu");  
-        
+       
+        //ConnectToMasterInSpecificRegion();
     }
 
 
     public void ConnectToMasterInSpecificRegion()
     {
-        //PhotonNetwork.Disconnect();
+        PhotonNetwork.Disconnect();
         //PhotonNetwork.BestRegionSummaryInPreferences
+        Debug.Log(setting.region);
         PhotonNetwork.ConnectToRegion(setting.region);
-        PhotonNetwork.OfflineMode = false;
     }
 
+    
 
 
     IEnumerator GetText()
@@ -93,7 +103,7 @@ public class Lobby : MonoBehaviourPunCallbacks
 
         if (www.result != UnityWebRequest.Result.Success)
         {
-            Debug.Log(www.error);
+            //Debug.Log(www.error);
             StartCoroutine(GetText());
         }
         else
@@ -122,42 +132,16 @@ public class Lobby : MonoBehaviourPunCallbacks
         }
     }
 
-    
-
-    public IEnumerator CouroutineConnexionCreateRoom()
-    {
-        ConnectToMasterInSpecificRegion();
-        yield return new WaitForSeconds(5);
-        if (!isConnected)
-            StartCoroutine(CouroutineConnexionCreateRoom());
-        else
-            ui_management.OnClickCreateLobby();
-    }
-
-    public IEnumerator CouroutineConnexionJoinRoom()
-    {
-        ConnectToMasterInSpecificRegion();
-        yield return new WaitForSeconds(5);
-        if (!isConnected)
-            StartCoroutine(CouroutineConnexionJoinRoom());
-        else
-            ui_management.OnClickJoinLobby();
-    }
-    public IEnumerator CouroutineConnexionMatchmaking()
-    {
-        ConnectToMasterInSpecificRegion();
-        yield return new WaitForSeconds(5);
-        if (!isConnected)
-            StartCoroutine(CouroutineConnexionJoinRoom());
-        else
-            ui_management.OnClickJoinLobby();
-    }
-
-
+   
+        
     public override void OnConnectedToMaster()
     {
         print("Connected");
         Debug.LogError(PhotonNetwork.CloudRegion);
+        if (setting.region == "")
+        {
+            settingManagement.SaveServerRegion(PhotonNetwork.CloudRegion);
+        }
         isConnected = true;
         base.OnConnectedToMaster();
         
@@ -171,6 +155,7 @@ public class Lobby : MonoBehaviourPunCallbacks
                 oldPlayerName = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().playerName;
                 matchmaking = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().isMatchmaking;
                 index_skin = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().indexSkin;
+                setting.INDEX_SKIN = index_skin;
                 CreateRoomBack();
 
             }
@@ -194,21 +179,35 @@ public class Lobby : MonoBehaviourPunCallbacks
             matchmaking = false;
             // 
             ui_management.canChange = false;
-
+            ui_management.DisplayErrorPanel("Disconnection..");
             //ConnectToMaster();
-            StartCoroutine(reconnect());
+            StartCoroutine(Reconnect());
         }
-        
-        
-       
+        ui_management.OnClickBackInWaitingRoom(true);
     }
 
-    public IEnumerator reconnect()
+    public IEnumerator Reconnect()
     {
         Debug.LogError("Reconnexion..");
-        yield return new WaitForSeconds(4f);
         ConnectToMaster();
+        yield return new WaitForSeconds(2f);
+        if (!PhotonNetwork.IsConnected)
+            StartCoroutine(Reconnect());
     }
+
+    public IEnumerator ReconnectCreateRoom(int maxPlayer, bool isVisible)
+    {
+        StartCoroutine(Reconnect());
+        Debug.LogError("recreate room..");
+        yield return new WaitForSeconds(3f);
+        if (!PhotonNetwork.IsConnected)
+            StartCoroutine(ReconnectCreateRoom(maxPlayer,isVisible));
+        else
+            if(!PhotonNetwork.InRoom)
+                CreateRoom(maxPlayer, isVisible);
+    }
+
+
 
     private IEnumerator MainReconnect()
     {
@@ -253,7 +252,14 @@ public class Lobby : MonoBehaviourPunCallbacks
         maxPlayer = maxPlayerParam;
         if (matchmaking)
             maxPlayer = 6;
-        PhotonNetwork.CreateRoom(code, new RoomOptions { MaxPlayers = (byte) maxPlayer , PublishUserId = true, IsVisible = isVisible});
+
+        bool createRoomSucces = PhotonNetwork.CreateRoom(code, new RoomOptions { MaxPlayers = (byte)maxPlayer, PublishUserId = true, IsVisible = isVisible });
+        if(!createRoomSucces)
+        {
+            Debug.LogError("excpetion creation room ");
+            StartCoroutine(ReconnectCreateRoom(maxPlayerParam , isVisible));
+        }
+       
         ui_management.SetNbPlayerUI(1, maxPlayer);
         code2 = GenerateCodeRoom(5);
         setting.codeRoom = code2;
@@ -303,7 +309,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         base.OnCreateRoomFailed(returnCode, message);
-        print("Error creation room  RIP ... " + message);
+        Debug.LogError("Error creation room  RIP ... " + message);
         Debug.Log(returnCode);
         if( returnCode == 32766 && isBackToWaitingRoom)
         {
@@ -385,7 +391,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         Debug.Log(isBackToWaitingRoom + " " + code);
         if (returnCode == 32764 && isBackToWaitingRoom)
         {
-            ui_management.OnClickBackInWaitingRoom();
+            ui_management.OnClickBackInWaitingRoom(false);
             return;
         }
         //ui_management.

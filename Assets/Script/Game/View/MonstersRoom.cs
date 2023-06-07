@@ -23,7 +23,8 @@ public class MonstersRoom : MonoBehaviourPun
     {
         if (!gameManager.speciallyIsLaunch)
             return;
-      
+        if (!gameManager.SamePositionAtBoss())
+            return;
         if (gameManager.ui_Manager.MainRoomGraphic.transform.Find("Levers").transform.Find("OpenDoor_lever").gameObject.activeSelf)
         {
             gameManager.speciallyIsLaunch = false;
@@ -42,6 +43,8 @@ public class MonstersRoom : MonoBehaviourPun
 
     public void StartMonstersRoom()
     {
+        if (!gameManager.SamePositionAtBoss())
+            return;
         StartCoroutine(LaunchMonsterRoom());
         StartCoroutine(AddDifficulty());
        
@@ -115,7 +118,7 @@ public class MonstersRoom : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             if (!player.GetComponent<PlayerGO>().isSacrifice && !player.GetComponent<PlayerGO>().isInJail)
-                player.transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").gameObject.SetActive(display);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").gameObject.SetActive(display);
         }
     }
     public void CanAttack()
@@ -142,6 +145,8 @@ public class MonstersRoom : MonoBehaviourPun
 
     public void DesactivateRoom()
     {
+        if (!gameManager.SamePositionAtBoss())
+            return;
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             DestroyAllMonster();
         DisplaySwordAllPlayer(false);
@@ -184,7 +189,7 @@ public class MonstersRoom : MonoBehaviourPun
             if (player.GetComponent<PhotonView>().IsMine)
             {
                 int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
-                player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                player.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             }
             else
             {

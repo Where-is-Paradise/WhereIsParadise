@@ -235,7 +235,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetWantToChangeBoss()
     {
         player.wantToChangeBoss = !player.wantToChangeBoss;
-        player.transform.GetChild(1).GetChild(8).gameObject.SetActive(player.wantToChangeBoss);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("ChangeBoss").gameObject.SetActive(player.wantToChangeBoss);
 
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -289,7 +289,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetResetWantToChangeBoss()
     {
         player.wantToChangeBoss = false;
-        player.transform.GetChild(1).GetChild(8).gameObject.SetActive(player.wantToChangeBoss);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("ChangeBoss").gameObject.SetActive(player.wantToChangeBoss);
     }
 
 
@@ -400,6 +400,7 @@ public class PlayerNetwork : MonoBehaviourPun
 
         player.gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
         LaunchSacrificeAnimation();
+        player.gameManager.SacrificeIsUsedOneTimes = true;
     }
 
     public void LaunchSacrificeAnimation()
@@ -718,7 +719,7 @@ public class PlayerNetwork : MonoBehaviourPun
         if (player.gameObject.GetComponent<PhotonView>().IsMine)
         {
             int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
-            player.transform.GetChild(1).GetChild(1).GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+            player.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
             player.transform.Find("Skins").GetChild(player.indexSkin).Find("Sword").gameObject.SetActive(false);
         }
         else
@@ -949,19 +950,24 @@ public class PlayerNetwork : MonoBehaviourPun
         this.GetComponent<PhotonRigidbody2DView>().enabled = activeRigibody;
     }
 
-    public void SendSpacePosition(float x, float y)
+    public void SendSpacePosition(float x, float y, int indexPlayer)
     {
-        photonView.RPC("SetSpacePosition", RpcTarget.Others,x,y);
+        photonView.RPC("SetSpacePosition", RpcTarget.Others,x,y, indexPlayer);
     }
 
     [PunRPC]
-    public void SetSpacePosition(float x, float y)
+    public void SetSpacePosition(float x, float y, int indexPlayer)
     {
+        /*        player.x_sended = x;
+                player.y_sended = y;
+                player.positionSended = true;*/
         Vector3 newPosition = new Vector3(x, y);
-        //Vector3.Translate(this.GetComponent<Rigidbody2D>().position, newPosition, Time.deltaTime);
-        Vector3 distance = newPosition  - this.transform.position ;
+        Vector3 distance = newPosition - this.transform.position;
         this.transform.Translate(distance * 10 * Time.deltaTime);
+
+        //this.GetComponent<Rigidbody2D>().position = Vector3.MoveTowards(this.GetComponent<Rigidbody2D>().position, distance, Time.fixedDeltaTime);
     }
+
 
     public void SendChangeSystemtoUpdatePosition(int indexPlayer, bool inferior)
     {
@@ -984,5 +990,33 @@ public class PlayerNetwork : MonoBehaviourPun
                 this.GetComponent<PhotonTransformView>().enabled = false;
             }
         }
+    }
+   
+    public void SendSacrificePlayerAfk()
+    {
+        photonView.RPC("SetSacrificePlayerAfk", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetSacrificePlayerAfk()
+    {
+        if ((!player.isImpostor || (player.isImpostor && player.isSacrifice) ) && player.GetComponent<PhotonView>().IsMine)
+        {
+            StartCoroutine(player.gameManager.CouroutineDisplayEndPanel());
+            player.gameManager.UpdateDataInformationInEndGame();
+
+        }    
+    }
+
+    public void SendChangeSyncFunction(bool change)
+    {
+        photonView.RPC("SetChangeSyncFunction", RpcTarget.All, change);
+    }
+
+    [PunRPC]
+    public void SetChangeSyncFunction(bool change)
+    {
+        this.GetComponent<PhotonTransformViewClassic>().enabled = change;
+        this.GetComponent<PhotonRigidbody2DView>().enabled = !change;
     }
 }

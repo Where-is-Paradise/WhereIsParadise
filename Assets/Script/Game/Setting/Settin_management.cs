@@ -74,7 +74,7 @@ public class Settin_management : MonoBehaviour
         SetGlobalVolume();
         SetMusicVolume();
 
-        LoadServerRegion();
+        LoadServerRegion("");
 
        
     }
@@ -554,6 +554,7 @@ public class Settin_management : MonoBehaviour
     {
         if (serverRegionIsUpdated)
         {
+            SaveServerRegion(regionText.GetComponent<Text>().text);
             setting.region = regionText.GetComponent<Text>().text;
 
             PhotonNetwork.Disconnect();
@@ -565,9 +566,8 @@ public class Settin_management : MonoBehaviour
 
     public void UpdateServerRegion()
     {
-        string serverRegionString = "eu";
         //if(PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion.Length != 0)
-        serverRegionString = setting.region;
+        string serverRegionString = setting.region;
         Dropdown server_dropdown = serverRegion.GetComponent<Dropdown>();
         GetIndexServerWithName(serverRegionString);
         serverRegionIsUpdated = true;
@@ -585,9 +585,11 @@ public class Settin_management : MonoBehaviour
         }
     }
 
-    public void LoadServerRegion()
+   
+    public void LoadServerRegion(string nearServer)
     {
-        string serverRegion = "eu";
+        string serverRegion = nearServer;
+        
         try
         {
             QuickSaveReader.Create("Server")
@@ -595,7 +597,7 @@ public class Settin_management : MonoBehaviour
         }
         catch (Exception e)
         {
-            SaveServerRegion("eu");
+            SaveServerRegion(nearServer);
         }
         setting.region = serverRegion;
 

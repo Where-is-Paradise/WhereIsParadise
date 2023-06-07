@@ -13,7 +13,7 @@ public class LostTorchRoom : MonoBehaviourPun
     // Start is called before the first frame update
     void Start()
     {
-        lostTorch = this.transform.Find("Torch").GetComponent<LostTorch>();
+        lostTorch = this.transform.Find("LostTorch").GetComponent<LostTorch>();
         
     }
 
@@ -36,7 +36,7 @@ public class LostTorchRoom : MonoBehaviourPun
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(true);
-        StartCoroutine(TimerCouroutine());
+       
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             gameManager.gameManagerNetwork.SendActivateAllObstacles(true, this.name);
     }
@@ -52,10 +52,14 @@ public class LostTorchRoom : MonoBehaviourPun
     public void SendSpawn(int indexSpawn)
     {
         GameObject spawn = listSpawn.transform.GetChild(indexSpawn).gameObject;
-        this.transform.Find("Torch").gameObject.SetActive(true);
-        this.transform.Find("Torch").transform.localPosition = spawn.transform.localPosition;
+        lostTorch.gameObject.SetActive(true);
+        lostTorch.transform.position = spawn.transform.position;
     }
 
+    public void LaunchTimer()
+    {
+        StartCoroutine(TimerCouroutine());
+    }
     public IEnumerator TimerCouroutine()
     {
         yield return new WaitForSeconds(30);
@@ -66,7 +70,8 @@ public class LostTorchRoom : MonoBehaviourPun
     [PunRPC]
     public void SendEndGame()
     {
-        AssignAwardToPlayer();
+        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            AssignAwardToPlayer();
         DesactivateLostTorchRoom();
     }
 
@@ -76,7 +81,6 @@ public class LostTorchRoom : MonoBehaviourPun
         lostTorch.transform.parent = this.transform;
         lostTorch.gameObject.SetActive(false);
         lostTorch.transform.localPosition = new Vector3(0, 0);
-        lostTorch.transform.Find("CollisionTorch").GetComponent<CapsuleCollider2D>().enabled = true;
         timerFinish = false;
         this.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         gameManager.speciallyIsLaunch = false;
@@ -89,9 +93,13 @@ public class LostTorchRoom : MonoBehaviourPun
     public void AssignAwardToPlayer()
     {
         PlayerGO PlayerWiner = lostTorch.currentPlayer;
-        if (!PlayerWiner.GetComponent<PhotonView>().IsMine)
+        if (!PlayerWiner)
+        {
+            Debug.Log("sa apsse 0 ");
+            photonView.RPC("SetCanLunchExploration", RpcTarget.All, gameManager.GetRandomPlayerID());
             return;
-        
+        }
+        Debug.Log("sa apsse");
         photonView.RPC("SetCanLunchExploration", RpcTarget.All, PlayerWiner.GetComponent<PhotonView>().ViewID);
     }
 

@@ -99,6 +99,7 @@ public class GameManager : MonoBehaviourPun
     public bool PrayIsUsed = false;
     public bool ResurectionIsUsed = false;
     public bool PurificationIsUsed = false;
+    public bool SacrificeIsUsedOneTimes = false;
 
     public int coutnerDoorOpenToJail = 0;
     public int indexDoorExplorationInJail = 0;
@@ -401,8 +402,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
-            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[5]);
+            //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[5]);
             listIndexPower.RemoveAt(randomInt);
         }
 
@@ -435,8 +436,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
-            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
+            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
+            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
             listIndexPower.RemoveAt(randomInt);
         }
     }
@@ -1793,9 +1794,10 @@ public class GameManager : MonoBehaviourPun
             {
                 boss = game.ChangeBoss();
                 counter++;
-            } while (!GetPlayer(boss.GetId()) && (GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isSacrifice || GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isInJail) && counter < 20);
+            } while (!GetPlayer(boss.GetId()) || (GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isSacrifice || GetPlayer(boss.GetId()).GetComponent<PlayerGO>().isInJail) && counter < 20);
             if (boss == null)
             {
+                Debug.LogError("sa passe");
                 boss = game.ChangeBoss();
             }
             gameManagerNetwork.SendBoss(boss.GetId());
@@ -1900,10 +1902,11 @@ public class GameManager : MonoBehaviourPun
         {
             InsertHell();
         }
-        if (!OnePlayerFindParadise && ((game.key_counter == 0 && !game.currentRoom.IsExit && !game.currentRoom.chest && !game.currentRoom.isSacrifice)
+        Debug.Log(OnePlayerFindParadise + "" + (game.key_counter == 0 && !game.currentRoom.IsExit && !game.currentRoom.chest && (!game.currentRoom.isSacrifice || SacrificeIsUsedOneTimes)) + " " +  (game.currentRoom.IsHell || isAlreadyLoose));
+        if (!OnePlayerFindParadise && ((game.key_counter == 0 && !game.currentRoom.IsExit && !game.currentRoom.chest && (!game.currentRoom.isSacrifice || SacrificeIsUsedOneTimes))
             || game.currentRoom.IsHell || isAlreadyLoose))
         {
-            if (!HaveMoreKeyInTraversedRoom() )
+            if (!HaveMoreKeyInTraversedRoom() && !game.currentRoom.IsHell)
             {
                 StartCoroutine(SacrificeAllLostSoul());
             }
@@ -1940,8 +1943,9 @@ public class GameManager : MonoBehaviourPun
         game.dungeon.SetListRoomTraversed();
         foreach (Room room in game.dungeon.GetListRoomDiscoverd())
         {
-            if ((room.isSacrifice || room.chest) && !room.speciallyPowerIsUsed)
+            if (((room.isSacrifice && !SacrificeIsUsedOneTimes )|| room.chest) && !room.speciallyPowerIsUsed)
             {
+                Debug.Log("sa passe " + room.Index + " " + room.isSacrifice + " " + room.chest + " " + room.speciallyPowerIsUsed);
                 return true;
             }
         }
@@ -2333,7 +2337,7 @@ public class GameManager : MonoBehaviourPun
         }
         else
         {
-            if (nbPlayerInHell == players.Length - 2 - GetNbPlayerSacrifice())
+            if (nbPlayerInHell == (players.Length - 2) - GetNbPlayerSacrifice())
             {
                 return true;
             }
@@ -2571,7 +2575,7 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
-            if (room.speciallyPowerIsUsed)
+            if (room.speciallyPowerIsUsed || SacrificeIsUsedOneTimes)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 isActuallySpecialityTime = false;
@@ -3573,6 +3577,11 @@ public class GameManager : MonoBehaviourPun
         }
         return false;
     }
+    public int GetRandomPlayerID()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        return players[Random.Range(0, players.Length)].GetComponent<PhotonView>().ViewID;
+    }
 
     public bool ThereIsLever()
     {
@@ -3647,13 +3656,33 @@ public class GameManager : MonoBehaviourPun
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDeathSacrifice(false);
         }
+        UpdateDataInformationInEndGame();
         alreadySacrifice = true;
         StartCoroutine(CouroutineDisplayEndPanel());
+        StartCoroutine(SacrificeAFKplayer());
     }
+
+    public void UpdateDataInformationInEndGame()
+    {
+        ui_Manager.DisplayMainLevers(false);
+        ui_Manager.DisplaySpeciallyLevers(false, 0);
+        ui_Manager.ShowAllDataInMap();
+        ui_Manager.ShowImpostor();
+    }
+
     public IEnumerator CouroutineDisplayEndPanel()
     {
         yield return new WaitForSeconds(5);
         ui_Manager.DisplayBlackScreenToDemonWhenAllGone();
+    }
+    public IEnumerator SacrificeAFKplayer()
+    {
+        yield return new WaitForSeconds(10);
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            player.GetComponent<PlayerNetwork>().SendSacrificePlayerAfk();
+        }
     }
 
     public void ActivateCollisionTPOfAllDoor(bool activate)

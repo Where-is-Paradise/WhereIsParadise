@@ -44,7 +44,7 @@ public class SwordRoom : MonoBehaviourPun
         foreach(GameObject player in listPlayer)
         {
             if(!player.GetComponent<PlayerGO>().isSacrifice)
-                player.transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("Sword").gameObject.SetActive(display);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Sword").gameObject.SetActive(display);
         }
     }
     public void DisplayHeartsFoAllPlayer(bool display)

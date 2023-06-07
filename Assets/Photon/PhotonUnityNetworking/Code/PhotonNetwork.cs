@@ -1683,6 +1683,7 @@ namespace Photon.Pun
             if (NetworkingClient.Server != ServerConnection.MasterServer || !IsConnectedAndReady)
             {
                 Debug.LogError("CreateRoom failed. Client is on " + NetworkingClient.Server + " (must be Master Server for matchmaking)" + (IsConnectedAndReady ? " and ready" : "but not ready for operations (State: " + NetworkingClient.State + ")") + ". Wait for callback: OnJoinedLobby or OnConnectedToMaster.");
+                //throw new Exception();
                 return false;
             }
 
