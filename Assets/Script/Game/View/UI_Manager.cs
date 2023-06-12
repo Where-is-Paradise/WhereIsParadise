@@ -1742,12 +1742,18 @@ setting_button_echapMenu.SetActive(false);
             else
             {
                 player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().enabled = true;
-                if (player.GetComponent<PlayerGO>().indexSkin != 0)
+                if (!SkinHasEyes(player.GetComponent<PlayerGO>().indexSkin))
                     player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.SetActive(false);
             }    
         }
     }
 
+    public bool SkinHasEyes(int indexSkin)
+    {
+        if (indexSkin == 0 || indexSkin == 1 || indexSkin == 3 || indexSkin == 5 || indexSkin == 8)
+            return true;
+        return false;
+    }
 
     public void DesactivateInformationSpecallyRoomAllHexagone()
     {

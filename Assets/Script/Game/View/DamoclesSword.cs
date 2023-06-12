@@ -13,7 +13,18 @@ public class DamoclesSword : MonoBehaviourPun
         if (GameObject.Find("Waiting_map"))
         {
             Destroy(this.gameObject);
-        }        
+        }
+        if (damoclesRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            if (damoclesRoom.speciallyLaunched && !damoclesRoom.currentPlayer)
+            {
+                GameObject player = damoclesRoom.ChoosePlayerRandomly();
+                damoclesRoom.SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
+                damoclesRoom.SendChangePositionAtPlayer(player.GetComponent<PhotonView>().ViewID);
+                SendCanChangePlayer(false);
+                StartCoroutine(CanChangePlayerCoroutine());
+            }
+        }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

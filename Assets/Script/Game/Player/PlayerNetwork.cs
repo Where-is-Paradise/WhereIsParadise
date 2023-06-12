@@ -65,6 +65,19 @@ public class PlayerNetwork : MonoBehaviourPun
         player.transform.Find("Skins").GetChild(indexSkin).gameObject.SetActive(true);
     }
 
+    public void SendindexSkinColor(int indexSkinColor)
+    {
+        photonView.RPC("SetIndexSkinColor", RpcTarget.All, indexSkinColor);
+    }
+
+    [PunRPC]
+    public void SetIndexSkinColor(int indexSkinColor)
+    {
+        player.indexSkinColor = indexSkinColor;
+        player.DesactivateAllSkinColor();
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Color").gameObject.SetActive(true);
+    }
+
     public void SendDisplayHorn(bool display)
     {
         photonView.RPC("SetDisplayHorn", RpcTarget.All, display);
@@ -1018,5 +1031,16 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         this.GetComponent<PhotonTransformViewClassic>().enabled = change;
         this.GetComponent<PhotonRigidbody2DView>().enabled = !change;
+    }
+
+    public void SendResetHeart()
+    {
+        photonView.RPC("SetResetHeart", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetResetHeart()
+    {
+        player.ResetHeart();
     }
 }

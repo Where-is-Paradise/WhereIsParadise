@@ -7,6 +7,7 @@ public class ResultSkinMenu : MonoBehaviour
 {
     public Lobby lobby;
     public int indexSkin = 0;
+    public int indexSkinColor = 0;
     public bool canPress = true;
     // Start is called before the first frame update
     void Start()
@@ -27,6 +28,15 @@ public class ResultSkinMenu : MonoBehaviour
         lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkin(indexSkin);
         this.transform.Find("ApplyButton").GetComponent<Button>().interactable = false;
         lobby.setting.INDEX_SKIN = indexSkin;
+    }
+
+    public void OnClickChangeSkinColor()
+    {
+        if (!canPress)
+            return;
+        //lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkin(indexSkin);
+        this.transform.Find("ApplyButton").GetComponent<Button>().interactable = false;
+        lobby.setting.INDEX_SKIN_COLOR = indexSkinColor;
     }
 
     public void ChangeCanPress(bool canPress)

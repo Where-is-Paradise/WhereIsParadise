@@ -11,6 +11,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
     public GameObject sword;
     public bool canChangePlayer = true;
     public bool isAnimation = false;
+    public bool speciallyLaunched = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,10 +33,11 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         yield return new WaitForSeconds(2);
         gameManager.damoclesIsLaunch = true;
         gameManager.CloseDoorWhenVote(true);
-        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
+        //gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
         gameManager.speciallyIsLaunch = true;
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+        speciallyLaunched = true;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             gameManager.ui_Manager.SetRandomObstacles(this.gameObject);
@@ -273,6 +275,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         gameManager.ActivateCollisionTPOfAllDoor(true);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.gameManagerNetwork.SendActivateAllObstacles(false, this.gameObject.name);
+        speciallyLaunched = false;
         //this.gameObject.SetActive(false);
     }
 

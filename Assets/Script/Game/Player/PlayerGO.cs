@@ -62,6 +62,7 @@ public class PlayerGO : MonoBehaviour
     public bool animateEyes = false;
     public bool comeToParadise = false;
     public int indexSkin = 0;
+    public int indexSkinColor = 0;
     public bool ui_isOpen = false;
 
     public bool isChooseForExpedition = false;
@@ -170,7 +171,7 @@ public class PlayerGO : MonoBehaviour
 
         setIsBoss();
 
-        AnimateEyes();
+        //AnimateEyes();
 
         setCollider();
 
@@ -805,45 +806,45 @@ public class PlayerGO : MonoBehaviour
                 Vector2 direction = new Vector2(0, 1);
                 if (Input.GetKey(KeyCode.D))
                 {
-                    direction = new Vector2(0.6f, 0.6f);
+                    direction = new Vector2(0.67f, 0.67f);
                     //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
                 }
                 if (Input.GetKey(KeyCode.Q))
                 {
-                    direction = new Vector2(-0.6f, 0.6f);
+                    direction = new Vector2(-0.67f, 0.67f);
                     //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
                 }
-                this.transform.Translate( direction * (movementlControlSpeed  )* Time.deltaTime);
+                this.transform.Translate( direction * (movementlControlSpeed  )* 0.80f *  Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.S))
             {
                 Vector2 direction = new Vector2(0, -1);
                 if (Input.GetKey(KeyCode.D))
                 {
-                    direction = new Vector2(0.6f, -0.6f);
+                    direction = new Vector2(0.67f, -0.67f);
                     //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
                 }
                 if (Input.GetKey(KeyCode.Q))
                 {
-                    direction = new Vector2(-0.6f, -0.6f);
+                    direction = new Vector2(-0.67f, -0.67f);
                     //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
                 }
-                this.transform.Translate(direction * (movementlControlSpeed) * Time.deltaTime);
+                this.transform.Translate(direction * (movementlControlSpeed) * 0.80f *  Time.deltaTime);
             }
             if(!Input.GetKey(KeyCode.Z) && !Input.GetKey(KeyCode.S))
             {
                 if (Input.GetKey(KeyCode.D))
                 {
                     Vector2 direction = new Vector2(1, 0);
-                    this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
+                    this.transform.Translate(direction * movementlControlSpeed * 0.80f *  Time.deltaTime);
                 }
                 if (Input.GetKey(KeyCode.Q))
                 {
                     Vector2 direction = new Vector2(-1, 0);
-                    this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
+                    this.transform.Translate(direction * movementlControlSpeed * 0.80f * Time.deltaTime);
                 }
             }
-           
+
             decreaseSpeed = 1;
 
         }
@@ -876,6 +877,16 @@ public class PlayerGO : MonoBehaviour
             SendChangeSyncFunction(false);
         }
         
+        if( horizontal > 0 || horizontal < 0 || vertical > 0 || vertical < 0)
+        {
+            if(gameManager && !gameManager.speciallyIsLaunch)
+            {
+                if (this.transform.Find("Life").Find("TwoHeart").gameObject.activeSelf || this.transform.Find("Life").Find("OneHeart").gameObject.activeSelf)
+                {
+                    this.GetComponent<PlayerNetwork>().SendResetHeart();
+                }
+            }
+        }
     }
 
    public void SendChangeSyncFunction(bool change)
@@ -1430,6 +1441,13 @@ public class PlayerGO : MonoBehaviour
         }
     }
 
+    public void DesactivateAllSkinColor()
+    {
+        for (int i = 0; i < transform.Find("Skins").GetChild(indexSkin).Find("Colors").childCount; i++)
+        {
+            transform.Find("Skins").GetChild(i).gameObject.SetActive(false);
+        }
+    }
 
     public void OnMouseOver()
     {
