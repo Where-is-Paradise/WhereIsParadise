@@ -1116,7 +1116,7 @@ setting_button_echapMenu.SetActive(false);
                 {
                     door.transform.Find("Player_gost").Find("Perso").Find("Skin").gameObject.SetActive(display);
                     door.transform.Find("Player_gost").Find("Perso").Find("Skin").GetComponent<SpriteRenderer>().sprite =
-                        player.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().sprite;
+                        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).GetComponent<SpriteRenderer>().sprite;
 
                 }
                     //door.transform.GetChild(5).GetChild(1).GetChild(1).GetChild(player.indexSkin).gameObject.SetActive(display);
@@ -1736,12 +1736,12 @@ setting_button_echapMenu.SetActive(false);
                 continue;
             if (display)
             {
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().enabled = false;
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Colors").GetChild(player.GetComponent<PlayerGO>().indexSkinColor).GetComponent<SpriteRenderer>().enabled = false;
                 player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.SetActive(true);
             }
             else
             {
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().enabled = true;
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Colors").GetChild(player.GetComponent<PlayerGO>().indexSkinColor).GetComponent<SpriteRenderer>().enabled = true;
                 if (!SkinHasEyes(player.GetComponent<PlayerGO>().indexSkin))
                     player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.SetActive(false);
             }    

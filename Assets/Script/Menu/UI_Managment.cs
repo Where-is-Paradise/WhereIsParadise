@@ -1058,6 +1058,10 @@ public class UI_Managment : MonoBehaviourPun
         setting.NB_IMPOSTOR = newNb;
     }
 
+    public void DisabledButton(Button button)
+    {
+        button.interactable = !button.interactable;
+    }
 
 
 }

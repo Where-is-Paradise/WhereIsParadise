@@ -28,13 +28,16 @@ public class ResultSkinMenu : MonoBehaviour
         lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkin(indexSkin);
         this.transform.Find("ApplyButton").GetComponent<Button>().interactable = false;
         lobby.setting.INDEX_SKIN = indexSkin;
+        lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkinColor(0,true);
+        lobby.setting.INDEX_SKIN_COLOR = 0;
+
     }
 
     public void OnClickChangeSkinColor()
     {
         if (!canPress)
             return;
-        //lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkin(indexSkin);
+        lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkinColor(indexSkinColor, false);
         this.transform.Find("ApplyButton").GetComponent<Button>().interactable = false;
         lobby.setting.INDEX_SKIN_COLOR = indexSkinColor;
     }
@@ -43,6 +46,12 @@ public class ResultSkinMenu : MonoBehaviour
     {
         this.canPress = canPress;
         this.transform.Find("ApplyButton").GetComponent<Button>().interactable = canPress;
+    }
+
+    public void ChangeCanPressColor(bool canPress)
+    {
+        this.canPress = canPress;
+        this.transform.Find("ApplyButtonColor").GetComponent<Button>().interactable = canPress;
     }
 
 

@@ -155,6 +155,7 @@ public class Lobby : MonoBehaviourPunCallbacks
                 oldPlayerName = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().playerName;
                 matchmaking = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().isMatchmaking;
                 index_skin = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().indexSkin;
+                setting.INDEX_SKIN_COLOR = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().indexSkinColor;
                 setting.INDEX_SKIN = index_skin;
                 CreateRoomBack();
 
@@ -355,6 +356,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         
 
         newPlayer.GetComponent<PlayerNetwork>().SendindexSkin(index_skin);
+        newPlayer.GetComponent<PlayerNetwork>().SendindexSkinColor(setting.INDEX_SKIN_COLOR, true);
         //
         GameObject.Find("Setting").GetComponent<Setting>().isMatchmaking = matchmaking;
         if (matchmaking)
@@ -424,7 +426,11 @@ public class Lobby : MonoBehaviourPunCallbacks
         ui_management.SetNbPlayerUI(nbPlayer, maxPlayer);
         SendCode(code,code2);
         if (PlayerIsMine())
+        {
             PlayerIsMine().GetComponent<PlayerNetwork>().SendindexSkin(PlayerIsMine().GetComponent<PlayerGO>().indexSkin);
+            PlayerIsMine().GetComponent<PlayerNetwork>().SendindexSkinColor(PlayerIsMine().GetComponent<PlayerGO>().indexSkinColor, true);
+        }
+            
 
         //ui_management.SetGameSettingFirstTime();
         //ui_management.SetSettingInWaitingRoom();

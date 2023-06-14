@@ -41,11 +41,11 @@ public class ButtonSkin : MonoBehaviour
         result.transform.Find("Image").Find("eye").gameObject.SetActive(eye);
         if (indexSkin == result.GetComponent<ResultSkinMenu>().lobby.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkinColor)
         {
-            result.GetComponent<ResultSkinMenu>().ChangeCanPress(false);
+            result.GetComponent<ResultSkinMenu>().ChangeCanPressColor(false);
             return;
         }
-        result.GetComponent<ResultSkinMenu>().ChangeCanPress(true);
-        result.GetComponent<ResultSkinMenu>().indexSkin = indexSkin;
+        result.GetComponent<ResultSkinMenu>().ChangeCanPressColor(true);
+        result.GetComponent<ResultSkinMenu>().indexSkinColor = indexSkin;
     }
 
 

@@ -692,6 +692,7 @@ public class PlayerGO : MonoBehaviour
         if (this.transform.Find("Skins").GetChild(indexSkin).gameObject.activeSelf)
         {
             this.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().sortingOrder = ((int)(this.transform.position.y * 10)) * -1;
+            this.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).GetComponent<SpriteRenderer>().sortingOrder = ((int)((this.transform.position.y+1) * 10)) * -1;
         }
 
     }
@@ -870,12 +871,12 @@ public class PlayerGO : MonoBehaviour
         {
             InputDownORUp();
             SendChangeSyncFunction(true);
-/*           */
+            /*           */
         }
-        else
+/*        else
         {
             SendChangeSyncFunction(false);
-        }
+        }*/
         
         if( horizontal > 0 || horizontal < 0 || vertical > 0 || vertical < 0)
         {
@@ -895,15 +896,17 @@ public class PlayerGO : MonoBehaviour
     }
     public void InputDownORUp()
     {
+
         float horizontal = InputManager.GetAxis("Horizontal");
         float vertical = InputManager.GetAxis("Vertical");
 
         if(((oldHorizontal == 0 && Mathf.Abs(horizontal) > 0)  || (oldHorizontal >  0 && horizontal < 0 ) ||(oldHorizontal < 0 && horizontal > 0))
             || ( oldVertical == 0 && Mathf.Abs(vertical) > 0 || (oldVertical > 0 && vertical < 0) || (oldVertical < 0 && vertical > 0)))
         {
-            this.GetComponent<PlayerNetwork>().SendSpacePosition(this.transform.position.x, this.transform.position.y, this.GetComponent<PhotonView>().ViewID);
-            StartCoroutine(SendPositionCoroutine(0.2f));
-            StartCoroutine(SendPositionCoroutine(0.5f));
+            //SendChangeSyncFunction(false);
+            //this.GetComponent<PlayerNetwork>().SendSpacePosition(this.transform.position.x, this.transform.position.y, this.GetComponent<PhotonView>().ViewID);
+            //StartCoroutine(SendPositionCoroutine(0.2f));
+            //StartCoroutine(SendPositionCoroutine(0.5f));
         }
         oldHorizontal = horizontal;
         oldVertical = vertical;
@@ -1376,6 +1379,7 @@ public class PlayerGO : MonoBehaviour
             if (GetComponent<PhotonView>().IsMine)
             {
                 playerNetwork.SendindexSkin(indexSkin);
+                playerNetwork.SendindexSkinColor(indexSkinColor, true);
                 string userId = PhotonNetwork.LocalPlayer.UserId;
                 playerNetwork.SendUserId(userId);
             }
@@ -1445,7 +1449,7 @@ public class PlayerGO : MonoBehaviour
     {
         for (int i = 0; i < transform.Find("Skins").GetChild(indexSkin).Find("Colors").childCount; i++)
         {
-            transform.Find("Skins").GetChild(i).gameObject.SetActive(false);
+            transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(i).gameObject.SetActive(false);
         }
     }
 

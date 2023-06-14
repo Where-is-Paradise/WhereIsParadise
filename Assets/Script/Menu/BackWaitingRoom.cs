@@ -10,6 +10,7 @@ public class BackWaitingRoom : MonoBehaviour
     public GameManager gameManager;
     public bool isMatchmaking = false;
     public int indexSkin;
+    public int indexSkinColor;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,7 @@ public class BackWaitingRoom : MonoBehaviour
             playerName = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().playerName;
         }
         indexSkin = GameObject.Find("Setting").GetComponent<Setting>().INDEX_SKIN;
+        indexSkinColor = GameObject.Find("Setting").GetComponent<Setting>().INDEX_SKIN_COLOR;
     }
 
     // Update is called once per frame

@@ -37,6 +37,8 @@ namespace Photon.Pun
         [HideInInspector]
         public float m_TeleportIfDistanceGreaterThan = 3.0f;
 
+        private float lastReceivedTime;
+
         public void Awake()
         {
             this.m_Body = GetComponent<Rigidbody2D>();
@@ -48,8 +50,8 @@ namespace Photon.Pun
         {
             if (!this.photonView.IsMine)
             {
-                this.m_Body.position = Vector2.MoveTowards(this.m_Body.position, this.m_NetworkPosition, this.m_Distance * (1.0f / PhotonNetwork.SerializationRate));
-                this.m_Body.rotation = Mathf.MoveTowards(this.m_Body.rotation, this.m_NetworkRotation, this.m_Angle * (1.0f / PhotonNetwork.SerializationRate));
+                this.m_Body.position = Vector2.MoveTowards(this.m_Body.position, this.m_NetworkPosition, this.m_Distance * (2.75f / PhotonNetwork.SerializationRate));
+                this.m_Body.rotation = Mathf.MoveTowards(this.m_Body.rotation, this.m_NetworkRotation, this.m_Angle * (2.75f / PhotonNetwork.SerializationRate));
             }
         }
 
@@ -74,6 +76,7 @@ namespace Photon.Pun
             {
                 this.m_NetworkPosition = (Vector2)stream.ReceiveNext();
                 this.m_NetworkRotation = (float)stream.ReceiveNext();
+                lastReceivedTime = (float)info.SentServerTime;
 
                 if (this.m_TeleportEnabled)
                 {
@@ -91,7 +94,7 @@ namespace Photon.Pun
                     {
                         this.m_Body.velocity = (Vector2)stream.ReceiveNext();
 
-                        this.m_NetworkPosition += this.m_Body.velocity * lag;
+                        this.m_NetworkPosition += this.m_Body.velocity * (lag * 1.75f);
 
                         this.m_Distance = Vector2.Distance(this.m_Body.position, this.m_NetworkPosition);
                     }

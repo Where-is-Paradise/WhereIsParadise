@@ -65,17 +65,24 @@ public class PlayerNetwork : MonoBehaviourPun
         player.transform.Find("Skins").GetChild(indexSkin).gameObject.SetActive(true);
     }
 
-    public void SendindexSkinColor(int indexSkinColor)
+    public void SendindexSkinColor(int indexSkinColor, bool sendBeginning)
     {
-        photonView.RPC("SetIndexSkinColor", RpcTarget.All, indexSkinColor);
+        Debug.LogError("Send indexSkinColor " + indexSkinColor);
+        photonView.RPC("SetIndexSkinColor", RpcTarget.All, indexSkinColor, sendBeginning);
     }
 
     [PunRPC]
-    public void SetIndexSkinColor(int indexSkinColor)
+    public void SetIndexSkinColor(int indexSkinColor, bool sendBeginning)
     {
+
+        // a changé, quand il aura chaque couleur par skin
+        if(!sendBeginning)
+            SetIndexSkin(0);
+
         player.indexSkinColor = indexSkinColor;
         player.DesactivateAllSkinColor();
-        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Color").gameObject.SetActive(true);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors")
+            .GetChild(indexSkinColor).gameObject.SetActive(true);
     }
 
     public void SendDisplayHorn(bool display)
@@ -974,6 +981,7 @@ public class PlayerNetwork : MonoBehaviourPun
         /*        player.x_sended = x;
                 player.y_sended = y;
                 player.positionSended = true;*/
+        Debug.LogError("sa passe");
         Vector3 newPosition = new Vector3(x, y);
         Vector3 distance = newPosition - this.transform.position;
         this.transform.Translate(distance * 10 * Time.deltaTime);

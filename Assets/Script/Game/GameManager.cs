@@ -403,7 +403,7 @@ public class GameManager : MonoBehaviourPun
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
             //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
-            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[5]);
+            player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[0]);
             listIndexPower.RemoveAt(randomInt);
         }
 
