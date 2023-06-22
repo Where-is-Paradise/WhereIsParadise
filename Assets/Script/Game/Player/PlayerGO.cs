@@ -798,7 +798,7 @@ public class PlayerGO : MonoBehaviour
         oldPosition = transform.position;
         float horizontal = InputManager.GetAxis("Horizontal");
         float vertical = InputManager.GetAxis("Vertical");
-
+/*
         if ((gameManager && gameManager.speciallyIsLaunch))
         {
 
@@ -850,29 +850,29 @@ public class PlayerGO : MonoBehaviour
 
         }
         else
+        {*/
+
+        if (Mathf.Abs(horizontal) + Mathf.Abs(vertical) > 1.1f)
         {
 
-            if (Mathf.Abs(horizontal) + Mathf.Abs(vertical) > 1.1f)
-            {
-
-                horizontal *= 0.9f;
-                vertical *= 0.9f;
-            }
-            this.transform.Translate(
-            new Vector3(
-                horizontal,
-                vertical,
-                0
-            ) * movementlControlSpeed * Time.deltaTime
-        );
+            horizontal *= 0.9f;
+            vertical *= 0.9f;
         }
+        this.transform.Translate(
+        new Vector3(
+            horizontal,
+            vertical,
+            0
+        ) * movementlControlSpeed * Time.deltaTime
+    );
+        //}
         // permit to teleport when mini game
-        if (gameManager && gameManager.speciallyIsLaunch)
+/*        if (gameManager && gameManager.speciallyIsLaunch)
         {
             InputDownORUp();
             SendChangeSyncFunction(true);
-            /*           */
-        }
+            *//*           *//*
+        }*/
 /*        else
         {
             SendChangeSyncFunction(false);
@@ -1363,11 +1363,11 @@ public class PlayerGO : MonoBehaviour
         if (display)
         {
             if (gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
-                transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             return;
         }
         if (gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
-            transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+            transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
     }
 
     public void SetPlayerNameServer()
@@ -2067,24 +2067,27 @@ public class PlayerGO : MonoBehaviour
 
     public void MovingUpForDeathAnimation()
     {
-        this.transform.Find("Skins").GetChild(indexSkin).Translate(new Vector3(0, 2.3f * Time.deltaTime));
+        this.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).Translate(new Vector3(0, 2.3f * Time.deltaTime));
+        this.transform.Find("Skins").GetChild(indexSkin).Find("Eyes1").Translate(new Vector3(0, 2.3f * Time.deltaTime));
         this.transform.Find("InfoCanvas").Translate(new Vector3(0, 2.3f * Time.deltaTime));
-        if (Mathf.Abs(transform.Find("Skins").GetChild(indexSkin).position.y - old_y_position) > 0.32f)
+        if (Mathf.Abs(transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).position.y - old_y_position) > 0.32f)
         {
            
             animationDeathUpFinish = true;
-            old_y_position = this.transform.Find("Skins").GetChild(indexSkin).position.y;
+            old_y_position = this.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).position.y;
         }
     }
 
     public void MovingDownForDeathAnimation()
     {
-        this.transform.Find("Skins").GetChild(indexSkin).Translate(new Vector3(0, -5f * Time.deltaTime));
+        this.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).Translate(new Vector3(0, -5f * Time.deltaTime));
+        this.transform.Find("Skins").GetChild(indexSkin).Find("Eyes1").Translate(new Vector3(0, -5f * Time.deltaTime));
         this.transform.Find("InfoCanvas").Translate(new Vector3(0, -5f * Time.deltaTime));
-        if (Mathf.Abs(old_y_position - transform.Find("Skins").GetChild(indexSkin).position.y)  > 1.5f)
+        if (Mathf.Abs(old_y_position - transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).position.y)  > 1.5f)
         {
-            this.transform.Find("Skins").GetChild(indexSkin).gameObject.SetActive(false);
+            this.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).gameObject.SetActive(false);
             this.transform.Find("InfoCanvas").gameObject.SetActive(false);
+            this.transform.Find("Skins").GetChild(indexSkin).Find("Eyes1").gameObject.SetActive(false);
             animationDeathDownFinis = true;
             animationDeath = false;
         }
@@ -2093,12 +2096,14 @@ public class PlayerGO : MonoBehaviour
     {
         yield return new WaitForSeconds(4.5f);
         canMove = true;
-        if (GetComponent<PhotonView>().IsMine)
-        {
-            this.transform.transform.Find("Skins").GetChild(indexSkin).localPosition = new Vector3(0, 0);
+/*        if (GetComponent<PhotonView>().IsMine)
+        {*/
+            this.transform.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).localPosition = new Vector3(0.04f, -8.60f);
+            this.transform.Find("Skins").GetChild(indexSkin).Find("Eyes1").localPosition = new Vector3(-0.33f, -0.24f);
+            //this.transform.Find("Skins").GetChild(indexSkin).Find("Eyes1").gameObject.SetActive(true);
             this.transform.Find("InfoCanvas").localPosition = new Vector3(-0.812f, -0.14f);
             this.transform.Translate(new Vector3(0, -0.75f));
-        }
+/*        }*/
     }
 
 }

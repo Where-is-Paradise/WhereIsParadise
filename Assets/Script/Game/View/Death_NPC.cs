@@ -347,7 +347,8 @@ public class Death_NPC : MonoBehaviourPun
         int counter = 0;
         foreach(GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByDeath || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
+            if (player.GetComponent<PlayerGO>().isTouchByDeath || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+                    || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
             }
@@ -363,7 +364,7 @@ public class Death_NPC : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
             if (player.GetComponent<PlayerGO>().isTouchByDeath || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
-                    || player.GetComponent<PlayerGO>().isSacrifice)
+                    || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
             }
@@ -408,7 +409,7 @@ public class Death_NPC : MonoBehaviourPun
             if (player.GetComponent<PhotonView>().IsMine)
             {
                 int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
-                player.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                player.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(player.GetComponent<PlayerGO>().indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             }
             else
             {

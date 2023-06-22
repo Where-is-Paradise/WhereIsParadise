@@ -381,8 +381,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 501ed4f03eaec714b810bc9c722e1e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  networkPosition: {x: 0, y: 0, z: 0}
-  velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &4695169023555382417
 GameObject:
   m_ObjectHideFlags: 0

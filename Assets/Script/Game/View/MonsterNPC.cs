@@ -145,11 +145,13 @@ public class MonsterNPC : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
+             
             if (player.GetComponent<PlayerGO>().isTouchByMonster || !monsterRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
             }
+           
         }
         if (counter == (listPlayer.Length - 1))
             return true;

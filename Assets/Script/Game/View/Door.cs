@@ -103,6 +103,7 @@ public class Door : MonoBehaviour
                 old_player = null;
                 player = null;
             }
+
         }
 
         if (nbVote < 0)

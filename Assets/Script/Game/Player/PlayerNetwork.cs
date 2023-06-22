@@ -453,7 +453,8 @@ public class PlayerNetwork : MonoBehaviourPun
         {
             player.transform.Find("InfoCanvas").gameObject.SetActive(true);
             player.transform.Find("Skins").GetChild(player.indexSkin).gameObject.SetActive(true);
-            player.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).gameObject.SetActive(true);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
             player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
             player.transform.Find("Collision").gameObject.SetActive(false);
             player.SetIconDeath(true);
@@ -482,13 +483,22 @@ public class PlayerNetwork : MonoBehaviourPun
         player.GetComponent<PlayerGO>().isSacrifice = false;
         if (!player.gameManager.SamePositionAtBoss())
             return;
-        player.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+        player.transform.Find("Skins").GetChild(player.indexSkin).gameObject.SetActive(true);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).gameObject.SetActive(true);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
         player.transform.Find("Collision").gameObject.SetActive(true);
+        //ResetPositionOFSkin();
+        player.GetComponent<PhotonRigidbody2DView>().enabled = true;
         for (int i = 0; i < player.transform.childCount; i++)
         {
             player.transform.GetChild(i).gameObject.SetActive(true);
         }
         player.SetIconDeath(false);
+    }
+
+    public void ResetPositionOFSkin()
+    {
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).transform.position = new Vector2(0.04f, -7.72f);
     }
 
     public void SendColorInvisible(bool invisible)
@@ -739,7 +749,7 @@ public class PlayerNetwork : MonoBehaviourPun
         if (player.gameObject.GetComponent<PhotonView>().IsMine)
         {
             int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
-            player.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
+            player.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
             player.transform.Find("Skins").GetChild(player.indexSkin).Find("Sword").gameObject.SetActive(false);
         }
         else
@@ -1050,5 +1060,15 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetResetHeart()
     {
         player.ResetHeart();
+    }
+    public void SendHaveToGotoExpedition(bool havetoGo)
+    {
+        photonView.RPC("SetHaveToGotoExpedition", RpcTarget.All, havetoGo);
+    }
+
+    [PunRPC]
+    public void SetHaveToGotoExpedition(bool havetoGo)
+    {
+        player.GetComponent<PlayerGO>().haveToGoToExpedition = havetoGo;
     }
 }
