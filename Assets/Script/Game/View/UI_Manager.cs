@@ -1351,7 +1351,7 @@ setting_button_echapMenu.SetActive(false);
 
     public void OpenParadise()
     {
-        gameManager.GetPlayerMineGO().transform.GetChild(1).GetChild(7).gameObject.SetActive(false);
+        //gameManager.GetPlayerMineGO().transform.GetChild(1).GetChild(7).gameObject.SetActive(false);
         OpenDoorParadiseAnimation();
     }
 

@@ -417,7 +417,7 @@ public class PlayerNetwork : MonoBehaviourPun
             player.GetComponent<PlayerGO>().gameManager.game.key_counter++;
             player.gameManager.ui_Manager.LaunchAnimationAddKey();
         }
-
+        player.GetComponent<PlayerGO>().isSacrifice = true;
         player.gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
         LaunchSacrificeAnimation();
         player.gameManager.SacrificeIsUsedOneTimes = true;

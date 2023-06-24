@@ -312,7 +312,10 @@ public class GameManager : MonoBehaviourPun
         CloseDoorWhenVote(false);
         ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = 0;
     }
-
+/*    public void voteDoorCouroutineLittleBefore()
+    {
+        voteDoorHasProposed
+    }*/
 
     public IEnumerator LaunchExploration()
     {
@@ -436,8 +439,8 @@ public class GameManager : MonoBehaviourPun
         foreach (GameObject player in GetAllImpostor())
         {
             int randomInt = Random.Range(0, listIndexPower.Count);
-            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
-            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
+            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
+            //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
             listIndexPower.RemoveAt(randomInt);
         }
     }

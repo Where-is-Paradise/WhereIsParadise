@@ -704,6 +704,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
         player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(enter);
         player.GetComponent<PlayerGO>().hasVoteVD = enter;
+
+        Debug.LogError("Door vote : " + door.GetComponent<Door>().nbVote);
     }
 
 
@@ -784,6 +786,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
             player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(true);
             player.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(true);
+            return;
         }
         else
         {
@@ -794,14 +797,20 @@ public class GameManagerNetwork : MonoBehaviourPun
                 //player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(true);
             }
             else
-            { 
-                gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote--;
+            {
+                if (gameManager.voteDoorHasProposed)
+                {
+                    gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote--;
+                    if (gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote < 0)
+                        gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = 0;
+                }               
                 //player.GetComponent<PlayerGO>().hasVoteVD = false;
                 player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(false);
                 player.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(false);
 
             }
         }
+        Debug.LogError("X vote : " + gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote);
     }
 
     public void SendCollisionChestVote(int indexPlayer, int indexChest, bool enter, bool stay)
@@ -889,12 +898,12 @@ public class GameManagerNetwork : MonoBehaviourPun
         GameObject player = gameManager.GetPlayer(indexPlayer);
         if (enter)
         {
-            player.transform.GetChild(1).GetChild(7).gameObject.SetActive(true);
+            //player.transform.GetChild(1).GetChild(7).gameObject.SetActive(true);
             gameManager.headParadise.nbPlayer++;
         }
         else
         {
-            player.transform.GetChild(1).GetChild(7).gameObject.SetActive(false);
+            //player.transform.GetChild(1).GetChild(7).gameObject.SetActive(false);
             gameManager.headParadise.nbPlayer--;
         }
         

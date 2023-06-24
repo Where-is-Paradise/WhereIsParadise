@@ -190,8 +190,8 @@ public class PlayerGO : MonoBehaviour
         if (owners.Contains(playerName))
         {
             transform.localScale = new Vector2(0.85f, 0.85f);
-            this.transform.GetChild(1).GetChild(5).gameObject.SetActive(true);
-            this.transform.GetChild(1).GetChild(7).gameObject.SetActive(true);
+/*            this.transform.GetChild(1).GetChild(5).gameObject.SetActive(true);
+            this.transform.GetChild(1).GetChild(7).gameObject.SetActive(true);*/
         }
     }
     private bool setIsBoss()
