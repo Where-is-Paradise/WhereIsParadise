@@ -1280,15 +1280,9 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayMainLevers(bool display)
     {
-        DisplayLeverExploration(display);
-        DisplayLeverVoteDoor(display);
-       
+        DisplayLeverVoteDoor(display);  
     }
 
-    public void DisplayLeverExploration(bool display)
-    {
-        MainRoomGraphic.transform.Find("Levers").transform.Find("Exploration_lever").gameObject.SetActive(display);
-    }
     public void DisplayLeverVoteDoor(bool display)
     {
         MainRoomGraphic.transform.Find("Levers").transform.Find("OpenDoor_lever").gameObject.SetActive(display);
@@ -1681,6 +1675,28 @@ setting_button_echapMenu.SetActive(false);
     {
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower != -1)
             canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Bigger").gameObject.SetActive(display);
+    }
+
+    public void DisplayButtonPowerExplorationBigger(bool display)
+    {
+        canvasInGame.transform.Find("Exploration").Find("Torch").Find("Bigger").gameObject.SetActive(display);
+    }
+    public void OnClickButtonPowerExplorationBigger()
+    {
+        int indexDoor = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collsionDoorIndexForExploration;
+        if (gameManager.GetDoorGo(indexDoor))
+        {
+            gameManager.GetDoorGo(indexDoor).GetComponent<Door>().DisplayColorLightToExploration();
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().explorationPowerIsAvailable = false;
+            canvasInGame.transform.Find("Exploration").Find("Torch").Find("Bigger").gameObject.SetActive(false);
+            canvasInGame.transform.Find("Exploration").Find("Torch").Find("Disabled").gameObject.SetActive(true);
+        }
+           
+    }
+
+    public void DisabledButtonPowerExploration(bool display)
+    {
+        canvasInGame.transform.Find("Exploration").Find("Torch").Find("Disabled").gameObject.SetActive(display);
     }
 
     public void DisplayImgInHexagoneUseWhenCursedPlayer()

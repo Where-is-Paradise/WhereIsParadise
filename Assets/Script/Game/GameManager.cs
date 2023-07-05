@@ -1817,9 +1817,9 @@ public class GameManager : MonoBehaviourPun
 
     public bool IsBoss()
     {
-        PlayerDun player = GetPlayerMine();
+        GameObject player = GetPlayerMineGO();
 
-        if (player.GetIsBoss())
+        if (player.GetComponent<PlayerGO>().isBoss)
         {
             return true;
         }
@@ -1936,7 +1936,13 @@ public class GameManager : MonoBehaviourPun
             GetPlayerMineGO().GetComponent<PlayerGO>().isInJail = false;
             gameManagerNetwork.SendIsInJail(false, GetPlayerMineGO().GetComponent<PhotonView>().ViewID, game.currentRoom.Index);
         }
-
+        if(ISTrailsRoom(game.currentRoom))
+            ui_Manager.DisabledButtonPowerExploration(true);
+        else
+        {
+            if(GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                ui_Manager.DisabledButtonPowerExploration(false);
+        }
         gameManagerNetwork.SendUpdateDataPlayer(GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
     }
 
@@ -2534,11 +2540,10 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplayLetterInSkull(false);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
 
-
         UpdateColorDoor(room);
         if (room.explorationIsUsed)
         {
-            ui_Manager.DisplayLeverExploration(false);
+            //ui_Manager.DisplayLeverExploration(false);
         }
         if (room.chest)
         {
@@ -2602,8 +2607,6 @@ public class GameManager : MonoBehaviourPun
         {
             ui_Manager.DisplayFoggyRoom(true);
             ui_Manager.ChangeColorAllPlayerSkinToFoggy(true);
-            if (!room.explorationIsUsed)
-                ui_Manager.DisplayLeverExploration(true);
             ui_Manager.DisplayLeverVoteDoor(true);
             UpdateColorDoor(room);
             return;
@@ -2611,8 +2614,6 @@ public class GameManager : MonoBehaviourPun
         if (room.IsVirus)
         {
             ui_Manager.DisplayVirusRoom(true);
-            if (!room.explorationIsUsed)
-                ui_Manager.DisplayLeverExploration(true);
             ui_Manager.DisplayLeverVoteDoor(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             UpdateColorDoor(room);
@@ -3211,6 +3212,18 @@ public class GameManager : MonoBehaviourPun
         {
             room.isNotSpecial = true;
         }
+    }
+
+    public bool ISTrailsRoom(Room room)
+    {
+        if(room.fireBall || room.isAx || room.isSword)
+            return true;
+        if (room.isSwordDamocles || room.isDeathNPC || room.isMonsters)
+            return true;
+        if (room.isLabyrintheHide || room.isLostTorch)
+            return true;
+
+        return false;
     }
 
     public int InsertRandomSpeciallity(Room room)

@@ -76,6 +76,7 @@ public class PlayerGO : MonoBehaviour
     public ResolutionManagement resolution;
 
     public int collisionInDoorIndex = -1;
+    public int collsionDoorIndexForExploration = -1;
 
     public bool firstAtDoorToExploration = false;
     public bool hellIsFind = false;
@@ -112,6 +113,8 @@ public class PlayerGO : MonoBehaviour
     public bool displayMap = false;
     public bool canDisplayTutorial = false;
     public bool displayTutorial = false;
+
+    public bool explorationPowerIsAvailable = false;
 
     public bool isInJail = false;
 
@@ -1039,7 +1042,28 @@ public class PlayerGO : MonoBehaviour
             }
             Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>());
         }
+        CollisionWithDoorToExploration(collision, true) ;
+    }
 
+    public void OnCollisionExit2D(Collision2D collision)
+    {
+        CollisionWithDoorToExploration(collision, false);
+    }
+
+    public void CollisionWithDoorToExploration(Collision2D collision, bool enter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+        if (!collision.gameObject.CompareTag("Door"))
+            return;
+        if (collision.gameObject.GetComponent<Door>().barricade)
+            return;
+        if (!explorationPowerIsAvailable)
+            return;
+        if (collision.gameObject.GetComponent<Door>().isOpenForAll)
+            return;
+        gameManager.ui_Manager.DisplayButtonPowerExplorationBigger(enter);
+        collsionDoorIndexForExploration = collision.gameObject.GetComponent<Door>().index;
     }
 
     public void IgnoreCollisionAllPlayer(bool ignore)
@@ -1457,73 +1481,10 @@ public class PlayerGO : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            ClicktoExploration();
-            ClickToVoteSacrifice();
-            
+            ClickToVoteSacrifice();   
         }
-
     }
 
-    public void ClicktoExploration()
-    {
-        if (!gameManager)
-        {
-            return;
-        }
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-        {
-            return;
-        }
-        if (this.GetComponent<PhotonView>().IsMine)
-        {
-            return;
-        }
-
-        if (gameManager.timer.timerLaunch)
-        {
-            return;
-        }
-        if (gameManager.expeditionHasproposed)
-        {
-            return;
-        }
-
-        if (gameManager.ui_Manager.map.activeSelf)
-        {
-            return;
-        }
-        if (!gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
-        {
-            return;
-        }
-        if (isSacrifice)
-        {
-            return;
-        }
-        if (gameManager.game.currentRoom.isSword)
-        {
-            return;
-        }
-        if (gameManager.game.currentRoom.isSwordDamocles)
-        {
-            return;
-        }
-        if (gameManager.game.currentRoom.isDeathNPC)
-        {
-            return;
-        }
-        if (gameManager.game.currentRoom.fireBall)
-        {
-            return;
-        }
-        if (gameManager.game.currentRoom.isAx)
-        {
-            return;
-        }
-        if (gameManager.speciallyIsLaunch)
-            return;
-        GetComponent<PlayerNetwork>().SendOnclickToExpedition();
-    }
 
     public void ClickToVoteSacrifice()
     {
@@ -1587,8 +1548,6 @@ public class PlayerGO : MonoBehaviour
     public void SetTextChat(string text)
     {
         int indexPlayer = GetComponent<PhotonView>().ViewID;
-        /*        gameManager.GetPlayerMineGO().transform.GetChild(0).GetChild(1).gameObject.SetActive(true);
-                gameManager.GetPlayerMineGO().transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().text = text.text;*/
         if (text == "" || text == " " || text == "  ")
         {
             return;
@@ -1604,27 +1563,6 @@ public class PlayerGO : MonoBehaviour
             Debug.Log("threeFirstLetter < 4");
         }
 
-/*        if (text.Length > 4 && threeFirstLetter.Equals("/all"))
-        {
-            string textWithoutSlash = text.Substring(4, text.Length - 4);
-            if (textWithoutSlash == "" || textWithoutSlash == " " || textWithoutSlash == "  ")
-            {
-                return;
-            }
-            GetComponent<PlayerNetwork>().SendTextChat(indexPlayer, textWithoutSlash);
-        }
-        else
-        {
-            if (GetComponent<PlayerGO>().isImpostor)
-            {
-                GetComponent<PlayerNetwork>().SendTextChatToImpostor(indexPlayer, text);
-            }
-            else
-            {
-                GetComponent<PlayerNetwork>().SendTextChat(indexPlayer, text);
-            }
-
-        }*/
 
         if (GetComponent<PlayerGO>().isImpostor && threeFirstLetter.Equals("/imp") && text.Length > 3   )
         {
@@ -1633,7 +1571,6 @@ public class PlayerGO : MonoBehaviour
             {
                 return;
             }
-            //GetComponent<PlayerNetwork>().SendTextChat(indexPlayer, textWithoutSlash);
             GetComponent<PlayerNetwork>().SendTextChatToImpostor(indexPlayer, textWithoutSlash);
         }
         else
@@ -1655,12 +1592,10 @@ public class PlayerGO : MonoBehaviour
 
     public IEnumerator CouroutineTextChat(int index, int count ,int time)
     {
-        //GetComponent<PlayerNetwork>().SendDisplayMessage(true);
         displayMessage = true;
         yield return new WaitForSeconds(time);
         currentlyMessageDisplay.RemoveAt(index - (count - 1));
         if (currentlyMessageDisplay.Count == 0)
-            //GetComponent<PlayerNetwork>().SendDisplayMessage(false);
             displayMessage = false;
     }
 

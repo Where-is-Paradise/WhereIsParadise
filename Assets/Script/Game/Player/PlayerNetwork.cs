@@ -67,7 +67,6 @@ public class PlayerNetwork : MonoBehaviourPun
 
     public void SendindexSkinColor(int indexSkinColor, bool sendBeginning)
     {
-        Debug.LogError("Send indexSkinColor " + indexSkinColor);
         photonView.RPC("SetIndexSkinColor", RpcTarget.All, indexSkinColor, sendBeginning);
     }
 

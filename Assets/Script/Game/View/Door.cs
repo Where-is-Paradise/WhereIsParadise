@@ -265,4 +265,40 @@ public class Door : MonoBehaviour
         }
         return null; 
     }
+
+    public bool RoomBehindHaslessDistance()
+    {
+        if (GetRoomBehind().DistancePathFinding > gameManager.game.currentRoom.left_neighbour.DistancePathFinding)
+            return false;
+        if (GetRoomBehind().DistancePathFinding > gameManager.game.currentRoom.up_Left_neighbour.DistancePathFinding)
+            return false;
+        if (GetRoomBehind().DistancePathFinding > gameManager.game.currentRoom.up_Right_neighbour.DistancePathFinding)
+            return false;
+        if (GetRoomBehind().DistancePathFinding > gameManager.game.currentRoom.right_neighbour.DistancePathFinding)
+            return false;
+        if (GetRoomBehind().DistancePathFinding > gameManager.game.currentRoom.down_Right_neighbour.DistancePathFinding)
+            return false;
+        if (GetRoomBehind().DistancePathFinding > gameManager.game.currentRoom.down_Left_neighbour.DistancePathFinding)
+            return false;
+        return true;
+    }
+
+    public void DisplayColorLightToExploration()
+    {
+        if (RoomBehindHaslessDistance())
+        {
+            this.transform.Find("LightsExploration").Find("GreenLight").gameObject.SetActive(true);
+        }
+        else
+        {
+            this.transform.Find("LightsExploration").Find("BlackLight").gameObject.SetActive(true);
+        }
+        StartCoroutine(Desactivatelight());
+    }
+    public IEnumerator Desactivatelight()
+    {
+        yield return new WaitForSeconds(5);
+        this.transform.Find("LightsExploration").Find("GreenLight").gameObject.SetActive(false);
+        this.transform.Find("LightsExploration").Find("BlackLight").gameObject.SetActive(false);
+    }
 }

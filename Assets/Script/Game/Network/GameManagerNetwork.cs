@@ -80,7 +80,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.SetBoss(indexNewBoss);
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().isBoss = true;
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerNetwork>().SendDisplayCrown(true);
-
+        gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().explorationPowerIsAvailable = true;
+        gameManager.ui_Manager.DisabledButtonPowerExploration(!gameManager.IsBoss());
     }
 
 
@@ -1609,10 +1610,6 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         gameManager.UpdateSpecialsRooms(gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
         gameManager.ui_Manager.DisplayMainLevers(true);
-        if (gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.explorationIsUsed)
-        {
-            gameManager.ui_Manager.DisplayLeverExploration(false);
-        }
     }
 
     public void SendLaunchDeathNPC()
