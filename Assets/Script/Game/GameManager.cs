@@ -1936,7 +1936,7 @@ public class GameManager : MonoBehaviourPun
             GetPlayerMineGO().GetComponent<PlayerGO>().isInJail = false;
             gameManagerNetwork.SendIsInJail(false, GetPlayerMineGO().GetComponent<PhotonView>().ViewID, game.currentRoom.Index);
         }
-        if(ISTrailsRoom(game.currentRoom))
+        if(ISTrailsRoom(game.currentRoom) || game.nbTorch <= 0 || game.currentRoom.explorationIsUsed)
             ui_Manager.DisabledButtonPowerExploration(true);
         else
         {

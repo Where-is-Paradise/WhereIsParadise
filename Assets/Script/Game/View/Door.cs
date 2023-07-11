@@ -121,6 +121,15 @@ public class Door : MonoBehaviour
             this.transform.GetChild(4).GetChild(0).gameObject.GetComponent<SpriteRenderer>().gameObject.SetActive(true);
         }
         //counterPlayerInDoorZone = gameManager.GetNumberOfPlayerSelected(this.index);
+
+        if (isOpenForAll)
+        {
+            this.transform.Find("CollisionPowerImpostor").GetComponent<CircleCollider2D>().enabled = false;
+        }
+        else
+        {
+            this.transform.Find("CollisionPowerImpostor").GetComponent<CircleCollider2D>().enabled = true;
+        }
     }
 
 

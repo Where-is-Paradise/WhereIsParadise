@@ -148,10 +148,16 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetOnclickToExpedtionN2()
     {
-        GetComponent<PlayerGO>().isChooseForExpedition = true;
-        this.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(GetComponent<PlayerGO>().isChooseForExpedition);
-        transform.GetChild(3).GetComponent<BoxCollider2D>().enabled = true;
+        //GetComponent<PlayerGO>().isChooseForExpedition = true;
+        this.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(true);
+        //transform.GetChild(3).GetComponent<BoxCollider2D>().enabled = true;
 
+        if (player.GetComponent<PhotonView>().IsMine)
+        {
+            player.explorationPowerIsAvailable = true;
+            player.gameManager.ui_Manager.DisabledButtonPowerExploration(false);
+        }
+            
     }
 
     public void SendHasWinFireBallRoom(bool hasWinFireBall)

@@ -801,59 +801,6 @@ public class PlayerGO : MonoBehaviour
         oldPosition = transform.position;
         float horizontal = InputManager.GetAxis("Horizontal");
         float vertical = InputManager.GetAxis("Vertical");
-/*
-        if ((gameManager && gameManager.speciallyIsLaunch))
-        {
-
-            if (Input.GetKey(KeyCode.Z))
-            {
-                Vector2 direction = new Vector2(0, 1);
-                if (Input.GetKey(KeyCode.D))
-                {
-                    direction = new Vector2(0.67f, 0.67f);
-                    //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
-                }
-                if (Input.GetKey(KeyCode.Q))
-                {
-                    direction = new Vector2(-0.67f, 0.67f);
-                    //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
-                }
-                this.transform.Translate( direction * (movementlControlSpeed  )* 0.80f *  Time.deltaTime);
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                Vector2 direction = new Vector2(0, -1);
-                if (Input.GetKey(KeyCode.D))
-                {
-                    direction = new Vector2(0.67f, -0.67f);
-                    //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
-                }
-                if (Input.GetKey(KeyCode.Q))
-                {
-                    direction = new Vector2(-0.67f, -0.67f);
-                    //this.transform.Translate(direction * movementlControlSpeed * Time.deltaTime);
-                }
-                this.transform.Translate(direction * (movementlControlSpeed) * 0.80f *  Time.deltaTime);
-            }
-            if(!Input.GetKey(KeyCode.Z) && !Input.GetKey(KeyCode.S))
-            {
-                if (Input.GetKey(KeyCode.D))
-                {
-                    Vector2 direction = new Vector2(1, 0);
-                    this.transform.Translate(direction * movementlControlSpeed * 0.80f *  Time.deltaTime);
-                }
-                if (Input.GetKey(KeyCode.Q))
-                {
-                    Vector2 direction = new Vector2(-1, 0);
-                    this.transform.Translate(direction * movementlControlSpeed * 0.80f * Time.deltaTime);
-                }
-            }
-
-            decreaseSpeed = 1;
-
-        }
-        else
-        {*/
 
         if (Mathf.Abs(horizontal) + Mathf.Abs(vertical) > 1.1f)
         {
@@ -868,18 +815,6 @@ public class PlayerGO : MonoBehaviour
             0
         ) * movementlControlSpeed * Time.deltaTime
     );
-        //}
-        // permit to teleport when mini game
-/*        if (gameManager && gameManager.speciallyIsLaunch)
-        {
-            InputDownORUp();
-            SendChangeSyncFunction(true);
-            *//*           *//*
-        }*/
-/*        else
-        {
-            SendChangeSyncFunction(false);
-        }*/
         
         if( horizontal > 0 || horizontal < 0 || vertical > 0 || vertical < 0)
         {
@@ -1042,28 +977,32 @@ public class PlayerGO : MonoBehaviour
             }
             Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>());
         }
-        CollisionWithDoorToExploration(collision, true) ;
+        
     }
 
-    public void OnCollisionExit2D(Collision2D collision)
-    {
-        CollisionWithDoorToExploration(collision, false);
-    }
 
-    public void CollisionWithDoorToExploration(Collision2D collision, bool enter)
+
+    public void CollisionWithDoorToExploration(Collider2D collision, bool enter)
     {
         if (!GetComponent<PhotonView>().IsMine)
             return;
-        if (!collision.gameObject.CompareTag("Door"))
-            return;
-        if (collision.gameObject.GetComponent<Door>().barricade)
-            return;
         if (!explorationPowerIsAvailable)
             return;
-        if (collision.gameObject.GetComponent<Door>().isOpenForAll)
+        if (gameManager.game.currentRoom.explorationIsUsed)
+            return;
+        if (!collision.gameObject.name.Equals("CollisionPowerImpostor"))
+            return;
+        if (collision.transform.parent.gameObject.GetComponent<Door>().barricade)
+            return;
+        if (collision.transform.parent.gameObject.GetComponent<Door>().isOpenForAll)
+            return;
+        if (gameManager.voteDoorHasProposed)
+            return;
+        if (gameManager.ISTrailsRoom(gameManager.game.currentRoom) && !hasWinFireBallRoom)
             return;
         gameManager.ui_Manager.DisplayButtonPowerExplorationBigger(enter);
-        collsionDoorIndexForExploration = collision.gameObject.GetComponent<Door>().index;
+        collsionDoorIndexForExploration = collision.transform.parent.gameObject.GetComponent<Door>().index;
+
     }
 
     public void IgnoreCollisionAllPlayer(bool ignore)
@@ -1155,6 +1094,8 @@ public class PlayerGO : MonoBehaviour
 
 
         }
+
+        CollisionWithDoorToExploration(collision, true);
     }
 
     public void InputExplorationAnimation()
@@ -1360,6 +1301,8 @@ public class PlayerGO : MonoBehaviour
                 CanChangeBoss(collision.gameObject, false);
 
         }
+
+        CollisionWithDoorToExploration(collision, false);
     }
 
 

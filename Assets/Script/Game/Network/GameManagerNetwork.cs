@@ -285,6 +285,16 @@ public class GameManagerNetwork : MonoBehaviourPun
     }
 
     
+    public void SendExplorationIsUsed(int indexRoom, bool isUsed)
+    {
+        photonView.RPC("SetExplorationIsUsed", RpcTarget.All, indexRoom, isUsed);
+    }
+
+    [PunRPC]
+    public void SetExplorationIsUsed(int indexRoom, bool isUsed)
+    {
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).explorationIsUsed = isUsed;
+    }
 
     [PunRPC]
     public void SetVoteNoToExploration()
@@ -875,10 +885,9 @@ public class GameManagerNetwork : MonoBehaviourPun
 
 
 
-
     public void SendTorchNumber(int number)
     {
-        photonView.RPC("SetTorchNumber", RpcTarget.Others, number);
+        photonView.RPC("SetTorchNumber", RpcTarget.All, number);
     }
 
     [PunRPC]

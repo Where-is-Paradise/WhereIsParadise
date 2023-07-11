@@ -1683,6 +1683,10 @@ setting_button_echapMenu.SetActive(false);
     }
     public void OnClickButtonPowerExplorationBigger()
     {
+        if (gameManager.game.nbTorch <= 0)
+            return;
+        if (gameManager.game.currentRoom.explorationIsUsed)
+            return;
         int indexDoor = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collsionDoorIndexForExploration;
         if (gameManager.GetDoorGo(indexDoor))
         {
@@ -1690,12 +1694,30 @@ setting_button_echapMenu.SetActive(false);
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().explorationPowerIsAvailable = false;
             canvasInGame.transform.Find("Exploration").Find("Torch").Find("Bigger").gameObject.SetActive(false);
             canvasInGame.transform.Find("Exploration").Find("Torch").Find("Disabled").gameObject.SetActive(true);
+
+            // set player when win trial game
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayWhiteLight(false);
+            gameManager.gameManagerNetwork.SendDisplayMainLevers(true);
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(false);
+
+            // set gameManager
+            if (!gameManager.ISTrailsRoom(gameManager.game.currentRoom))
+            {
+                gameManager.game.nbTorch--;
+                gameManager.gameManagerNetwork.SendTorchNumber(gameManager.game.nbTorch);
+            }
+            if (gameManager.game.nbTorch == 0)
+                DisabledButtonPowerExploration(true);
+            gameManager.gameManagerNetwork.SendExplorationIsUsed(gameManager.game.currentRoom.Index, true);
         }
            
     }
 
     public void DisabledButtonPowerExploration(bool display)
     {
+        Debug.LogError(display + " " + gameManager.game.currentRoom.explorationIsUsed);
+        if (!display && gameManager.game.currentRoom.explorationIsUsed)
+            return;
         canvasInGame.transform.Find("Exploration").Find("Torch").Find("Disabled").gameObject.SetActive(display);
     }
 
