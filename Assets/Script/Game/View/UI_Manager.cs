@@ -276,8 +276,9 @@ setting_button_echapMenu.SetActive(false);
         {
             if(door.GetComponent<Door>().index  == indexDoor)
             {
-                door.transform.GetChild(0).GetChild(1).gameObject.SetActive(active);
+                //door.transform.GetChild(0).GetChild(1).gameObject.SetActive(active);
                 door.GetComponent<Door>().barricade = active;
+                door.SetActive(!active);
             }
         }
         
@@ -1036,7 +1037,6 @@ setting_button_echapMenu.SetActive(false);
                 hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
 
             hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(display);
-            Debug.Log(" sa passe le frero");
         }
        
         if (room.isOldParadise)
@@ -1715,7 +1715,6 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisabledButtonPowerExploration(bool display)
     {
-        Debug.LogError(display + " " + gameManager.game.currentRoom.explorationIsUsed);
         if (!display && gameManager.game.currentRoom.explorationIsUsed)
             return;
         canvasInGame.transform.Find("Exploration").Find("Torch").Find("Disabled").gameObject.SetActive(display);
@@ -2041,6 +2040,9 @@ setting_button_echapMenu.SetActive(false);
             }
         }
     }
+
+
+
 }
 
 

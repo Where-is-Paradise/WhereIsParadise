@@ -53,7 +53,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         index_skin = 0;
         setting = GameObject.Find("Setting").GetComponent<Setting>();
         setting.INDEX_SKIN = index_skin;
-       
+        versionIsCorrect = true;
         StartCoroutine(GetText());
         ConnectToMaster();
         

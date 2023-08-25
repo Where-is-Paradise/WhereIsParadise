@@ -76,13 +76,13 @@ public class Dungeon : ScriptableObject
             }
 
             int randomSpeciallity = Random.Range(0, 14);
-            randomSpeciallity = 4;
+            randomSpeciallity = 7;
             if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
                 room.chest = true;
             if (randomSpeciallity == 1 && setting.listSpeciallyRoom[1])
                 room.isSacrifice = true;
-/*            if (randomSpeciallity == 2 && setting.listTrialRoom[0])
-                room.fireBall = true;*/
+            if (randomSpeciallity == 2 && setting.listTrialRoom[0])
+                room.fireBall = true;
             if (randomSpeciallity == 3 && setting.listTrialRoom[3])
                 room.isAx = true;
             if (randomSpeciallity == 4 && setting.listTrialRoom[4])

@@ -26,6 +26,7 @@ TagManager:
   - Ax
   - GodDeath
   - Obstacle
+  - Wall
   layers:
   - Default
   - TransparentFX

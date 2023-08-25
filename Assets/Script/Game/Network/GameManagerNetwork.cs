@@ -716,7 +716,6 @@ public class GameManagerNetwork : MonoBehaviourPun
         player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(enter);
         player.GetComponent<PlayerGO>().hasVoteVD = enter;
 
-        Debug.LogError("Door vote : " + door.GetComponent<Door>().nbVote);
     }
 
 
@@ -821,7 +820,6 @@ public class GameManagerNetwork : MonoBehaviourPun
 
             }
         }
-        Debug.LogError("X vote : " + gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote);
     }
 
     public void SendCollisionChestVote(int indexPlayer, int indexChest, bool enter, bool stay)

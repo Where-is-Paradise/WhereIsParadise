@@ -117,6 +117,8 @@ public class GameManager : MonoBehaviourPun
     public bool paradiseHasChange = false;
 
     public bool alreadySacrifice = false;
+
+    public GameObject DoorsParent;
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -656,17 +658,20 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayObstacleInDoor(indexRoomObstacle, true);
             //GetDoorGo(indexRoomObstacle).SetActive(false);
         }
+        DisplayZoneDoorForEachSituation();
     }
 
 
     public void SetDoorNoneObstacle(Room room)
     {
         List<int> listDoorObstacleIndex = game.GetDoorNoneObstacle(room);
+      
         foreach (int indexRoomObstacle in listDoorObstacleIndex)
         {
             ui_Manager.DisplayObstacleInDoor(indexRoomObstacle, false);
             //GetDoorGo(indexRoomObstacle).SetActive(true);
         }
+        DisplayZoneDoorForEachSituation();
     }
 
 
@@ -747,7 +752,7 @@ public class GameManager : MonoBehaviourPun
         {
             gameManagerNetwork.SendIsDiscorved(true, roomTeam.Index);
         }
-        InsertSpeciallyRoom(roomTeam, isExpedition);
+        //InsertSpeciallyRoom(roomTeam, isExpedition);
         GameObject newDoor = GetDoorGo(indexDoor);
         gameManagerNetwork.SendOpenDoor(indexDoor, game.currentRoom.X, game.currentRoom.Y, isExpedition, roomTeam.GetIndex(), newDoor.GetComponent<Door>().GetRoomBehind().Index);
     }
@@ -1578,43 +1583,12 @@ public class GameManager : MonoBehaviourPun
 
     public GameObject[] TreeDoorById()
     {
-        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
-        GameObject[] NexListDoors = new GameObject[6];
-        List<int> blackList = new List<int>();
-        int i = 0;
-        int j = 0;
-        while (i < 6)
-        {
+        /*        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+                List<int> intDoor = 
+                List<int> blackList = new List<int>();
 
-            if (doors[j].GetComponent<Door>().index == i)
-            {
-                NexListDoors[i] = doors[j];
-                i++;
-            }
-            j++;
-            if (j == 6)
-            {
-                j = 0;
-            }
-        }
-
-        /*        for (int i =0; i< doors.Length; i++)
-                {
-                    int min = 100;
-                    for (int j =0; j < doors.Length; j++)
-                    {
-                        if(doors[j].GetComponent<Door>().index < min && (blackList.Count ==0 || blackList[j] != doors[j].GetComponent<Door>().index))
-                        {
-                            //NexListDoors[i] = doors[j];
-                            min = doors[j].GetComponent<Door>().index;
-                            blackList.Add(doors[j].GetComponent<Door>().index);
-                            break;
-                        }
-                    }
-                    NexListDoors[i] = GetDoorGo(min);
-                }
-                Debug.Log(NexListDoors.Length);*/
-        return NexListDoors;
+                return NexListDoors;*/
+        return GameObject.FindGameObjectsWithTag("Door");
     }
 
     public GameObject[] TreeChestById()
@@ -1905,7 +1879,7 @@ public class GameManager : MonoBehaviourPun
         {
             InsertHell();
         }
-        Debug.Log(OnePlayerFindParadise + "" + (game.key_counter == 0 && !game.currentRoom.IsExit && !game.currentRoom.chest && (!game.currentRoom.isSacrifice || SacrificeIsUsedOneTimes)) + " " +  (game.currentRoom.IsHell || isAlreadyLoose));
+       
         if (!OnePlayerFindParadise && ((game.key_counter == 0 && !game.currentRoom.IsExit && !game.currentRoom.chest && (!game.currentRoom.isSacrifice || SacrificeIsUsedOneTimes))
             || game.currentRoom.IsHell || isAlreadyLoose))
         {
@@ -2040,8 +2014,8 @@ public class GameManager : MonoBehaviourPun
     {
         int voteMax = 0;
         int indexDoorCurrent = -1;
-        GameObject[] listDoor = TreeDoorById();
-        //GameObject[] listDoor = GameObject.FindGameObjectsWithTag("Door");
+        //GameObject[] listDoor = TreeDoorById();
+        GameObject[] listDoor = GameObject.FindGameObjectsWithTag("Door");
         foreach (GameObject door in listDoor)
         {
             if (door.GetComponent<Door>().nbVote >= voteMax)
@@ -3711,5 +3685,92 @@ public class GameManager : MonoBehaviourPun
         {
             door.transform.Find("teleportation").gameObject.SetActive(activate);
         }
+    }
+
+    public void ResetZoneDoor(string doorName)
+    {
+        for(int i=1; i < DoorsParent.transform.Find(doorName).transform.Find("Zones").childCount; i++)
+        {
+            DoorsParent.transform.Find(doorName).transform.Find("Zones").GetChild(i).gameObject.SetActive(false);
+        }
+    }
+    public void DisplayZoneDoorForEachSituation()
+    {
+        ResetZoneDoor("A");
+        ResetZoneDoor("B");
+        ResetZoneDoor("C");
+        ResetZoneDoor("D");
+        ResetZoneDoor("E");
+        ResetZoneDoor("F");
+        if (HasDoor(0) && HasDoor(1) && HasDoor(5)){
+            DoorsParent.transform.Find("A").transform.Find("Zones").Find("AllZone").gameObject.SetActive(true);
+        }
+        else if(HasDoor(0) && HasDoor(1))
+        {
+            DoorsParent.transform.Find("A").transform.Find("Zones").Find("TwoZoneB").gameObject.SetActive(true);
+        }
+        else if (HasDoor(0) && HasDoor(5))
+        {
+            DoorsParent.transform.Find("A").transform.Find("Zones").Find("TwoZoneF").gameObject.SetActive(true);
+        }
+        else if (HasDoor(1) && HasDoor(5))
+        {
+            DoorsParent.transform.Find("B").transform.Find("Zones").Find("middleZone").gameObject.SetActive(true);
+        }
+        else if (HasDoor(0))
+        {
+            DoorsParent.transform.Find("A").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+        }
+        else if (HasDoor(1))
+        {
+            DoorsParent.transform.Find("B").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+        }
+        else if (HasDoor(5))
+        {
+            DoorsParent.transform.Find("F").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+        }
+
+        if (HasDoor(3) && HasDoor(2) && HasDoor(4))
+        {
+            DoorsParent.transform.Find("D").transform.Find("Zones").Find("AllZone").gameObject.SetActive(true);
+        }
+        else if (HasDoor(3) && HasDoor(2))
+        {
+            DoorsParent.transform.Find("D").transform.Find("Zones").Find("TwoZoneB").gameObject.SetActive(true);
+        }
+        else if (HasDoor(3) && HasDoor(4))
+        {
+            DoorsParent.transform.Find("D").transform.Find("Zones").Find("TwoZoneF").gameObject.SetActive(true);
+        }
+        else if (HasDoor(2) && HasDoor(4))
+        {
+            DoorsParent.transform.Find("C").transform.Find("Zones").Find("middleZone").gameObject.SetActive(true);
+        }
+        else if (HasDoor(3))
+        {
+            DoorsParent.transform.Find("D").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+        }
+        else if (HasDoor(2))
+        {
+            DoorsParent.transform.Find("C").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+        }
+        else if (HasDoor(4))
+        {
+            DoorsParent.transform.Find("E").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+        }
+    }
+
+    public bool HasDoor(int index)
+    {
+
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+
+        foreach(GameObject door in doors)
+        {
+            if (door.GetComponent<Door>().index == index)
+                return true;
+        }
+
+        return false;
     }
 }

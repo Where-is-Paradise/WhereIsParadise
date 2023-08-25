@@ -15,6 +15,14 @@ public class Death_NPC : MonoBehaviourPun
     public float tranparency = 255;
     private float oldHorizontal;
     private float oldVertical;
+
+   
+
+    private Vector2 direction = new Vector2(0, 0);
+    private bool canDash = false;
+    private bool canCircleDash = false;
+    private bool canTransition = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,10 +33,10 @@ public class Death_NPC : MonoBehaviourPun
             gameManager.TeleportAllPlayerInRoomOfBoss();
             StartCoroutine(StartDeathNPCRoomAfterTeleportation());
             //StartCoroutine(SendPostionCouroutine());
-            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().enabled = false;
+/*            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().enabled = false;
             this.transform.Find("Faux").GetComponent<SpriteRenderer>().enabled = false;
-            this.GetComponent<CapsuleCollider2D>().enabled = false;
-            Instantiate(godDeath2, this.transform.position, Quaternion.identity);
+            this.GetComponent<CapsuleCollider2D>().enabled = false;*/
+            //Instantiate(godDeath2, this.transform.position, Quaternion.identity);
         }
 
     }
@@ -40,7 +48,7 @@ public class Death_NPC : MonoBehaviourPun
        
         yield return new WaitForSeconds(2);
         gameManager.deathNPCIsLaunch = true;
-        StartCoroutine(SetNotInvisibleCoroutine());
+        //StartCoroutine(SetNotInvisibleCoroutine());
         StartDeathNPCRoom();
     }
     public void StartDeathNPCRoom()
@@ -54,14 +62,17 @@ public class Death_NPC : MonoBehaviourPun
         {
             return;
         }
-        SetMaxSpeed(3);
+        /*SetMaxSpeed(3);
         photonView.RPC("SendSpeciallyIsLaucnh", RpcTarget.All);
         SetTargetOfPathFinding();
         StartCoroutine(ChangerSpeedCoroutine());
         photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, false) ;
         //StartCoroutine(UpdatePositionCoroutine());
         StartCoroutine(CanHideDeathGodCoroutine());
-        //Instantiate(godDeath2, this.transform.position, Quaternion.identity);
+        //Instantiate(godDeath2, this.transform.position, Quaternion.identity);*/
+        //DashStraight();
+        //StartCoroutine(Teleportation());
+        StartCoroutine(RandomScenario());
     }
     [PunRPC]
     public void SendIgnoreCollisionPlayer(bool ignore)
@@ -82,13 +93,13 @@ public class Death_NPC : MonoBehaviourPun
     void Update()
     {
         ChangeScaleForSituation();
-        ChangeTransparencyToInvisibilty();
-        if (!gameManager.SamePositionAtBoss() && CanHideDeathGod)
+        //ChangeTransparencyToInvisibilty();
+/*        if (!gameManager.SamePositionAtBoss() && CanHideDeathGod)
         {
             this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().enabled = false;
             this.transform.Find("Faux").GetComponent<SpriteRenderer>().enabled = false;
             this.GetComponent<CapsuleCollider2D>().enabled = false;
-        }
+        }*/
         
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
@@ -99,10 +110,21 @@ public class Death_NPC : MonoBehaviourPun
             return;
         }
         gameManager.CloseDoorWhenVote(true);
-        SetTargetOfPathFinding();
+        //SetTargetOfPathFinding();
 
-        ChangeDirectionBrutally();
-        
+        //ChangeDirectionBrutally();
+
+        if (canDash)
+        {
+            DashDirection();
+        }
+        if (canCircleDash)
+        {
+            DashCircle();
+        }
+        //DashCircle();
+
+
 
     }
 
@@ -172,11 +194,12 @@ public class Death_NPC : MonoBehaviourPun
 
     public void ChangeScaleForSituation()
     {
-        if (GetComponent<AIPath>().desiredVelocity.x >= 0.01f)
+        
+        if (direction.x >= 0.01f)
         {
             this.transform.localScale = new Vector2(-Mathf.Abs(this.transform.localScale.x), this.transform.localScale.y);
         }
-        else if (GetComponent<AIPath>().desiredVelocity.x <= -0.01f)
+        else if (direction.x <= -0.01f)
         {
             this.transform.localScale = new Vector2(Mathf.Abs(this.transform.localScale.x), this.transform.localScale.y);
         }
@@ -278,6 +301,13 @@ public class Death_NPC : MonoBehaviourPun
         if (!gameManager.deathNPCIsLaunch)
         {
             return;
+        }
+        if(collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Obstacle" || collision.gameObject.tag == "Door")
+        {
+            if (canDash)
+            {
+                DashStraight();
+            }
         }
 
         if (collision.gameObject.tag == "Player")
@@ -511,4 +541,178 @@ public class Death_NPC : MonoBehaviourPun
         oldHorizontal = horizontal;
         oldVertical = vertical;
     }
+
+    public IEnumerator RandomScenario()
+    {
+        // 0 dash
+        // circle dash
+        // teleportation
+        // invisibilité
+
+        int indexScenario = Random.Range(0, 2);
+        Debug.Log(indexScenario);
+        indexScenario = 1;
+        if (indexScenario == 0)
+        {
+            DashStraight();
+            canDash = true;
+            yield return new WaitForSeconds(6);
+            canDash = false;
+        }
+        if (indexScenario == 1)
+        {
+            width = Random.Range(1f, 5.5f);
+            height = Random.Range(0.5f, 3.75f);
+            timeCounter = 0;
+            initialTimeCounter = Random.Range(0f, 10f);
+            canCircleDash = true;
+            canTransition = true;
+            yield return new WaitForSeconds(6);
+            canCircleDash = false;
+        }
+        if(indexScenario == 2)
+        {
+            StartCoroutine(Teleportation());
+            yield return new WaitForSeconds(8);
+        }
+        StartCoroutine(RandomScenario());
+
+    }
+
+    // nouvelle mise a jour de ce mini jeu
+    public void DashStraight()
+    {
+        bool canDashUp = true;
+        bool canDashDown = true;
+        bool canDashRight = true;
+        bool canDashLeft = true;
+
+        if (transform.position.x <= -5)
+            canDashLeft = false;
+        if (transform.position.x >= 4.75f)
+            canDashRight = false;
+        if (transform.position.y <= -2)
+            canDashDown = false;
+        if (transform.position.y >= 1.45)
+            canDashUp = false;
+
+        List<int> listScenario = new List<int>();
+
+        if (canDashUp && canDashRight)
+        {
+            listScenario.Add(0);
+        }
+        if ( canDashUp && canDashLeft)
+        {
+            listScenario.Add(1);
+        }
+        if(canDashDown && canDashRight)
+        {
+            listScenario.Add(2);
+        }
+        if ( canDashDown && canDashLeft)
+        {
+            listScenario.Add(3);
+        }
+        int randomIndexScenario = Random.Range(0, listScenario.Count);
+
+
+
+        if(listScenario[randomIndexScenario] == 0)
+        {
+            float dash_X = Random.Range(this.transform.position.x + 3, 10);
+            float dash_Y = Random.Range(this.transform.position.y + 3, 7);
+            direction = new Vector2(dash_X - this.transform.position.x , dash_Y - this.transform.position.y );;
+        }
+        if(listScenario[randomIndexScenario] == 1)
+        {
+            float dash_X = Random.Range(this.transform.position.x - 3, -10);
+            float dash_Y = Random.Range(this.transform.position.y + 3, 7);
+            direction = new Vector2(dash_X - this.transform.position.x , dash_Y - this.transform.position.y);
+        }
+        if(listScenario[randomIndexScenario] == 2)
+        {
+            float dash_X = Random.Range(this.transform.position.x + 3, 10);
+            float dash_Y = Random.Range(this.transform.position.y - 3, -7);
+            direction = new Vector2(dash_X - this.transform.position.x, dash_Y - this.transform.position.y);
+        }
+        if(listScenario[randomIndexScenario] == 3)
+        {
+            float dash_X = Random.Range(this.transform.position.x - 3, -10);
+            float dash_Y = Random.Range(this.transform.position.y - 3, -7);
+            direction = new Vector2(dash_X - this.transform.position.x, dash_Y - this.transform.position.y );
+        }
+        //Dash(randomIntDirection);
+    }
+
+    public void DashDirection()
+    {
+        transform.Translate(direction.normalized * 5 * Time.deltaTime);
+    }
+
+    float timeCounter = 0;
+    float speed = 2.5f;
+    float width = 1;
+    float height = 1;
+    float initialTimeCounter = 0;
+
+    public void DashCircle()
+    {
+        float x = Mathf.Cos(Mathf.Acos(this.transform.position.x / width)) * width;
+        float y = Mathf.Sin(Mathf.Acos(this.transform.position.x / width)) * height;
+
+        if (canTransition)
+        {
+            Teleportation(new Vector3(x, y));
+            canTransition = false;
+            timeCounter = Mathf.Acos(this.transform.position.x / width);
+            return;
+        }
+        
+        timeCounter += Time.deltaTime * speed;
+
+        x = Mathf.Cos(timeCounter) * width;
+        y = Mathf.Sin(timeCounter) * height;
+
+        transform.position = new Vector3(x, y);
+    }
+
+    public void TransitionDashCircle(Vector3 target)
+    {
+        float x = target.x - this.transform.position.x;
+        float y = target.y - this.transform.position.y;
+        this.transform.Translate(new Vector3(x,y) * 6 * Time.deltaTime);
+        if (Mathf.Abs(x) + Mathf.Abs(y) < 0.5f)
+            canTransition = false;
+    }
+
+    int counterTeleporation = 0;
+    public IEnumerator Teleportation()
+    {
+        yield return new WaitForSeconds(1.5f);
+        float random_x_position = Random.Range(-7.32f, 7.32f);
+        float random_y_position = Random.Range(-3.5f, 3.5f);
+
+        transform.position = new Vector2(random_x_position, random_y_position);
+        if(counterTeleporation == 5)
+        {
+            counterTeleporation = 0;
+        }
+        else
+        {
+            StartCoroutine(Teleportation());
+            counterTeleporation++;
+        }
+    }
+    public void Teleportation(Vector3 destination)
+    {
+        transform.position = destination;
+    }
+
+    public void Invisibility()
+    {
+
+    }
+
+
 }
