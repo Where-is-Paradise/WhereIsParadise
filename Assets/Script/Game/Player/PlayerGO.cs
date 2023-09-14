@@ -946,7 +946,12 @@ public class PlayerGO : MonoBehaviour
             Mathf.Abs(perso.localScale.x),
             perso.localScale.y
         );
-       
+        transform.Find("BlueTorch").localScale = new Vector3(
+            Mathf.Abs(transform.Find("BlueTorch").localScale.x),
+            transform.Find("BlueTorch").localScale.y);
+        transform.Find("BlueTorch").transform.localPosition = new Vector3(-0.455f, transform.Find("BlueTorch").transform.localPosition.y);
+        //transform.Find("BlueTorch").transform.transform.eulerAngles = new Vector3(0, 0, 24); 
+
     }
 
     private void turnRight()
@@ -956,6 +961,14 @@ public class PlayerGO : MonoBehaviour
             -Mathf.Abs(perso.localScale.x),
             perso.localScale.y
         );
+
+
+        transform.Find("BlueTorch").localScale = new Vector3(
+            -Mathf.Abs(transform.Find("BlueTorch").localScale.x),
+            transform.Find("BlueTorch").localScale.y);
+        transform.Find("BlueTorch").transform.localPosition = new Vector3(0.455f, transform.Find("BlueTorch").transform.localPosition.y);
+        //transform.Find("BlueTorch").transform.transform.eulerAngles = new Vector3(0, 0, -24);
+
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
@@ -1006,6 +1019,7 @@ public class PlayerGO : MonoBehaviour
         collsionDoorIndexForExploration = collision.transform.parent.gameObject.GetComponent<Door>().index;
 
     }
+
 
     public void IgnoreCollisionAllPlayer(bool ignore)
     {
@@ -1988,6 +2002,10 @@ public class PlayerGO : MonoBehaviour
     private bool avaibleDash = true; 
     public void Dash()
     {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
         if (!Input.GetKey(KeyCode.Space))
         {
             return;
@@ -1998,7 +2016,6 @@ public class PlayerGO : MonoBehaviour
         }
         float horizontal = InputManager.GetAxis("Horizontal");
         float vertical = InputManager.GetAxis("Vertical");
-        Debug.Log(horizontal + " " + vertical);
         if((horizontal > -0.1f && horizontal < 0.1f) && (vertical < 0.1f && vertical > -0.1f))
         {
             if(Mathf.Sign(this.transform.Find("Skins").GetChild(indexSkin).localScale.x) == 1) {
@@ -2054,6 +2071,7 @@ public class PlayerGO : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         avaibleDash = true;
     }
+
 
 
 }

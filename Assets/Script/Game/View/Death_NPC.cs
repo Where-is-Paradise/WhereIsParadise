@@ -20,8 +20,14 @@ public class Death_NPC : MonoBehaviourPun
 
     private Vector2 direction = new Vector2(0, 0);
     private bool canDash = false;
+    private bool canDashTarget = false;
     private bool canCircleDash = false;
     private bool canTransition = false;
+
+    private Vector3 target = new Vector3(0,0,0);
+
+    private float old_x = 0;
+    private float old_y = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -123,8 +129,11 @@ public class Death_NPC : MonoBehaviourPun
             DashCircle();
         }
         //DashCircle();
+        if (canDashTarget)
+            DashDirectionTarget(target);
 
 
+        CalculVelocity();
 
     }
 
@@ -549,9 +558,10 @@ public class Death_NPC : MonoBehaviourPun
         // teleportation
         // invisibilité
 
-        int indexScenario = Random.Range(0, 2);
-        Debug.Log(indexScenario);
-        indexScenario = 1;
+        int indexScenario = Random.Range(0, 3);
+        //Debug.Log(indexScenario);
+        //indexScenario = 1;
+        Debug.Log("SCENARIO :  " + (indexScenario+1));
         if (indexScenario == 0)
         {
             DashStraight();
@@ -561,14 +571,17 @@ public class Death_NPC : MonoBehaviourPun
         }
         if (indexScenario == 1)
         {
+            //canDashTarget = true;
+            timeCounter = 0;
+            randomX = Random.Range(-5, 4);
+            initialTimeCounter = Random.Range(0f, 10f);
             width = Random.Range(1f, 5.5f);
             height = Random.Range(0.5f, 3.75f);
-            timeCounter = 0;
-            initialTimeCounter = Random.Range(0f, 10f);
-            canCircleDash = true;
-            canTransition = true;
+            target = GetFuturePositionOfDashCircle();
+            canDashTarget = true;
             yield return new WaitForSeconds(6);
             canCircleDash = false;
+
         }
         if(indexScenario == 2)
         {
@@ -647,7 +660,22 @@ public class Death_NPC : MonoBehaviourPun
 
     public void DashDirection()
     {
-        transform.Translate(direction.normalized * 5 * Time.deltaTime);
+        old_x = this.transform.position.x;
+        old_y = this.transform.position.y;
+        transform.Translate(direction.normalized * 7 * Time.deltaTime);
+    }
+    public void DashDirectionTarget(Vector3 target)
+    {
+        old_x = this.transform.position.x;
+        old_y = this.transform.position.y;
+        transform.Translate((target - this.transform.position).normalized * 5 * Time.deltaTime);
+
+        if(Mathf.Abs(this.transform.position.x - target.x) <0.01 && Mathf.Abs(this.transform.position.y - target.y) < 0.01)
+        {
+            canCircleDash = true;
+            canDashTarget = false;
+        }
+
     }
 
     float timeCounter = 0;
@@ -655,26 +683,36 @@ public class Death_NPC : MonoBehaviourPun
     float width = 1;
     float height = 1;
     float initialTimeCounter = 0;
-
+    float randomX = 0;
+    
     public void DashCircle()
     {
-        float x = Mathf.Cos(Mathf.Acos(this.transform.position.x / width)) * width;
-        float y = Mathf.Sin(Mathf.Acos(this.transform.position.x / width)) * height;
+        Vector2 circlePosition = GetFuturePositionOfDashCircle();
+        old_x = this.transform.position.x;
+        old_y = this.transform.position.y;
+        transform.position = new Vector3(circlePosition.x, circlePosition.y);
 
-        if (canTransition)
-        {
-            Teleportation(new Vector3(x, y));
-            canTransition = false;
-            timeCounter = Mathf.Acos(this.transform.position.x / width);
-            return;
-        }
-        
+       
+    }
+
+    public Vector2 GetFuturePositionOfDashCircle()
+    {
+        /*        float x = Mathf.Cos(Mathf.Acos(this.transform.position.x / width)) * width;
+                float y = Mathf.Sin(Mathf.Acos(this.transform.position.x / width)) * height;*/
+
         timeCounter += Time.deltaTime * speed;
-
-        x = Mathf.Cos(timeCounter) * width;
-        y = Mathf.Sin(timeCounter) * height;
-
-        transform.position = new Vector3(x, y);
+        float x = Mathf.Cos(timeCounter) * width;
+        float y = Mathf.Sin(timeCounter) * height;
+        x +=  randomX;
+        if (y > 2)
+            y = 2;
+        if (x < -6)
+            x = -6;
+        if (x > 6.2f)
+            x = 6.2f;
+        if (y < -3.5f)
+            y = -3.5f;
+        return new Vector2(x, y);
     }
 
     public void TransitionDashCircle(Vector3 target)
@@ -689,7 +727,7 @@ public class Death_NPC : MonoBehaviourPun
     int counterTeleporation = 0;
     public IEnumerator Teleportation()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         float random_x_position = Random.Range(-7.32f, 7.32f);
         float random_y_position = Random.Range(-3.5f, 3.5f);
 
@@ -712,6 +750,19 @@ public class Death_NPC : MonoBehaviourPun
     public void Invisibility()
     {
 
+    }
+
+    
+    public void CalculVelocity()
+    {
+        if( old_x < this.transform.position.x)
+        {
+            this.transform.localScale = new Vector2(Mathf.Abs(this.transform.localScale.x), this.transform.localScale.y); 
+        }
+        if (old_x > this.transform.position.x)
+        {
+            this.transform.localScale = new Vector2(-Mathf.Abs(this.transform.localScale.x), this.transform.localScale.y);
+        }
     }
 
 

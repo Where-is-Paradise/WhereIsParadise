@@ -95,11 +95,9 @@ public class LostTorchRoom : MonoBehaviourPun
         PlayerGO PlayerWiner = lostTorch.currentPlayer;
         if (!PlayerWiner)
         {
-            Debug.Log("sa apsse 0 ");
             photonView.RPC("SetCanLunchExploration", RpcTarget.All, gameManager.GetRandomPlayerID());
             return;
         }
-        Debug.Log("sa apsse");
         photonView.RPC("SetCanLunchExploration", RpcTarget.All, PlayerWiner.GetComponent<PhotonView>().ViewID);
     }
 

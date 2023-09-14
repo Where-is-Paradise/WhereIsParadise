@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviourPun
 
     public bool alreadySacrifice = false;
 
-    public GameObject DoorsParent;
+    public GameObject doorsParent;
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -649,6 +649,14 @@ public class GameManager : MonoBehaviourPun
         }
     }
 
+    public void DesaciveAllDoor()
+    {
+        for(int i = 0; i < doorsParent.transform.childCount; i++)
+        {
+            doorsParent.transform.GetChild(i).gameObject.SetActive(false);
+        }
+    }
+
     public void SetDoorObstacle(Room room)
     {
         List<int> listDoorObstacleIndex = game.GetDoorObstacle(room);
@@ -1117,11 +1125,14 @@ public class GameManager : MonoBehaviourPun
         //GameObject[] doors = TreeDoorById();
         GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
 
-        foreach (GameObject door in doors)
-        {
-            door.GetComponent<Door>().IsCloseNotPermantly = false;
 
+        for(int i =0; i< doorsParent.transform.childCount;i++)
+        {
+            Debug.Log(doorsParent.transform.GetChild(i).GetComponent<Door>().doorName);
+            doorsParent.transform.GetChild(i).GetComponent<Door>().IsCloseNotPermantly = false;
         }
+
+
     }
     public void ResetDoorsActive()
     {
@@ -1446,7 +1457,7 @@ public class GameManager : MonoBehaviourPun
     {
         GameObject[] doors = TreeDoorById();
         //GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
-        int i = 0;
+/*        int i = 0;
         foreach (GameObject door in doors)
         {
             if (room.door_isOpen[i] && i == door.GetComponent<Door>().index)
@@ -1460,6 +1471,20 @@ public class GameManager : MonoBehaviourPun
                 door.GetComponent<Door>().isOpenForAll = false;
             }
             i++;
+        }*/
+
+        for(int i = 0; i< doorsParent.transform.childCount; i++)
+        {
+            if (room.door_isOpen[i] && i == doorsParent.transform.GetChild(i).GetComponent<Door>().index)
+            {
+                doorsParent.transform.GetChild(i).transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
+                doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll = true;
+            }
+            else
+            {
+                doorsParent.transform.GetChild(i).transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
+                doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll = false;
+            }
         }
 
         if (isInExepedtion)
@@ -1825,7 +1850,7 @@ public class GameManager : MonoBehaviourPun
             game.currentRoom.door_isOpen[newDoor.GetComponent<Door>().index] = true;
         }
 
-
+        ui_Manager.DisplayAllDoorLightExploration(false);
         UpdateSpecialsRooms(game.currentRoom);
         ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
         SetDoorNoneObstacle(game.currentRoom);
@@ -1918,6 +1943,9 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisabledButtonPowerExploration(false);
         }
         gameManagerNetwork.SendUpdateDataPlayer(GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+
+        ui_Manager.HideLightExplorationAllDoor();
+        ui_Manager.DisplayAllDoorLightExploration(true);
     }
 
 
@@ -2345,13 +2373,12 @@ public class GameManager : MonoBehaviourPun
 
     public void CloseDoorWhenVote(bool close)
     {
-        //GameObject[] doors = TreeDoorById();
-        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
-        foreach (GameObject door in doors)
+        for (int i = 0; i < doorsParent.transform.childCount; i++)
         {
-            if (door.GetComponent<Door>().isOpenForAll)
+
+            if (doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll)
             {
-                door.GetComponent<Door>().IsCloseNotPermantly = close;
+                doorsParent.transform.GetChild(i).GetComponent<Door>().IsCloseNotPermantly = close;
             }
         }
     }
@@ -2778,84 +2805,143 @@ public class GameManager : MonoBehaviourPun
         if (!GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             return;
 
-        GameObject[] doors = TreeDoorById();
-        if (!room.left_neighbour.isTraped)
+
+        for(int i =0; i < doorsParent.transform.childCount; i++)
         {
-            doors[0].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            doors[0].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[0].GetComponent<Door>().index, false);
+            Door door = doorsParent.transform.GetChild(i).GetComponent<Door>();
+            if (!doorsParent.transform.GetChild(i).GetComponent<Door>().GetRoomBehind().isTraped)
+            {
+
+                door.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                door.transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(door.GetComponent<Door>().index, false);
+            }
+            else
+            {
+                door.GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                door.transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(door.GetComponent<Door>().index, true);
+            }
+        }
+        
+
+        //GameObject[] doors = TreeDoorById();
+
+        //doors[0].GetComponent<Door>().GetRoomBehind().istr;
+        /*if (!room.left_neighbour.isTraped)
+        {
+            if (doors[0])
+            {
+                doors[0].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                doors[0].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[0].GetComponent<Door>().index, false);
+            }  
         }
         else
         {
-            doors[0].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            doors[0].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[0].GetComponent<Door>().index, true);
+            if (doors[0])
+            {
+                doors[0].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                doors[0].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[0].GetComponent<Door>().index, true);
+
+            }
         }
 
         if (!room.up_Left_neighbour.isTraped)
         {
-            doors[1].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            doors[1].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[1].GetComponent<Door>().index, false);
+            if (doors[1])
+            {
+                doors[1].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                doors[1].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[1].GetComponent<Door>().index, false);
+            }
         }
         else
         {
-            doors[1].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            doors[1].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[1].GetComponent<Door>().index, true);
+            if (doors[1])
+            {
+                doors[1].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                doors[1].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[1].GetComponent<Door>().index, true);
+            } 
         }
 
         if (!room.up_Right_neighbour.isTraped)
         {
-            doors[2].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            doors[2].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[2].GetComponent<Door>().index, false);
+            if (doors[2])
+            {
+                doors[2].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                doors[2].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[2].GetComponent<Door>().index, false);
+            }
         }
         else
         {
-            doors[2].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            doors[2].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[2].GetComponent<Door>().index, true);
+            if (doors[2])
+            {
+                doors[2].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                doors[2].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[2].GetComponent<Door>().index, true);
+            }
         }
 
         if (!room.right_neighbour.isTraped)
         {
-            doors[3].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            doors[3].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[3].GetComponent<Door>().index, false);
+            if (doors[3])
+            {
+                doors[3].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                doors[3].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[3].GetComponent<Door>().index, false);
+            }
         }
         else
         {
-            doors[3].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            doors[3].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[3].GetComponent<Door>().index, true);
+            if (doors[3])
+            {
+                doors[3].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                doors[3].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[3].GetComponent<Door>().index, true);
+            }
         }
 
         if (!room.down_Right_neighbour.isTraped)
         {
-            doors[4].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            doors[4].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[4].GetComponent<Door>().index, false);
+            if (doors[4])
+            {
+                doors[4].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                doors[4].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[4].GetComponent<Door>().index, false);
+            }
         }
         else
         {
-            doors[4].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            doors[4].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[4].GetComponent<Door>().index, true);
+            if (doors[4])
+            {
+                doors[4].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                doors[4].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[4].GetComponent<Door>().index, true);
+            }   
         }
 
         if (!room.down_Left_neighbour.isTraped)
         {
-            doors[5].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            doors[5].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[5].GetComponent<Door>().index, false);
+            if (doors[5])
+            {
+                doors[5].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                doors[5].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[5].GetComponent<Door>().index, false);
+            }
         }
         else
         {
-            doors[5].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            doors[5].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[5].GetComponent<Door>().index, true);
-        }
+            if (doors[5])
+            {
+                doors[5].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                doors[5].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[5].GetComponent<Door>().index, true);
+            }
+        }*/
 
     }
 
@@ -3689,9 +3775,9 @@ public class GameManager : MonoBehaviourPun
 
     public void ResetZoneDoor(string doorName)
     {
-        for(int i=1; i < DoorsParent.transform.Find(doorName).transform.Find("Zones").childCount; i++)
+        for(int i=1; i < doorsParent.transform.Find(doorName).transform.Find("Zones").childCount; i++)
         {
-            DoorsParent.transform.Find(doorName).transform.Find("Zones").GetChild(i).gameObject.SetActive(false);
+            doorsParent.transform.Find(doorName).transform.Find("Zones").GetChild(i).gameObject.SetActive(false);
         }
     }
     public void DisplayZoneDoorForEachSituation()
@@ -3703,60 +3789,60 @@ public class GameManager : MonoBehaviourPun
         ResetZoneDoor("E");
         ResetZoneDoor("F");
         if (HasDoor(0) && HasDoor(1) && HasDoor(5)){
-            DoorsParent.transform.Find("A").transform.Find("Zones").Find("AllZone").gameObject.SetActive(true);
+            doorsParent.transform.Find("A").transform.Find("Zones").Find("AllZone").gameObject.SetActive(true);
         }
         else if(HasDoor(0) && HasDoor(1))
         {
-            DoorsParent.transform.Find("A").transform.Find("Zones").Find("TwoZoneB").gameObject.SetActive(true);
+            doorsParent.transform.Find("A").transform.Find("Zones").Find("TwoZoneB").gameObject.SetActive(true);
         }
         else if (HasDoor(0) && HasDoor(5))
         {
-            DoorsParent.transform.Find("A").transform.Find("Zones").Find("TwoZoneF").gameObject.SetActive(true);
+            doorsParent.transform.Find("A").transform.Find("Zones").Find("TwoZoneF").gameObject.SetActive(true);
         }
         else if (HasDoor(1) && HasDoor(5))
         {
-            DoorsParent.transform.Find("B").transform.Find("Zones").Find("middleZone").gameObject.SetActive(true);
+            doorsParent.transform.Find("B").transform.Find("Zones").Find("middleZone").gameObject.SetActive(true);
         }
         else if (HasDoor(0))
         {
-            DoorsParent.transform.Find("A").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+            doorsParent.transform.Find("A").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
         }
         else if (HasDoor(1))
         {
-            DoorsParent.transform.Find("B").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+            doorsParent.transform.Find("B").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
         }
         else if (HasDoor(5))
         {
-            DoorsParent.transform.Find("F").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+            doorsParent.transform.Find("F").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
         }
 
         if (HasDoor(3) && HasDoor(2) && HasDoor(4))
         {
-            DoorsParent.transform.Find("D").transform.Find("Zones").Find("AllZone").gameObject.SetActive(true);
+            doorsParent.transform.Find("D").transform.Find("Zones").Find("AllZone").gameObject.SetActive(true);
         }
         else if (HasDoor(3) && HasDoor(2))
         {
-            DoorsParent.transform.Find("D").transform.Find("Zones").Find("TwoZoneB").gameObject.SetActive(true);
+            doorsParent.transform.Find("D").transform.Find("Zones").Find("TwoZoneB").gameObject.SetActive(true);
         }
         else if (HasDoor(3) && HasDoor(4))
         {
-            DoorsParent.transform.Find("D").transform.Find("Zones").Find("TwoZoneF").gameObject.SetActive(true);
+            doorsParent.transform.Find("D").transform.Find("Zones").Find("TwoZoneF").gameObject.SetActive(true);
         }
         else if (HasDoor(2) && HasDoor(4))
         {
-            DoorsParent.transform.Find("C").transform.Find("Zones").Find("middleZone").gameObject.SetActive(true);
+            doorsParent.transform.Find("C").transform.Find("Zones").Find("middleZone").gameObject.SetActive(true);
         }
         else if (HasDoor(3))
         {
-            DoorsParent.transform.Find("D").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+            doorsParent.transform.Find("D").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
         }
         else if (HasDoor(2))
         {
-            DoorsParent.transform.Find("C").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+            doorsParent.transform.Find("C").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
         }
         else if (HasDoor(4))
         {
-            DoorsParent.transform.Find("E").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+            doorsParent.transform.Find("E").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
         }
     }
 

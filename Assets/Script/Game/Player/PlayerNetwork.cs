@@ -169,6 +169,9 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetHasWinFireBallRoom(bool hasWinFireBall)
     {
         player.hasWinFireBallRoom = hasWinFireBall;
+        if (player.GetComponent<PhotonView>().IsMine)
+            player.gameManager.ui_Manager.DisplayAllDoorLightExploration(true);
+
         PowerImpostor playerPowerImpostorTrap = player.transform.Find("PowerImpostor").GetComponent<PowerImpostor>();
         ObjectImpostor playerObjectImpostor = player.transform.Find("ImpostorObject").GetComponent<ObjectImpostor>();
         if (player.GetComponent<PhotonView>().IsMine)

@@ -71,10 +71,11 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         if (gameManager.game.GetBoss())
         {
+            if (gameManager.GetPlayer(gameManager.game.GetBoss().GetId()).GetComponent<PhotonView>().IsMine)
+                gameManager.ui_Manager.DisplayAllDoorLightExploration(false);
             gameManager.game.GetBoss().SetIsBoss(false);
             gameManager.GetBoss().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
-            gameManager.GetBoss().GetComponent<PlayerGO>().isBoss = false;
-            
+            gameManager.GetBoss().GetComponent<PlayerGO>().isBoss = false;  
         }
        
         gameManager.game.SetBoss(indexNewBoss);
@@ -82,6 +83,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerNetwork>().SendDisplayCrown(true);
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().explorationPowerIsAvailable = true;
         gameManager.ui_Manager.DisabledButtonPowerExploration(!gameManager.IsBoss());
+        if (gameManager.GetPlayer(indexNewBoss).GetComponent<PhotonView>().IsMine)
+            gameManager.ui_Manager.DisplayAllDoorLightExploration(true);
     }
 
 
@@ -1766,6 +1769,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void DisplayLightAllAvailableDoor(bool display)
     {
+        return;
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower == -1)
             return;
         if (gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().powerIsUsed && display)
@@ -1840,6 +1844,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void DisplayLightAllAvailableDoorN2(bool display)
     {
+        return;   
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower == -1)
             return;
         GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
