@@ -383,10 +383,6 @@ public class GameManager : MonoBehaviourPun
             listIndexPower.Add(2);
         if (setting.listTrapRoom[3])
             listIndexPower.Add(3);
-        if (setting.listTrapRoom[4])
-            listIndexPower.Add(4);
-        if (setting.listTrapRoom[5])
-            listIndexPower.Add(5);
 
         if (listIndexPower.Count == 1)
         {
@@ -535,6 +531,7 @@ public class GameManager : MonoBehaviourPun
                 hex.GetComponent<Hexagone>().distanceText.text = "";
                 hex.GetComponent<Hexagone>().index_text.text = "";
             }
+            return;
         }
 
         if (room.IsInitiale)
@@ -562,6 +559,23 @@ public class GameManager : MonoBehaviourPun
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
         }
+
+
+        if (room.isSpecial && !room.isTrial)
+        {
+            GameObject Information_Speciality = hex.transform.Find("Information_Speciality").gameObject;
+            Information_Speciality.SetActive(true);
+            Information_Speciality.transform.Find("Hexagone").Find("SpeciallyRoom").gameObject.SetActive(true);
+            Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(5f / 255f, 156f / 255f, 154f / 255f);
+        }
+        if (room.isTrial)
+        {
+            GameObject Information_Speciality = hex.transform.Find("Information_Speciality").gameObject;
+            Information_Speciality.SetActive(true);
+            Information_Speciality.transform.Find("Hexagone").Find("TrailRoom").gameObject.SetActive(true);
+            Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
+        }
+
     }
 
     public void SpawnPlayer()
@@ -1915,6 +1929,7 @@ public class GameManager : MonoBehaviourPun
             if (game.currentRoom.IsHell)
             {
                 Loose();
+                
             }
         }
         if (game.currentRoom.IsExit)
@@ -1956,7 +1971,6 @@ public class GameManager : MonoBehaviourPun
         {
             if (((room.isSacrifice && !SacrificeIsUsedOneTimes )|| room.chest) && !room.speciallyPowerIsUsed)
             {
-                Debug.Log("sa passe " + room.Index + " " + room.isSacrifice + " " + room.chest + " " + room.speciallyPowerIsUsed);
                 return true;
             }
         }

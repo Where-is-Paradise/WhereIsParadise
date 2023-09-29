@@ -314,41 +314,54 @@ public class Hexagone : MonoBehaviourPun
         if (gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.dungeon.initialRoom) == 
             gameManager.game.dungeon.GetPathFindingDistance(gameManager.game.dungeon.initialRoom, gameManager.game.dungeon.exit))
             return;
-        if (this.room.isHide)
+/*        if (this.room.isHide)
         {
             GameObject interogationPoint = this.transform.Find("Integoration_point").gameObject;
             interogationPoint.SetActive(display);
             return;
-        }
+        }*/
         GameObject Information_Speciality = this.transform.Find("Information_Speciality").gameObject;
         Information_Speciality.SetActive(display);
-        if (this.room.isAx)
-            Information_Speciality.transform.Find("Hexagone").Find("Ax").gameObject.SetActive(display);
-        if (this.room.isSword)
-            Information_Speciality.transform.Find("Hexagone").Find("Sword").gameObject.SetActive(display);
-        if (this.room.isSwordDamocles)
-            Information_Speciality.transform.Find("Hexagone").Find("Damocles").gameObject.SetActive(display);
-        if (this.room.isDeathNPC)
-            Information_Speciality.transform.Find("Hexagone").Find("GodDeath").gameObject.SetActive(display);
-        if (this.room.fireBall)
-            Information_Speciality.transform.Find("Hexagone").Find("Gargouille").gameObject.SetActive(display);
-        if (this.room.chest)
-            Information_Speciality.transform.Find("Hexagone").Find("Chest").gameObject.SetActive(display);
-        if (this.room.isSacrifice)
-            Information_Speciality.transform.Find("Hexagone").Find("Sacrifice").gameObject.SetActive(display);
-        if (this.room.isLostTorch)
-            Information_Speciality.transform.Find("Hexagone").Find("LostTorch").gameObject.SetActive(display);
-        if (this.room.isMonsters)
-            Information_Speciality.transform.Find("Hexagone").Find("Monsters").gameObject.SetActive(display);
-        if (this.room.isResurection)
-            Information_Speciality.transform.Find("Hexagone").Find("Resurection").gameObject.SetActive(display);
-        if (this.room.isPurification)
-            Information_Speciality.transform.Find("Hexagone").Find("Purification").gameObject.SetActive(display);
-        if (this.room.isPray)
-            Information_Speciality.transform.Find("Hexagone").Find("Pray").gameObject.SetActive(display);
-        if (this.room.isNPC)
-            Information_Speciality.transform.Find("Hexagone").Find("NPC").gameObject.SetActive(display);
-        if (this.room.isLabyrintheHide)
-            Information_Speciality.transform.Find("Hexagone").Find("Labyrinthe").gameObject.SetActive(display);
+        /*        if (this.room.isAx)
+                    Information_Speciality.transform.Find("Hexagone").Find("Ax").gameObject.SetActive(display);
+                if (this.room.isSword)
+                    Information_Speciality.transform.Find("Hexagone").Find("Sword").gameObject.SetActive(display);
+                if (this.room.isSwordDamocles)
+                    Information_Speciality.transform.Find("Hexagone").Find("Damocles").gameObject.SetActive(display);
+                if (this.room.isDeathNPC)
+                    Information_Speciality.transform.Find("Hexagone").Find("GodDeath").gameObject.SetActive(display);
+                if (this.room.fireBall)
+                    Information_Speciality.transform.Find("Hexagone").Find("Gargouille").gameObject.SetActive(display);
+                if (this.room.chest)
+                    Information_Speciality.transform.Find("Hexagone").Find("Chest").gameObject.SetActive(display);
+                if (this.room.isSacrifice)
+                    Information_Speciality.transform.Find("Hexagone").Find("Sacrifice").gameObject.SetActive(display);
+                if (this.room.isLostTorch)
+                    Information_Speciality.transform.Find("Hexagone").Find("LostTorch").gameObject.SetActive(display);
+                if (this.room.isMonsters)
+                    Information_Speciality.transform.Find("Hexagone").Find("Monsters").gameObject.SetActive(display);
+                if (this.room.isResurection)
+                    Information_Speciality.transform.Find("Hexagone").Find("Resurection").gameObject.SetActive(display);
+                if (this.room.isPurification)
+                    Information_Speciality.transform.Find("Hexagone").Find("Purification").gameObject.SetActive(display);
+                if (this.room.isPray)
+                    Information_Speciality.transform.Find("Hexagone").Find("Pray").gameObject.SetActive(display);
+                if (this.room.isNPC)
+                    Information_Speciality.transform.Find("Hexagone").Find("NPC").gameObject.SetActive(display);
+                if (this.room.isLabyrintheHide)
+                    Information_Speciality.transform.Find("Hexagone").Find("Labyrinthe").gameObject.SetActive(display);*/
+
+        if (this.room.isSpecial && !this.room.isTrial)
+        {
+            Information_Speciality.transform.Find("Hexagone").Find("SpeciallyRoom").gameObject.SetActive(display);
+            Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
+        }
+            
+        if (this.room.isTrial)
+        {
+            Information_Speciality.transform.Find("Hexagone").Find("TrailRoom").gameObject.SetActive(display);
+            Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
+        }
+          
     }
 }

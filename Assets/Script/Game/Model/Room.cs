@@ -86,6 +86,7 @@ public class Room : ScriptableObject
     public bool isLabyrintheHide = false;
 
     public bool isHide = false;
+    public bool isTrial = false;
 
     public List<Chest> chestList = null;
 

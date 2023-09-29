@@ -140,8 +140,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.23, y: 0.93}
-  m_Size: {x: 2.23, y: 1.7442214}
+  m_Offset: {x: 0.1, y: 1.62}
+  m_Size: {x: 2.23, y: 2.03}
   m_Direction: 0
 --- !u!114 &4695169022583446951
 MonoBehaviour:
@@ -178,7 +178,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4695169022583446946}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6eb1402c17e84a9282a7f0f62eb584f, type: 3}
   m_Name: 
@@ -268,8 +268,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
-  godDeath2: {fileID: 880268685445116128, guid: f2d5e3fcb912979449ca555bf3e69881,
-    type: 3}
   CanHideDeathGod: 0
   isInvisible: 0
   isTranparencying: 0

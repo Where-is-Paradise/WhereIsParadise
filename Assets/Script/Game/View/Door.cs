@@ -294,20 +294,65 @@ public class Door : MonoBehaviour
 
     public void DisplayColorLightToExploration()
     {
-        if (RoomBehindHaslessDistance())
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBlind)
+        {
+            this.transform.Find("LightsExploration").Find("BlindLight").gameObject.SetActive(true);
+            return;
+        }
+        if (gameManager.game.currentRoom.IsFoggy)
+        {
+            this.transform.Find("LightsExploration").Find("TransparencyLight").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 45f / 255);
+            DisplayTransparencyLightExploration();
+            return;
+        }
+
+        bool isBlue = false;
+        if ((RoomBehindHaslessDistance() && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isCursed) ||
+            (!RoomBehindHaslessDistance() && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isCursed))
         {
             this.transform.Find("LightsExploration").Find("GreenLight").gameObject.SetActive(true);
+            isBlue = true;
         }
         else
         {
             this.transform.Find("LightsExploration").Find("BlackLight").gameObject.SetActive(true);
         }
-        StartCoroutine(Desactivatelight());
+        StartCoroutine(Desactivatelight(isBlue));
     }
-    public IEnumerator Desactivatelight()
+    public IEnumerator Desactivatelight(bool isBlue)
     {
-        yield return new WaitForSeconds(8);
+        yield return new WaitForSeconds(6);
+        if(isBlue)
+            this.transform.Find("LightsExploration").Find("GreenEndAnimation").gameObject.SetActive(true);
+        else
+            this.transform.Find("LightsExploration").Find("DarkAnimation").gameObject.SetActive(true);
         this.transform.Find("LightsExploration").Find("GreenLight").gameObject.SetActive(false);
         this.transform.Find("LightsExploration").Find("BlackLight").gameObject.SetActive(false);
+        //this.transform.Find("LightsExploration").Find("BlindLight").gameObject.SetActive(true);
     }
+
+    public IEnumerator DesactiveAnimationEnd()
+    {
+        yield return new WaitForSeconds(0.7f);
+    }
+
+    public void DisplayTransparencyLightExploration()
+    {
+        if (gameManager.game.currentRoom.IsFoggy)
+        {
+            this.transform.Find("LightsExploration").Find("TransparencyLight").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 45f / 255);
+        }
+        this.transform.Find("LightsExploration").Find("TransparencyLight").gameObject.SetActive(true);
+        StartCoroutine(DesactivateTransparencyAnimation());
+    }
+
+    public IEnumerator DesactivateTransparencyAnimation()
+    {
+        yield return new WaitForSeconds(6);
+        this.transform.Find("LightsExploration").Find("TransparencyLight").gameObject.SetActive(false);
+        this.transform.Find("LightsExploration").Find("TransparencyLightEnd").gameObject.SetActive(true);
+        this.transform.Find("LightsExploration").Find("TransparencyLight").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 156f / 255);
+    }
+
+
 }

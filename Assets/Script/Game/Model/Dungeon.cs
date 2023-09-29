@@ -69,32 +69,54 @@ public class Dungeon : ScriptableObject
             if (room.isTooFar || room.IsInitiale || room.IsExit || GetPathFindingDistance(room, initialRoom) == GetPathFindingDistance(initialRoom, exit))
                 continue;
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 55)
+            if (randomIsHide <= 65)
             {
                 room.isHide = true;
                 continue;
             }
 
             int randomSpeciallity = Random.Range(0, 14);
-            randomSpeciallity = 6;
+           // randomSpeciallity = 14;
             if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
                 room.chest = true;
             if (randomSpeciallity == 1 && setting.listSpeciallyRoom[1])
                 room.isSacrifice = true;
             if (randomSpeciallity == 2 && setting.listTrialRoom[0])
+            {
                 room.fireBall = true;
+                room.isTrial = true;
+            }   
             if (randomSpeciallity == 3 && setting.listTrialRoom[3])
+            {
                 room.isAx = true;
+                room.isTrial = true;
+            }
             if (randomSpeciallity == 4 && setting.listTrialRoom[4])
+            {
                 room.isSword = true;
+                room.isTrial = true;
+            } 
             if (randomSpeciallity == 5 && setting.listTrialRoom[2])
+            {
                 room.isSwordDamocles = true;
+                room.isTrial = true;
+            }
+                
             if (randomSpeciallity == 6 && setting.listTrialRoom[1])
+            {
                 room.isDeathNPC = true;
+                room.isTrial = true;
+            }                
             if (randomSpeciallity == 7 && setting.listTrialRoom[6])
+            {
                 room.isLostTorch = true;
+                room.isTrial = true;
+            }
             if (randomSpeciallity == 8 && setting.listTrialRoom[5])
+            {
                 room.isMonsters = true;
+                room.isTrial = true;
+            }
             if (randomSpeciallity == 9 && setting.listSpeciallyRoom[5])
                 room.isPurification = true;
             if (randomSpeciallity == 10 && setting.listSpeciallyRoom[4])
@@ -105,6 +127,8 @@ public class Dungeon : ScriptableObject
                 room.isNPC = true;
             if (randomSpeciallity == 13 && setting.listTrialRoom[7])
                 room.isLabyrintheHide = true;
+            if (randomSpeciallity == 14)
+                room.IsFoggy = true;
 
             room.isSpecial = true;
         }

@@ -75,16 +75,16 @@ public class GameManagerNetwork : MonoBehaviourPun
                 gameManager.ui_Manager.DisplayAllDoorLightExploration(false);
             gameManager.game.GetBoss().SetIsBoss(false);
             gameManager.GetBoss().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
-            gameManager.GetBoss().GetComponent<PlayerGO>().isBoss = false;  
+            gameManager.GetBoss().GetComponent<PlayerGO>().isBoss = false; 
         }
        
         gameManager.game.SetBoss(indexNewBoss);
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().isBoss = true;
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerNetwork>().SendDisplayCrown(true);
-        gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().explorationPowerIsAvailable = true;
-        gameManager.ui_Manager.DisabledButtonPowerExploration(!gameManager.IsBoss());
-        if (gameManager.GetPlayer(indexNewBoss).GetComponent<PhotonView>().IsMine)
-            gameManager.ui_Manager.DisplayAllDoorLightExploration(true);
+/*        gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().explorationPowerIsAvailable = true;
+        gameManager.ui_Manager.DisabledButtonPowerExploration(!gameManager.IsBoss());*/
+/*        if (gameManager.GetPlayer(indexNewBoss).GetComponent<PhotonView>().IsMine)
+            gameManager.ui_Manager.DisplayAllDoorLightExploration(true);*/
     }
 
 
@@ -717,6 +717,7 @@ public class GameManagerNetwork : MonoBehaviourPun
             }
         }
         player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(enter);
+        //door.transform.Find("Zones").Find("LightZone").gameObject.SetActive(enter);
         player.GetComponent<PlayerGO>().hasVoteVD = enter;
 
     }
@@ -2068,5 +2069,16 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.DesactivateAllobstacles(nameObject, display);
     }
 
+
+    public void SendDisplayLightExplorationTransparency(int doorId)
+    {
+        photonView.RPC("SetDisplayLightExplorationTransparency", RpcTarget.Others, doorId);
+    }
+
+    [PunRPC]
+    public void SetDisplayLightExplorationTransparency(int doorId)
+    {
+        gameManager.GetDoorGo(doorId).GetComponent<Door>().DisplayTransparencyLightExploration();
+    }
 
 }

@@ -133,6 +133,7 @@ public class PlayerGO : MonoBehaviour
     public bool isTouchByMonster = false;
 
     public bool isCursed = false;
+    public bool isBlind = false;
 
     public bool lightHexagoneIsOn = false;
 
@@ -1126,7 +1127,7 @@ public class PlayerGO : MonoBehaviour
         }
 
        
-        launchExpeditionWithAnimation = true;
+        //launchExpeditionWithAnimation = true;
 
   
     }
@@ -1440,11 +1441,79 @@ public class PlayerGO : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            ClicktoExploration();
             ClickToVoteSacrifice();   
         }
     }
 
+    public void ClicktoExploration()
+    {
+        if (!gameManager)
+        {
+            return;
+        }
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            return;
+        }
+        if (this.GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (gameManager.game.currentRoom.explorationIsUsed)
+        {
+            return;
+        }
+        if(gameManager.game.nbTorch <= 0)
+        {
+            return;
+        }
+        if (gameManager.timer.timerLaunch)
+        {
+            return;
+        }
+        if (gameManager.expeditionHasproposed)
+        {
+            return;
+        }
 
+        if (gameManager.ui_Manager.map.activeSelf)
+        {
+            return;
+        }
+        if (!gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
+        {
+            return;
+        }
+        if (isSacrifice)
+        {
+            return;
+        }
+        if (gameManager.game.currentRoom.isSword)
+        {
+            return;
+        }
+        if (gameManager.game.currentRoom.isSwordDamocles)
+        {
+            return;
+        }
+        if (gameManager.game.currentRoom.isDeathNPC)
+        {
+            return;
+        }
+        if (gameManager.game.currentRoom.fireBall)
+        {
+            return;
+        }
+        if (gameManager.game.currentRoom.isAx)
+        {
+            return;
+        }
+        if (gameManager.speciallyIsLaunch)
+            return;
+
+        GetComponent<PlayerNetwork>().SendDisplayBlueTorch(!this.transform.Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);; ;
+    }
     public void ClickToVoteSacrifice()
     {
         if (!gameManager)

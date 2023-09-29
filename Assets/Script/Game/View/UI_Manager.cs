@@ -1683,7 +1683,7 @@ setting_button_echapMenu.SetActive(false);
     }
     public void OnClickButtonPowerExplorationBigger()
     {
-        if (gameManager.game.nbTorch <= 0)
+        if (gameManager.game.nbTorch <= 0 && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
             return;
         if (gameManager.game.currentRoom.explorationIsUsed)
             return;
@@ -1691,6 +1691,7 @@ setting_button_echapMenu.SetActive(false);
         if (gameManager.GetDoorGo(indexDoor))
         {
             gameManager.GetDoorGo(indexDoor).GetComponent<Door>().DisplayColorLightToExploration();
+            gameManager.gameManagerNetwork.SendDisplayLightExplorationTransparency(indexDoor);
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().explorationPowerIsAvailable = false;
             canvasInGame.transform.Find("Exploration").Find("Torch").Find("Bigger").gameObject.SetActive(false);
             canvasInGame.transform.Find("Exploration").Find("Torch").Find("Disabled").gameObject.SetActive(true);
@@ -1710,7 +1711,8 @@ setting_button_echapMenu.SetActive(false);
                 DisabledButtonPowerExploration(true);
             gameManager.gameManagerNetwork.SendExplorationIsUsed(gameManager.game.currentRoom.Index, true);
 
-            gameManager.ui_Manager.DisplayAllDoorLightExploration(false);
+            //gameManager.ui_Manager.DisplayAllDoorLightExploration(false);
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
         }
            
     }
@@ -2047,27 +2049,22 @@ setting_button_echapMenu.SetActive(false);
         if (display)
         {
             PlayerGO playerMine = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
-            if (!playerMine.explorationPowerIsAvailable)
+            if (!playerMine.explorationPowerIsAvailable && !playerMine.hasWinFireBallRoom)
                 return;
             if (gameManager.game.currentRoom.explorationIsUsed)
                 return;
             if (gameManager.voteDoorHasProposed)
                 return;
-            if (!(playerMine.isBoss || playerMine.hasWinFireBallRoom))
-                return;
             if (gameManager.ISTrailsRoom(gameManager.game.currentRoom) && !playerMine.hasWinFireBallRoom)
                 return;
         }
-
+        
         GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
 
         for (int i =0; i < doors.Length; i++)
         {
             DisplayDoorLightExploration(doors[i].GetComponent<Door>().index, display);
         }
-        DisplayBlueTorch(display);
-
-
     }
 
     public void DisplayDoorLightExploration(int index, bool display)
@@ -2079,10 +2076,7 @@ setting_button_echapMenu.SetActive(false);
         door.gameObject.transform.Find("LightInformation").Find("White").gameObject.SetActive(display);
     }
 
-    public void DisplayBlueTorch(bool display)
-    {
-        gameManager.GetPlayerMineGO().transform.Find("BlueTorch").gameObject.SetActive(display);
-    }
+
 }
 
 

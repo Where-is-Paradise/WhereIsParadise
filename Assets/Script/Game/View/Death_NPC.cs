@@ -7,7 +7,6 @@ using UnityEngine;
 public class Death_NPC : MonoBehaviourPun
 {
     public GameManager gameManager;
-    public GameObject godDeath2;
     public bool CanHideDeathGod = false;
     public bool isInvisible = false;
     public bool isTranparencying = false;
@@ -68,11 +67,13 @@ public class Death_NPC : MonoBehaviourPun
         {
             return;
         }
-        /*SetMaxSpeed(3);
+        photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, false);
         photonView.RPC("SendSpeciallyIsLaucnh", RpcTarget.All);
+        /*SetMaxSpeed(3);
+       
         SetTargetOfPathFinding();
         StartCoroutine(ChangerSpeedCoroutine());
-        photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, false) ;
+        
         //StartCoroutine(UpdatePositionCoroutine());
         StartCoroutine(CanHideDeathGodCoroutine());
         //Instantiate(godDeath2, this.transform.position, Quaternion.identity);*/
@@ -321,6 +322,7 @@ public class Death_NPC : MonoBehaviourPun
 
         if (collision.gameObject.tag == "Player")
         {
+            Debug.Log("sa passe");
             if (!collision.gameObject.GetComponent<PhotonView>().IsMine)
                 return;
             DeathTouchPlayerEvent(collision.gameObject) ;
@@ -330,7 +332,7 @@ public class Death_NPC : MonoBehaviourPun
 
     public void DeathTouchPlayerEvent(GameObject collision)
     {
-        SetTargetOfPathFinding();
+        //SetTargetOfPathFinding();
         SetPlayerColor(collision);
         if (TestLastPlayer())
         {

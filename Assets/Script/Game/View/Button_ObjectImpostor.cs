@@ -23,7 +23,7 @@ public class Button_ObjectImpostor : MonoBehaviour
     {
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isSacrifice)
             return;
-        gameManager.GetPlayerMineGO().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().UsePower();
+        //gameManager.GetPlayerMineGO().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().UsePower();
         gameManager.GetPlayerMineGO().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().isClickedInButtonPower = true;
         StartCoroutine(ResetClickObjectCoroutine());
     }
