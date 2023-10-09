@@ -192,6 +192,19 @@ public class PlayerNetwork : MonoBehaviourPun
 
     }
 
+    public void SendBlackTorch(bool hasWinFireBall)
+    {
+        photonView.RPC("BlackTorch", RpcTarget.All, hasWinFireBall);
+    }
+
+    [PunRPC]
+    public void BlackTorch(bool hasWinFireBall)
+    {
+        player.hasWinFireBallRoom = hasWinFireBall;
+        if (player.GetComponent<PhotonView>().IsMine)
+            SendDisplayBlackTorch(hasWinFireBall);
+    }
+
     public void SendVoteToSacrifice(bool hasVote)
     {
         photonView.RPC("SetVoteToSacrifice", RpcTarget.All, hasVote);
@@ -738,15 +751,15 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         this.player.isDeadBySwordDamocles = isTouch;
     }
-    public void SendIstouchByMonsterNPC(bool isTouch)
+    public void SendIstouchInTrial(bool isTouch)
     {
-        photonView.RPC("SetIstouchByMonsterNPC", RpcTarget.All, isTouch);
+        photonView.RPC("SetIstouchInTrial", RpcTarget.All, isTouch);
     }
 
     [PunRPC]
-    public void SetIstouchByMonsterNPC(bool isTouch)
+    public void SetIstouchInTrial(bool isTouch)
     {
-        this.player.isTouchByMonster = isTouch;
+        this.player.isTouchInTrial = isTouch;
     }
 
     public void SendChangeColorWhenTouchByDeath()
@@ -805,7 +818,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetIsCursed(bool isCursed)
     {
         player.GetComponent<PlayerGO>().isCursed = isCursed;
-        if (player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        if (player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
             player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_Cursed").gameObject.SetActive(isCursed);
     }
 
@@ -831,7 +844,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetIsBlind(bool isBlind)
     {
         player.GetComponent<PlayerGO>().isBlind = isBlind;
-        if (player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        if (player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
             player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_Cursed").gameObject.SetActive(isBlind);
     }
 
@@ -1109,5 +1122,51 @@ public class PlayerNetwork : MonoBehaviourPun
         }
 
 
+    }
+
+    public void SendDisplayBlackTorch(bool display)
+    {
+        photonView.RPC("SetDisplayBlackTorch", RpcTarget.All, display);
+    }
+
+    [PunRPC]
+    public void SetDisplayBlackTorch(bool dislay)
+    {
+        this.transform.Find("BlackTorch").gameObject.SetActive(dislay);
+        player.explorationPowerIsAvailable = dislay;
+        if (player.GetComponent<PhotonView>().IsMine)
+        {
+
+           player.gameManager.ui_Manager.DisplayButtonBlackTorch(dislay);
+            player.gameManager.ui_Manager.DisplayAllDoorLightExploration(dislay);
+        }
+
+
+    }
+
+    public void SendDesactivateObject(int indexPlayer)
+    {
+        photonView.RPC("DesactivateObject", RpcTarget.All, indexPlayer);
+    }
+
+    [PunRPC]
+    public void DesactivateObject(int indexPlayer)
+    {
+        GameObject awardObject = player.GetOnlyChildActive(GameObject.Find("Room").transform.Find("Special").Find("AwardObject").gameObject);
+        awardObject.SetActive(false);
+        GameObject speciallyRoom = player.GetOnlyChildActive(GameObject.Find("Room").transform.Find("Special").gameObject);
+        speciallyRoom.GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+        speciallyRoom.GetComponent<TrialsRoom>().ActivateObjectPower(indexPlayer);
+    }
+
+    public void SendDisplayMagicalKey(bool display)
+    {
+        photonView.RPC("DisplayMagicalKey", RpcTarget.All, display);
+    }
+
+    [PunRPC]
+    public void DisplayMagicalKey(bool display)
+    {
+        player.transform.Find("MagicalKey").gameObject.SetActive(display);
     }
 }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonstersRoom : MonoBehaviourPun
+public class MonstersRoom : TrialsRoom
 {
     public GameObject listSpawn;
     public bool roomIsLaunch = false;
@@ -36,7 +36,7 @@ public class MonstersRoom : MonoBehaviourPun
         if (roomIsLaunch && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss && canSpawn)
             StartCoroutine(SpawnMonsterCouroutine(timerSpawnMonster));
 
-        if (!roomIsLaunch || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchByMonster)
+        if (!roomIsLaunch || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchInTrial)
             return;
         CanAttack();
     }
@@ -101,7 +101,7 @@ public class MonstersRoom : MonoBehaviourPun
             player.GetComponent<PlayerGO>().DisiplayHeartInitial(display);
         }
     }
-    public void ResetHeartForAllPlayer()
+/*    public void ResetHeartForAllPlayer()
     {
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
@@ -109,7 +109,7 @@ public class MonstersRoom : MonoBehaviourPun
             player.GetComponent<PlayerGO>().ResetHeart();
             player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
         }
-    }
+    }*/
 
 
     public void DisplaySwordAllPlayer(bool display)
@@ -143,29 +143,28 @@ public class MonstersRoom : MonoBehaviourPun
         DisplayMiddleOne(indexPlayer);
     }
 
-    public void DesactivateRoom()
+    public void DesactivateRoomChild()
     {
-        if (!gameManager.SamePositionAtBoss())
-            return;
+        //this.DesactivateRoom();
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             DestroyAllMonster();
         DisplaySwordAllPlayer(false);
-        ResetHeartForAllPlayer();
-        ResetIsTouchByMonsterAllPlayer();
-        ResetColorAllPlayer();
-        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
+        //ResetHeartForAllPlayer();
+        //ResetIsTouchByMonsterAllPlayer();
+        //ResetColorAllPlayer();
+/*        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         gameManager.speciallyIsLaunch = false;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(false);
-        gameManager.ActivateCollisionTPOfAllDoor(true);
+        gameManager.ActivateCollisionTPOfAllDoor(true);*/
         timerSpawnMonster = 1;
         roomIsLaunch = false;
-        StartCoroutine(CanMoveActiveCoroutine());
+        //StartCoroutine(CanMoveActiveCoroutine());
         
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+/*        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(true);
-        }
+        }*/
 
     }
     public void ResetIsTouchByMonsterAllPlayer()
@@ -173,36 +172,14 @@ public class MonstersRoom : MonoBehaviourPun
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
         {
-            player.GetComponent<PlayerGO>().isTouchByMonster = false;
-            player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
-        }
-    }
-    public void ResetColorAllPlayer()
-    {
-        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in listPlayer)
-        {
-            if (player.GetComponent<PlayerGO>().isSacrifice)
-                continue;
-            if (player.GetComponent<PlayerGO>().isInJail)
-                continue;
-            if (player.GetComponent<PhotonView>().IsMine)
-            {
-                int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
-                player.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(player.GetComponent<PlayerGO>().indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
-            }
+            player.GetComponent<PlayerGO>().isTouchInTrial = false;
+            if(player.GetComponent<PlayerGO>().hasProtection)
+                player.GetComponent<PlayerGO>().lifeTrialRoom = 3;
             else
-            {
-                if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
-                {
-                    player.transform.GetChild(0).gameObject.SetActive(true);
-                    player.transform.GetChild(1).gameObject.SetActive(true);
-                }
-            }
-            player.GetComponent<PlayerGO>().ResetHeart();
-            player.GetComponent<PlayerGO>().isTouchByMonster = false;
+                player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
         }
     }
+
 
     public void DestroyAllMonster()
     {
@@ -255,11 +232,11 @@ public class MonstersRoom : MonoBehaviourPun
     }
 
 
-    public IEnumerator CanMoveActiveCoroutine()
+/*    public IEnumerator CanMoveActiveCoroutine()
     {
         yield return new WaitForSeconds(2);
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
-    }
+    }*/
 
     public void GiveAwardToPlayer(GameObject lastPlayer)
     {

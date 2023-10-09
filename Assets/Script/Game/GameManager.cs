@@ -561,7 +561,7 @@ public class GameManager : MonoBehaviourPun
         }
 
 
-        if (room.isSpecial && !room.isTrial)
+/*        if (room.isSpecial && !room.isTrial)
         {
             GameObject Information_Speciality = hex.transform.Find("Information_Speciality").gameObject;
             Information_Speciality.SetActive(true);
@@ -574,7 +574,7 @@ public class GameManager : MonoBehaviourPun
             Information_Speciality.SetActive(true);
             Information_Speciality.transform.Find("Hexagone").Find("TrailRoom").gameObject.SetActive(true);
             Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
-        }
+        }*/
 
     }
 
@@ -598,22 +598,33 @@ public class GameManager : MonoBehaviourPun
             hexagone.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
             hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(false);
             hexagone.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(false);
+            hexagone.transform.Find("Information_Speciality").transform.Find("Hexagone").Find("Player_identification").gameObject.SetActive(false);
             if (hexagone.GetComponent<Hexagone>().Room.Index == game.currentRoom.GetIndex())
             {
                 hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
+                hexagone.transform.Find("Information_Speciality").transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
                 if (!hexagone.GetComponent<Hexagone>().Room.IsExit)
                     hexagone.GetComponent<Hexagone>().Room.IsTraversed = true;
                 if (!MineIsInExpedition())
+                {
                     hexagone.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(game.currentRoom.Index == hexagone.GetComponent<Hexagone>().Room.Index);
+                    hexagone.transform.Find("Information_Speciality").transform.Find("Hexagone").Find("Player_identification").gameObject.SetActive(game.currentRoom.Index == hexagone.GetComponent<Hexagone>().Room.Index);
+                }
                 else
+                {
                     hexagone.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(GetDoorExpedition(GetPlayerMine().GetId()).Index == hexagone.GetComponent<Hexagone>().Room.Index);
+                    hexagone.transform.Find("Information_Speciality").transform.Find("Hexagone").Find("Player_identification").gameObject.SetActive(GetDoorExpedition(GetPlayerMine().GetId()).Index == hexagone.GetComponent<Hexagone>().Room.Index);
+                }   
             }
             else
             {
                 if (hexagone.GetComponent<Hexagone>().Room.IsTraversed)
                 {
                     if (!hexagone.GetComponent<Hexagone>().Room.IsExit)
+                    {
                         hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
+                        hexagone.transform.Find("Information_Speciality").transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
+                    }
                 }
             }
             if (hell && GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && !GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
@@ -912,7 +923,7 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendMap(room.Index, room.IsExit, room.IsObstacle, room.isTooFar,
                 room.IsInitiale, room.DistanceExit, room.DistancePathFinding,
                 room.distance_pathFinding_initialRoom, counter == game.dungeon.rooms.Count, room.IsFoggy, room.IsVirus,
-                room.HasKey, room.chest, room.isHide);
+                room.HasKey, room.chest, room.isHide, room.isTrial, room.isSpecial);
 
             if (room.chest)
             {
@@ -2816,10 +2827,7 @@ public class GameManager : MonoBehaviourPun
 
     public void UpdateColorDoor(Room room)
     {
-        if (!GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
-            return;
-
-
+       
         for(int i =0; i < doorsParent.transform.childCount; i++)
         {
             Door door = doorsParent.transform.GetChild(i).GetComponent<Door>();
@@ -2832,6 +2840,8 @@ public class GameManager : MonoBehaviourPun
             }
             else
             {
+                if (!GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && !GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
+                    return;
                 door.GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
                 door.transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
                 ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(door.GetComponent<Door>().index, true);
@@ -3872,5 +3882,19 @@ public class GameManager : MonoBehaviourPun
         }
 
         return false;
+    }
+
+    public int GetNumberDoorCanBeModifaiteBySpeciallity()
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        int counter = 0;
+        
+        foreach (GameObject door in doors)
+        {
+            Debug.Log(door.GetComponent<Door>().index);
+            if (door.GetComponent<Door>().GetRoomBehind().isSpecial && !door.GetComponent<Door>().isOpenForAll)
+                counter++;
+        }
+        return counter;
     }
 }

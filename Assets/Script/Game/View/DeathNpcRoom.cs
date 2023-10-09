@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeathNpcRoom : MonoBehaviour
+public class DeathNpcRoom : TrialsRoom
 {
     public GameManager gameManager;
     // Start is called before the first frame update

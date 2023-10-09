@@ -132,6 +132,8 @@ public class PlayerGO : MonoBehaviour
     public bool isTouchBySword = false;
     public bool isTouchByMonster = false;
 
+    public bool isTouchInTrial = false;
+
     public bool isCursed = false;
     public bool isBlind = false;
 
@@ -160,6 +162,14 @@ public class PlayerGO : MonoBehaviour
     // is for recon
 
 
+    public bool hasMap = false;
+    public bool hasProtection = false;
+    public bool hasTrueEyes = false;
+    public bool hasBlackTorch = false;
+
+    public List<bool> listTrialObject;
+    
+
     private void Awake()
     {
         displayChatInput = false;
@@ -182,9 +192,12 @@ public class PlayerGO : MonoBehaviour
         // Used to prevent multi tap on mobile
 
         enhanceOwners();
-/*        if(this.GetComponent<PhotonView>().IsMine)
-            StartCoroutine(SendPositionCoroutine());*/
+        /*        if(this.GetComponent<PhotonView>().IsMine)
+                    StartCoroutine(SendPositionCoroutine());*/
 
+        listTrialObject.Add(hasMap);
+        listTrialObject.Add(hasProtection);
+        listTrialObject.Add(hasTrueEyes);
     }
 
     private void enhanceOwners()
@@ -452,12 +465,11 @@ public class PlayerGO : MonoBehaviour
 
         if (gameManager)
         {
-            if (displayMap && GetComponent<PhotonView>().IsMine && !displayChatInput)
+            if (InputManager.GetButtonDown("Map") &&  (hasMap || isImpostor) && GetComponent<PhotonView>().IsMine && !displayChatInput)
             {
                 if (gameManager.setting.DISPLAY_MINI_MAP || gameManager.hellIsFind || gameManager.paradiseIsFind)
                 {
                     gameManager.ui_Manager.DisplayMap();
-                    displayMap = false;
 
 /*                    if (gameManager.ui_Manager.map.activeSelf)
                     {
@@ -473,7 +485,6 @@ public class PlayerGO : MonoBehaviour
                     if (isImpostor || gameManager.paradiseIsFind || gameManager.hellIsFind)
                     {
                         gameManager.ui_Manager.DisplayMap();
-                        displayMap = false;
                     }
                 }
             }
@@ -573,7 +584,12 @@ public class PlayerGO : MonoBehaviour
                 gameManager.ui_Manager.DisplayBlackScreen(false, true);
             }
 
-
+            if (hasProtection)
+            {
+                isCursed = false;
+                isBlind = false;
+            }
+                
            
         }
 
@@ -787,6 +803,18 @@ public class PlayerGO : MonoBehaviour
         }
     }
 
+    public GameObject GetOnlyChildActive(GameObject listObject)
+    {
+        for(int i =0;  i< listObject.transform.childCount; i++)
+        {
+            if (listObject.transform.GetChild(i).gameObject.activeSelf && listObject.transform.GetChild(i).name != "AwardObject")
+            {
+                return listObject.transform.GetChild(i).gameObject;
+            }
+        }
+        return listObject.transform.GetChild(1).gameObject;
+    }
+
 
 
     private void handlePlayerMove()
@@ -823,7 +851,8 @@ public class PlayerGO : MonoBehaviour
         {
             if(gameManager && !gameManager.speciallyIsLaunch)
             {
-                if (this.transform.Find("Life").Find("TwoHeart").gameObject.activeSelf || this.transform.Find("Life").Find("OneHeart").gameObject.activeSelf)
+                if (this.transform.Find("Life").Find("TwoHeart").gameObject.activeSelf || this.transform.Find("Life").Find("OneHeart").gameObject.activeSelf
+                    || this.transform.Find("Life").Find("ThreeHeart").gameObject.activeSelf)
                 {
                     this.GetComponent<PlayerNetwork>().SendResetHeart();
                 }
@@ -1016,9 +1045,53 @@ public class PlayerGO : MonoBehaviour
             return;
         if (gameManager.ISTrailsRoom(gameManager.game.currentRoom) && !hasWinFireBallRoom)
             return;
+        if (hasBlackTorch)
+            return;
         gameManager.ui_Manager.DisplayButtonPowerExplorationBigger(enter);
         collsionDoorIndexForExploration = collision.transform.parent.gameObject.GetComponent<Door>().index;
 
+    }
+
+    public void CollisionWithDoorToMagicalKey(Collider2D collision, bool enter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+        if (!collision.gameObject.name.Equals("CollisionPowerImpostor"))
+            return;
+        if (collision.transform.parent.gameObject.GetComponent<Door>().barricade)
+            return;
+        if (collision.transform.parent.gameObject.GetComponent<Door>().isOpenForAll)
+            return;
+        /*        if (gameManager.ISTrailsRoom(gameManager.game.currentRoom) && !hasWinFireBallRoom)
+                    return;*/
+        if (collision.transform.parent.gameObject.GetComponent<Door>().GetRoomBehind().isSpecial)
+            return;
+        gameManager.ui_Manager.DisplayMagicalKeyButtonBigger(enter);
+        collsionDoorIndexForExploration = collision.transform.parent.gameObject.GetComponent<Door>().index;
+
+    }
+
+    public void CollisionWithDoorToBlackTorch(Collider2D collision, bool enter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+        if (!explorationPowerIsAvailable)
+            return;
+        if (gameManager.game.currentRoom.explorationIsUsed)
+            return;
+        if (!collision.gameObject.name.Equals("CollisionPowerImpostor"))
+            return;
+        if (collision.transform.parent.gameObject.GetComponent<Door>().barricade)
+            return;
+        if (collision.transform.parent.gameObject.GetComponent<Door>().isOpenForAll)
+            return;
+        if (gameManager.voteDoorHasProposed)
+            return;
+        if (gameManager.ISTrailsRoom(gameManager.game.currentRoom) && !hasWinFireBallRoom)
+            return;
+        if (!hasBlackTorch)
+            return;
+        gameManager.ui_Manager.DisplayButtonBlackTorchBigger(enter);
     }
 
 
@@ -1046,6 +1119,9 @@ public class PlayerGO : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+
         if (collision.gameObject.CompareTag("teleport_paradise"))
         {
             if (GetComponent<PhotonView>().IsMine)
@@ -1113,7 +1189,19 @@ public class PlayerGO : MonoBehaviour
         }
 
         CollisionWithDoorToExploration(collision, true);
+        CollisionWithDoorToMagicalKey(collision, true);
+        CollisionWithDoorToBlackTorch(collision, true);
+
+
+        if (collision.gameObject.tag == "TrialObject")
+        {
+            if (!hasWinFireBallRoom)
+                return;
+            playerNetwork.SendDesactivateObject(this.GetComponent<PhotonView>().ViewID);
+        }
     }
+
+
 
     public void InputExplorationAnimation()
     {
@@ -1320,6 +1408,8 @@ public class PlayerGO : MonoBehaviour
         }
 
         CollisionWithDoorToExploration(collision, false);
+        CollisionWithDoorToMagicalKey(collision, false);
+        CollisionWithDoorToBlackTorch(collision, false);
     }
 
 
@@ -1983,8 +2073,13 @@ public class PlayerGO : MonoBehaviour
     {
         if (!gameManager.SamePositionAtBoss())
             return;
+        if(this.lifeTrialRoom == 3)
+        {
+            this.transform.Find("Life").Find("ThreeHeart").gameObject.SetActive(true);
+        }
         if (this.lifeTrialRoom == 2)
         {
+            this.transform.Find("Life").Find("ThreeHeart").gameObject.SetActive(false);
             this.transform.Find("Life").Find("TwoHeart").gameObject.SetActive(true);
         }
         else if (this.lifeTrialRoom == 1)
@@ -2001,12 +2096,16 @@ public class PlayerGO : MonoBehaviour
 
     public void ResetHeart()
     {
+        this.transform.Find("Life").Find("ThreeHeart").gameObject.SetActive(false);
         this.transform.Find("Life").Find("TwoHeart").gameObject.SetActive(false);
         this.transform.Find("Life").Find("OneHeart").gameObject.SetActive(false);
     }
     public void DisiplayHeartInitial(bool display)
     {
-        this.transform.Find("Life").Find("TwoHeart").gameObject.SetActive(display);
+        if(this.hasProtection)
+            this.transform.Find("Life").Find("ThreeHeart").gameObject.SetActive(display);
+        else
+            this.transform.Find("Life").Find("TwoHeart").gameObject.SetActive(display);
     }
 
     public IEnumerator ResetInvincibleCouroutine()
@@ -2142,5 +2241,26 @@ public class PlayerGO : MonoBehaviour
     }
 
 
+    public void SetlistTrialObject()
+    {
+        listTrialObject.Clear();
+        listTrialObject.Add(hasMap);
+        listTrialObject.Add(hasProtection);
+        listTrialObject.Add(hasTrueEyes);
+    }
 
+    public void DisplayCursedPlayers()
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+           if(player.GetComponent<PlayerGO>().isCursed || player.GetComponent<PlayerGO>().isBlind)
+           {
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_Cursed").gameObject.SetActive(true);
+           }
+        }
+    }
 }

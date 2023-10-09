@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class LostTorchRoom : MonoBehaviourPun
+public class LostTorchRoom : TrialsRoom
 {
 
     public GameObject listSpawn;
@@ -70,7 +70,9 @@ public class LostTorchRoom : MonoBehaviourPun
     [PunRPC]
     public void SendEndGame()
     {
-        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        //this.GetAward();
+
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             AssignAwardToPlayer();
         DesactivateLostTorchRoom();
     }

@@ -30,6 +30,8 @@ public class Hexagone : MonoBehaviourPun
 
         if (Room && Room.isTooFar)
             Destroy(this.gameObject);
+
+        DiplayInformationSpeciallyRoom(true);
     }
 
     void Update()
@@ -58,7 +60,6 @@ public class Hexagone : MonoBehaviourPun
         {
             this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(false);
         }
-        TouchHexagoneForPower();
        
     }
 
@@ -93,46 +94,7 @@ public class Hexagone : MonoBehaviourPun
             }
         }
 
-        DiplayInformationSpeciallyRoom(true);
-        return;
-
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter)
-        {
-            return;
-        }
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter)
-        {
-            return;
-        }
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
-        {
-            return;
-        }
-        if (room.IsObstacle || room.IsExit || room.IsInitiale)
-        {
-            return;
-        }
-        if (room.isSpecial)
-        {
-            this.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
-            this.transform.Find("Canvas").Find("Cross_error").gameObject.SetActive(true);
-            return;
-        }
-        if(room.DistancePathFinding == 1)
-        {
-            this.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
-            this.transform.Find("Canvas").Find("Cross_error").gameObject.SetActive(true);
-            return;
-        }
-        int indexPower = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower;
-        this.transform.Find("Canvas").Find("ImpostorPower").GetChild(indexPower).gameObject.SetActive(true);
-        if (!Input.GetMouseButtonDown(0)){
-            // Whatever you want it to do.
-            return;
-        }
-        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter = true;
-        gameManager.gameManagerNetwork.SendHexagoneNewPower(this.room.Index, indexPower);
-        gameManager.ui_Manager.listButtonPowerImpostor[indexPower].GetComponent<Button>().interactable = false;
+      
     }
 
     public void OnClickToLight()
@@ -159,8 +121,6 @@ public class Hexagone : MonoBehaviourPun
     void OnMouseExit()
     {
 
-
-
 #if UNITY_IOS || UNITY_ANDROID
         return;
 #endif
@@ -181,187 +141,30 @@ public class Hexagone : MonoBehaviourPun
             }
           
         }
-
-        DiplayInformationSpeciallyRoom(false);
-        return;
-
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
-        {
-            return;
-        }
-        if (room.IsObstacle || room.IsExit || room.IsInitiale)
-        {
-            return;
-        }
-        if (room.isSpecial)
-        {
-
-            if (room.IsTraversed || room.Index == gameManager.game.currentRoom.Index  || room.IsHell)
-            {
-                this.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
-
-                if(room.Index == gameManager.game.currentRoom.Index)
-                    this.GetComponent<SpriteRenderer>().color = new Color((float)(0f / 255f), (float)255f / 255f, (float)0 / 255f, 1);
-                if(room.IsHell)
-                    this.GetComponent<SpriteRenderer>().color = new Color((float)(255f / 255f), (float)0f / 255f, (float)0 / 255f, 1);
-            }
-            else
-            {
-                this.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            }
-           
-            this.transform.Find("Canvas").Find("Cross_error").gameObject.SetActive(false);
-            return;
-        }
-        if (room.DistancePathFinding == 1)
-        {
-            this.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            this.transform.Find("Canvas").Find("Cross_error").gameObject.SetActive(false);
-            return;
-        }
-        int indexPower = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower;
-        if (indexPower == -1)
-            return;
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter)
-        {
-            if (this.transform.Find("Canvas").Find("ImpostorPower").GetChild(indexPower).gameObject.activeSelf)
-            {
-                SetSpecalityPower(indexPower);
-            }
-            return;
-        }
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter)
-        {
-            if (this.transform.Find("Canvas").Find("ImpostorPower").GetChild(indexPower).gameObject.activeSelf)
-            {
-                SetSpecalityPower(indexPower);
-            }
-            return;
-        }
-        this.transform.Find("Canvas").Find("ImpostorPower").GetChild(indexPower).gameObject.SetActive(false);
-        SetSpecalityPower(indexPower, false);
-        this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(room.isOldParadise && gameManager.game.currentRoom.Index != room.Index);
     }
-
-    public void TouchHexagoneForPower()
-    {
-#if !UNITY_IOS && !UNITY_ANDROID
-        return;
-#endif
-
-        if(Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
-            RaycastHit hit;
-            if(Physics.Raycast(ray,out hit))
-            {
-                if (hit.collider != null)
-                {
-                    if (hit.transform.gameObject.GetComponent<Hexagone>())
-                    {
-                        if ( hit.transform.gameObject.GetComponent<Hexagone>().room.Index == this.room.Index)
-                        {
-                            if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasClickInPowerImposter)
-                            {
-                                return;
-                            }
-                          
-                            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter)
-                            {
-                                return;
-                            }
-                            if (room.IsObstacle || room.IsExit || room.IsInitiale)
-                            {
-                                return;
-                            }
-                            if (room.DistancePathFinding == 1)
-                            {
-                                return;
-                            }
-                            int indexPower = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower;
-                            this.transform.Find("Canvas").Find("ImpostorPower").GetChild(indexPower).gameObject.SetActive(true);
-                            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasValidPowerImposter = true;
-                            gameManager.gameManagerNetwork.SendHexagoneNewPower(this.room.Index, indexPower);
-                            gameManager.ui_Manager.listButtonPowerImpostor[indexPower].GetComponent<Button>().interactable = false;
-                        }
-    
-                    }
-                }
-            }
-        }
-
-    }
-
-
-    public void SetSpecalityPower(int indexPower, bool change = true)
-    {
-
-        if (indexPower == 0)
-            this.room.IsFoggy = change;
-        if (indexPower == 1)
-            this.room.IsVirus = change;
-        if (indexPower == 2)
-            this.room.isJail = change;
-
-        this.room.isSpecial = change;
-    }
-
 
     public void DiplayInformationSpeciallyRoom(bool display)
     {
+        if (!room)
+            return;
         if (room.IsExit || room.IsHell || room.IsObstacle || room.IsInitiale || room.IsTraversed)
             return;
         if (gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.dungeon.initialRoom) == 
             gameManager.game.dungeon.GetPathFindingDistance(gameManager.game.dungeon.initialRoom, gameManager.game.dungeon.exit))
             return;
-/*        if (this.room.isHide)
-        {
-            GameObject interogationPoint = this.transform.Find("Integoration_point").gameObject;
-            interogationPoint.SetActive(display);
+        if (this.room.isHide)
             return;
-        }*/
         GameObject Information_Speciality = this.transform.Find("Information_Speciality").gameObject;
         Information_Speciality.SetActive(display);
-        /*        if (this.room.isAx)
-                    Information_Speciality.transform.Find("Hexagone").Find("Ax").gameObject.SetActive(display);
-                if (this.room.isSword)
-                    Information_Speciality.transform.Find("Hexagone").Find("Sword").gameObject.SetActive(display);
-                if (this.room.isSwordDamocles)
-                    Information_Speciality.transform.Find("Hexagone").Find("Damocles").gameObject.SetActive(display);
-                if (this.room.isDeathNPC)
-                    Information_Speciality.transform.Find("Hexagone").Find("GodDeath").gameObject.SetActive(display);
-                if (this.room.fireBall)
-                    Information_Speciality.transform.Find("Hexagone").Find("Gargouille").gameObject.SetActive(display);
-                if (this.room.chest)
-                    Information_Speciality.transform.Find("Hexagone").Find("Chest").gameObject.SetActive(display);
-                if (this.room.isSacrifice)
-                    Information_Speciality.transform.Find("Hexagone").Find("Sacrifice").gameObject.SetActive(display);
-                if (this.room.isLostTorch)
-                    Information_Speciality.transform.Find("Hexagone").Find("LostTorch").gameObject.SetActive(display);
-                if (this.room.isMonsters)
-                    Information_Speciality.transform.Find("Hexagone").Find("Monsters").gameObject.SetActive(display);
-                if (this.room.isResurection)
-                    Information_Speciality.transform.Find("Hexagone").Find("Resurection").gameObject.SetActive(display);
-                if (this.room.isPurification)
-                    Information_Speciality.transform.Find("Hexagone").Find("Purification").gameObject.SetActive(display);
-                if (this.room.isPray)
-                    Information_Speciality.transform.Find("Hexagone").Find("Pray").gameObject.SetActive(display);
-                if (this.room.isNPC)
-                    Information_Speciality.transform.Find("Hexagone").Find("NPC").gameObject.SetActive(display);
-                if (this.room.isLabyrintheHide)
-                    Information_Speciality.transform.Find("Hexagone").Find("Labyrinthe").gameObject.SetActive(display);*/
-
         if (this.room.isSpecial && !this.room.isTrial)
         {
             Information_Speciality.transform.Find("Hexagone").Find("SpeciallyRoom").gameObject.SetActive(display);
             Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
-        }
-            
+        } 
         if (this.room.isTrial)
         {
             Information_Speciality.transform.Find("Hexagone").Find("TrailRoom").gameObject.SetActive(display);
             Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
         }
-          
     }
 }

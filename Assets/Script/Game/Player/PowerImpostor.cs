@@ -145,14 +145,15 @@ public class PowerImpostor : MonoBehaviourPun
     [PunRPC]
     public void SetRedColorDoor(int indexDoor, int indexPlayer)
     {
-        if (!this.transform.parent.GetComponent<PlayerGO>().gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || indexPower == -1)
+        if ((!this.transform.parent.GetComponent<PlayerGO>().gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && !this.transform.parent.GetComponent<PlayerGO>().gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes) || indexPower == -1)
             return;
-        if (!gameManager.SamePositionAtMine(indexPlayer))
+        if (!gameManager || !gameManager.SamePositionAtMine(indexPlayer))
             return;
         Door door = this.transform.parent.GetComponent<PlayerGO>().gameManager.GetDoorGo(indexDoor).GetComponent<Door>();
         door.GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
         door.transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
         this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(door.index, true);
+        gameManager.gameManagerNetwork.SendDisplayTrappedDoor(indexDoor);
     }
 
     public void SetRedColorPlayer(bool display)

@@ -180,24 +180,6 @@ public class ObjectImpostor : MonoBehaviour
         switch (index)
         {
             case 0:
-                /*                if (!isInvisible)
-                                {
-                                    InvisibilityPower();
-                                    gameManager.ui_Manager.DisplayN2PotionObject(true);
-                                    DisplayInvisibleResetButton(true);
-                                    isInvisible = true;
-                                }
-                                else 
-                                {
-                                    ResetInvisiblityPower();
-                                    DisplayButtonCanUsed(false);
-                                    DisplayInvisibleResetButton(false);
-                                    gameManager.ui_Manager.DisplayN2PotionObject(false);
-                                    gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
-                                    powerIsUsed = true;
-                                    gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
-                                    isInvisible = false;
-                                }*/
                 BlindPower();
                 powerIsUsed = true;
                 gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
@@ -214,25 +196,6 @@ public class ObjectImpostor : MonoBehaviour
                 CursedPower();
                 powerIsUsed = true;
                 gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
-                break;
-            case 4:
-/*                if (!isOtherToInvisible)
-                {
-                    InvisibilityPowerOtherPlayer();
-                    gameManager.ui_Manager.DisplayN2PotionObject(true);
-                    DisplayInvisibleResetButton(true);
-                    isOtherToInvisible = true;
-                }    
-                else{
-                    ResetOtherInvisiblityPower();
-                    DisplayInvisibleResetButton(false);
-                    DisplayButtonCanUsed(false);
-                    gameManager.ui_Manager.DisplayN2PotionObject(false);
-                    gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
-                    powerIsUsed = true;
-                    gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
-                    isOtherToInvisible = false;
-                }*/
                 break;
         }
     }

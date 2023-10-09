@@ -69,14 +69,19 @@ public class Dungeon : ScriptableObject
             if (room.isTooFar || room.IsInitiale || room.IsExit || GetPathFindingDistance(room, initialRoom) == GetPathFindingDistance(initialRoom, exit))
                 continue;
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 65)
+            if (randomIsHide <= 60)
             {
                 room.isHide = true;
                 continue;
             }
 
             int randomSpeciallity = Random.Range(0, 14);
-           // randomSpeciallity = 14;
+            int randomSpeciallity2 = Random.Range(0, 2);
+            if (randomSpeciallity2 == 0)
+                randomSpeciallity = 8;
+            else
+                randomSpeciallity = 11;
+            //randomSpeciallity = 8;
             if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
                 room.chest = true;
             if (randomSpeciallity == 1 && setting.listSpeciallyRoom[1])
@@ -126,7 +131,11 @@ public class Dungeon : ScriptableObject
             if (randomSpeciallity == 12 && setting.listSpeciallyRoom[3])
                 room.isNPC = true;
             if (randomSpeciallity == 13 && setting.listTrialRoom[7])
+            {
                 room.isLabyrintheHide = true;
+                room.isTrial = true;
+            }
+                
             if (randomSpeciallity == 14)
                 room.IsFoggy = true;
 

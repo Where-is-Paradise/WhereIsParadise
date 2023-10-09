@@ -138,16 +138,16 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendMap(int indexRoom, bool isExit, bool isObstacle, bool isTooFar, 
         bool isInitial, int distance_exit, int distance_pathFinding,int distance_pathFinding_IR,bool isLast, 
-        bool isFoggy , bool isVirus, bool hasKey, bool chest , bool isHide)
+        bool isFoggy , bool isVirus, bool hasKey, bool chest , bool isHide, bool isTrial, bool isSpecial)
     {
         photonView.RPC("SetRooms", RpcTarget.Others, indexRoom,isExit,isObstacle, isTooFar, isInitial,
-            distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey, chest , isHide);
+            distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey, chest , isHide, isTrial, isSpecial);
     }
 
     [PunRPC]
     public void SetRooms(int indexRoom, bool isExit, bool isObstacle, bool isTooFar,
         bool isInitial, int distance_exit, int distance_pathFinding,int  distance_pathFinding_IR, 
-        bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest, bool isHide)
+        bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest, bool isHide, bool isTrial, bool isSpecial)
     {
         gameManager.game.dungeon.rooms[indexRoom].IsExit = isExit;
         gameManager.game.dungeon.rooms[indexRoom].IsObstacle = isObstacle;
@@ -162,6 +162,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.rooms[indexRoom].chest = chest;
         gameManager.game.dungeon.rooms[indexRoom].IsVirus = isVirus;
         gameManager.game.dungeon.rooms[indexRoom].isHide = isHide;
+        gameManager.game.dungeon.rooms[indexRoom].isTrial = isTrial;
+        gameManager.game.dungeon.rooms[indexRoom].isSpecial = isSpecial;
 
         if (isExit)
         {
@@ -2081,4 +2083,62 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.GetDoorGo(doorId).GetComponent<Door>().DisplayTransparencyLightExploration();
     }
 
+    public void SendDisplayTrappedDoor(int indexDoor)
+    {
+        photonView.RPC("DisplayTrappedDoor", RpcTarget.Others, indexDoor);
+    }
+
+    [PunRPC]
+    public void DisplayTrappedDoor(int indexDoor)
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
+            return;
+
+        Door door = gameManager.GetDoorGo(indexDoor).GetComponent<Door>();
+        door.GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+        door.transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+        gameManager.ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(door.index, true);
+    }
+
+    public void SendNewSpeciallyRoom(int indexRoom, int indexSpeciallity)
+    {
+        photonView.RPC("SetNewSpeciallyRoom", RpcTarget.All, indexRoom, indexSpeciallity);
+    }
+
+
+    [PunRPC]
+    public void SetNewSpeciallyRoom(int indexRoom, int indexSpeciallity)
+    {
+        switch (indexSpeciallity)
+        {
+            case 0:
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).chest = true;
+                break;
+            case 1:
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSacrifice = true;
+                break;
+            case 2:
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).isPray = true;
+                break;
+            case 3:
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).isResurection = true;
+                break;
+            case 4:
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).isPurification = true;
+                break;
+        }
+    }
+
+
+    public void SendOrangeDoor(int indexDoor)
+    {
+        photonView.RPC("SetOrangeDoor", RpcTarget.All, indexDoor);
+    }
+
+    [PunRPC]
+    public void SetOrangeDoor(int indexDoor)
+    {
+        Door door = gameManager.GetDoorGo(indexDoor).GetComponent<Door>();
+        door.GetComponent<SpriteRenderer>().color = new Color(255, (195f/255f), 0);
+    }
 }

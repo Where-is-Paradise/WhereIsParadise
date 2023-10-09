@@ -40,7 +40,7 @@ public class MonsterNPC : MonoBehaviourPun
             MoveOnTarget();
             if (target)
             {
-                if (target.isTouchByMonster || target.isSacrifice)
+                if (target.isTouchInTrial || target.isSacrifice)
                     ChangeRandomTarget();
             }
         }
@@ -106,7 +106,7 @@ public class MonsterNPC : MonoBehaviourPun
         List<GameObject> listPotentialPlayer = new List<GameObject>();
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByMonster)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial)
                 continue;
             if (player.GetComponent<PlayerGO>().isSacrifice)
                 continue;
@@ -134,7 +134,9 @@ public class MonsterNPC : MonoBehaviourPun
 
             if (TestLastPlayer())
             {
-                monsterRoom.GiveAwardToPlayer(GetLastPlayer());
+                //monsterRoom.GiveAwardToPlayer(GetLastPlayer());
+                monsterRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+                monsterRoom.DesactivateRoom();
                 photonView.RPC("SendDectivateRoom", RpcTarget.All);
             }
         }
@@ -146,7 +148,7 @@ public class MonsterNPC : MonoBehaviourPun
         foreach (GameObject player in listPlayer)
         {
              
-            if (player.GetComponent<PlayerGO>().isTouchByMonster || !monsterRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !monsterRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
@@ -164,7 +166,7 @@ public class MonsterNPC : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByMonster || !monsterRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !monsterRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
@@ -199,7 +201,7 @@ public class MonsterNPC : MonoBehaviourPun
                 continue;
             if (player.GetComponent<PlayerGO>().isInJail)
                 continue;
-            if (!player.GetComponent<PlayerGO>().isTouchByMonster)
+            if (!player.GetComponent<PlayerGO>().isTouchInTrial)
                 return player;
         }
         Debug.Log("return null");
@@ -212,7 +214,7 @@ public class MonsterNPC : MonoBehaviourPun
 
     public void SetPlayerColor(GameObject player)
     {
-        player.gameObject.GetComponent<PlayerNetwork>().SendIstouchByMonsterNPC(true);
+        player.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
         player.gameObject.GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
     }
 
@@ -237,13 +239,14 @@ public class MonsterNPC : MonoBehaviourPun
     [PunRPC]
     public void SetDestroy()
     {
-        PhotonNetwork.Destroy(this.gameObject);
+        if(GetComponent<PhotonView>().IsMine)
+            PhotonNetwork.Destroy(this.gameObject);
     }
     [PunRPC]
     public void SendDectivateRoom()
     {
        if (!monsterRoom.gameManager.SamePositionAtBoss())
             return;
-        this.monsterRoom.DesactivateRoom();
+        this.monsterRoom.DesactivateRoomChild();
     }
 }

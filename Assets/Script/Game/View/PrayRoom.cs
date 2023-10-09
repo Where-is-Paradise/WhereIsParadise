@@ -11,12 +11,13 @@ public class PrayRoom : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+       
     }
 
     // Update is called once per frame
     void Update()
     {
+        DisplayResultForImpostro();
         if (roomIsLaunched && CheckAllZonePray() && !powerIsUsed)
             DisplayResultOfPray();
     }
@@ -82,6 +83,23 @@ public class PrayRoom : MonoBehaviour
     public void DisplayChangeParadise()
     {
         this.transform.Find("Status").Find("ChangeParadise").gameObject.SetActive(true);
+    }
+
+    public void DisplayResultForImpostro()
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
+            return;
+
+        int distance = gameManager.game.currentRoom.DistancePathFinding;
+        if (!gameManager.game.currentRoom.isTraped)
+        {
+            this.transform.Find("Status").Find("DistanceParadiseImpostorView").Find("Canvas").Find("Text").GetComponent<Text>().text = distance.ToString();
+            this.transform.Find("Status").Find("DistanceParadiseImpostorView").gameObject.SetActive(true);
+        }
+        else
+        {
+            this.transform.Find("Status").Find("ChangeParadiseImpostorView").gameObject.SetActive(true);
+        }
     }
     
 }

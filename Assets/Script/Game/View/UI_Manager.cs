@@ -98,6 +98,8 @@ public class UI_Manager : MonoBehaviour
     public GameObject canvasInGame;
     public GameObject ReconnexionPanel;
 
+    public GameObject panelChooseRoom;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -1173,7 +1175,7 @@ setting_button_echapMenu.SetActive(false);
     }
     public void DisplayAwardAndPenaltyForImpostor(bool display)
     {
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
         {
             return;
         }
@@ -1817,7 +1819,7 @@ setting_button_echapMenu.SetActive(false);
             interogationPoint.SetActive(display);
             return;
         }
-        GameObject Information_Speciality = hexagone.transform.Find("Information_Speciality").gameObject;
+/*        GameObject Information_Speciality = hexagone.transform.Find("Information_Speciality").gameObject;
         Information_Speciality.SetActive(display);
         if (room.isAx)
             Information_Speciality.transform.Find("Hexagone").Find("Ax").gameObject.SetActive(display);
@@ -1846,7 +1848,7 @@ setting_button_echapMenu.SetActive(false);
         if (room.isNPC)
             Information_Speciality.transform.Find("Hexagone").Find("NPC").gameObject.SetActive(display);
         if (room.isLabyrintheHide)
-            Information_Speciality.transform.Find("Hexagone").Find("Labyrinthe").gameObject.SetActive(display);
+            Information_Speciality.transform.Find("Hexagone").Find("Labyrinthe").gameObject.SetActive(display);*/
     }
     
     public void DisplayLightLeverSpeciallyRoom(bool display)
@@ -1892,17 +1894,6 @@ setting_button_echapMenu.SetActive(false);
         //Door door = gameManager.GetDoorGo(indexDoor).GetComponent<Door>();
         Room room = gameManager.game.currentRoom;
         
-        if (room.chest)
-        {
-            if (!GameObject.Find("ChestRoom"))
-                return;
-            GameObject doors = GameObject.Find("ChestRoom").transform.Find("Doors").gameObject;
-            doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(150f/255, 0, 0);
-            if (!display)
-            {
-                doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            }
-        }
        
         if (room.IsVirus)
         {
@@ -1951,14 +1942,14 @@ setting_button_echapMenu.SetActive(false);
         }
         if (room.isMonsters)
         {
-            if (!GameObject.Find("MonstersRoom"))
+/*            if (!GameObject.Find("MonstersRoom"))
                 return;
             GameObject doors = GameObject.Find("MonstersRoom").transform.Find("Doors").gameObject;
             doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(155f/255, 0, 0);
             if (!display)
             {
                 doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color((118f/255), (100f/255), (100f/255));
-            }
+            }*/
         }
         if (room.isNPC)
         {
@@ -1986,12 +1977,12 @@ setting_button_echapMenu.SetActive(false);
         {
             if (!GameObject.Find("SacrificeRoom"))
                 return;
-            GameObject doors = GameObject.Find("SacrificeRoom").transform.Find("Doors").gameObject;
+/*            GameObject doors = GameObject.Find("SacrificeRoom").transform.Find("Doors").gameObject;
             doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
             if (!display)
             {
                 doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            }
+            }*/
         }
     }
     public void DisplayLetterInSkull(bool display)
@@ -2076,6 +2067,84 @@ setting_button_echapMenu.SetActive(false);
         door.gameObject.transform.Find("LightInformation").Find("White").gameObject.SetActive(display);
     }
 
+    public void DisplayAllDoorLightOther(bool display)
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+
+        for (int i = 0; i < doors.Length; i++)
+        {
+            DisplayDoorLightOther(doors[i].GetComponent<Door>().index, display);
+        }
+    }
+
+    public void DisplayDoorLightOther(int index, bool display)
+    {
+        Door door = gameManager.GetDoorGo(index).gameObject.GetComponent<Door>();
+        if ((door.isOpenForAll || door.GetRoomBehind().isSpecial) && display )
+            return;
+
+        door.gameObject.transform.Find("LightInformation").Find("White").gameObject.SetActive(display);
+    }
+
+    public void DisplayMagicalKeyButton()
+    {
+        canvasInGame.transform.Find("Exploration").Find("Torch").gameObject.SetActive(false);
+        canvasInGame.transform.Find("Exploration").Find("MagicalKey").gameObject.SetActive(true);
+    }
+    public void DisplayMagicalKeyButtonBigger(bool display)
+    {
+        canvasInGame.transform.Find("Exploration").Find("MagicalKey").Find("Bigger").gameObject.SetActive(display);
+    }
+
+    public void OnClickButtonMagicalKey()
+    {
+        panelChooseRoom.SetActive(true);
+        canvasInGame.transform.Find("Exploration").Find("MagicalKey").Find("Bigger").gameObject.SetActive(false);
+        canvasInGame.transform.Find("Exploration").Find("MagicalKey").gameObject.SetActive(false);
+        canvasInGame.transform.Find("Exploration").Find("Torch").gameObject.SetActive(true);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayMagicalKey(false);
+        DisplayAllDoorLightExploration(false);
+    }
+
+    public void UpdateRoomWithMagicalkey(int indexChoice)
+    {
+        int indexDoor = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collsionDoorIndexForExploration;
+        if (!gameManager.GetDoorGo(indexDoor))
+            return;
+        gameManager.gameManagerNetwork.SendNewSpeciallyRoom(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().GetRoomBehind().Index, indexChoice);
+        gameManager.gameManagerNetwork.SendOrangeDoor(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().index);
+    }
+    public void DisplayButtonBlackTorch(bool display)
+    {
+        canvasInGame.transform.Find("Exploration").Find("BlackTorch").gameObject.SetActive(display);
+    }
+
+    public void DisplayButtonBlackTorchBigger(bool display)
+    {
+        canvasInGame.transform.Find("Exploration").Find("BlackTorch").Find("Bigger").gameObject.SetActive(display);
+    }
+    public void OnClickBlackTorchButton()
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        foreach(GameObject door in doors)
+        {
+            door.GetComponent<Door>().DisplayColorLightToExploration();
+        }
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().explorationPowerIsAvailable = false;
+        canvasInGame.transform.Find("Exploration").Find("BlackTorch").Find("Bigger").gameObject.SetActive(false);
+        canvasInGame.transform.Find("Exploration").Find("BlackTorch").gameObject.SetActive(false);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasBlackTorch = false;
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(false);
+        gameManager.gameManagerNetwork.SendDisplayMainLevers(true);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayWhiteLight(false);
+        if (!gameManager.ISTrailsRoom(gameManager.game.currentRoom))
+        {
+            gameManager.game.nbTorch--;
+            gameManager.gameManagerNetwork.SendTorchNumber(gameManager.game.nbTorch);
+        }
+        gameManager.gameManagerNetwork.SendExplorationIsUsed(gameManager.game.currentRoom.Index, true);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlackTorch(false);
+    }
 
 }
 
