@@ -1972,6 +1972,8 @@ public class GameManager : MonoBehaviourPun
 
         ui_Manager.HideLightExplorationAllDoor();
         ui_Manager.DisplayAllDoorLightExploration(true);
+
+        GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
     }
 
 
@@ -2002,11 +2004,13 @@ public class GameManager : MonoBehaviourPun
                 {
                     player.transform.GetChild(0).gameObject.SetActive(true);
                     player.transform.GetChild(1).gameObject.SetActive(true);
+                    player.transform.Find("TrialObject").gameObject.SetActive(true);
                 }
                 else
                 {
                     player.transform.GetChild(0).gameObject.SetActive(false);
                     player.transform.GetChild(1).gameObject.SetActive(false);
+                    player.transform.Find("TrialObject").gameObject.SetActive(false);
                 }
             }
         }
@@ -2788,6 +2792,7 @@ public class GameManager : MonoBehaviourPun
         if (room.isNPC)
         {
             ui_Manager.DisplayNPCRoom(true);
+            GameObject.Find("NPCRoom").GetComponent<NPCRoom>().ActivateRoom();
             if (!room.explorationIsUsed)
                 ui_Manager.DisplayMainLevers(true);
             else
@@ -3891,10 +3896,37 @@ public class GameManager : MonoBehaviourPun
         
         foreach (GameObject door in doors)
         {
-            Debug.Log(door.GetComponent<Door>().index);
             if (door.GetComponent<Door>().GetRoomBehind().isSpecial && !door.GetComponent<Door>().isOpenForAll)
                 counter++;
         }
         return counter;
     }
+
+    public Door GetDoorShorter()
+    {
+        GameObject[] listDoor = GameObject.FindGameObjectsWithTag("Door");
+       
+        foreach(GameObject door in listDoor)
+        {
+            if (door.GetComponent<Door>().RoomBehindHaslessDistance())
+                return door.GetComponent<Door>();
+        }
+        return listDoor[0].GetComponent<Door>();
+    }
+
+    // inverse funtion of GetDoorShorter 
+    public Door GetRandomDoorLonger()
+    {
+        GameObject[] listDoor = GameObject.FindGameObjectsWithTag("Door");
+        List<Door> listDoorPotential = new List<Door>();
+        foreach (GameObject door in listDoor)
+        {
+            if (door.GetComponent<Door>().RoomBehindHaslessDistance())
+                continue;
+            else
+                listDoorPotential.Add(door.GetComponent<Door>());
+        }
+        return listDoorPotential[Random.Range(0, listDoorPotential.Count)];
+    }
+
 }

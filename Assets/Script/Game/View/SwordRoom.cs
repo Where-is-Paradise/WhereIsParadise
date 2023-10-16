@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwordRoom : MonoBehaviourPun
+public class SwordRoom : TrialsRoom
 {
     public GameManager gameManager;
     public bool canAttack = true;
@@ -18,7 +18,7 @@ public class SwordRoom : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        if (!roomIsLaunched || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchBySword)
+        if (!roomIsLaunched || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchInTrial)
             return;
         CanAttack();
     }
@@ -119,7 +119,7 @@ public class SwordRoom : MonoBehaviourPun
         StartCoroutine(DisplayInitial(indexPlayer));
     }
 
-    public void SendDesactivateRoom()
+    public void SendDesactivateRoomChild()
     {
         photonView.RPC("SetDesactivateRoom", RpcTarget.All);
     }
@@ -128,19 +128,7 @@ public class SwordRoom : MonoBehaviourPun
     public void SetDesactivateRoom()
     {
         DisplaySwordAllPlayer(false);
-        DisplayHeartsFoAllPlayer(false);
-        ResetIsTouchBySwordAllPlayer();
         roomIsLaunched = false;
-        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
-        gameManager.speciallyIsLaunch = false;
-        gameManager.ActivateCollisionTPOfAllDoor(true);
-        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
-        gameManager.CloseDoorWhenVote(false);
-        StartCoroutine(CanMoveActiveCoroutine());
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-        {
-            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(true);
-        }
     }
 
     public void ResetIsTouchBySwordAllPlayer()
@@ -148,15 +136,10 @@ public class SwordRoom : MonoBehaviourPun
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach(GameObject player in listPlayer)
         {
-            player.GetComponent<PlayerGO>().isTouchBySword = false;
+            player.GetComponent<PlayerGO>().isTouchInTrial = false;
             player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
             player.GetComponent<PlayerGO>().ResetHeart();
         }
     }
 
-    public IEnumerator CanMoveActiveCoroutine()
-    {
-        yield return new WaitForSeconds(2);
-        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
-    }
 }

@@ -460,7 +460,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canDisplayMap = false;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
-
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
         StartCoroutine(CoroutineActiveZoneDoor());
 
 
@@ -1368,29 +1368,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetLaunchFireBallRoom(int categorieFireball)
     {
         gameManager.fireBallIsLaunch = true;
-        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
-        //gameManager.game.nbTorch++;
-
-        GameObject[] turrets = GameObject.FindGameObjectsWithTag("Turret");
-
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-        {
-            return;
-        }
-        //GameObject[] turrets = GameObject.FindGameObjectsWithTag("Turret");
-        foreach(GameObject turret in turrets)
-        {
-            if(turrets.Length > 0 && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            {
-                turret.GetComponent<Turret>().therenotMasterClient = true;
-            }
-            int randomfrequency = Random.Range(1, 6);
-            turret.GetComponent<Turret>().LaunchTurret(randomfrequency);
-            turret.GetComponent<Turret>().categorie = 1;
-            turret.GetComponent<Turret>().frequency = randomfrequency;
-        }
-        gameManager.speciallyIsLaunch = true;
-        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+        GameObject.Find("FireBallRoom").GetComponent<FireBallRoom>().LanchFireBallRoom();
     }
 
     public void SendDisplayMainLevers(bool display)
@@ -2112,7 +2090,15 @@ public class GameManagerNetwork : MonoBehaviourPun
         switch (indexSpeciallity)
         {
             case 0:
-                gameManager.game.dungeon.GetRoomByIndex(indexRoom).chest = true;
+                Room room = gameManager.game.dungeon.GetRoomByIndex(indexRoom);
+                room.chest = true;
+                if (!PhotonNetwork.IsMasterClient)
+                    return;
+                gameManager.game.dungeon.InsertChestRoom(indexRoom);
+                for (int i = 0; i < 2; i++)
+                {
+                    gameManager.gameManagerNetwork.SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                }
                 break;
             case 1:
                 gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSacrifice = true;
@@ -2140,5 +2126,59 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         Door door = gameManager.GetDoorGo(indexDoor).GetComponent<Door>();
         door.GetComponent<SpriteRenderer>().color = new Color(255, (195f/255f), 0);
+    }
+
+    public void SendDoorInNPCRoom(int indexRoom, string doorName)
+    {
+        photonView.RPC("SetDoorInNPCRoom", RpcTarget.All, indexRoom, doorName);
+    }
+    [PunRPC]
+    public void SetDoorInNPCRoom(int indexRoom, string doorName)
+    {
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).doorInNpc = doorName;
+    }
+
+    public void SendEvilInNPCRoom(int indexRoom, bool evilIsLeft)
+    {
+        photonView.RPC("SetEvilInNPCRoom", RpcTarget.All, indexRoom, evilIsLeft);
+    }
+    [PunRPC]
+    public void SetEvilInNPCRoom(int indexRoom, bool evilIsLeft)
+    {
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).evilIsLeft = evilIsLeft;
+    }
+
+    public void SendNpcChooseLeft(int indexRoom, bool chooseLeft)
+    {
+        photonView.RPC("SetNpcChooseLeft", RpcTarget.All, indexRoom, chooseLeft);
+    }
+
+    [PunRPC]
+    public void SetNpcChooseLeft(int indexRoom, bool chooseLeft)
+    {
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).npcChooseIsLeft = chooseLeft;
+    }
+
+    public void SendNpcDoorShorterAndLonger(int indexRoom, string shorter, string longer)
+    {
+        photonView.RPC("SetNpcDoorShorterAndLonger", RpcTarget.All, indexRoom, shorter, longer) ;
+    }
+
+    [PunRPC]
+    public void SetNpcDoorShorterAndLonger(int indexRoom, string shorter, string longer)
+    {
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).doorNameLongerNPC = longer;
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).doorNameShorterNPC = shorter;
+    }
+
+    public void SendPowerIsUsed(int indexRoom, bool isUsed)
+    {
+        photonView.RPC("SetPowerIsUsed", RpcTarget.All, indexRoom, isUsed);
+    }
+
+    [PunRPC]
+    public void SetPowerIsUsed(int indexRoom, bool isUsed)
+    {
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).speciallyPowerIsUsed = isUsed;
     }
 }

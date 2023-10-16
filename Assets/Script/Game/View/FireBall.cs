@@ -9,18 +9,20 @@ public class FireBall : MonoBehaviourPun
     public Vector2 direction = new Vector2(0,0);
     public GameObject turretParent;
 
-    private GameManager gameManager;
+    public GameManager gameManager;
+
+    public FireBallRoom fireballRoom;
     // Start is called before the first frame update
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         //StartCoroutine(CoroutineActiveCollision(0.2f));
-
+        fireballRoom = this.transform.parent.parent.GetComponent<FireBallRoom>();
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         Physics2D.IgnoreCollision(this.GetComponent<CircleCollider2D>(), turretParent.GetComponent<BoxCollider2D>(), true);
         StartCoroutine(ActiveCollisionTurretCouroutine());
-        //speed = Random.Range(2, 10);
+        speed = Random.Range(1f, 4.5f);
     }
 
     // Update is called once per frame
@@ -53,42 +55,37 @@ public class FireBall : MonoBehaviourPun
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         string nameWall = nameWallColsion.gameObject.name;
-        if (nameWall == "Left" || nameWall == "Right" 
-            || (CollisionDoor(nameWallColsion) && nameWall == "A")
-            || (CollisionDoor(nameWallColsion) && nameWall == "D"))
+        if (nameWall == "Left" || nameWall == "Right" )
         {
-
             if (direction.y < 0)
             {
-                direction = new Vector2(-direction.x, -1 * Random.Range(1, 1f));
+                direction = new Vector2(-direction.x, -1 * Random.Range(0, 1f));
             }
             else
             {
-                direction = new Vector2(-direction.x, Random.Range(1, 1f));
+                direction = new Vector2(-direction.x, Random.Range(0, 1f));
             }
 
         }
-        if (nameWall == "Top" || nameWall == "Bottom" 
-            || (CollisionDoor(nameWallColsion) && nameWall == "B")
-            || (CollisionDoor(nameWallColsion) && nameWall == "C") 
-            || (CollisionDoor(nameWallColsion) && nameWall == "E")
-            || (CollisionDoor(nameWallColsion) && nameWall == "F"))
+        if (nameWall == "Top" || nameWall == "Bottom" )
         {
             if (direction.x < 0)
             {
-                direction = new Vector2(-1 * Random.Range(1, 1f), -direction.y);
+                direction = new Vector2(-1 * Random.Range(0, 1f), -direction.y);
             }
             else
             {
-                direction = new Vector2(Random.Range(1, 1f), -direction.y);
+                direction = new Vector2(Random.Range(0, 1f), -direction.y);
             }
 
         }
 
         if(nameWall  == "Turret")
         {
-            direction = new Vector2(-direction.x * Random.Range(1, 1f), -direction.y * Random.Range(1, 1f));
+            direction = new Vector2(-direction.x * Random.Range(0, 1f), -direction.y * Random.Range(0, 1f));
         }
+
+        direction.Normalize();
     }
 
     public bool CollisionDoor(Collider2D collision)
@@ -110,7 +107,7 @@ public class FireBall : MonoBehaviourPun
             {
                 return;
             }
-            if (collision.gameObject.GetComponent<PlayerGO>().isTouchByFireBall)
+            if (collision.gameObject.GetComponent<PlayerGO>().isTouchInTrial)
             {
                 return;
             }
@@ -118,55 +115,62 @@ public class FireBall : MonoBehaviourPun
             {
                 return;
             }
-
             collision.gameObject.GetComponent<PlayerGO>().DisplayCharacter(false);
-            collision.gameObject.GetComponent<PlayerGO>().rankTouchBall = gameManager.GetPlayerSameRoom(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID) .Count -  GetAllPlayerTouchByFireBall();
-            collision.gameObject.GetComponent<PlayerGO>().isTouchByFireBall = true;
-            collision.gameObject.GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
-            
-
-
-            if (collision.gameObject.GetComponent<PlayerGO>().rankTouchBall == 2)
-            {
-                GameObject playerWin = GetPlayerRemaning();
-                photonView.RPC("ResetIsTouchFireBall", RpcTarget.All);
-                //playerWin.gameObject.GetComponent<PlayerGO>().DisplayCharacter(true);
-                playerWin.gameObject.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.SendDisplayFireBallRoom(false);
-                playerWin.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedition();
-                playerWin.gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
-                playerWin.gameObject.GetComponent<PlayerNetwork>().SendCanLaunchExploration();
-                playerWin.gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
-                if (gameManager.setting.displayTutorial)
-                {
-                    if (!gameManager.ui_Manager.listTutorialBool[23])
-                    {
-                        gameManager.ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
-                        gameManager.ui_Manager.tutorial_parent.SetActive(true);
-                        gameManager.ui_Manager.tutorial[23].SetActive(true);
-                        gameManager.ui_Manager.listTutorialBool[23] = true;
-                    }
-
-                }
-            }
-            
+            photonView.RPC("SendMineIsTouch", RpcTarget.All, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+            //collision.gameObject.GetComponent<PlayerGO>().rankTouchBall = gameManager.GetPlayerSameRoom(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID) .Count -  GetAllPlayerTouchByFireBall();
+            //collision.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
             SendDestroy();
         }
-        else
+
+    }
+    public void OnTriggerStay2D(Collider2D collision)
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
+        if (collision.tag == "Wall" ||  collision.tag == "Turret")
         {
-            if (collision == null)
-            {
-                return;
-            }
-            
+            SendDestroy();
         }
     }
+
+    [PunRPC]
+    public void SendMineIsTouch(int indexPlayer)
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
+
+        gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial = true;
+        if (TestLastPlayer())
+        {
+            Debug.Log("sa passe");
+            fireballRoom.roomIsLaunch = false;
+            fireballRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+            fireballRoom.DesactivateRoom();
+            fireballRoom.DesactivateFireBallRoom();
+        }  
+    }
+
+    public GameObject GetLastPlayer()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in listPlayer)
+        {
+            if (!fireballRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
+                continue;
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            if (!player.GetComponent<PlayerGO>().isTouchInTrial)
+                return player;
+        }
+        return listPlayer[Random.Range(0, listPlayer.Length)];
+    }
+
 
     public void SendDestroy()
     {
-        //photonView.RPC("SetDestoy", RpcTarget.All);
-        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            PhotonNetwork.Destroy(this.gameObject);
+        PhotonNetwork.Destroy(this.gameObject);
     }
+
 
     public void Victory()
     {
@@ -201,12 +205,13 @@ public class FireBall : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByFireBall || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice)
             {
                 counter++;
             }
         }
+        Debug.LogError(counter + " " + (listPlayer.Length - 1));
         if (counter == (listPlayer.Length - 1))
             return true;
         return false;
@@ -226,14 +231,6 @@ public class FireBall : MonoBehaviourPun
         return null;
     }
 
-    //[PunRPC]
-/*    public void SetDestoy()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            
-        }
-    }*/
 
     public int GetAllPlayerTouchByFireBall()
     {
@@ -311,7 +308,6 @@ public class FireBall : MonoBehaviourPun
     public IEnumerator ActiveCollisionTurretCouroutine()
     {
         yield return new WaitForSeconds(1);
-        Debug.LogError("sa passe tinkete");
         Physics2D.IgnoreCollision(this.GetComponent<CircleCollider2D>(), turretParent.GetComponent<BoxCollider2D>(), false) ;
     }
 

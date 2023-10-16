@@ -100,6 +100,8 @@ public class UI_Manager : MonoBehaviour
 
     public GameObject panelChooseRoom;
 
+    public GameObject panelInformationObjectWon;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -2013,6 +2015,8 @@ setting_button_echapMenu.SetActive(false);
     }
     public void DesactivateAllobstacles(string nameObject, bool display)
     {
+        if (!GameObject.Find(nameObject).transform.Find("Obstacles"))
+            return;
         GameObject.Find(nameObject).transform.Find("Obstacles").gameObject.SetActive(display);
         GameObject speciallyRoom = GameObject.Find(nameObject);
         if (display)
@@ -2104,11 +2108,13 @@ setting_button_echapMenu.SetActive(false);
         canvasInGame.transform.Find("Exploration").Find("Torch").gameObject.SetActive(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayMagicalKey(false);
         DisplayAllDoorLightExploration(false);
+        gameManager.gameManagerNetwork.SendDisplayDoorLever(true);
     }
 
     public void UpdateRoomWithMagicalkey(int indexChoice)
     {
         int indexDoor = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collsionDoorIndexForExploration;
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(false);
         if (!gameManager.GetDoorGo(indexDoor))
             return;
         gameManager.gameManagerNetwork.SendNewSpeciallyRoom(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().GetRoomBehind().Index, indexChoice);
@@ -2144,6 +2150,23 @@ setting_button_echapMenu.SetActive(false);
         }
         gameManager.gameManagerNetwork.SendExplorationIsUsed(gameManager.game.currentRoom.Index, true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlackTorch(false);
+    }
+
+    public void DisplayInformationObjectWon(int index)
+    {
+        panelInformationObjectWon.gameObject.SetActive(true);
+        panelInformationObjectWon.gameObject.transform.GetChild(index).gameObject.SetActive(true);
+
+    }
+
+    public void DisplayButtonNPCBigger(bool display)
+    {
+        canvasInGame.transform.Find("Interaction").Find("NPC_interaction").gameObject.SetActive(display);
+    }
+    public void OnClickButtonNPC()
+    {
+        bool isLeft = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isLeftNpc;
+        GameObject.Find("NPCRoom").GetComponent<NPCRoom>().SendDisplayDistanceByNpc(isLeft);
     }
 
 }

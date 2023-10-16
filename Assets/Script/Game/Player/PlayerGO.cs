@@ -168,7 +168,8 @@ public class PlayerGO : MonoBehaviour
     public bool hasBlackTorch = false;
 
     public List<bool> listTrialObject;
-    
+
+    public bool isLeftNpc = false;
 
     private void Awake()
     {
@@ -976,10 +977,10 @@ public class PlayerGO : MonoBehaviour
             Mathf.Abs(perso.localScale.x),
             perso.localScale.y
         );
-        transform.Find("BlueTorch").localScale = new Vector3(
-            Mathf.Abs(transform.Find("BlueTorch").localScale.x),
-            transform.Find("BlueTorch").localScale.y);
-        transform.Find("BlueTorch").transform.localPosition = new Vector3(-0.455f, transform.Find("BlueTorch").transform.localPosition.y);
+        transform.Find("TrialObject").localScale = new Vector3(
+            Mathf.Abs(transform.Find("TrialObject").localScale.x),
+            transform.Find("TrialObject").localScale.y);
+        //transform.Find("TrialObject").transform.localPosition = new Vector3(-0.455f, transform.Find("TrialObject").transform.localPosition.y);
         //transform.Find("BlueTorch").transform.transform.eulerAngles = new Vector3(0, 0, 24); 
 
     }
@@ -993,10 +994,10 @@ public class PlayerGO : MonoBehaviour
         );
 
 
-        transform.Find("BlueTorch").localScale = new Vector3(
-            -Mathf.Abs(transform.Find("BlueTorch").localScale.x),
-            transform.Find("BlueTorch").localScale.y);
-        transform.Find("BlueTorch").transform.localPosition = new Vector3(0.455f, transform.Find("BlueTorch").transform.localPosition.y);
+        transform.Find("TrialObject").localScale = new Vector3(
+            -Mathf.Abs(transform.Find("TrialObject").localScale.x),
+            transform.Find("TrialObject").localScale.y);
+        //transform.Find("TrialObject").transform.localPosition = new Vector3(0.455f, transform.Find("TrialObject").transform.localPosition.y);
         //transform.Find("BlueTorch").transform.transform.eulerAngles = new Vector3(0, 0, -24);
 
     }
@@ -1042,8 +1043,6 @@ public class PlayerGO : MonoBehaviour
         if (collision.transform.parent.gameObject.GetComponent<Door>().isOpenForAll)
             return;
         if (gameManager.voteDoorHasProposed)
-            return;
-        if (gameManager.ISTrailsRoom(gameManager.game.currentRoom) && !hasWinFireBallRoom)
             return;
         if (hasBlackTorch)
             return;
@@ -1092,6 +1091,24 @@ public class PlayerGO : MonoBehaviour
         if (!hasBlackTorch)
             return;
         gameManager.ui_Manager.DisplayButtonBlackTorchBigger(enter);
+    }
+
+    public void CollisionWithNPC(Collider2D collision, bool enter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+        if (!collision.gameObject.tag.Equals("NPC"))
+            return;
+        if (!isBoss)
+            return;
+
+
+        if (collision.gameObject.name.Equals("NPCLeft"))
+            isLeftNpc = true;
+        else
+            isLeftNpc = false;
+
+        gameManager.ui_Manager.DisplayButtonNPCBigger(enter);
     }
 
 
@@ -1191,6 +1208,7 @@ public class PlayerGO : MonoBehaviour
         CollisionWithDoorToExploration(collision, true);
         CollisionWithDoorToMagicalKey(collision, true);
         CollisionWithDoorToBlackTorch(collision, true);
+        CollisionWithNPC(collision, true);
 
 
         if (collision.gameObject.tag == "TrialObject")
@@ -1294,13 +1312,10 @@ public class PlayerGO : MonoBehaviour
         if (gameManager.game.currentRoom.chest)
         {
             gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
-            
         }
         if (gameManager.game.currentRoom.fireBall)
         {
             gameManager.gameManagerNetwork.SendLaunchFireBallRoom();
-           
-
         } 
         if (gameManager.game.currentRoom.isSacrifice)
         {
@@ -1410,6 +1425,7 @@ public class PlayerGO : MonoBehaviour
         CollisionWithDoorToExploration(collision, false);
         CollisionWithDoorToMagicalKey(collision, false);
         CollisionWithDoorToBlackTorch(collision, false);
+        CollisionWithNPC(collision, false);
     }
 
 
@@ -1579,30 +1595,17 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (gameManager.game.currentRoom.isSword)
-        {
-            return;
-        }
-        if (gameManager.game.currentRoom.isSwordDamocles)
-        {
-            return;
-        }
-        if (gameManager.game.currentRoom.isDeathNPC)
-        {
-            return;
-        }
-        if (gameManager.game.currentRoom.fireBall)
-        {
-            return;
-        }
-        if (gameManager.game.currentRoom.isAx)
+        if (gameManager.game.currentRoom.isTrial && !gameManager.game.currentRoom.speciallyPowerIsUsed)
         {
             return;
         }
         if (gameManager.speciallyIsLaunch)
             return;
 
-        GetComponent<PlayerNetwork>().SendDisplayBlueTorch(!this.transform.Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);; ;
+        if (OnePlayerHasWinFireball())
+            return;
+
+        GetComponent<PlayerNetwork>().SendDisplayBlueTorch(!this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);; ;
     }
     public void ClickToVoteSacrifice()
     {
@@ -2263,4 +2266,19 @@ public class PlayerGO : MonoBehaviour
            }
         }
     }
+
+    public bool OnePlayerHasWinFireball()
+    {
+        GameObject[] allPlayer = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach(GameObject player in allPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().hasWinFireBallRoom)
+                return true;
+        }
+        return false;
+    }
+    
+
+
 }

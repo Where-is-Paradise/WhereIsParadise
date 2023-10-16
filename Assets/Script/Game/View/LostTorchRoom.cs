@@ -73,7 +73,15 @@ public class LostTorchRoom : TrialsRoom
         //this.GetAward();
 
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            AssignAwardToPlayer();
+        {
+            if (!lostTorch.currentPlayer)
+            {
+                GetAward(gameManager.GetRandomPlayerID());
+                return;
+            }
+            GetAward(lostTorch.currentPlayer.GetComponent<PhotonView>().ViewID);
+            DesactivateRoom();
+        }
         DesactivateLostTorchRoom();
     }
 
@@ -84,32 +92,5 @@ public class LostTorchRoom : TrialsRoom
         lostTorch.gameObject.SetActive(false);
         lostTorch.transform.localPosition = new Vector3(0, 0);
         timerFinish = false;
-        this.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
-        gameManager.speciallyIsLaunch = false;
-        gameManager.ActivateCollisionTPOfAllDoor(true);
-        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
-        gameManager.CloseDoorWhenVote(false);
-        gameManager.gameManagerNetwork.SendActivateAllObstacles(false, this.name);
-    }
-
-    public void AssignAwardToPlayer()
-    {
-        PlayerGO PlayerWiner = lostTorch.currentPlayer;
-        if (!PlayerWiner)
-        {
-            photonView.RPC("SetCanLunchExploration", RpcTarget.All, gameManager.GetRandomPlayerID());
-            return;
-        }
-        photonView.RPC("SetCanLunchExploration", RpcTarget.All, PlayerWiner.GetComponent<PhotonView>().ViewID);
-    }
-
-    [PunRPC]
-    public void SetCanLunchExploration(int indexPlayer)
-    {
-        //gameManager.game.nbTorch++;
-        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
-        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
-        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
-        gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
 }

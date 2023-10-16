@@ -1112,7 +1112,7 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetDisplayBlueTorch(bool dislay)
     {
-        this.transform.Find("BlueTorch").Find("BlueTorchImg").gameObject.SetActive(dislay);
+        this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.SetActive(dislay);
         player.explorationPowerIsAvailable = dislay;
         if (player.GetComponent<PhotonView>().IsMine)
         {
@@ -1132,7 +1132,7 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetDisplayBlackTorch(bool dislay)
     {
-        this.transform.Find("BlackTorch").gameObject.SetActive(dislay);
+        this.transform.Find("TrialObject").Find("BlackTorch").gameObject.SetActive(dislay);
         player.explorationPowerIsAvailable = dislay;
         if (player.GetComponent<PhotonView>().IsMine)
         {
@@ -1167,6 +1167,6 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void DisplayMagicalKey(bool display)
     {
-        player.transform.Find("MagicalKey").gameObject.SetActive(display);
+        player.transform.Find("TrialObject").Find("MagicalKey").gameObject.SetActive(display);
     }
 }

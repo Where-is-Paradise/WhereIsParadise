@@ -11,7 +11,8 @@ public class ObstacleLabyrinth : MonoBehaviourPun
     public int position_y;
     public bool isEmpty = false;
     public bool hasTorch = false;
-    public bool isMiddle = false; 
+    public bool isMiddle = false;
+    public bool isneigbourOFTorch = false;
     public LabyrinthHideRoom labyrinthRoom;
     public bool isTouchByPlayer = false;
 
@@ -67,7 +68,7 @@ public class ObstacleLabyrinth : MonoBehaviourPun
         {
             this.GetComponent<BoxCollider2D>().isTrigger = true;
             this.GetComponent<SpriteRenderer>().enabled = false;
-            this.transform.Find("Torch").gameObject.SetActive(true);
+            this.transform.GetChild(labyrinthRoom.indexObjectChild).gameObject.SetActive(true);
         }
         this.transform.Find("Canvas").Find("Text").gameObject.SetActive(display);
         if (isObtacleToPathFinding)
@@ -85,7 +86,7 @@ public class ObstacleLabyrinth : MonoBehaviourPun
         if (hasTorch)
         {
             timerLight -= (Time.deltaTime * 50);
-            DisplayLightBlink();
+            //DisplayLightBlink();
             if (timerLight < 0)
             {
                 timerLight = 100;
@@ -97,7 +98,7 @@ public class ObstacleLabyrinth : MonoBehaviourPun
         {
             this.GetComponent<SpriteRenderer>().enabled = false;
             this.GetComponent<BoxCollider2D>().enabled = false;
-            this.transform.Find("Torch").gameObject.SetActive(false);
+            this.transform.GetChild(labyrinthRoom.indexObject).gameObject.SetActive(false);
         }
         else
         {
@@ -105,7 +106,7 @@ public class ObstacleLabyrinth : MonoBehaviourPun
             {
                 this.GetComponent<SpriteRenderer>().enabled = false;
                 this.GetComponent<BoxCollider2D>().enabled = false;
-                this.transform.Find("Torch").gameObject.SetActive(false);
+                this.transform.GetChild(labyrinthRoom.indexObject).gameObject.SetActive(false);
             }
         }
         this.GetComponent<SpriteRenderer>().sortingOrder = zIndex;
@@ -201,7 +202,7 @@ public class ObstacleLabyrinth : MonoBehaviourPun
     public void DesactivateRoom(Collider2D playerCollision)
     {
         int indexPlayer = playerCollision.transform.parent.GetComponent<PhotonView>().ViewID;
-        labyrinthRoom.DesactivateRoom(indexPlayer);
+        labyrinthRoom.DesactivateRoomChild(indexPlayer);
     }
 
     public void SendData(bool isEmpty , bool hasTorch , bool isMiddle)

@@ -42,9 +42,12 @@ public class Sword : MonoBehaviourPun
                 SetPlayerColor(collision.transform.parent.gameObject);
                 if (TestLastPlayer())
                 {
-                    GiveAwardToPlayer(GetLastPlayer());
-                    SendResetColor();
+                    swordRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+                    swordRoom.DesactivateRoom();
                     DesactivateSwordRoom();
+
+/*                    GiveAwardToPlayer(GetLastPlayer());
+                    SendResetColor();*/
                 }
             }
         }
@@ -66,7 +69,7 @@ public class Sword : MonoBehaviourPun
 
     public void SetPlayerColor(GameObject player)
     {
-        player.gameObject.GetComponent<PlayerNetwork>().SendIstouchByWord(true);
+        player.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
         player.gameObject.GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
     }
 
@@ -76,7 +79,7 @@ public class Sword : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchBySword || !swordRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !swordRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice )
             {
                 counter++;
@@ -93,7 +96,7 @@ public class Sword : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchBySword || !swordRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !swordRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice)
             {
                 counter++;
@@ -128,7 +131,7 @@ public class Sword : MonoBehaviourPun
                 continue;
             if (player.GetComponent<PlayerGO>().isSacrifice)
                 continue;
-            if (!player.GetComponent<PlayerGO>().isTouchBySword)
+            if (!player.GetComponent<PlayerGO>().isTouchInTrial)
                 return player;
         }
         return null;
@@ -141,7 +144,7 @@ public class Sword : MonoBehaviourPun
 
     public void DesactivateSwordRoom()
     {
-        this.swordRoom.SendDesactivateRoom();
+        this.swordRoom.SendDesactivateRoomChild();
     }
 
     [PunRPC]
@@ -165,7 +168,7 @@ public class Sword : MonoBehaviourPun
                     player.transform.GetChild(1).gameObject.SetActive(true);
                 }
             }
-            player.GetComponent<PlayerGO>().isTouchByAx = false;
+            player.GetComponent<PlayerGO>().isTouchInTrial = false;
             player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
         }
     }

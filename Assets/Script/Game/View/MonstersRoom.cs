@@ -145,28 +145,13 @@ public class MonstersRoom : TrialsRoom
 
     public void DesactivateRoomChild()
     {
-        //this.DesactivateRoom();
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             DestroyAllMonster();
         DisplaySwordAllPlayer(false);
-        //ResetHeartForAllPlayer();
-        //ResetIsTouchByMonsterAllPlayer();
-        //ResetColorAllPlayer();
-/*        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
-        gameManager.speciallyIsLaunch = false;
-        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
-        gameManager.CloseDoorWhenVote(false);
-        gameManager.ActivateCollisionTPOfAllDoor(true);*/
         timerSpawnMonster = 1;
         roomIsLaunch = false;
-        //StartCoroutine(CanMoveActiveCoroutine());
-        
-/*        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-        {
-            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(true);
-        }*/
-
     }
+
     public void ResetIsTouchByMonsterAllPlayer()
     {
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");

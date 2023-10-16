@@ -28,6 +28,7 @@ TagManager:
   - Obstacle
   - Wall
   - TrialObject
+  - NPC
   layers:
   - Default
   - TransparentFX

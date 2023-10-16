@@ -137,14 +137,13 @@ public class Ax : MonoBehaviourPun
 
     public void IsTouchPlayer(Collider2D collision)
     {
-
         if (collision.tag == "Player")
         {
             if (collision.gameObject.GetComponent<PhotonView>().ViewID == this.launcher.GetComponent<PhotonView>().ViewID)
                 return;
             if (collision.gameObject.GetComponent<PlayerGO>().isInvincible)
                 return;
-            if (collision.gameObject.GetComponent<PlayerGO>().isTouchByAx)
+            if (collision.gameObject.GetComponent<PlayerGO>().isTouchInTrial)
                 return;
             collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom--;
             collision.gameObject.GetComponent<PlayerNetwork>()
@@ -156,12 +155,11 @@ public class Ax : MonoBehaviourPun
                     nbBounds = 4;
                 if (TestLastPlayer())
                 {
-                    GiveAwardToPlayer(GetLastPlayer());
-                    SendResetColor();
+                    axRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+                    axRoom.DesactivateRoom();
                     DesactivateAxRoom();
                 }
             }
-            //PhotonNetwork.Destroy(this.gameObject);
         }
     }
 
@@ -183,7 +181,7 @@ public class Ax : MonoBehaviourPun
 
     public void SetPlayerColor(GameObject player)
     {
-        player.gameObject.GetComponent<PlayerNetwork>().SendIstouchByAx(true);
+        player.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
         player.gameObject.GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
     }
 
@@ -193,7 +191,7 @@ public class Ax : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByAx || !axRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !axRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
@@ -209,7 +207,7 @@ public class Ax : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByAx || !axRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !axRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
@@ -224,7 +222,7 @@ public class Ax : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByAx || !axRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !axRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice)
             {
                 counter++;
@@ -246,7 +244,7 @@ public class Ax : MonoBehaviourPun
                 continue;
             if (player.GetComponent<PlayerGO>().isInJail)
                 continue;
-            if (!player.GetComponent<PlayerGO>().isTouchByAx)
+            if (!player.GetComponent<PlayerGO>().isTouchInTrial)
                 return player;
         }
         Debug.Log("return null");
@@ -297,7 +295,7 @@ public class Ax : MonoBehaviourPun
                 }
             }
             player.GetComponent<PlayerGO>().ResetHeart();
-            player.GetComponent<PlayerGO>().isTouchByAx = false;
+            player.GetComponent<PlayerGO>().isTouchInTrial = false;
             player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
         }
     }
@@ -317,7 +315,7 @@ public class Ax : MonoBehaviourPun
 
     public void DesactivateAxRoom()
     {
-        this.axRoom.DesactivateRoom();
+        this.axRoom.DesactivateRoomChild();
         PhotonNetwork.Destroy(this.gameObject);
     }
 

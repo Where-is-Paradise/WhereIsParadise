@@ -97,6 +97,13 @@ public class Room : ScriptableObject
     public bool isTraped = false;
     public bool isUseOneTime = false;
 
+    public string doorInNpc = "Z";
+    public bool evilIsLeft = false;
+    public bool npcChooseIsLeft = false;
+    public int randomIntEvil = 0;
+    public string doorNameLongerNPC = "Z";
+    public string doorNameShorterNPC = "Z";
+
     public void Init(int pos_X, int pos_Y)
     {
         this.x = pos_X;

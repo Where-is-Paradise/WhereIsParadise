@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AxRoom : MonoBehaviourPun
+public class AxRoom : TrialsRoom
 {
     public GameManager gameManager;
     public bool isPreparedToLauch = false;
@@ -139,7 +139,7 @@ public class AxRoom : MonoBehaviourPun
         photonView.RPC("ShotAxToDirection", RpcTarget.All , positionPlayer.x , positionPlayer.y, currentDirection.x, currentDirection.y , indexPlayer);
     }
 
-    public void DesactivateRoom()
+    public void DesactivateRoomChild()
     {
         GameObject[] listAx = GameObject.FindGameObjectsWithTag("Ax");
         foreach(GameObject ax  in listAx)
@@ -148,8 +148,8 @@ public class AxRoom : MonoBehaviourPun
         }
         photonView.RPC("SendDisplayAxForAllPlayer", RpcTarget.All, false);
         photonView.RPC("SetIsLaunch", RpcTarget.All, false);
-        photonView.RPC("SendSpeciallyPowerIsUsed", RpcTarget.All, true);
-        photonView.RPC("SendResetSpeciallyIsLauch", RpcTarget.All );
+/*        photonView.RPC("SendSpeciallyPowerIsUsed", RpcTarget.All, true);
+        photonView.RPC("SendResetSpeciallyIsLauch", RpcTarget.All );*/
         DisplayLineToShot(false);
         
     }
@@ -165,7 +165,6 @@ public class AxRoom : MonoBehaviourPun
         DiplayAxForAllPlayer(display);
         DisplayHeartsFoAllPlayer(display);
         StartCoroutine(ResetLineToShotCoroutine());
-        gameManager.gameManagerNetwork.SendActivateAllObstacles(false, this.name);
     }
 
     [PunRPC]
@@ -197,6 +196,6 @@ public class AxRoom : MonoBehaviourPun
     public IEnumerator DesactivateRoomCoroutine()
     {
         yield return new WaitForSeconds(2);
-        DesactivateRoom();
+        DesactivateRoomChild();
     }
 }

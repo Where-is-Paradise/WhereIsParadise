@@ -44,7 +44,7 @@ public class DamoclesSword : MonoBehaviourPun
                 return;
             if (!canChangePlayer)
                 return;
-            if (collision.transform.parent.GetComponent<PlayerGO>().isDeadBySwordDamocles)
+            if (collision.transform.parent.GetComponent<PlayerGO>().isTouchInTrial)
                 return;
             int indexplayer = collision.transform.parent.gameObject.GetComponent<PhotonView>().ViewID;
             damoclesRoom.SendCurrentPlayer(indexplayer);

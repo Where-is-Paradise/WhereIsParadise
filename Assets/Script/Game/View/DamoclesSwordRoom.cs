@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DamoclesSwordRoom : MonoBehaviourPun
+public class DamoclesSwordRoom : TrialsRoom
 {
 
     public GameManager gameManager;
@@ -62,7 +62,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
             {
                 continue;
             }           
-            if (player.GetComponent<PlayerGO>().isDeadBySwordDamocles)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial)
             {
                 continue;
             }
@@ -129,8 +129,8 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         } 
         if (TestLastPlayer())
         {
-            GiveAwardToPlayer(GetLastPlayer());
-            SendResetColor();
+            GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+            DesactivateRoom();
             photonView.RPC("DesactivateDamoclesSwordRoom", RpcTarget.All);
         }
         else
@@ -170,13 +170,13 @@ public class DamoclesSwordRoom : MonoBehaviourPun
             //SendCurrentPlayer(gameManager.GetRandomPlayerID());
             return;
         }      
-        this.currentPlayer.GetComponent<PlayerGO>().isDeadBySwordDamocles = true;
+        this.currentPlayer.GetComponent<PlayerGO>().isTouchInTrial = true;
         //canChangePlayer = false;
     }
 
     public void SetPlayerColor(GameObject player)
     {
-        player.gameObject.GetComponent<PlayerNetwork>().SendIstouchBydDamoclesSword(true);
+        player.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
         player.gameObject.GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
     }
 
@@ -186,7 +186,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isDeadBySwordDamocles || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
@@ -202,7 +202,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isDeadBySwordDamocles || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice)
             {
                 counter++;
@@ -224,7 +224,7 @@ public class DamoclesSwordRoom : MonoBehaviourPun
                 continue;
             if (player.GetComponent<PlayerGO>().isInJail)
                 continue;
-            if (!player.GetComponent<PlayerGO>().isDeadBySwordDamocles)
+            if (!player.GetComponent<PlayerGO>().isTouchInTrial)
                 return player;  
         }
         return null;
@@ -258,23 +258,16 @@ public class DamoclesSwordRoom : MonoBehaviourPun
                     player.transform.GetChild(1).gameObject.SetActive(true);
                 }
             }
-            player.GetComponent<PlayerGO>().isDeadBySwordDamocles = false;
+            player.GetComponent<PlayerGO>().isTouchInTrial = false;
         }
     }
 
     [PunRPC]
     public void DesactivateDamoclesSwordRoom()
     {
-        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
         this.sword.transform.parent = this.transform;
         this.sword.transform.localPosition = new Vector3(-35.55f, 5.23f);
-        this.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
-        gameManager.CloseDoorWhenVote(false);
-        gameManager.damoclesIsLaunch = true;
-        gameManager.speciallyIsLaunch = false;
-        gameManager.ActivateCollisionTPOfAllDoor(true);
-        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
-        gameManager.gameManagerNetwork.SendActivateAllObstacles(false, this.gameObject.name);
+        gameManager.damoclesIsLaunch = false;
         speciallyLaunched = false;
         //this.gameObject.SetActive(false);
     }

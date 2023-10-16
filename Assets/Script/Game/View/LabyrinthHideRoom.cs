@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class LabyrinthHideRoom : MonoBehaviourPun
+public class LabyrinthHideRoom : TrialsRoom
 {
     public GameObject obstacleClone;
     public List<GameObject> listObstacles;
@@ -43,6 +43,8 @@ public class LabyrinthHideRoom : MonoBehaviourPun
     public bool roomIsLaunched = false;
 
     public GameObject obstaclePrefab;
+
+    public int indexObjectChild = 0;
     // Start is called before the first frame update
     void Start()
     {   
@@ -182,7 +184,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
             ObstacleLabyrinth obtacleComponenet = obstacle.GetComponent<ObstacleLabyrinth>();
             if (obtacleComponenet.position_x > (width/2)-4 && obtacleComponenet.position_x < (width / 2) + 3)
             {
-                if (obtacleComponenet.position_y > (height / 2) - 1 && obtacleComponenet.position_y < (height / 2) + 2)
+                if (obtacleComponenet.position_y > (height / 2) - 3 && obtacleComponenet.position_y < (height / 2) + 3)
                 {
                     obtacleComponenet.isMiddle = true;
                     obtacleComponenet.isEmpty = true;
@@ -288,7 +290,18 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         listObstaclesborder[randomIndex].GetComponent<ObstacleLabyrinth>().hasTorch = true;
         obstacleWithTorch = listObstaclesborder[randomIndex].GetComponent<ObstacleLabyrinth>();
         obstacleWithTorch.isObtacleToPathFinding = false;
+        VoidAllNeighbour(listObstaclesborder[randomIndex].GetComponent<ObstacleLabyrinth>());
     }
+
+    public void VoidAllNeighbour(ObstacleLabyrinth obstacle)
+    {
+        foreach(ObstacleLabyrinth neigbour in obstacle.listNeigbour)
+        {
+            neigbour.isEmpty = true;
+            neigbour.isneigbourOFTorch = true;
+        }
+    }
+
     public void AddRandomObstaclesPathFinding()
     {
         foreach (GameObject obstacle in listObstacles)
@@ -387,7 +400,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
     {
         foreach (GameObject obstacle in listObstacles)
         {
-            if (obstacle.GetComponent<ObstacleLabyrinth>().isMiddle)
+            if (obstacle.GetComponent<ObstacleLabyrinth>().isMiddle || obstacle.GetComponent<ObstacleLabyrinth>().isneigbourOFTorch)
                 continue;
             obstacle.GetComponent<ObstacleLabyrinth>().isEmpty = false;
             obstacle.GetComponent<ObstacleLabyrinth>().parent = null;
@@ -398,7 +411,7 @@ public class LabyrinthHideRoom : MonoBehaviourPun
     {
         foreach(ObstacleLabyrinth obstacle in currentPath)
         {
-            if (obstacle.GetComponent<ObstacleLabyrinth>().isMiddle)
+            if (obstacle.GetComponent<ObstacleLabyrinth>().isMiddle || obstacle.GetComponent<ObstacleLabyrinth>().isneigbourOFTorch)
                 continue;
             obstacle.isEmpty = false;
             obstacle.parent = null;
@@ -444,15 +457,11 @@ public class LabyrinthHideRoom : MonoBehaviourPun
 
     }
 
-    public void DesactivateRoom(int indexPlayer)
+    public void DesactivateRoomChild(int indexPlayer)
     {
-        GameObject playerWinner = gameManager.GetPlayer(indexPlayer);
-        GiveAwardToPlayer(playerWinner);
-        SendResetColor();
+        GetAward(indexPlayer);
+        DesactivateRoom();
         photonView.RPC("SendHideAllObtacles", RpcTarget.All);
-        photonView.RPC("SendSpeciallyPowerIsUsed", RpcTarget.All, true);
-
-
     }
 
 
@@ -463,8 +472,6 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         ResetListObstacle();
         DestroyAllObstacle();
         gameManager.ui_Manager.DisplayKeyAndTorch(true);
-        gameManager.speciallyIsLaunch = false;
-        gameManager.ActivateCollisionTPOfAllDoor(true);
         this.transform.Find("ListSeparation").Find("SeparationsMiddleUp").gameObject.SetActive(false);
         roomIsLaunched = false;
         pathIsFinish = false;
@@ -494,38 +501,6 @@ public class LabyrinthHideRoom : MonoBehaviourPun
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
-    }
-    public void SendResetColor()
-    {
-        photonView.RPC("ResetColorAllPlayer", RpcTarget.All);
-    }
-
-    [PunRPC]
-    public void ResetColorAllPlayer()
-    {
-        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in listPlayer)
-        {
-            if (player.GetComponent<PlayerGO>().isSacrifice)
-                continue;
-            if (player.GetComponent<PlayerGO>().isInJail)
-                continue;
-            if (player.GetComponent<PhotonView>().IsMine)
-            {
-                int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
-                player.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
-            }
-            else
-            {
-                if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
-                {
-                    player.transform.GetChild(0).gameObject.SetActive(true);
-                    player.transform.GetChild(1).gameObject.SetActive(true);
-                }
-            }
-            player.GetComponent<PlayerGO>().ResetHeart();
-            player.GetComponent<PlayerGO>().isTouchByAx = false;
-        }
     }
 
     [PunRPC]
