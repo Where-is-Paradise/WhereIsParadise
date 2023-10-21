@@ -168,7 +168,8 @@ public class FireBall : MonoBehaviourPun
 
     public void SendDestroy()
     {
-        PhotonNetwork.Destroy(this.gameObject);
+        if(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().IsMine)
+            PhotonNetwork.Destroy(this.gameObject);
     }
 
 

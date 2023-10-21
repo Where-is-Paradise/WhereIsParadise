@@ -6,261 +6,106 @@ using UnityEngine.UI;
 
 public class ObstacleLabyrinth : MonoBehaviourPun
 {
-    public int index;
-    public int position_x;
-    public int position_y;
-    public bool isEmpty = false;
-    public bool hasTorch = false;
+    public int X_position = 0;
+    public int Y_position = 0;
+    public bool isBroke = false;
+    public bool hasAward = false;
     public bool isMiddle = false;
-    public bool isneigbourOFTorch = false;
-    public LabyrinthHideRoom labyrinthRoom;
-    public bool isTouchByPlayer = false;
+    public bool isBrokable = false;
+    public List<ObstacleLabyrinth> listNeigbour = new List<ObstacleLabyrinth>();
+    public List<ObstacleLabyrinth> listNeigbourNoneBroken = new List<ObstacleLabyrinth>();
 
-    public bool display = false;
-
-    // pathfinding
-    public ObstacleLabyrinth parent;
-    public int hcost;
-    public int gcost;
-    public bool isObtacleToPathFinding = false;
-    public bool isPotentialExit = false;
-
-    public List<ObstacleLabyrinth> listNeigbour;
-    public List<ObstacleLabyrinth> listNeigbourNoneObstaclePathFinding;
-
-    public float timerLight = 100;
-    public int zIndex = 0;
     // Start is called before the first frame update
     void Start()
     {
-               
+/*        int random = Random.Range(0,4);
+        random = 0;
+        if (random == 0)
+        {
+            isBrokable = true;
+        }*/
+        if (X_position == 0 && Y_position == 0)
+            hasAward = true;
+        if (X_position == 51 && Y_position == 0)
+            hasAward = true;
+        if (X_position == 0 && Y_position == 23)
+            hasAward = true;
+        if (X_position == 51 && Y_position == 23)
+            hasAward = true;
+
+        SetListNeighbourNoneBroken();
     }
 
     // Update is called once per frame
     void Update()
     {
-        this.GetComponent<SpriteRenderer>().enabled = display;
-
-        if (isTouchByPlayer)
-        {
-            if (isEmpty)
-            {
-                this.GetComponent<BoxCollider2D>().enabled = false;
-                this.GetComponent<SpriteRenderer>().enabled = false;
-            }
-            else
-            {
-                this.GetComponent<BoxCollider2D>().enabled = true;
-                this.GetComponent<SpriteRenderer>().enabled = display;
-            }
-        }
+        if (isBrokable)
+            this.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
         else
-        {
-            this.GetComponent<SpriteRenderer>().enabled = true;
-        }
-       
-        if(isMiddle)
-        {
-            this.GetComponent<BoxCollider2D>().enabled = false;
-            this.GetComponent<SpriteRenderer>().enabled = false;
-        }
-        if (hasTorch)
-        {
-            this.GetComponent<BoxCollider2D>().isTrigger = true;
-            this.GetComponent<SpriteRenderer>().enabled = false;
-            this.transform.GetChild(labyrinthRoom.indexObjectChild).gameObject.SetActive(true);
-        }
-        this.transform.Find("Canvas").Find("Text").gameObject.SetActive(display);
-        if (isObtacleToPathFinding)
-        {
-            this.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
-            this.transform.Find("Canvas").Find("Text").GetComponent<Text>().color = new Color(255, 255, 255);
-        }
-        else
-        {
             this.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            this.transform.Find("Canvas").Find("Text").GetComponent<Text>().color = new Color(0, 0, 0);
-        }
-        this.transform.Find("Canvas").Find("Text").GetComponent<Text>().text = position_x + "/" + position_y;
-
-        if (hasTorch)
-        {
-            timerLight -= (Time.deltaTime * 50);
-            //DisplayLightBlink();
-            if (timerLight < 0)
-            {
-                timerLight = 100;
-            }
-
-        }
-
-        if (!labyrinthRoom)
-        {
-            this.GetComponent<SpriteRenderer>().enabled = false;
-            this.GetComponent<BoxCollider2D>().enabled = false;
-            this.transform.GetChild(labyrinthRoom.indexObject).gameObject.SetActive(false);
-        }
-        else
-        {
-            if (!labyrinthRoom.gameManager.SamePositionAtBoss())
-            {
-                this.GetComponent<SpriteRenderer>().enabled = false;
-                this.GetComponent<BoxCollider2D>().enabled = false;
-                this.transform.GetChild(labyrinthRoom.indexObject).gameObject.SetActive(false);
-            }
-        }
-        this.GetComponent<SpriteRenderer>().sortingOrder = zIndex;
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "CollisionTrigerPlayer")
+        if(collision.name == "collisionLeft" || collision.name == "collisionUp")
         {
-            if (collision.transform.parent.GetComponent<PlayerGO>().isSacrifice)
+            if (collision.transform.parent.parent.GetComponent<PlayerGO>().isSacrifice)
                 return;
-            if (hasTorch)
-                DesactivateRoom(collision);
-            //labyrinthRoom.DesactivateAllObtacle();
-            if (!isEmpty)
-                return;
-            if (!collision.transform.parent.GetComponent<PhotonView>().IsMine)
-                return;
-            if (AllMyNeibourIsNotEmpty())
-                return;
-            SendIsTouchByPlayer(true);
-            isTouchByPlayer = true;
+            if(isBrokable && !isBroke)
+                BrokeObstacle();
         }
     }
-    public int Fcost()
+
+    public void HideObstacle()
     {
-        return (gcost + hcost) - 1;
+        this.GetComponent<SpriteRenderer>().enabled = false;
+        this.GetComponent<BoxCollider2D>().enabled = false;
     }
+    public void BrokeObstacle()
+    {
+        isBroke = true; 
+        this.GetComponent<SpriteRenderer>().enabled = false;
+        this.GetComponent<BoxCollider2D>().enabled = false;
+    }
+    public void ReverseBrokeObstacle()
+    {
+        isBroke = false;
+        this.GetComponent<SpriteRenderer>().enabled = true;
+        this.GetComponent<BoxCollider2D>().enabled = true;
+    }
+
     public ObstacleLabyrinth GetRandomNeigbour()
     {
         if (listNeigbour.Count == 0)
             return null;
         return listNeigbour[Random.Range(0, listNeigbour.Count)];
     }
-    public void SetListNeigbourNoneObstacle()
+    public void SetListNeighbourNoneBroken()
     {
-        foreach(ObstacleLabyrinth neigbour in listNeigbour)
+        listNeigbourNoneBroken.Clear();
+        foreach (ObstacleLabyrinth obstacle in listNeigbour)
         {
-            if (this.parent)
-            {
-                if (neigbour.SameObstacleByPosition(this.parent))
-                    continue;
-            }
-
-            if (neigbour.isPotentialExit || (!neigbour.isObtacleToPathFinding && !neigbour.HasNeigbourEmpty() &&  !neigbour.isEmpty))
-                listNeigbourNoneObstaclePathFinding.Add(neigbour);
+            if(!obstacle.isBroke && !obstacle.isBrokable && !HasMoreOFOneNeibourBroken(obstacle))
+                listNeigbourNoneBroken.Add(obstacle);
         }
     }
-
-    public void ResetListNeibourNoneObstacle()
+    public ObstacleLabyrinth GetRandomNeigbourNoneBroken()
     {
-        listNeigbourNoneObstaclePathFinding.RemoveRange(0, listNeigbourNoneObstaclePathFinding.Count);
-    }
-
-    public ObstacleLabyrinth GetRandomNeigbourNoneObstacle()
-    {
-        if (listNeigbourNoneObstaclePathFinding.Count == 0)
+        if (listNeigbourNoneBroken.Count == 0)
             return null;
-        return listNeigbourNoneObstaclePathFinding[Random.Range(0, listNeigbourNoneObstaclePathFinding.Count)];
+        return listNeigbourNoneBroken[Random.Range(0, listNeigbourNoneBroken.Count)];
     }
-    public bool HasNeigbourEmpty()
+    public bool HasMoreOFOneNeibourBroken(ObstacleLabyrinth osbtacle)
     {
-        foreach (ObstacleLabyrinth neigbour in listNeigbour)
+        int counter = 0;
+        foreach(ObstacleLabyrinth neigbour in osbtacle.listNeigbour)
         {
-            if (neigbour.parent)
-            {
-                if (this.parent.SameObstacleByPosition(neigbour))
-                    continue;
-            }
-            if (neigbour.isEmpty)
-                return true;
+            if (neigbour.isBrokable || neigbour.isBroke)
+                counter++;
         }
-        return false;
-    }
-
-    public bool SameObstacleByPosition(ObstacleLabyrinth compare)
-    {
-        if(this.position_x == compare.position_x && this.position_y == compare.position_y)
+        if (counter > 1)
             return true;
         return false;
     }
 
-    public void SetParentToAllNeigbour(bool active)
-    {
-        foreach (ObstacleLabyrinth neigbour in listNeigbour){
-
-            if (active)
-                neigbour.parent = this;
-            else
-                neigbour.parent = null;
-        }
-    }
-    public void DesactivateRoom(Collider2D playerCollision)
-    {
-        int indexPlayer = playerCollision.transform.parent.GetComponent<PhotonView>().ViewID;
-        labyrinthRoom.DesactivateRoomChild(indexPlayer);
-    }
-
-    public void SendData(bool isEmpty , bool hasTorch , bool isMiddle)
-    {
-        photonView.RPC("SetData", RpcTarget.Others, isEmpty  , hasTorch , isMiddle);
-    }
-
-    [PunRPC]
-    public void SetData(bool isEmpty , bool hasTorch , bool isMiddle)
-    {
-        this.isEmpty = isEmpty;
-        this.hasTorch = hasTorch;
-        this.isMiddle = isMiddle;
-    }
-
-    public void DisplayLightBlink()
-    {
-        this.transform.Find("Torch").Find("TorchLight").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, timerLight/100);
-        this.transform.Find("Torch").Find("TorchLight2").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, timerLight / 100);
-        this.transform.Find("Torch").Find("TorchLight3").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, timerLight / 100);
-    }
-
-    public void SendInitiationData(int i, int j)
-    {
-        photonView.RPC("SetInitiationData", RpcTarget.All, i, j);
-    }
-
-    [PunRPC]
-    public void SetInitiationData(int i, int j)
-    {
-        labyrinthRoom = GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthHideRoom>();
-        this.transform.parent = labyrinthRoom.transform.Find("ListObstacle").transform;
-        this.transform.position = new Vector3(labyrinthRoom.initialPositionObstacle_x + (j * labyrinthRoom.decalageObstacleRight),
-            labyrinthRoom.initialPositionObstacle_y + (i * -labyrinthRoom.decalageObstacleDown));
-        this.isEmpty = false;
-        this.position_x = j;
-        this.position_y = i;
-    }
-    public void SendIsTouchByPlayer(bool isTouchByPlayer)
-    {
-        labyrinthRoom.SendObstacleIsTouchByIndex(index, isTouchByPlayer);
-    }
-
-    public bool AllMyNeibourIsNotEmpty()
-    {
-        if (isMiddle)
-            return false;
-        int counter = 0;
-        foreach(ObstacleLabyrinth obstacle in listNeigbour)
-        {
-            if (obstacle.isTouchByPlayer || obstacle.isMiddle)
-            {
-                return false;
-            }
-            counter++;
-        }
-        if(counter == 3)
-            return false;
-        return true;
-    }
 }

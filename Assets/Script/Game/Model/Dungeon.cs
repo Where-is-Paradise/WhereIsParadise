@@ -81,7 +81,7 @@ public class Dungeon : ScriptableObject
                 randomSpeciallity = 8;
             else
                 randomSpeciallity = 11;*/
-            randomSpeciallity = 2;
+            randomSpeciallity = 13;
             if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
                 room.chest = true;
             if (randomSpeciallity == 1 && setting.listSpeciallyRoom[1])
@@ -129,13 +129,17 @@ public class Dungeon : ScriptableObject
             if (randomSpeciallity == 11 && setting.listSpeciallyRoom[6])
                 room.isPray = true;
             if (randomSpeciallity == 12 && setting.listSpeciallyRoom[3])
+            {
                 room.isNPC = true;
+                int random = Random.Range(0, 2);
+                if (random == 0)
+                    room.evilIsLeft = true;
+            } 
             if (randomSpeciallity == 13 && setting.listTrialRoom[7])
             {
                 room.isLabyrintheHide = true;
                 room.isTrial = true;
             }
-                
             if (randomSpeciallity == 14)
                 room.IsFoggy = true;
 

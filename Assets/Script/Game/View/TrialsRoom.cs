@@ -39,12 +39,12 @@ public class TrialsRoom : MonoBehaviourPun
 
     public void GetRandomAward(int randomInt, int indexPlayer)
     {
-        randomInt = 5;
-        int randomtrwo = Random.Range(0, 2);
-        if (randomtrwo == 0)
+        //randomInt = 5;
+        //int randomtrwo = Random.Range(0, 2);
+/*        if (randomtrwo == 0)
             randomInt = 2;
         else
-            randomInt = 3;
+            randomInt = 3;*/
         switch (randomInt)
         {
             case 0:

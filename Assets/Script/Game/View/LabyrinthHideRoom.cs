@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -519,7 +519,7 @@ public class LabyrinthHideRoom : TrialsRoom
 
     public void GetNeigbourUntilExit(ObstacleLabyrinth current)
     {
-        if (current.isPotentialExit)
+        if (current.isPotentialExit || current.isneigbourOFTorch)
         {
             if (currentPath.Count <= GetDistance(current, obstacleWithTorch) + waySize)
             {
@@ -710,3 +710,4 @@ public class LabyrinthHideRoom : TrialsRoom
         listObstacles.RemoveRange(0, listObstacles.Count);
     }
 }
+*/

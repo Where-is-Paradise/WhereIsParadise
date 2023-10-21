@@ -31,6 +31,8 @@ public class FireBallRoom : TrialsRoom
 
     public void LanchFireBallRoom()
     {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
         roomIsLaunch = true;
         StartCoroutine(ShotFireBallFrequency());
         StartCoroutine(ReduceFrequencyCouroutine());
@@ -48,8 +50,11 @@ public class FireBallRoom : TrialsRoom
         if (roomIsLaunch)
         {
             yield return new WaitForSeconds(frequency);
-            ChooseRandomTurret();
-            StartCoroutine(ShotFireBallFrequency());
+            if (roomIsLaunch)
+            {
+                ChooseRandomTurret();
+                StartCoroutine(ShotFireBallFrequency());
+            }
         }
     }
 
@@ -65,6 +70,7 @@ public class FireBallRoom : TrialsRoom
     public void DesactivateFireBallRoom()
     {
         DestroyAllFireball();
+        roomIsLaunch = false;
     }
 
     public void DestroyAllFireball()

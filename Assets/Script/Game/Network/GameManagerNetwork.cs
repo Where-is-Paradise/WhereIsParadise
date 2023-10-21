@@ -1739,7 +1739,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetLaunchLabyrinthRoom()
     {
         GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBossEvenSameRoom();
-        GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthHideRoom>().LaunchLabyrintheRoom();
+        GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthRoom>().StartRoom();
     }
 
     public void SendDisplayLightAllAvailableDoor(bool display)

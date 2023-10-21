@@ -38,6 +38,9 @@ public class NPCRoom : MonoBehaviourPun
 
     public void SendRandomNpc()
     {
+        if (gameManager.game.currentRoom.speciallyPowerIsUsed)
+            return;
+
         int random = Random.Range(0, 2);
         if (random == 0)
         {
@@ -56,7 +59,7 @@ public class NPCRoom : MonoBehaviourPun
     {
         if (!gameManager.game.currentRoom.speciallyPowerIsUsed)
         {
-            SendRandomNpc();
+            //SendRandomNpc();
             int randomInt = Random.Range(0, 2);
             gameManager.game.currentRoom.randomIntEvil = randomInt;
             string doorNameLonger = gameManager.GetRandomDoorLonger().doorName;
@@ -67,14 +70,13 @@ public class NPCRoom : MonoBehaviourPun
         else
         {
             door = gameManager.game.currentRoom.doorInNpc;
-            evilIsleft = gameManager.game.currentRoom.evilIsLeft;
-            Debug.Log("sa passe");
+           
         }
-
-        photonView.RPC("DisplayDistanceByNpc", RpcTarget.All, isLeft, evilIsleft, gameManager.game.currentRoom.doorNameShorterNPC, gameManager.game.currentRoom.doorNameLongerNPC, gameManager.game.currentRoom.randomIntEvil);
+        evilIsleft = gameManager.game.currentRoom.evilIsLeft;
+        DisplayDistanceByNpc(isLeft,evilIsleft, gameManager.game.currentRoom.doorNameShorterNPC, gameManager.game.currentRoom.doorNameLongerNPC, gameManager.game.currentRoom.randomIntEvil);
+        //photonView.RPC("DisplayDistanceByNpc", RpcTarget.All, isLeft, evilIsleft, gameManager.game.currentRoom.doorNameShorterNPC, gameManager.game.currentRoom.doorNameLongerNPC, gameManager.game.currentRoom.randomIntEvil);
     }
 
-    [PunRPC]
     public void DisplayDistanceByNpc(bool leftIsChoose, bool evilIsleft,string doorNameShorter, string doorNameLonger, int randomInt)
     {
         if (leftIsChoose)
@@ -106,8 +108,6 @@ public class NPCRoom : MonoBehaviourPun
             this.transform.Find("NPCLeft").Find("SquareMessage").gameObject.SetActive(true);
             this.transform.Find("NPCRight").gameObject.SetActive(false);
 
-           
-
         }
         else
         {
@@ -137,7 +137,9 @@ public class NPCRoom : MonoBehaviourPun
             }
             this.transform.Find("NPCRight").Find("SquareMessage").gameObject.SetActive(true);
             this.transform.Find("NPCLeft").gameObject.SetActive(false);
+           
         }
+        photonView.RPC("SendDisplayResult", RpcTarget.Others, leftIsChoose, evilIsleft, door);
         StartCoroutine(CoroutineHideMessage());
         gameManager.gameManagerNetwork.SendDoorInNPCRoom(gameManager.game.currentRoom.Index, door);
         gameManager.gameManagerNetwork.SendNpcChooseLeft(gameManager.game.currentRoom.Index, leftIsChoose);
@@ -147,12 +149,51 @@ public class NPCRoom : MonoBehaviourPun
         gameManager.gameManagerNetwork.SendPowerIsUsed(gameManager.game.currentRoom.Index, true);
     }
 
-
-
+    [PunRPC]
+    public void SendDisplayResult(bool leftIsChoose, bool evilIsleft, string doorName)
+    {
+        if (leftIsChoose)
+        {
+            if (evilIsleft)
+            {
+                this.transform.Find("NPCLeft").Find("Evil").gameObject.SetActive(true);
+                this.transform.Find("NPCLeft").Find("SquareMessage").Find("Canvas").Find("Text").GetComponent<Text>().text =
+                    baseText + doorName;
+            }
+            else
+            {
+                this.transform.Find("NPCLeft").Find("Angel").gameObject.SetActive(true);
+                this.transform.Find("NPCLeft").Find("SquareMessage").Find("Canvas").Find("Text").GetComponent<Text>().text =
+               baseText + doorName;
+            }
+            this.transform.Find("NPCLeft").Find("SquareMessage").gameObject.SetActive(true);
+            this.transform.Find("NPCRight").gameObject.SetActive(false);
+        }
+        else
+        {
+            if (evilIsleft)
+            {
+                this.transform.Find("NPCRight").Find("Angel").gameObject.SetActive(true);
+                this.transform.Find("NPCRight").Find("SquareMessage").Find("Canvas").Find("Text").GetComponent<Text>().text =
+                    baseText + doorName;
+            }
+            else
+            {
+                this.transform.Find("NPCRight").Find("Evil").gameObject.SetActive(true);
+                this.transform.Find("NPCRight").Find("SquareMessage").Find("Canvas").Find("Text").GetComponent<Text>().text =
+                    baseText + doorName;
+            }
+            this.transform.Find("NPCRight").Find("SquareMessage").gameObject.SetActive(true);
+            this.transform.Find("NPCLeft").gameObject.SetActive(false);
+        }
+        StartCoroutine(CoroutineHideMessage());
+    }
     public void ActivateRoom()
     {
+
         this.transform.Find("NPCLeft").gameObject.SetActive(false);
         this.transform.Find("NPCRight").gameObject.SetActive(false);
+
 
         this.transform.Find("NPCLeft").Find("Evil").gameObject.SetActive(false);
         this.transform.Find("NPCLeft").Find("Angel").gameObject.SetActive(false);
@@ -170,7 +211,7 @@ public class NPCRoom : MonoBehaviourPun
                 }
                 else
                 {
-                    this.transform.Find("NPCLeft").Find("Angel").gameObject.SetActive(false);
+                    this.transform.Find("NPCLeft").Find("Angel").gameObject.SetActive(true);
                 }
             }
             else
@@ -190,8 +231,28 @@ public class NPCRoom : MonoBehaviourPun
         {
             this.transform.Find("NPCLeft").gameObject.SetActive(true);
             this.transform.Find("NPCRight").gameObject.SetActive(true);
+
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
+            {
+                if (gameManager.game.currentRoom.evilIsLeft)
+                {
+                    this.transform.Find("NPCLeft").Find("Evil").gameObject.SetActive(true);
+                    this.transform.Find("NPCRight").Find("Angel").gameObject.SetActive(true);
+                }
+                else
+                {
+                    this.transform.Find("NPCRight").Find("Evil").gameObject.SetActive(true);
+                    this.transform.Find("NPCLeft").Find("Angel").gameObject.SetActive(true);
+                }
+            }
         }
         HideMessage();
+    }
+    public void DisplayImpostorInformation()
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
+            return;
+
     }
 
     public void HideMessage()

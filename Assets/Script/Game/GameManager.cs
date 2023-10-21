@@ -3665,7 +3665,7 @@ public class GameManager : MonoBehaviourPun
         }
         if (game.currentRoom.isLabyrintheHide)
         {
-            StartCoroutine(GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthHideRoom>().DisplayLeverToRelauch());
+            //StartCoroutine(GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthRoom>().DisplayLeverToRelauch());
         }
 
     }

@@ -247,8 +247,11 @@ public class PlayerGO : MonoBehaviour
         }
         else
         {
-            this.GetComponent<CapsuleCollider2D>().enabled = true;
             isMovingAutomaticaly = false;
+            if (!GameObject.Find("GameManager"))
+            {
+                this.GetComponent<CapsuleCollider2D>().enabled = true;
+            }
         }
 
        
@@ -712,13 +715,20 @@ public class PlayerGO : MonoBehaviour
 
     public void SetZIndexByPositionY()
     {  
+        if (GameObject.Find("GameManager"))
+        {
+
+            if (gameManager.game.currentRoom.isLabyrintheHide && gameManager.speciallyIsLaunch)
+                return;
+        }
         if (this.transform.Find("Skins").GetChild(indexSkin).gameObject.activeSelf)
         {
             this.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().sortingOrder = ((int)(this.transform.position.y * 10)) * -1;
             this.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).GetComponent<SpriteRenderer>().sortingOrder = ((int)((this.transform.position.y+1) * 10)) * -1;
         }
-
     }
+
+
 
 
     public void OnClickChat()
@@ -2279,6 +2289,25 @@ public class PlayerGO : MonoBehaviour
         return false;
     }
     
+    public void ActivateCollisionLabyrinth()
+    {
+        if(InputManager.GetAxis("Vertical") < -0.1 || InputManager.GetAxis("Vertical") > 0.1)
+        {
+            this.transform.Find("CollisionLabyrinth").Find("collisionUp").gameObject.SetActive(true);
+        }
+        else
+        {
+            this.transform.Find("CollisionLabyrinth").Find("collisionUp").gameObject.SetActive(false);
+        }
+        if(InputManager.GetAxis("Horizontal") < -0.1 || InputManager.GetAxis("Horizontal") > 0.1)
+        {
+            this.transform.Find("CollisionLabyrinth").Find("collisionLeft").gameObject.SetActive(true);
+        }
+        else
+        {
+            this.transform.Find("CollisionLabyrinth").Find("collisionLeft").gameObject.SetActive(false);
+        }
+    }
 
 
 }
