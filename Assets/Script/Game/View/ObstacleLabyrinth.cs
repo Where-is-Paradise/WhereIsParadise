@@ -15,30 +15,21 @@ public class ObstacleLabyrinth : MonoBehaviourPun
     public List<ObstacleLabyrinth> listNeigbour = new List<ObstacleLabyrinth>();
     public List<ObstacleLabyrinth> listNeigbourNoneBroken = new List<ObstacleLabyrinth>();
 
+    public bool activeModeTest = false;
     // Start is called before the first frame update
     void Start()
     {
-/*        int random = Random.Range(0,4);
-        random = 0;
-        if (random == 0)
-        {
-            isBrokable = true;
-        }*/
-        if (X_position == 0 && Y_position == 0)
-            hasAward = true;
-        if (X_position == 51 && Y_position == 0)
-            hasAward = true;
-        if (X_position == 0 && Y_position == 23)
-            hasAward = true;
-        if (X_position == 51 && Y_position == 23)
-            hasAward = true;
-
         SetListNeighbourNoneBroken();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!activeModeTest)
+        {
+            this.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+            return;
+        }
         if (isBrokable)
             this.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
         else
@@ -107,5 +98,43 @@ public class ObstacleLabyrinth : MonoBehaviourPun
             return true;
         return false;
     }
+    public bool HasOneNeibourBroken()
+    {
+        int counter = 0;
+        foreach (ObstacleLabyrinth neigbour in listNeigbour)
+        {
+            if (neigbour.isBrokable || neigbour.isBroke)
+                counter++;
+        }
+        if (counter >= 1)
+            return true;
+        return false;
+    }
+
+    public int DisplayAward(bool torchIsAlreadyUsed)
+    {
+        int indexAward;
+        if (!torchIsAlreadyUsed)
+        {
+            indexAward  = Random.Range(0, 5);
+        }
+        else
+        {
+            indexAward = Random.Range(1, 4);
+        }
+        this.transform.GetChild(indexAward).gameObject.SetActive(true);
+        hasAward = true;
+
+        return indexAward;
+    }
+
+    public void SetZIndexOfChild(int zIndex)
+    {
+        for(int i =0; i< 5; i++)
+        {
+            this.transform.GetChild(i).GetComponent<SpriteRenderer>().sortingOrder = zIndex+ 2;
+        }
+    }
+
 
 }

@@ -26,6 +26,16 @@ public class ColliderZindexLabyrinth : MonoBehaviour
             int indexSkinColor = player.indexSkinColor;
             SetZIndexByPositionYToLabyritnhRoom(this.transform.parent.GetComponent<ObstacleLabyrinth>().Y_position, indexSkin, indexSkinColor, player.gameObject);
         }
+
+        if (!this.transform.parent.GetComponent<ObstacleLabyrinth>().hasAward)
+        {
+            return;
+        }
+        if(!(this.name == "CollisionAward"))
+        {
+            return;
+        }
+
     }
 
     public void SetZIndexByPositionYToLabyritnhRoom(int indexObstacle, int indexSkin, int indexSkinColor, GameObject player)

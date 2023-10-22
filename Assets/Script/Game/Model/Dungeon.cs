@@ -81,7 +81,7 @@ public class Dungeon : ScriptableObject
                 randomSpeciallity = 8;
             else
                 randomSpeciallity = 11;*/
-            randomSpeciallity = 13;
+            randomSpeciallity = 3;
             if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
                 room.chest = true;
             if (randomSpeciallity == 1 && setting.listSpeciallyRoom[1])
