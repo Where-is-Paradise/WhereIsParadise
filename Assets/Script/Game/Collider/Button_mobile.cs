@@ -68,7 +68,7 @@ public class Button_mobile : MonoBehaviour
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchVoteDoorMobile = true;
         }
 
-        gameManager.gameManagerNetwork.SendCloseDoorWhenVote();
+        gameManager.gameManagerNetwork.SendCloseDoorWhenVoteCoroutine();
 
         gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
     }

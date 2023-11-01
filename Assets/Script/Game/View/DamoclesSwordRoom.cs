@@ -33,15 +33,13 @@ public class DamoclesSwordRoom : TrialsRoom
         yield return new WaitForSeconds(2);
         gameManager.damoclesIsLaunch = true;
         gameManager.CloseDoorWhenVote(true);
-        //gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(false);
         gameManager.speciallyIsLaunch = true;
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         speciallyLaunched = true;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            gameManager.ui_Manager.SetRandomObstacles(this.gameObject);
-            gameManager.gameManagerNetwork.SendActivateAllObstacles(true, this.name);
+            SendObstalceGroup();
             GameObject player = ChoosePlayerRandomly();
             SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
             CounterLaunch(15);
@@ -236,7 +234,7 @@ public class DamoclesSwordRoom : TrialsRoom
     }
 
     [PunRPC]
-    public void ResetColorAllPlayer()
+    public void ResetColorAllPlayerChild()
     {
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)

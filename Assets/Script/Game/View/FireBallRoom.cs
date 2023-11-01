@@ -31,11 +31,13 @@ public class FireBallRoom : TrialsRoom
 
     public void LanchFireBallRoom()
     {
+        gameManager.speciallyIsLaunch = true;
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         roomIsLaunch = true;
         StartCoroutine(ShotFireBallFrequency());
         StartCoroutine(ReduceFrequencyCouroutine());
+       
     }
 
     public void ChooseRandomTurret()
@@ -71,6 +73,7 @@ public class FireBallRoom : TrialsRoom
     {
         DestroyAllFireball();
         roomIsLaunch = false;
+        gameManager.speciallyIsLaunch = false;
     }
 
     public void DestroyAllFireball()

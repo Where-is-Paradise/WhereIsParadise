@@ -114,7 +114,8 @@ public class MonsterNPC : MonoBehaviourPun
                 continue;
             listPotentialPlayer.Add(player);
         }
-
+        if (listPotentialPlayer.Count == 0)
+            return;
         int randomIndexPlayer = Random.Range(0, listPotentialPlayer.Count);
         target = listPotentialPlayer[randomIndexPlayer].GetComponent<PlayerGO>() ;
     }
@@ -134,10 +135,9 @@ public class MonsterNPC : MonoBehaviourPun
 
             if (TestLastPlayer())
             {
-                //monsterRoom.GiveAwardToPlayer(GetLastPlayer());
-                monsterRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
                 monsterRoom.DesactivateRoom();
                 photonView.RPC("SendDectivateRoom", RpcTarget.All);
+                
             }
         }
     }
@@ -155,7 +155,7 @@ public class MonsterNPC : MonoBehaviourPun
             }
            
         }
-        if (counter == (listPlayer.Length - 1))
+        if (counter == (listPlayer.Length))
             return true;
         return false;
     }
@@ -216,6 +216,7 @@ public class MonsterNPC : MonoBehaviourPun
     {
         player.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
         player.gameObject.GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
+        player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").gameObject.SetActive(false);
     }
 
     public void ChoosePlayerRandomly()
@@ -245,8 +246,13 @@ public class MonsterNPC : MonoBehaviourPun
     [PunRPC]
     public void SendDectivateRoom()
     {
-       if (!monsterRoom.gameManager.SamePositionAtBoss())
+        if (!monsterRoom.gameManager.SamePositionAtBoss())
             return;
+        monsterRoom.isLoose = true;
         this.monsterRoom.DesactivateRoomChild();
+        monsterRoom.ReactivateCurrentRoom();
+        monsterRoom.gameManager.ui_Manager.DisplayLeverVoteDoor(true);
     }
+
+
 }

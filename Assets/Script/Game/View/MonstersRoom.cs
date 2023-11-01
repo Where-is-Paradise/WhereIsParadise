@@ -11,6 +11,10 @@ public class MonstersRoom : TrialsRoom
     public bool canSpawn = true;
     public bool canAttack = true;
     public float timerSpawnMonster = 1;
+    public bool isLoose = false;
+
+    public float timer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,10 +49,15 @@ public class MonstersRoom : TrialsRoom
     {
         if (!gameManager.SamePositionAtBoss())
             return;
+        
         StartCoroutine(LaunchMonsterRoom());
         StartCoroutine(AddDifficulty());
        
+
+        //this.transform.Find("X_zone_displayAnimation").gameObject.SetActive(true);
     }
+
+
     public IEnumerator AddDifficulty()
     {
         yield return new WaitForSeconds(1);
@@ -60,6 +69,7 @@ public class MonstersRoom : TrialsRoom
     public IEnumerator LaunchMonsterRoom()
     {
         yield return new WaitForSeconds(2);
+        isLoose = false;
         roomIsLaunch = true;
         DisplaySwordAllPlayer(true);
         DisplayHeartsFoAllPlayer(true);
@@ -69,6 +79,17 @@ public class MonstersRoom : TrialsRoom
         gameManager.CloseDoorWhenVote(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         gameManager.ActivateCollisionTPOfAllDoor(false);
+        float randomTimer = Random.Range(25, 80);
+        StartCoroutine(CouroutineEndGame(randomTimer));
+        this.transform.Find("X_zone_animation").gameObject.SetActive(true);
+        this.transform.Find("X_zone_animation").Find("Timer").GetComponent<Timer>().LaunchTimer(randomTimer, true);
+        this.transform.Find("X_zone_animation").GetComponent<Animator>().speed = (this.transform.Find("X_zone_animation").GetComponent<Animator>().speed  / (CalculAnimationSpeed(randomTimer)));
+        gameManager.ui_Manager.DisplayKeyAndTorch(false);
+    }
+
+    public float CalculAnimationSpeed(float timer)
+    {
+        return timer/ 60;
     }
 
     public IEnumerator SpawnMonsterCouroutine( float timer)
@@ -101,17 +122,6 @@ public class MonstersRoom : TrialsRoom
             player.GetComponent<PlayerGO>().DisiplayHeartInitial(display);
         }
     }
-/*    public void ResetHeartForAllPlayer()
-    {
-        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in listPlayer)
-        {
-            player.GetComponent<PlayerGO>().ResetHeart();
-            player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
-        }
-    }*/
-
-
     public void DisplaySwordAllPlayer(bool display)
     {
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
@@ -150,6 +160,7 @@ public class MonstersRoom : TrialsRoom
         DisplaySwordAllPlayer(false);
         timerSpawnMonster = 1;
         roomIsLaunch = false;
+        this.transform.Find("X_zone_animation").gameObject.SetActive(false);
     }
 
     public void ResetIsTouchByMonsterAllPlayer()
@@ -215,14 +226,6 @@ public class MonstersRoom : TrialsRoom
         gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = true;
         StartCoroutine(DisplayInitial(indexPlayer));
     }
-
-
-/*    public IEnumerator CanMoveActiveCoroutine()
-    {
-        yield return new WaitForSeconds(2);
-        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
-    }*/
-
     public void GiveAwardToPlayer(GameObject lastPlayer)
     {
         photonView.RPC("SetCanLunchExploration", RpcTarget.All, lastPlayer.GetComponent<PhotonView>().ViewID);
@@ -246,5 +249,40 @@ public class MonstersRoom : TrialsRoom
             gameManager.ui_Manager.DisplaySpeciallyLevers(true, 9);
             roomIsLaunch = false;
         }
+    }
+
+
+
+    public IEnumerator CouroutineEndGame(float seconde)
+    {
+        yield return new WaitForSeconds(seconde);
+        if (!isLoose)
+        {
+            GiveTeamAward();
+          
+        }
+        
+        //photonView.RPC("SendTeamAward", RpcTarget.All);
+    }
+    
+
+    public void GiveTeamAward()
+    {
+        gameManager.teamHasWinTrialRoom = true;
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
+        
+        int randomInt = Random.Range(0, 2);
+        photonView.RPC("SendIndexAward", RpcTarget.All, randomInt);
+    }
+    [PunRPC]
+    public void SendIndexAward(int randomInt)
+    {
+        DisplayGloballyAward(randomInt);
+        DesactivateRoom();
+        DesactivateRoomChild();
+        gameManager.ui_Manager.DisplayKeyAndTorch(true);
+        this.transform.Find("X_zone_animation").GetComponent<Animator>().speed = 1;
+        this.transform.Find("X_zone_animation").Find("Timer").GetComponent<Timer>().ResetTimer();
     }
 }

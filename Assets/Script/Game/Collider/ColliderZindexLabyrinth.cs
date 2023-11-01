@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,11 +32,14 @@ public class ColliderZindexLabyrinth : MonoBehaviour
         {
             return;
         }
-        if(!(this.name == "CollisionAward"))
+        if(!(this.name == "CollisionAward") || !(collision.name == "collisionLeft" || collision.name == "collisionUp" || collision.name == "collisionDown"))
         {
             return;
         }
-
+        ObstacleLabyrinth obstacle = this.transform.parent.GetComponent<ObstacleLabyrinth>();
+        obstacle.labyrinthRoom.SendObjectAwardFind(obstacle.labyrinthRoom.gameManagerParent.GetPlayerMineGO().GetComponent<PhotonView>().ViewID, obstacle.indexObject, obstacle.indexObjectInList);
+        obstacle.DesactivateAward();
+        obstacle.labyrinthRoom.SendDesactivateAward(obstacle.X_position, obstacle.Y_position);
     }
 
     public void SetZIndexByPositionYToLabyritnhRoom(int indexObstacle, int indexSkin, int indexSkinColor, GameObject player)

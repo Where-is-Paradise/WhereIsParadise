@@ -58,7 +58,7 @@ public class DeathNPC_2 : MonoBehaviour
         {
             if (!collision.gameObject.GetComponent<PhotonView>().IsMine)
                 return;
-            godDeath.DeathTouchPlayerEvent(collision.gameObject);
+            //godDeath.DeathTouchPlayerEvent(collision.gameObject);
         }
 
     }

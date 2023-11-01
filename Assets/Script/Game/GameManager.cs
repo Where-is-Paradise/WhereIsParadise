@@ -107,18 +107,16 @@ public class GameManager : MonoBehaviourPun
     public int nbKeyWhenJail = 0;
 
     public int viewIdIsMine;
-
     public List<float> listProbalitySpecialyRoom = new List<float>();
-
     public SaveDataNetwork dataGame;
-
     public bool timerStart = false;
-
     public bool paradiseHasChange = false;
-
     public bool alreadySacrifice = false;
-
     public GameObject doorsParent;
+
+    public bool allPlayerHaveMap = false;
+    public bool teamHasWinTrialRoom = false;
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -377,12 +375,12 @@ public class GameManager : MonoBehaviourPun
         List<int> listIndexPower = new List<int>();
         if (setting.listTrapRoom[0])
             listIndexPower.Add(0);
-        if (setting.listTrapRoom[1])
-            listIndexPower.Add(1);
-        if (setting.listTrapRoom[2])
-            listIndexPower.Add(2);
-        if (setting.listTrapRoom[3])
-            listIndexPower.Add(3);
+/*        if (setting.listTrapRoom[1])
+            listIndexPower.Add(1);*/
+        /*        if (setting.listTrapRoom[2])
+                    listIndexPower.Add(2);*/
+        /*        if (setting.listTrapRoom[3])
+                    listIndexPower.Add(3);*/
 
         if (listIndexPower.Count == 1)
         {
@@ -768,6 +766,7 @@ public class GameManager : MonoBehaviourPun
         int indexDoor = door.GetComponent<Door>().index;
         roomTeam = game.GetRoomByNeigbourID(indexDoor);
         soundOpenDoor.Play();
+        door.transform.Find("coulissClose").gameObject.SetActive(false);
         door.transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
         if (!isExpedition)
         {
@@ -1153,7 +1152,6 @@ public class GameManager : MonoBehaviourPun
 
         for(int i =0; i< doorsParent.transform.childCount;i++)
         {
-            Debug.Log(doorsParent.transform.GetChild(i).GetComponent<Door>().doorName);
             doorsParent.transform.GetChild(i).GetComponent<Door>().IsCloseNotPermantly = false;
         }
 
@@ -1481,33 +1479,22 @@ public class GameManager : MonoBehaviourPun
     public void CloseAllDoor(Room room, bool isInExepedtion, GameObject doorReverse = null)
     {
         GameObject[] doors = TreeDoorById();
-        //GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
-/*        int i = 0;
-        foreach (GameObject door in doors)
-        {
-            if (room.door_isOpen[i] && i == door.GetComponent<Door>().index)
-            {
-                door.transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
-                door.GetComponent<Door>().isOpenForAll = true;
-            }
-            else
-            {
-                door.transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
-                door.GetComponent<Door>().isOpenForAll = false;
-            }
-            i++;
-        }*/
+
+
+
 
         for(int i = 0; i< doorsParent.transform.childCount; i++)
         {
             if (room.door_isOpen[i] && i == doorsParent.transform.GetChild(i).GetComponent<Door>().index)
             {
+                doorsParent.transform.GetChild(i).Find("coulissClose").gameObject.SetActive(false);
                 doorsParent.transform.GetChild(i).transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
                 doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll = true;
             }
             else
             {
-                doorsParent.transform.GetChild(i).transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
+                doorsParent.transform.GetChild(i).Find("coulissClose").gameObject.SetActive(true);
+                //doorsParent.transform.GetChild(i).transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
                 doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll = false;
             }
         }
@@ -1853,7 +1840,7 @@ public class GameManager : MonoBehaviourPun
 
     public void ActiveZoneDoor()
     {
-        gameManagerNetwork.SendCloseDoorWhenVote();
+        gameManagerNetwork.SendCloseDoorWhenVoteCoroutine();
         StartCoroutine(gameManagerNetwork.SendActiveZoneDoor());
     }
 
@@ -2408,6 +2395,7 @@ public class GameManager : MonoBehaviourPun
             if (doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll)
             {
                 doorsParent.transform.GetChild(i).GetComponent<Door>().IsCloseNotPermantly = close;
+                doorsParent.transform.GetChild(i).Find("CollisionField").gameObject.SetActive(close);
             }
         }
     }
@@ -2421,6 +2409,7 @@ public class GameManager : MonoBehaviourPun
             {
                 //door.GetComponent<Door>().closeForTimerExploration = close;
                 door.transform.Find("CollisionExplorationTimer").gameObject.SetActive(close);
+                Debug.Log("sa passe" + close);
             }
         }
     }
@@ -3535,12 +3524,14 @@ public class GameManager : MonoBehaviourPun
 
     }
 
-    public void InstantiateDeathNPC()
+    public void InstantiateDeathNPC(int index)
     {
         if (!GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         GameObject DeathNPCRoom = GameObject.Find("Special").transform.Find("DeathNPCRoom").gameObject;
-        PhotonNetwork.Instantiate("DeathNpc", DeathNPCRoom.transform.Find("SpawnDeathNPC").transform.position, Quaternion.identity);
+        GameObject npc = PhotonNetwork.Instantiate("DeathNpc", DeathNPCRoom.transform.Find("SpawnDeathNPC" + index).transform.position, Quaternion.identity);
+        npc.GetComponent<Death_NPC>().SendIndex(index);
+        npc.name = "DeathNPC_" + index;
     }
 
 
@@ -3927,6 +3918,29 @@ public class GameManager : MonoBehaviourPun
                 listDoorPotential.Add(door.GetComponent<Door>());
         }
         return listDoorPotential[Random.Range(0, listDoorPotential.Count)];
+    }
+
+    public void ResetSpeciallyRoomState(Room room)
+    {
+        room.fireBall = false;
+        room.isSacrifice = false;
+        room.isDeathNPC = false;
+        room.isSwordDamocles = false;
+        room.isAx = false;
+        room.isSword = false;
+        room.isNPC = false;
+        room.isCursedTrap = false;
+        room.isLostTorch = false;
+        room.isMonsters = false;
+        room.isPurification = false;
+        room.isResurection = false;
+        room.isPray = false;
+        room.isLabyrintheHide = false;
+        room.IsFoggy = false;
+        room.chest = false;
+        room.isTraped = false;
+        room.IsVirus = false;
+        //room.is
     }
 
 }

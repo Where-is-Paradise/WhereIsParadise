@@ -34,8 +34,17 @@ public class LabyrinthRoom : TrialsRoom
     public int counterPath1 = 0;
     public int counter2Path2 = 0;
     public int coutnerPathInside = 0;
+    public int coutnerPathInside2 = 0;
 
     public bool activeModeTest = false;
+
+    public bool firstObjectFind = false;
+    public bool secondObjectFind = false;
+    public bool thereIsTorchInAward = false;
+    public int indexPlayerWithTorch = -1;
+
+    //public Dictionary<int,int> listIndexAwardByPlayer = new Dictionary<int, int>();
+    public List<KeyValuePair<int, int>> listIndexAwardByPlayer = new List<KeyValuePair<int, int>>();
 
     // Start is called before the first frame update
     void Start()
@@ -46,32 +55,37 @@ public class LabyrinthRoom : TrialsRoom
     // Update is called once per frame
     void Update()
     {
-        gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().ActivateCollisionLabyrinth();
-
-        if (!gameManagerParent.speciallyIsLaunch)
-            return;
-
-        FirstRandomPATH();
-        SecondeRandomPATH();
-        AddPathInside();
-        if (pathInsideIsFind && !objectIsInsert)
-            AttributeObjectInObstacle();
-
+        
         if (activeModeTest)
             ActiveModeTestAllObtacle(true);
         else
             ActiveModeTestAllObtacle(false);
 
+        if (!gameManagerParent.speciallyIsLaunch)
+            return;
+        if (!gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
+        gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().ActivateCollisionLabyrinth();
+        FirstRandomPATH();
+        SecondeRandomPATH();
+        AddPathInside();
+        if (pathInsideIsFind && !objectIsInsert)
+        {
+            AttributeObjectInObstacle();
+            SendAllObstacleData();
+        }
+            
+
+        
+
     }
     public void StartRoom()
     {
+        
         DisplayAllObstacle();
         ChangeScalePlayer();
-        ChangeColliderSize();
-       
+        ChangeColliderSize(true);          
         AddNeighboursToEachObstacle();
-
-
 
         listInitalObstacleRight.Add(GetObtacleByPosition(30, 9));
         listInitalObstacleRight.Add(GetObtacleByPosition(30, 10));
@@ -86,12 +100,27 @@ public class LabyrinthRoom : TrialsRoom
         listInitalObstacleLeft.Add(GetObtacleByPosition(21, 12));
         listInitalObstacleLeft.Add(GetObtacleByPosition(21, 13));
         listInitalObstacleLeft.Add(GetObtacleByPosition(21, 14));
+        gameManagerParent.speciallyIsLaunch = true;
 
-        FirstRadnomObstacleBroke = listInitalObstacleRight[Random.Range(0, listInitalObstacleRight.Count)];
-        SecondeRadnomObstacleBroke = listInitalObstacleLeft[Random.Range(0, listInitalObstacleLeft.Count)];
+        if (gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            int randomInitialRight = Random.Range(0, listInitalObstacleRight.Count);
+            FirstRadnomObstacleBroke = listInitalObstacleRight[randomInitialRight];
+            int randomInitialLeft = Random.Range(0, listInitalObstacleLeft.Count);
+            SecondeRadnomObstacleBroke = listInitalObstacleLeft[randomInitialLeft];
+            photonView.RPC("SendInitialObstacle", RpcTarget.Others, randomInitialRight, randomInitialLeft);
+            FirstRadnomObstacleBroke.BrokeObstacle();
+            SecondeRadnomObstacleBroke.BrokeObstacle();
+        }
+    }
+
+    [PunRPC]
+    public void SendInitialObstacle(int indexRright, int indexLeft)
+    {
+        FirstRadnomObstacleBroke = listInitalObstacleRight[indexRright];
+        SecondeRadnomObstacleBroke = listInitalObstacleLeft[indexLeft];
         FirstRadnomObstacleBroke.BrokeObstacle();
         SecondeRadnomObstacleBroke.BrokeObstacle();
-        gameManagerParent.speciallyIsLaunch = true;
     }
 
     public void DisplayAllObstacle()
@@ -109,6 +138,7 @@ public class LabyrinthRoom : TrialsRoom
                 obstacle.GetComponent<ObstacleLabyrinth>().Y_position = i;
                 obstacle.GetComponent<SpriteRenderer>().sortingOrder = sortingOrder + (i);
                 obstacle.GetComponent<ObstacleLabyrinth>().SetZIndexOfChild((sortingOrder + (i)));
+                obstacle.transform.parent = this.transform;
                 listObstacles.Add(obstacle.GetComponent<ObstacleLabyrinth>());
             }
         }
@@ -129,14 +159,27 @@ public class LabyrinthRoom : TrialsRoom
 
     public void ChangeScalePlayer()
     {
-        gameManagerParent.GetPlayerMineGO().transform.localScale = new Vector3(0.4f, 0.4f);
-        gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
-        gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().movementlControlSpeed = 2;
+        foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            player.transform.localScale = new Vector3(0.4f, 0.4f);
+            player.GetComponent<PlayerGO>().canMove = true;
+            player.GetComponent<PlayerGO>().movementlControlSpeed = 2;
+        }
+        
     }
-    public void ChangeColliderSize()
+    public void ResetScalePlayer()
     {
-        gameManagerParent.GetPlayerMineGO().GetComponent<CapsuleCollider2D>().enabled = false;
-        gameManagerParent.GetPlayerMineGO().transform.Find("CollisionLabyrinth").Find("Collider").gameObject.SetActive(true);
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            player.transform.localScale = new Vector3(0.65f, 0.65f);
+            player.GetComponent<PlayerGO>().canMove = true;
+            player.GetComponent<PlayerGO>().movementlControlSpeed = 4.5f;
+        }
+    }
+    public void ChangeColliderSize(bool change)
+    {
+        gameManagerParent.GetPlayerMineGO().GetComponent<CapsuleCollider2D>().enabled = !change;
+        gameManagerParent.GetPlayerMineGO().transform.Find("CollisionLabyrinth").Find("Collider").gameObject.SetActive(change);
     }
 
     public void FirstRandomPATH()
@@ -220,7 +263,7 @@ public class LabyrinthRoom : TrialsRoom
         ObstacleLabyrinth neigbour = FirstRadnomObstacleBroke2.GetRandomNeigbourNoneBroken();
         if (!neigbour)
         {
-            if (listPath2.Count < 35 && counterPath2 < 70)
+            if (listPath2.Count < 35 && counterPath2 < 70 && coutnerPathInside2 < 100)
             {
 
                 //ReverseBroke(listPath2);
@@ -229,6 +272,7 @@ public class LabyrinthRoom : TrialsRoom
                 listPath2.Clear();
                 FirstRadnomObstacleBroke2 = GetObstaclebrokenInitialInFirstPath(listFirstPath);
                 coutnerPathInside = 0;
+                coutnerPathInside2++;
             }
             else
             {
@@ -242,9 +286,11 @@ public class LabyrinthRoom : TrialsRoom
                 if(coutnerNumberOfPath > 8)
                     pathInsideIsFind = true;
             }
+            
             return;
         }
         coutnerPathInside++;
+        coutnerPathInside2 = 0;
         //neigbour.BrokeObstacle();
         neigbour.isBrokable = true;
         counterPath2++;
@@ -335,30 +381,30 @@ public class LabyrinthRoom : TrialsRoom
         objectIsInsert = true;
         if (listPotentialAward.Count == 0)
         {
-            ChooseRandomObject(listPotentialAwardSecondOption, Random.Range(0, listPotentialAwardSecondOption.Count), false);
-            ChooseRandomObject(listPotentialAwardSecondOption, Random.Range(0, listPotentialAwardSecondOption.Count), true);
+            ChooseRandomObject(listPotentialAwardSecondOption, Random.Range(0, listPotentialAwardSecondOption.Count), false,0);
+            ChooseRandomObject(listPotentialAwardSecondOption, Random.Range(0, listPotentialAwardSecondOption.Count), true,1);
             return;
         }
         int indexObstacle = Random.Range(0, listPotentialAward.Count);
-        int indexAward = ChooseRandomObject(listPotentialAward,indexObstacle, false);
+        int indexAward = ChooseRandomObject(listPotentialAward,indexObstacle, false,0);
         int indexObstacle2 = Random.Range(0, listPotentialAward.Count);
         if (indexAward == 0 || indexAward == 4)
         {
-            ChooseRandomObject(listPotentialAward, indexObstacle2, true);
+            ChooseRandomObject(listPotentialAward, indexObstacle2, true,1);
         }
         else
         {
-            ChooseRandomObject(listPotentialAward, indexObstacle2, false);
+            ChooseRandomObject(listPotentialAward, indexObstacle2, false,1);
         }
        
       
     }
 
-    public int ChooseRandomObject(List<ObstacleLabyrinth> listAward, int indexObject, bool torchIsAlreadyUsed)
+    public int ChooseRandomObject(List<ObstacleLabyrinth> listAward, int indexObject, bool torchIsAlreadyUsed, int indexObjectInList)
     {
         ObstacleLabyrinth obstacleWithAward = listAward[indexObject];
         obstacleWithAward.BrokeObstacle();
-        int indexAward = obstacleWithAward.DisplayAward(torchIsAlreadyUsed);
+        int indexAward = obstacleWithAward.DisplayAward(torchIsAlreadyUsed, indexObjectInList);
         listAward.RemoveAt(indexObject);
         return indexAward;
     }
@@ -369,5 +415,154 @@ public class LabyrinthRoom : TrialsRoom
         {
             obstaclePotential.activeModeTest = active;
         }
+    }
+
+    public void SendAllObstacleData()
+    {
+        foreach(ObstacleLabyrinth obstacle in listObstacles)
+        {
+            photonView.RPC("SendDataObstacle", RpcTarget.Others,obstacle.X_position, obstacle.Y_position, obstacle.isBrokable, obstacle.isBroke, obstacle.hasAward, obstacle.indexObject, obstacle.indexObjectInList);
+        }
+    }
+    [PunRPC]
+    public void SendDataObstacle(int x, int y, bool isBrokable, bool isBroke, bool isAward , int indexAward, int indexAwardList)
+    {
+        ObstacleLabyrinth obstacle = GetObtacleByPosition(x, y);
+        obstacle.isBrokable = isBrokable;
+        obstacle.isBroke = isBroke;
+        obstacle.hasAward = isAward;
+        obstacle.indexObject = indexAward;
+        obstacle.indexObjectInList = indexAwardList;
+        if (obstacle.hasAward)
+        {
+            obstacle.DisplayAwardSimple();
+            obstacle.BrokeObstacle();
+        }
+    }
+
+    public void SendObjectAwardFind(int indexPlayer, int indexAward, int indexObjectList)
+    {
+        photonView.RPC("SetObjectAwardFind", RpcTarget.All,indexPlayer, indexAward, indexObjectList);
+    }
+    [PunRPC]
+    public void SetObjectAwardFind(int indexPlayer, int indexAward, int indexObjectList)
+    {
+        if (!gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
+        if (indexObjectList == 0)
+        {
+            if (!firstObjectFind)
+            {
+                photonView.RPC("SendListIndexAward", RpcTarget.All, indexPlayer, indexAward);
+                firstObjectFind = true;
+            }
+            else
+                return;
+        }
+        if(indexObjectList == 1)
+        {
+            if (!secondObjectFind)
+            {
+                photonView.RPC("SendListIndexAward", RpcTarget.All, indexPlayer, indexAward);
+                secondObjectFind = true;
+            }
+               
+            else
+                return;
+        }
+        if (!(firstObjectFind && secondObjectFind))
+            return;
+
+       
+        DesactivateRoomChild();
+    }
+    
+    [PunRPC]
+    public void SendListIndexAward(int indexPlayer, int indexAward)
+    {
+        Debug.LogError(indexPlayer + " " + indexAward);
+        listIndexAwardByPlayer.Add(new KeyValuePair<int, int>(indexPlayer, indexAward));
+    }
+
+    public void DesactivateRoomChild()
+    {
+        SendDestroyAllObstacle();
+
+        ReactivateCurrentRoom();
+        foreach (KeyValuePair<int, int> indexAwardAndPlayer in listIndexAwardByPlayer)
+        {
+            indexObject = indexAwardAndPlayer.Value;
+            ActivateObjectPower(indexAwardAndPlayer.Key);
+            Debug.LogError(indexAwardAndPlayer.Key);
+        }
+
+        DesactivateRoom();
+       
+        
+    }
+    
+    public void SendDestroyAllObstacle()
+    {
+        photonView.RPC("DestroyAllObstacle", RpcTarget.All);
+    }
+    [PunRPC]
+    public void DestroyAllObstacle()
+    {
+        foreach(ObstacleLabyrinth obstacle in listObstacles)
+        {
+            Destroy(obstacle.gameObject);
+        }
+        ResetScalePlayer();
+        ResetAllData();
+
+    }
+
+    public void ResetAllData()
+    {
+        listInitalObstacleRight.Clear();
+        listObstacles.Clear();
+        pathInsideIsFind = false;
+        firsPathIsFind = false;
+        secondePathIsFind = false;
+        listFirstPath.Clear();
+        listPath2.Clear();
+        listPotentialAward.Clear();
+        listPotentialAwardSecondOption.Clear();
+        listInitalObstacleRight.Clear();
+        listInitalObstacleLeft.Clear();
+        firstObjectFind = false;
+        secondObjectFind = false;
+        coutnerNumberOfPath = 0;
+        coutnerPathInside = 0;
+        objectIsInsert = false;
+        gameManagerParent.speciallyIsLaunch = false;
+        gameManagerParent.game.currentRoom.speciallyPowerIsUsed = true;
+        ChangeColliderSize(false);
+    }
+
+
+    public void SendDesactivateAward(int x, int y)
+    {
+        photonView.RPC("SetDesactivateAward", RpcTarget.Others, x,y);
+    }
+
+    [PunRPC]
+    public void SetDesactivateAward(int x, int y)
+    {
+        ObstacleLabyrinth obstacleWithAward = GetObtacleByPosition(x, y);
+        if(obstacleWithAward)
+            obstacleWithAward.DesactivateAward();
+
+    }
+
+    public void SendBrokeObstacle(int x, int y)
+    {
+        photonView.RPC("SetBrokeObstacle", RpcTarget.Others, x, y);
+    }
+    [PunRPC]
+    public void SetBrokeObstacle(int x, int y)
+    {
+        ObstacleLabyrinth obstacleWithAward = GetObtacleByPosition(x, y);
+        obstacleWithAward.BrokeObstacle();
     }
 }

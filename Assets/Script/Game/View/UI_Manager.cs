@@ -1781,14 +1781,11 @@ setting_button_echapMenu.SetActive(false);
                 continue;
             if (display)
             {
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Colors").GetChild(player.GetComponent<PlayerGO>().indexSkinColor).GetComponent<SpriteRenderer>().enabled = false;
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.SetActive(true);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Colors").GetChild(player.GetComponent<PlayerGO>().indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255,255,255,0.7f);
             }
             else
             {
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Colors").GetChild(player.GetComponent<PlayerGO>().indexSkinColor).GetComponent<SpriteRenderer>().enabled = true;
-                if (!SkinHasEyes(player.GetComponent<PlayerGO>().indexSkin))
-                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.SetActive(false);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Colors").GetChild(player.GetComponent<PlayerGO>().indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
             }    
         }
     }
@@ -2011,8 +2008,17 @@ setting_button_echapMenu.SetActive(false);
     public void SetRandomObstacles(GameObject speciallyRoom)
     {
         speciallyRoom.transform.Find("Obstacles").gameObject.SetActive(true);
-       
+
+        int childCount = speciallyRoom.transform.Find("Obstacles").childCount;
+        for(int i = 0;i < childCount ; i++)
+        {
+            int randomGroupObstacle = Random.Range(0, speciallyRoom.transform.Find("Obstacles").GetChild(i).childCount);
+            speciallyRoom.transform.Find("Obstacles").GetChild(i).GetChild(randomGroupObstacle).gameObject.SetActive(true);
+        }
     }
+
+    
+
     public void DesactivateAllobstacles(string nameObject, bool display)
     {
         if (!GameObject.Find(nameObject).transform.Find("Obstacles"))
@@ -2028,6 +2034,7 @@ setting_button_echapMenu.SetActive(false);
             }
         }
     }
+
 
     public void HideLightExplorationAllDoor()
     {
@@ -2084,7 +2091,7 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayDoorLightOther(int index, bool display)
     {
         Door door = gameManager.GetDoorGo(index).gameObject.GetComponent<Door>();
-        if ((door.isOpenForAll || door.GetRoomBehind().isSpecial) && display )
+        if ((door.isOpenForAll || door.GetRoomBehind().IsExit || door.GetRoomBehind().IsHell) && display )
             return;
 
         door.gameObject.transform.Find("LightInformation").Find("White").gameObject.SetActive(display);
@@ -2117,6 +2124,7 @@ setting_button_echapMenu.SetActive(false);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(false);
         if (!gameManager.GetDoorGo(indexDoor))
             return;
+       
         gameManager.gameManagerNetwork.SendNewSpeciallyRoom(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().GetRoomBehind().Index, indexChoice);
         gameManager.gameManagerNetwork.SendOrangeDoor(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().index);
     }

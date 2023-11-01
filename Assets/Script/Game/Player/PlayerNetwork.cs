@@ -442,6 +442,11 @@ public class PlayerNetwork : MonoBehaviourPun
         }
         player.GetComponent<PlayerGO>().isSacrifice = true;
         player.gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(false);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_Cursed").gameObject.SetActive(false);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_red").gameObject.SetActive(false);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_redDark").gameObject.SetActive(false);
+        player.transform.Find("TrialObject").gameObject.SetActive(false);
         LaunchSacrificeAnimation();
         player.gameManager.SacrificeIsUsedOneTimes = true;
     }
@@ -896,7 +901,7 @@ public class PlayerNetwork : MonoBehaviourPun
                 }
                 break;
             case 2:
-                room.isCursedTrap = true;
+                room.IsVirus = true;
                 break;
             case 3:
                 room.isPray = true;
@@ -1158,6 +1163,26 @@ public class PlayerNetwork : MonoBehaviourPun
         speciallyRoom.GetComponent<TrialsRoom>().ReactivateCurrentRoom();
         speciallyRoom.GetComponent<TrialsRoom>().ActivateObjectPower(indexPlayer);
     }
+
+
+    public void SendDesactivateObjectTeam()
+    {
+        photonView.RPC("DesactivateObjectTeaM", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void DesactivateObjectTeaM()
+    {
+        GameObject awardObject = player.GetOnlyChildActive(GameObject.Find("Room").transform.Find("Special").Find("AwardObject").gameObject);
+        awardObject.SetActive(false);
+        GameObject speciallyRoom = player.GetOnlyChildActive(GameObject.Find("Room").transform.Find("Special").gameObject);
+        speciallyRoom.GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+        if(awardObject.name == "MiniMap")
+            speciallyRoom.GetComponent<TrialsRoom>().ApplyGlobalAward(0);
+        else
+            speciallyRoom.GetComponent<TrialsRoom>().ApplyGlobalAward(1);
+    }
+
 
     public void SendDisplayMagicalKey(bool display)
     {

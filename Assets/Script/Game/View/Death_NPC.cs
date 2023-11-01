@@ -7,6 +7,7 @@ using UnityEngine;
 public class Death_NPC : MonoBehaviourPun
 {
     public GameManager gameManager;
+    public DeathNpcRoom deathNPC_Room;
     public bool CanHideDeathGod = false;
     public bool isInvisible = false;
     public bool isTranparencying = false;
@@ -14,7 +15,7 @@ public class Death_NPC : MonoBehaviourPun
     public float tranparency = 255;
     private float oldHorizontal;
     private float oldVertical;
-
+    public int index;
    
 
     private Vector2 direction = new Vector2(0, 0);
@@ -32,82 +33,19 @@ public class Death_NPC : MonoBehaviourPun
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        deathNPC_Room = GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>();
+        
+/*        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             gameManager.TeleportAllPlayerInRoomOfBoss();
             StartCoroutine(StartDeathNPCRoomAfterTeleportation());
-            //StartCoroutine(SendPostionCouroutine());
-/*            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().enabled = false;
-            this.transform.Find("Faux").GetComponent<SpriteRenderer>().enabled = false;
-            this.GetComponent<CapsuleCollider2D>().enabled = false;*/
-            //Instantiate(godDeath2, this.transform.position, Quaternion.identity);
-        }
-
-    }
-
-
-
-    public IEnumerator StartDeathNPCRoomAfterTeleportation()
-    {
-       
-        yield return new WaitForSeconds(2);
-        gameManager.deathNPCIsLaunch = true;
-        //StartCoroutine(SetNotInvisibleCoroutine());
-        StartDeathNPCRoom();
-    }
-    public void StartDeathNPCRoom()
-    {
-        this.GetComponent<AIPath>().maxSpeed = 0;
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-        {
-            return;
-        }
-        if (!gameManager.deathNPCIsLaunch)
-        {
-            return;
-        }
-        photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, false);
-        photonView.RPC("SendSpeciallyIsLaucnh", RpcTarget.All);
-        /*SetMaxSpeed(3);
-       
-        SetTargetOfPathFinding();
-        StartCoroutine(ChangerSpeedCoroutine());
-        
-        //StartCoroutine(UpdatePositionCoroutine());
-        StartCoroutine(CanHideDeathGodCoroutine());
-        //Instantiate(godDeath2, this.transform.position, Quaternion.identity);*/
-        //DashStraight();
-        //StartCoroutine(Teleportation());
-        StartCoroutine(RandomScenario());
-    }
-    [PunRPC]
-    public void SendIgnoreCollisionPlayer(bool ignore)
-    {
-        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(ignore);
-    }
-
-
-    [PunRPC]
-    public void SendSpeciallyIsLaucnh()
-    {
-        gameManager.speciallyIsLaunch = true;
-        gameManager.deathNPCIsLaunch = true;
-        gameManager.ActivateCollisionTPOfAllDoor(false);
+        }*/
     }
 
     // Update is called once per frame
     void Update()
     {
         ChangeScaleForSituation();
-        //ChangeTransparencyToInvisibilty();
-/*        if (!gameManager.SamePositionAtBoss() && CanHideDeathGod)
-        {
-            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().enabled = false;
-            this.transform.Find("Faux").GetComponent<SpriteRenderer>().enabled = false;
-            this.GetComponent<CapsuleCollider2D>().enabled = false;
-        }*/
-        
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
@@ -117,10 +55,6 @@ public class Death_NPC : MonoBehaviourPun
             return;
         }
         gameManager.CloseDoorWhenVote(true);
-        //SetTargetOfPathFinding();
-
-        //ChangeDirectionBrutally();
-
         if (canDash)
         {
             DashDirection();
@@ -129,13 +63,9 @@ public class Death_NPC : MonoBehaviourPun
         {
             DashCircle();
         }
-        //DashCircle();
         if (canDashTarget)
             DashDirectionTarget(target);
-
-
         CalculVelocity();
-
     }
 
     public void ChangeTransparencyToInvisibilty()
@@ -222,7 +152,7 @@ public class Death_NPC : MonoBehaviourPun
         float minDistance = 1000;
         foreach(GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByDeath || player.GetComponent<PlayerGO>().isSacrifice 
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || player.GetComponent<PlayerGO>().isSacrifice 
                 || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) || player.GetComponent<PlayerGO>().isInJail)
             {
                 Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), true);
@@ -308,7 +238,7 @@ public class Death_NPC : MonoBehaviourPun
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!gameManager.deathNPCIsLaunch)
+        if (!gameManager || !gameManager.deathNPCIsLaunch)
         {
             return;
         }
@@ -319,33 +249,49 @@ public class Death_NPC : MonoBehaviourPun
                 DashStraight();
             }
         }
-
         if (collision.gameObject.tag == "Player")
         {
-            Debug.Log("sa passe");
             if (!collision.gameObject.GetComponent<PhotonView>().IsMine)
                 return;
-            DeathTouchPlayerEvent(collision.gameObject) ;
+            SetPlayerColor(collision.gameObject);
+            photonView.RPC("DeathTouchPlayerEvent", RpcTarget.All, collision.gameObject.GetComponent<PhotonView>().ViewID);
         }
-
     }
 
-    public void DeathTouchPlayerEvent(GameObject collision)
+    [PunRPC]
+    public void DeathTouchPlayerEvent(int indexPlayer)
     {
-        //SetTargetOfPathFinding();
-        SetPlayerColor(collision);
+        SendIgnoreCollisionPlayer(true);
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
+        gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial = true;
+        gameManager.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
+
         if (TestLastPlayer())
         {
-            GameObject lastPlayer = GetLastPlayer();
-            lastPlayer.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
-            lastPlayer.gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
-            photonView.RPC("SetCanLunchExploration", RpcTarget.All , lastPlayer.GetComponent<PhotonView>().ViewID);
-            photonView.RPC("HideAndResetNPC", RpcTarget.All);
+           
             photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, true);
-            StartCoroutine(CouroutineDesactivateAll());
+            photonView.RPC("SendLooseGame", RpcTarget.All);
+            //StartCoroutine(CouroutineDesactivateAll());
             gameManager.deathNPCIsLaunch = false;
-        }
-       
+            deathNPC_Room.SendHideTimer();
+            deathNPC_Room.SendDesactivateNPC();
+        }  
+    }
+
+    [PunRPC]
+    public void SendIgnoreCollisionPlayer(bool ignore)
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(ignore);
+    }
+
+    [PunRPC]
+    public void SendLooseGame()
+    {
+        deathNPC_Room.DesactivateRoom();
+        deathNPC_Room.loose = true;
+        deathNPC_Room.ReactivateCurrentRoom();
+        gameManager.ui_Manager.DisplayLeverVoteDoor(true);
     }
 
     public void Victory()
@@ -360,7 +306,7 @@ public class Death_NPC : MonoBehaviourPun
             lastPlayer.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
             lastPlayer.gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
             photonView.RPC("SetCanLunchExploration", RpcTarget.All, lastPlayer.GetComponent<PhotonView>().ViewID);
-            photonView.RPC("HideAndResetNPC", RpcTarget.All);
+            deathNPC_Room.SendDesactivateNPC();
             photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, true);
             StartCoroutine(CouroutineDesactivateAll());
             gameManager.deathNPCIsLaunch = false;
@@ -378,7 +324,7 @@ public class Death_NPC : MonoBehaviourPun
 
     public void SetPlayerColor(GameObject collision)
     {
-        collision.gameObject.GetComponent<PlayerNetwork>().SendIstouchByDeath(true);
+        //collision.gameObject.GetComponent<PlayerNetwork>().SendIstouchByDeath(true);
         collision.gameObject.GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
     }
 
@@ -388,13 +334,13 @@ public class Death_NPC : MonoBehaviourPun
         int counter = 0;
         foreach(GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByDeath || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
             }
         }
-        if (counter == (listPlayer.Length - 1) )
+        if (counter == (listPlayer.Length ) )
             return true;
         return false;
     }
@@ -404,7 +350,7 @@ public class Death_NPC : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByDeath || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
             {
                 counter++;
@@ -420,7 +366,7 @@ public class Death_NPC : MonoBehaviourPun
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
         {
-            if (!player.GetComponent<PlayerGO>().isTouchByDeath  && !player.GetComponent<PlayerGO>().isSacrifice
+            if (!player.GetComponent<PlayerGO>().isTouchInTrial && !player.GetComponent<PlayerGO>().isSacrifice
                 && gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isInJail)
             {
                 return player;
@@ -460,7 +406,7 @@ public class Death_NPC : MonoBehaviourPun
                 }
             }
             Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), false);
-            player.GetComponent<PlayerGO>().isTouchByDeath = false;
+            player.GetComponent<PlayerGO>().isTouchInTrial = false;
         }
     }
 
@@ -485,6 +431,11 @@ public class Death_NPC : MonoBehaviourPun
 
     }
 
+    public void SendHideAndResetNPC()
+    {
+        photonView.RPC("HideAndResetNPC", RpcTarget.All);
+    }
+
     [PunRPC]
     public void HideAndResetNPC()
     {
@@ -497,6 +448,8 @@ public class Death_NPC : MonoBehaviourPun
         this.transform.position = new Vector3(0, 0, 0);
         this.GetComponent<AIPath>().destination = new Vector3(0, 0, 0);
         this.GetComponent<AIPath>().maxSpeed = 0;
+        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            PhotonNetwork.Destroy(this.gameObject);
        
     }
 
@@ -753,8 +706,6 @@ public class Death_NPC : MonoBehaviourPun
     {
 
     }
-
-    
     public void CalculVelocity()
     {
         if( old_x < this.transform.position.x)
@@ -766,6 +717,22 @@ public class Death_NPC : MonoBehaviourPun
             this.transform.localScale = new Vector2(-Mathf.Abs(this.transform.localScale.x), this.transform.localScale.y);
         }
     }
+
+    public void SendIndex(int index)
+    {
+        photonView.RPC("SetIndex", RpcTarget.All, index);
+    }
+
+    [PunRPC]
+    public void SetIndex(int index)
+    {
+        this.index = index;
+        name = "DeathNPC_" + index;
+    }
+
+
+
+
 
 
 }

@@ -68,7 +68,8 @@ public class AxRoom : TrialsRoom
         gameManager.CloseDoorWhenVote(true);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            gameManager.gameManagerNetwork.SendActivateAllObstacles(true ,this.name);
+            //gameManager.gameManagerNetwork.SendActivateAllObstacles(true ,this.name);
+            SendObstalceGroup();
             //gameManager.ui_Manager.SetRandomObstacles(this.gameObject);
         }
         
@@ -157,6 +158,7 @@ public class AxRoom : TrialsRoom
     public  void SetIsLaunch(bool isLaunch)
     {
         this.isLaunch = isLaunch;
+       
     }
 
     [PunRPC]
@@ -165,6 +167,7 @@ public class AxRoom : TrialsRoom
         DiplayAxForAllPlayer(display);
         DisplayHeartsFoAllPlayer(display);
         StartCoroutine(ResetLineToShotCoroutine());
+        SendResetObstacle();
     }
 
     [PunRPC]

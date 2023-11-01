@@ -299,6 +299,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetExplorationIsUsed(int indexRoom, bool isUsed)
     {
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).explorationIsUsed = isUsed;
+        gameManager.CloseDoorWhenVote(false);
     }
 
     [PunRPC]
@@ -477,17 +478,29 @@ public class GameManagerNetwork : MonoBehaviourPun
 
 
 
-    public void SendCloseDoorWhenVote()
+    public void SendCloseDoorWhenVoteCoroutine()
     {
-        photonView.RPC("SetCloseDoorWhenVote", RpcTarget.All);
+        photonView.RPC("SetCloseDoorWhenVoteCouroutine", RpcTarget.All);
     }
 
     [PunRPC]
-    public void SetCloseDoorWhenVote()
+    public void SetCloseDoorWhenVoteCouroutine()
     {
         StartCoroutine(gameManager.CloseDoorWhenVoteCoroutine(true));
         
     }
+
+    public void SendCloseDoorWhenVote(bool close)
+    {
+        photonView.RPC("SetCloseDoorWhenVote", RpcTarget.All, close);
+    }
+
+    [PunRPC]
+    public void SetCloseDoorWhenVote(bool close)
+    {
+        gameManager.CloseDoorWhenVote(close);
+    }
+
 
     public void SendHidePlayerTakeDoor()
     {
@@ -1396,6 +1409,7 @@ public class GameManagerNetwork : MonoBehaviourPun
             return;
         gameManager.ui_Manager.DisplayLeverVoteDoor(display);
         gameManager.expeditionHasproposed = false;
+        gameManager.CloseDoorWhenVote(false);
     }
 
     public void SendDisplaySpeciallyLevers(bool display , int indexSpecially)
@@ -1605,16 +1619,15 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendLaunchDeathNPC()
     {
-        
+        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
         photonView.RPC("SetLaunchDeathNPC", RpcTarget.All);
     }
 
     [PunRPC]
     public void SetLaunchDeathNPC()
     {
-
+        StartCoroutine(GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>().StartDeathNPCRoomAfterTeleportation());
     }
-
     public void SendLaunchDamoclesRoom()
     {
         GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
@@ -1691,6 +1704,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (GameObject.Find("MonstersRoom"))
             GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>().StartMonstersRoom();
     }
+
+
 
     public void SendLaunchPurificationRoom()
     {
@@ -2087,6 +2102,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetNewSpeciallyRoom(int indexRoom, int indexSpeciallity)
     {
+        gameManager.ResetSpeciallyRoomState(gameManager.game.dungeon.GetRoomByIndex(indexRoom));
+
         switch (indexSpeciallity)
         {
             case 0:
@@ -2181,4 +2198,6 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).speciallyPowerIsUsed = isUsed;
     }
+
+
 }

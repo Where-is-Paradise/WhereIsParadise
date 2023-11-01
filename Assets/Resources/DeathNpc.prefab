@@ -268,11 +268,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
+  deathNPC_Room: {fileID: 0}
   CanHideDeathGod: 0
   isInvisible: 0
   isTranparencying: 0
   isInvertTranparencying: 0
   tranparency: 255
+  index: 0
 --- !u!114 &4695169022583446954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,8 +335,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 0
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 1.5
 --- !u!114 &4695169022583446958
 MonoBehaviour:
   m_ObjectHideFlags: 0

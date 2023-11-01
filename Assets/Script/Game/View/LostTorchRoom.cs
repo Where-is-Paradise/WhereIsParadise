@@ -36,9 +36,11 @@ public class LostTorchRoom : TrialsRoom
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.CloseDoorWhenVote(true);
-       
-        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            gameManager.gameManagerNetwork.SendActivateAllObstacles(true, this.name);
+
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            SendObstalceGroup();
+            //gameManager.gameManagerNetwork.SendActivateAllObstacles(true, this.name);
+
     }
     public void SpawnLostTorch()
     {
@@ -83,6 +85,7 @@ public class LostTorchRoom : TrialsRoom
             DesactivateRoom();
         }
         DesactivateLostTorchRoom();
+        SendResetObstacle();
     }
 
     public void DesactivateLostTorchRoom()

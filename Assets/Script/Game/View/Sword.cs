@@ -37,6 +37,7 @@ public class Sword : MonoBehaviourPun
             collision.transform.parent.gameObject.GetComponent<PlayerGO>().lifeTrialRoom--;
             collision.transform.parent.gameObject.GetComponent<PlayerNetwork>()
                 .SendLifeTrialRoom(collision.transform.parent.gameObject.GetComponent<PlayerGO>().lifeTrialRoom);
+            collision.transform.parent.gameObject.GetComponent<PlayerGO>().isInvincible = true;
             if (collision.transform.parent.gameObject.GetComponent<PlayerGO>().lifeTrialRoom == 0)
             {
                 SetPlayerColor(collision.transform.parent.gameObject);

@@ -252,56 +252,25 @@ public class PlayerGO : MonoBehaviour
             {
                 this.GetComponent<CapsuleCollider2D>().enabled = true;
             }
-        }
-
-       
+        } 
             // prevent update if chat input is displayed
         if (displayChatInput)
         {
             return;
         }
-
-/*        if (!isSacrifice)
-        {
-            if (gameManager && gameManager.speciallyIsLaunch)
-            {
-                this.GetComponent<PhotonTransformViewClassic>().enabled = true;
-                this.GetComponent<PhotonRigidbody2DView>().enabled = false;
-
-            }
-            else
-            {
-                this.GetComponent<PhotonTransformViewClassic>().enabled = false;
-                this.GetComponent<PhotonRigidbody2DView>().enabled = true;
-            }
-        }*/
-        
-
         if (GetComponent<PhotonView>().IsMine && canMove)
         {
             handlePlayerMove();
         }
-        /*        if (!GetComponent<PhotonView>().IsMine && positionSended)
-                    TranslateSpacePositionWhenUpdated(x_sended, y_sended);*/
 
+        ChangeSystemSyncPostionToTrial();
         Dash();
+        DashIsAvailable();
     }
 
 
     void Update()
     {
-/*        if (GameObject.Find("Lobby_Manager"))
-        {
-            if (this.GetComponent<PhotonView>().IsMine && !GameObject.Find("Lobby_Manager").GetComponent<Lobby>().matchmaking)
-            {
-                if(PhotonNetwork.IsMasterClient)
-                    GetComponent<PlayerNetwork>().SendDisplayCrown(true);
-                else
-                    GetComponent<PlayerNetwork>().SendDisplayCrown(false);
-            }
-
-        }*/
-
         if (isMovingAutomaticaly)
         {
             return;
@@ -330,13 +299,6 @@ public class PlayerGO : MonoBehaviour
                 this.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
             }
         }
-
-/*        if (isInJail)
-        {
-            this.transform.Find("collisionTriger").gameObject.SetActive(false);
-        }*/
-
-
         if (GameObject.Find("UI_Management"))
         {
             chatPanel = GameObject.Find("UI_Management").GetComponent<UI_Managment>().chatPanelInputParent;
@@ -693,6 +655,20 @@ public class PlayerGO : MonoBehaviour
                 MovingDownForDeathAnimation();
             }
         }
+
+        if (gameManager)
+        {
+            if (gameManager.game)
+            {
+                if (gameManager.game.currentRoom.isLabyrintheHide && gameManager.speciallyIsLaunch)
+                {
+                    if(this.transform.position.y > 2.9f)
+                    {
+                        transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).GetComponent<SpriteRenderer>().sortingOrder = -12;
+                    }
+                }
+            }
+        }
        
     }
 
@@ -717,9 +693,11 @@ public class PlayerGO : MonoBehaviour
     {  
         if (GameObject.Find("GameManager"))
         {
-
-            if (gameManager.game.currentRoom.isLabyrintheHide && gameManager.speciallyIsLaunch)
-                return;
+            if(gameManager && gameManager.game && gameManager.game.currentRoom)
+            {
+                if (gameManager.game.currentRoom.isLabyrintheHide && gameManager.speciallyIsLaunch)
+                    return;
+            }
         }
         if (this.transform.Find("Skins").GetChild(indexSkin).gameObject.activeSelf)
         {
@@ -868,6 +846,20 @@ public class PlayerGO : MonoBehaviour
                     this.GetComponent<PlayerNetwork>().SendResetHeart();
                 }
             }
+        }
+    }
+
+    public void ChangeSystemSyncPostionToTrial()
+    {
+        if (gameManager && gameManager.speciallyIsLaunch)
+        {
+            this.GetComponent<PhotonTransformViewClassic>().enabled = false;
+            this.GetComponent<PhotonRigidbody2DView>().enabled = true;
+        }
+        else
+        {
+            this.GetComponent<PhotonTransformViewClassic>().enabled = true;
+            this.GetComponent<PhotonRigidbody2DView>().enabled = false;
         }
     }
 
@@ -1071,10 +1063,6 @@ public class PlayerGO : MonoBehaviour
             return;
         if (collision.transform.parent.gameObject.GetComponent<Door>().isOpenForAll)
             return;
-        /*        if (gameManager.ISTrailsRoom(gameManager.game.currentRoom) && !hasWinFireBallRoom)
-                    return;*/
-        if (collision.transform.parent.gameObject.GetComponent<Door>().GetRoomBehind().isSpecial)
-            return;
         gameManager.ui_Manager.DisplayMagicalKeyButtonBigger(enter);
         collsionDoorIndexForExploration = collision.transform.parent.gameObject.GetComponent<Door>().index;
 
@@ -1133,7 +1121,7 @@ public class PlayerGO : MonoBehaviour
                 if (player.GetComponent<PhotonView>().ViewID != this.GetComponent<PhotonView>().ViewID)
                 {
                     if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isSacrifice && 
-                        !player.GetComponent<PlayerGO>().isInJail)
+                        !player.GetComponent<PlayerGO>().isInJail && !player.GetComponent<PlayerGO>().isTouchInTrial)
                     {
                         player.GetComponent<CapsuleCollider2D>().isTrigger = ignore;
                         Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), ignore);
@@ -1223,9 +1211,13 @@ public class PlayerGO : MonoBehaviour
 
         if (collision.gameObject.tag == "TrialObject")
         {
-            if (!hasWinFireBallRoom)
-                return;
-            playerNetwork.SendDesactivateObject(this.GetComponent<PhotonView>().ViewID);
+            if (hasWinFireBallRoom)
+                playerNetwork.SendDesactivateObject(this.GetComponent<PhotonView>().ViewID);
+            else
+            {
+                if(gameManager.teamHasWinTrialRoom && !isTouchInTrial)
+                    playerNetwork.SendDesactivateObjectTeam();
+            }
         }
     }
 
@@ -1334,7 +1326,8 @@ public class PlayerGO : MonoBehaviour
         }
         if (gameManager.game.currentRoom.isDeathNPC)
         {
-            gameManager.InstantiateDeathNPC();
+            //gameManager.InstantiateDeathNPC();
+            gameManager.gameManagerNetwork.SendLaunchDeathNPC();
         }
         if (gameManager.game.currentRoom.isSwordDamocles)
         {
@@ -1382,7 +1375,7 @@ public class PlayerGO : MonoBehaviour
             launchVoteDoorMobile = true;
         }
 
-        gameManager.gameManagerNetwork.SendCloseDoorWhenVote();
+        gameManager.gameManagerNetwork.SendCloseDoorWhenVoteCoroutine();
         StartCoroutine(HideLeverCouroutine());
         //gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
     }
@@ -2191,6 +2184,14 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (!gameManager)
+            return;
+        if (!gameManager.game.currentRoom.isTrial)
+            return;
+        if (!gameManager.speciallyIsLaunch)
+            return;
+        if (gameManager.game.currentRoom.isLabyrintheHide)
+            return;
         if (!avaibleDash)
         {
             return;
@@ -2239,18 +2240,55 @@ public class PlayerGO : MonoBehaviour
 
     }
 
+    public void DashIsAvailable()
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (!gameManager)
+            return;
+        if (!gameManager.game || !gameManager.game.currentRoom || !gameManager.game.currentRoom.isTrial)
+        {
+            GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
+            return;
+        }
+           
+        if (!gameManager.speciallyIsLaunch)
+        {
+            GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
+            return;
+        }
+        if (gameManager.game.currentRoom.isLabyrintheHide)
+        {
+            GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
+            return;
+        }
+            
+        if (!avaibleDash)
+        {
+            GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
+            return; 
+        }
+        GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(255f, 255f, 255f);
+
+    }
+
     public IEnumerator CoroutineDashImage()
     {
         yield return new WaitForSeconds(1.5f); 
         GameObject dashImg = this.transform.Find("DashImg").gameObject;
         dashImg.SetActive(false);
 
+        
     }
     public IEnumerator CouroutineAvaibleDash()
     {
         avaibleDash = false;
-        yield return new WaitForSeconds(1.5f);
+        GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f/255f, 96f / 255f, 96f / 255f);
+        yield return new WaitForSeconds(6f);
         avaibleDash = true;
+        GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(255f, 255f, 255f);
     }
 
 
@@ -2291,7 +2329,9 @@ public class PlayerGO : MonoBehaviour
     
     public void ActivateCollisionLabyrinth()
     {
-        if(InputManager.GetAxis("Vertical") < -0.1 || InputManager.GetAxis("Vertical") > 0.1)
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+        if( InputManager.GetAxis("Vertical") > 0.1)
         {
             this.transform.Find("CollisionLabyrinth").Find("collisionUp").gameObject.SetActive(true);
         }
@@ -2299,7 +2339,15 @@ public class PlayerGO : MonoBehaviour
         {
             this.transform.Find("CollisionLabyrinth").Find("collisionUp").gameObject.SetActive(false);
         }
-        if(InputManager.GetAxis("Horizontal") < -0.1 || InputManager.GetAxis("Horizontal") > 0.1)
+        if (InputManager.GetAxis("Vertical") < -0.1)
+        {
+            this.transform.Find("CollisionLabyrinth").Find("collisionDown").gameObject.SetActive(true);
+        }
+        else
+        {
+            this.transform.Find("CollisionLabyrinth").Find("collisionDown").gameObject.SetActive(false);
+        }
+        if (InputManager.GetAxis("Horizontal") < -0.1 || InputManager.GetAxis("Horizontal") > 0.1)
         {
             this.transform.Find("CollisionLabyrinth").Find("collisionLeft").gameObject.SetActive(true);
         }
