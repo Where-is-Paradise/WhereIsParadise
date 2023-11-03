@@ -38,6 +38,8 @@ public class ZoneDoorCollider : MonoBehaviour
         {
             return;
         }
+        if (!gameManager.canVoteDoor)
+            return;
         StartCoroutine(CouroutineTimerCanSend());
         int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
         gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, true, false);
@@ -61,6 +63,8 @@ public class ZoneDoorCollider : MonoBehaviour
         {
             return;
         }
+        if (!gameManager.canVoteDoor)
+            return;
         int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
         gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, false, false);
 
@@ -84,7 +88,9 @@ public class ZoneDoorCollider : MonoBehaviour
         {
             return;
         }
-       
+        if (!gameManager.canVoteDoor)
+            return;
+
         if (canSend)
         {
            
@@ -98,7 +104,7 @@ public class ZoneDoorCollider : MonoBehaviour
 
     public IEnumerator CouroutineTimerCanSend()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         canSend = true;
         if(gameManager.timer.timerLaunch)
             StartCoroutine(CouroutineTimerCanSend());

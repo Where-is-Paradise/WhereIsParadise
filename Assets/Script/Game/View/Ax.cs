@@ -145,22 +145,38 @@ public class Ax : MonoBehaviourPun
                 return;
             if (collision.gameObject.GetComponent<PlayerGO>().isTouchInTrial)
                 return;
-            collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom--;
-            collision.gameObject.GetComponent<PlayerNetwork>()
-                .SendLifeTrialRoom(collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom);
-            if (collision.gameObject.GetComponent<PlayerGO>().lifeTrialRoom == 0)
+
+            photonView.RPC("SendIsTouchPlayer", RpcTarget.All, collision.gameObject.GetComponent<PhotonView>().ViewID);
+        }
+    }
+
+     [PunRPC]
+    public void SendIsTouchPlayer(int indexPlayer) {
+
+        if (!axRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
+
+        axRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().lifeTrialRoom--;
+        axRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>()
+            .SendLifeTrialRoom(axRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().lifeTrialRoom);
+        if (axRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().lifeTrialRoom == 0)
+        {
+            SetPlayerColor(axRoom.gameManager.GetPlayer(indexPlayer).gameObject);
+            if (GetNumberLastPlayer() == 2)
+                photonView.RPC("SendBouds", RpcTarget.All, 4);
+            if (TestLastPlayer())
             {
-                SetPlayerColor(collision.gameObject);
-                if (GetNumberLastPlayer() == 2)
-                    nbBounds = 4;
-                if (TestLastPlayer())
-                {
-                    axRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
-                    axRoom.DesactivateRoom();
-                    DesactivateAxRoom();
-                }
+                axRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+                axRoom.DesactivateRoom();
+                DesactivateAxRoom();
             }
         }
+    }
+
+    [PunRPC]
+    public void  SendBouds(int nbBouds)
+    {
+        this.nbBounds = nbBouds;
     }
 
     public void Victory()

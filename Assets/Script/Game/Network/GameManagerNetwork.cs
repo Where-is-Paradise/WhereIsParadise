@@ -450,10 +450,12 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.HideDistanceRoom();
         gameManager.ui_Manager.DisplayKeyAndTorch(false);
         DisplayLightAllAvailableDoorN2(false);
+        gameManager.canVoteDoor = true;
         gameManager.timer.LaunchTimer(5, false);
+        StartCoroutine(ResultAllDoorVoteSinceBoss());
         StartCoroutine(gameManager.LauchVoteDoorCoroutine());
         gameManager.voteDoorHasProposed = true;
-
+        gameManager.CloseDoorWhenVote(true);
         if (gameManager.ui_Manager.map.activeSelf)
         {
             gameManager.ui_Manager.DisplayMap();
@@ -465,6 +467,26 @@ public class GameManagerNetwork : MonoBehaviourPun
         StartCoroutine(CoroutineActiveZoneDoor());
 
 
+    }
+
+    public IEnumerator ResultAllDoorVoteSinceBoss()
+    {
+        yield return new WaitForSeconds(5f);
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            GameObject[] listDoor = GameObject.FindGameObjectsWithTag("Door");
+            foreach (GameObject door in listDoor)
+            {
+                photonView.RPC("SendResultOneDoorVote", RpcTarget.All, door.GetComponent<Door>().index, door.GetComponent<Door>().nbVote, gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote);
+            }
+        }
+    }
+    [PunRPC]
+    public void SendResultOneDoorVote(int indexDoor, int resultVote, int xVote)
+    {
+        gameManager.GetDoorGo(indexDoor).GetComponent<Door>().nbVote = resultVote;
+        gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = xVote;
+        gameManager.canVoteDoor = false;
     }
 
     public IEnumerator CoroutineActiveZoneDoor()
@@ -704,6 +726,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetCollisionZoneVoteDoor(int indexPlayer, int indexDoor, bool enter, bool stay)
     {
+
         GameObject door = gameManager.GetDoorGo(indexDoor);
         GameObject player = gameManager.GetPlayer(indexPlayer);
         if (!gameManager.SamePositionAtBoss())
@@ -716,23 +739,25 @@ public class GameManagerNetwork : MonoBehaviourPun
                 player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(true);
             return;
         }
-        if (enter)
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            door.GetComponent<Door>().nbVote++;
-        }
-        else
-        {
-            if (gameManager.voteDoorHasProposed)
+            if (enter)
             {
-                door.GetComponent<Door>().nbVote--;
-                if (door.GetComponent<Door>().nbVote < 0)
+                door.GetComponent<Door>().nbVote++;
+            }
+            else
+            {
+                if (gameManager.voteDoorHasProposed)
                 {
-                    door.GetComponent<Door>().nbVote = 0;
+                    door.GetComponent<Door>().nbVote--;
+                    if (door.GetComponent<Door>().nbVote < 0)
+                    {
+                        door.GetComponent<Door>().nbVote = 0;
+                    }
                 }
             }
         }
         player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(enter);
-        //door.transform.Find("Zones").Find("LightZone").gameObject.SetActive(enter);
         player.GetComponent<PlayerGO>().hasVoteVD = enter;
 
     }
@@ -819,21 +844,26 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
         else
         {
+
             if (enter)
             {
-                gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote++;
-                //player.GetComponent<PlayerGO>().hasVoteVD = true;
-                //player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(true);
+                if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                {
+                    gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote++;
+                }
+               
             }
             else
             {
-                if (gameManager.voteDoorHasProposed)
+                if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
                 {
-                    gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote--;
-                    if (gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote < 0)
-                        gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = 0;
-                }               
-                //player.GetComponent<PlayerGO>().hasVoteVD = false;
+                    if (gameManager.voteDoorHasProposed)
+                    {
+                        gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote--;
+                        if (gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote < 0)
+                            gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = 0;
+                    }
+                }                   
                 player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(false);
                 player.transform.Find("ActivityCanvas").Find("X_vote").gameObject.SetActive(false);
 

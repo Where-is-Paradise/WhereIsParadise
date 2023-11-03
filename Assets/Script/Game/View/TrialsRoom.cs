@@ -169,9 +169,10 @@ public class TrialsRoom : MonoBehaviourPun
             case 2:
                 gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasProtection = true;
                 gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().lifeTrialRoom = 3;
+                gameManagerParent.GetPlayer(indexPlayer).transform.Find("TrialObject").Find("AuraProtection").gameObject.SetActive(true);
                 if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
                 {
-                    gameManagerParent.GetPlayer(indexPlayer).transform.Find("TrialObject").Find("AuraProtection").gameObject.SetActive(true);
+                  
                     gameManagerParent.ui_Manager.DisplayInformationObjectWon(0);
                 }
                 StartCoroutine(CouroutineActivateDoorLever(2));

@@ -34,24 +34,33 @@ public class Sword : MonoBehaviourPun
                 return;
             if (collision.transform.parent.gameObject.GetComponent<PlayerGO>().isInvincible)
                 return;
-            collision.transform.parent.gameObject.GetComponent<PlayerGO>().lifeTrialRoom--;
-            collision.transform.parent.gameObject.GetComponent<PlayerNetwork>()
-                .SendLifeTrialRoom(collision.transform.parent.gameObject.GetComponent<PlayerGO>().lifeTrialRoom);
-            collision.transform.parent.gameObject.GetComponent<PlayerGO>().isInvincible = true;
-            if (collision.transform.parent.gameObject.GetComponent<PlayerGO>().lifeTrialRoom == 0)
-            {
-                SetPlayerColor(collision.transform.parent.gameObject);
-                if (TestLastPlayer())
-                {
-                    swordRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
-                    swordRoom.DesactivateRoom();
-                    DesactivateSwordRoom();
 
-/*                    GiveAwardToPlayer(GetLastPlayer());
-                    SendResetColor();*/
-                }
+            photonView.RPC("SendIsTouchPlayer", RpcTarget.All, collision.transform.parent.GetComponent<PhotonView>().ViewID);
+        }
+    }
+
+    [PunRPC]
+    public void SendIsTouchPlayer(int indexPlayer)
+    {
+        if (!swordRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
+
+        swordRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().lifeTrialRoom--;
+        swordRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>()
+            .SendLifeTrialRoom(swordRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().lifeTrialRoom);
+        swordRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isInvincible = true;
+
+        if (swordRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().lifeTrialRoom == 0)
+        {
+            SetPlayerColor(swordRoom.gameManager.GetPlayer(indexPlayer).gameObject);
+            if (TestLastPlayer())
+            {
+                swordRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+                swordRoom.DesactivateRoom();
+                DesactivateSwordRoom();
             }
         }
+
     }
 
     public void Victory()

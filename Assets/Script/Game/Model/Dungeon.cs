@@ -12,6 +12,7 @@ public class Dungeon : ScriptableObject
     private List<Room> listObstaclePivot;
     public List<Room> listRoomTraversed;
     public Setting setting;
+    public List<Room> trueListRoomDungeon;
 
 
     public void Init(int width, int height, int ratio_obstacle)
@@ -21,6 +22,7 @@ public class Dungeon : ScriptableObject
         this.width = width;
         this.ratio_obstacle = ratio_obstacle;
         listRoomTraversed = new List<Room>();
+        trueListRoomDungeon = new List<Room>();
     }
 
     public static Dungeon CreateInstance(int width, int height, int ratio_obstacle)
@@ -68,8 +70,20 @@ public class Dungeon : ScriptableObject
         {
             if (room.isTooFar || room.IsInitiale || room.IsExit || GetPathFindingDistance(room, initialRoom) == GetPathFindingDistance(initialRoom, exit))
                 continue;
+
+            trueListRoomDungeon.Add(room);
+
+        }
+
+        InsertSpeciallyRoom2();
+    }
+
+    public void InsertSpeciallyRoom2()
+    {
+        foreach (Room room in trueListRoomDungeon)
+        {
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 40)
+            if (randomIsHide <= 25)
             {
                 room.isHide = true;
                 continue;
@@ -77,11 +91,8 @@ public class Dungeon : ScriptableObject
 
             int randomSpeciallity = Random.Range(0, 14);
             int randomSpeciallity2 = Random.Range(0, 2);
-/*            if (randomSpeciallity2 == 0)
-                randomSpeciallity = 8;
-            else
-                randomSpeciallity = 11;*/
-            randomSpeciallity = 0;
+
+            randomSpeciallity = 3;
             if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
                 room.chest = true;
             if (randomSpeciallity == 1 && setting.listSpeciallyRoom[1])
@@ -90,7 +101,7 @@ public class Dungeon : ScriptableObject
             {
                 room.fireBall = true;
                 room.isTrial = true;
-            }   
+            }
             if (randomSpeciallity == 3 && setting.listTrialRoom[3])
             {
                 room.isAx = true;
@@ -100,18 +111,18 @@ public class Dungeon : ScriptableObject
             {
                 room.isSword = true;
                 room.isTrial = true;
-            } 
+            }
             if (randomSpeciallity == 5 && setting.listTrialRoom[2])
             {
                 room.isSwordDamocles = true;
                 room.isTrial = true;
             }
-                
+
             if (randomSpeciallity == 6 && setting.listTrialRoom[1])
             {
                 room.isDeathNPC = true;
                 room.isTrial = true;
-            }                
+            }
             if (randomSpeciallity == 7 && setting.listTrialRoom[6])
             {
                 room.isLostTorch = true;
@@ -134,7 +145,7 @@ public class Dungeon : ScriptableObject
                 int random = Random.Range(0, 2);
                 if (random == 0)
                     room.evilIsLeft = true;
-            } 
+            }
             if (randomSpeciallity == 13 && setting.listTrialRoom[7])
             {
                 room.isLabyrintheHide = true;
@@ -144,6 +155,7 @@ public class Dungeon : ScriptableObject
                 room.IsFoggy = true;
 
             room.isSpecial = true;
+
         }
     }
 

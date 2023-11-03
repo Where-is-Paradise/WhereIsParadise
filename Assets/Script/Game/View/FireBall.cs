@@ -142,7 +142,6 @@ public class FireBall : MonoBehaviourPun
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial = true;
         if (TestLastPlayer())
         {
-            Debug.Log("sa passe");
             fireballRoom.roomIsLaunch = false;
             fireballRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
             fireballRoom.DesactivateRoom();

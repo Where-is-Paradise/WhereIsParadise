@@ -267,6 +267,7 @@ public class DamoclesSwordRoom : TrialsRoom
         this.sword.transform.localPosition = new Vector3(-35.55f, 5.23f);
         gameManager.damoclesIsLaunch = false;
         speciallyLaunched = false;
+        SendResetObstacle();
         //this.gameObject.SetActive(false);
     }
 

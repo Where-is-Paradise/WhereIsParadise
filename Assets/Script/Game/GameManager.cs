@@ -117,6 +117,8 @@ public class GameManager : MonoBehaviourPun
     public bool allPlayerHaveMap = false;
     public bool teamHasWinTrialRoom = false;
 
+    public bool canVoteDoor = false;
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -181,10 +183,9 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
             game.nbTorch = Mathf.CeilToInt(game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) / 2) + setting.TORCH_ADDITIONAL;
             //game.nbTorch = listPlayerTab.Length;
-            if (game.dungeon.GetNumberOfPossiblityOfExit() > 7)
-            {
-                game.nbTorch = game.nbTorch + 1;
-            }
+
+            game.nbTorch = game.nbTorch + 1;
+
             //game.nbTorch = 50;
             //sgame.nbTorch = 25;
             gameManagerNetwork.SendTorchNumber(game.nbTorch);
@@ -196,7 +197,7 @@ public class GameManager : MonoBehaviourPun
             initialHexagone = InitialHexa;
             SendBoss();
             game.SetKeyCounter();
-            game.key_counter = game.key_counter + setting.KEY_ADDITIONAL;
+            game.key_counter = game.key_counter + setting.KEY_ADDITIONAL + 3;
             gameManagerNetwork.SendKey(game.key_counter);
             ui_Manager.SetNBKey();
             SetInitialPositionPlayers();
@@ -261,7 +262,7 @@ public class GameManager : MonoBehaviourPun
 
     public IEnumerator LauchVoteDoorCoroutine()
     {
-        yield return new WaitForSeconds(5.4f);
+        yield return new WaitForSeconds(5.3f);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         //StartCoroutine(ui_Manager.DesactivateLightAroundPlayers());
         GameObject door = GetDoorWithMajority();
@@ -287,11 +288,11 @@ public class GameManager : MonoBehaviourPun
                     OpenDoor(door, false);
                 expeditionHasproposed = false;
                 alreaydyExpeditionHadPropose = false;
-
+                StartCoroutine(ChangeBossCoroutine(0.1f));
 
             }
         }
-        StartCoroutine(ChangeBossCoroutine(0.1f));
+        
         ui_Manager.ResetNbVote();
         ui_Manager.DesactiveZoneDoor();
         voteDoorHasProposed = false;
@@ -2782,15 +2783,6 @@ public class GameManager : MonoBehaviourPun
         {
             ui_Manager.DisplayNPCRoom(true);
             GameObject.Find("NPCRoom").GetComponent<NPCRoom>().ActivateRoom();
-            if (!room.explorationIsUsed)
-                ui_Manager.DisplayMainLevers(true);
-            else
-                ui_Manager.DisplayLeverVoteDoor(true);
-            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-            if (room.speciallyPowerIsUsed || NPCIsUsed)
-            {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
-            }
             UpdateColorDoor(room);
             return;
         }

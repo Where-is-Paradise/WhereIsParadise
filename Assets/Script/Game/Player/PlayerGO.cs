@@ -549,12 +549,6 @@ public class PlayerGO : MonoBehaviour
                 canMove = true;
                 gameManager.ui_Manager.DisplayBlackScreen(false, true);
             }
-
-            if (hasProtection)
-            {
-                isCursed = false;
-                isBlind = false;
-            }
                 
            
         }
