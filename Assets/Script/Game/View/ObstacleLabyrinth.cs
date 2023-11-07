@@ -126,16 +126,16 @@ public class ObstacleLabyrinth : MonoBehaviourPun
         int indexAward;
         if (!torchIsAlreadyUsed)
         {
-            indexAward  = Random.Range(0, 5);
+            indexAward  = Random.Range(0, 4);
         }
         else
         {
-            indexAward = Random.Range(1, 4);
+            indexAward = Random.Range(1, 3);
         }
         this.transform.GetChild(indexAward).gameObject.SetActive(true);
         hasAward = true;
         this.indexObject = indexAward;
-        if (indexAward == 0 || indexAward == 4)
+        if (indexAward == 0 || indexAward == 3)
             awardIsTorch = true;
         this.indexObjectInList = indexObjectInList;
         return indexAward;

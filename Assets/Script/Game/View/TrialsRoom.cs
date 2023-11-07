@@ -24,7 +24,7 @@ public class TrialsRoom : MonoBehaviourPun
     
     public void GetAward(int playerWinnerindex)
     {
-        int randomInt = Random.Range(0, 5);
+        int randomInt = Random.Range(0, 4);
         Debug.Log(playerWinnerindex);
         playerwinner = gameManagerParent.GetPlayer(playerWinnerindex).GetComponent<PlayerGO>();
         int indexPlayerMine = playerwinner.GetComponent<PhotonView>().ViewID;
@@ -46,6 +46,9 @@ public class TrialsRoom : MonoBehaviourPun
                 else
                     randomInt = 3;*/
         //randomInt = 4;
+
+        Debug.Log(randomInt);
+
         switch (randomInt)
         {
             case 0:
@@ -79,27 +82,8 @@ public class TrialsRoom : MonoBehaviourPun
                 indexObject = 2;
                 break;
             case 3:
-                if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
-                    return;
-                Debug.Log("Has true EYES restart");
-                GetAward(indexPlayer);
-                return;
-            case 4:
                 DisplayAwardObject(5);
-                indexObject = 4;
-                break;
-            case 5:
-                if (gameManagerParent.GetNumberDoorCanBeModifaiteBySpeciallity() == 0)
-                {
-                    if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
-                        return;
-                    Debug.Log("Magical Key restart");
-                    GetAward(indexPlayer);
-                    return;
-                }
-                DisplayAwardObject(4);
-                indexObject = 5;
-               
+                indexObject = 3;
                 break;
         }
         gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasWinFireBallRoom = true;
@@ -125,7 +109,8 @@ public class TrialsRoom : MonoBehaviourPun
             return;
 
         ResetHeartForAllPlayer();
-        
+       
+
     }
 
     public void ReactivateCurrentRoom()
@@ -161,9 +146,17 @@ public class TrialsRoom : MonoBehaviourPun
                 gameManagerParent.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
                 gameManagerParent.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
                 gameManagerParent.gameManagerNetwork.SendCloseDoorWhenVote(true);
+                if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
+                {
+                    gameManagerParent.ui_Manager.DisplayInformationObjectWon(0);
+                }
                 break;
             case 1:
                 gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasMap = true;
+                if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
+                {
+                    gameManagerParent.ui_Manager.DisplayInformationObjectWon(1);
+                }
                 StartCoroutine(CouroutineActivateDoorLever(2));
                 break;
             case 2:
@@ -172,25 +165,11 @@ public class TrialsRoom : MonoBehaviourPun
                 gameManagerParent.GetPlayer(indexPlayer).transform.Find("TrialObject").Find("AuraProtection").gameObject.SetActive(true);
                 if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
                 {
-                  
-                    gameManagerParent.ui_Manager.DisplayInformationObjectWon(0);
+                    gameManagerParent.ui_Manager.DisplayInformationObjectWon(2);
                 }
                 StartCoroutine(CouroutineActivateDoorLever(2));
                 break;
             case 3:
-                gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasTrueEyes = true;
-              
-                gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().DisplayCursedPlayers();
-                // display all information et  changé chaque situation daffichage aussi
-                StartCoroutine(CouroutineActivateDoorLever(2));
-                if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
-                {
-                    gameManagerParent.GetPlayer(indexPlayer).transform.Find("TrialObject").Find("TrueEye").gameObject.SetActive(true);
-                    gameManagerParent.ui_Manager.DisplayInformationObjectWon(1);
-                }
-                break;
-            case 4:
-
                 if (!gameManagerParent.SamePositionAtBoss())
                     return;
                 gameManagerParent.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().hasBlackTorch = true;
@@ -199,19 +178,12 @@ public class TrialsRoom : MonoBehaviourPun
                 gameManagerParent.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
                 gameManagerParent.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
                 gameManagerParent.gameManagerNetwork.SendCloseDoorWhenVote(true);
-                //StartCoroutine(CouroutineActivateDoorLever(2));
+                if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
+                {
+                    gameManagerParent.ui_Manager.DisplayInformationObjectWon(3);
+                }
                 break;
-
-            case 5:
-                gameManagerParent.GetPlayer(indexPlayer).transform.Find("TrialObject").Find("MagicalKey").gameObject.SetActive(true); 
-                if (!gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
-                    return;
-                gameManagerParent.ui_Manager.DisplayAllDoorLightOther(true);                
-                gameManagerParent.ui_Manager.DisplayMagicalKeyButton(); 
-                break;
-               
         }
-        //gameManagerParent.GetBoss().GetComponent<PlayerGO>().canLaunchDoorVoteLever = true;
     }
 
     public void ResetHeartForAllPlayer()
@@ -275,20 +247,12 @@ public class TrialsRoom : MonoBehaviourPun
 
     public void DisplayGloballyAward(int randomInt)
     {
+        gameManagerParent.ui_Manager.DisplayKeyAndTorch(false);
         switch (randomInt)
         {
             case 0:
-                if (gameManagerParent.allPlayerHaveMap)
-                {
-                    if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
-                        return;
-                    Debug.Log("Has map restart");
-                    DisplayGloballyAward(1);
-                    return;
-                }
-
                 DisplayAwardObject(1);
-                indexObject = 1;
+                indexObject = 0;
                 break;
             case 1:
                 Debug.Log("Magical Key restart");
@@ -302,11 +266,9 @@ public class TrialsRoom : MonoBehaviourPun
         switch (indexObject)
         {
             case 0:
-                foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
-                {
-                    player.GetComponent<PlayerGO>().hasMap = true;
-                }
-                gameManagerParent.allPlayerHaveMap = true;
+                gameManagerParent.game.key_counter++;
+                gameManagerParent.game.nbTorch++;
+                gameManagerParent.ui_Manager.LaunchAnimationAddKey();
                 StartCoroutine(CouroutineActivateDoorLever(2));
                 break;
 
@@ -317,9 +279,11 @@ public class TrialsRoom : MonoBehaviourPun
                
                 gameManagerParent.ui_Manager.DisplayAllDoorLightOther(true);
                 gameManagerParent.ui_Manager.DisplayMagicalKeyButton();
+
                 break;
         }
         gameManagerParent.teamHasWinTrialRoom = false;
+        gameManagerParent.ui_Manager.DisplayKeyAndTorch(true);
     }
 
     public void SendObstalceGroup()

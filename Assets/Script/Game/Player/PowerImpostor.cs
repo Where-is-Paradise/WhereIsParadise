@@ -61,6 +61,7 @@ public class PowerImpostor : MonoBehaviourPun
             return;
         if(collision.transform.parent &&  collision.transform.parent.tag == "Door")
         {
+            Debug.Log("saaa passe0");
             SetRedColorPlayer(false);
             if (!canUsed)
                 return;
@@ -75,11 +76,6 @@ public class PowerImpostor : MonoBehaviourPun
             if (collision.transform.parent.GetComponent<Door>().barricade)
                 return;
             if (collision.transform.parent.GetComponent<Door>().GetRoomBehind().IsHell || collision.transform.parent.GetComponent<Door>().GetRoomBehind().IsExit)
-                return;
-            if (!collision.transform.parent.GetComponent<Door>().GetRoomBehind().isHide && 
-                   !(collision.transform.parent.GetComponent<Door>().GetRoomBehind().chest && indexPower == 3))
-                return;
-            if (collision.transform.parent.GetComponent<Door>().GetRoomBehind().isSpecial)
                 return;
             if (collision.transform.parent.GetComponent<Door>().isOpenForAll)
                 return;
@@ -98,6 +94,7 @@ public class PowerImpostor : MonoBehaviourPun
             if (this.transform.parent.GetComponent<PlayerGO>().gameManager.OnePlayerHaveToGoToExpedition())
                 return;
 
+            
             SetRedColorPlayer(true);
             isNearOfDoor = true;
             DisplayButtonCanUsed(isNearOfDoor);
@@ -128,12 +125,10 @@ public class PowerImpostor : MonoBehaviourPun
         Room room = door.GetRoomBehind();
         if (room.IsObstacle)
             return;
-        if (room.isDeathNPC || room.isAx || room.isSword)
-            return;
-        if (room.isSwordDamocles || room.fireBall)
-            return;
         if (room.IsExit || room.IsHell)
             return;
+        if(indexPower == 1 || indexPower == 3 )
+            gameManager.ResetSpeciallyRoomState(room);
         this.transform.parent.GetComponent<PlayerNetwork>().SendInsertPowerToDoor(room.Index, indexPower);
         this.transform.parent.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.DisplayLightAllAvailableDoor(false);
         SetRedColorPlayer(false);

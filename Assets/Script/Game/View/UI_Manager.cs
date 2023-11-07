@@ -854,6 +854,7 @@ setting_button_echapMenu.SetActive(false);
                 addKey.SetActive(false);
                 addKey.transform.position = new Vector2(-0.12f, 2.03f);
                 SetNBKey();
+                SetTorchNumber();
             }
         }
        
@@ -1435,8 +1436,6 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayVirusRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("VirusRoom").gameObject.SetActive(display);
-        if(!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInExpedition)
-            DisplaySpeciallyLevers(display, 3);
     }
     public void DisplayDeathNPCRoom(bool display)
     {
@@ -2163,7 +2162,7 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayInformationObjectWon(int index)
     {
         panelInformationObjectWon.gameObject.SetActive(true);
-        panelInformationObjectWon.gameObject.transform.GetChild(index).gameObject.SetActive(true);
+        panelInformationObjectWon.gameObject.transform.Find("Panel").GetChild(index).gameObject.SetActive(true);
 
     }
 

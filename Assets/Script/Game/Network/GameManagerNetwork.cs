@@ -1600,7 +1600,10 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (indexPower == 1)
             gameManager.GetHexagone(indexHexagone).Room.IsVirus = true;
         if (indexPower == 2)
-            gameManager.GetHexagone(indexHexagone).Room.isJail = true;
+        {
+            gameManager.GetHexagone(indexHexagone).Room.isTraped = true;
+            gameManager.GetHexagone(indexHexagone).Room.isPray = true;
+        }   
         if (indexPower == 3)
         {
             gameManager.GetHexagone(indexHexagone).Room.chest = true;

@@ -376,12 +376,12 @@ public class GameManager : MonoBehaviourPun
         List<int> listIndexPower = new List<int>();
         if (setting.listTrapRoom[0])
             listIndexPower.Add(0);
-/*        if (setting.listTrapRoom[1])
-            listIndexPower.Add(1);*/
-        /*        if (setting.listTrapRoom[2])
-                    listIndexPower.Add(2);*/
-        /*        if (setting.listTrapRoom[3])
-                    listIndexPower.Add(3);*/
+        if (setting.listTrapRoom[1])
+            listIndexPower.Add(1);
+        if (setting.listTrapRoom[2])
+            listIndexPower.Add(2);
+        if (setting.listTrapRoom[3])
+            listIndexPower.Add(3);
 
         if (listIndexPower.Count == 1)
         {
@@ -417,6 +417,8 @@ public class GameManager : MonoBehaviourPun
             listIndexPower.Add(1);
         if (setting.listObjectImpostor[2])
             listIndexPower.Add(2);
+
+
         if (listIndexPower.Count == 1)
         {
             foreach (GameObject player in GetAllImpostor())
@@ -2629,15 +2631,13 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.ChangeColorAllPlayerSkinToFoggy(true);
             ui_Manager.DisplayLeverVoteDoor(true);
             UpdateColorDoor(room);
-            return;
         }
         if (room.IsVirus)
         {
             ui_Manager.DisplayVirusRoom(true);
-            ui_Manager.DisplayLeverVoteDoor(false);
+            ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             UpdateColorDoor(room);
-            return;
         }
         if (room.isDeathNPC)
         {

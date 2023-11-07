@@ -80,16 +80,25 @@ public class MonstersRoom : TrialsRoom
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         gameManager.ActivateCollisionTPOfAllDoor(false);
         float randomTimer = Random.Range(25, 80);
-        StartCoroutine(CouroutineEndGame(randomTimer));
-        this.transform.Find("X_zone_animation").gameObject.SetActive(true);
-        this.transform.Find("X_zone_animation").Find("Timer").GetComponent<Timer>().LaunchTimer(randomTimer, true);
-        this.transform.Find("X_zone_animation").GetComponent<Animator>().speed = (this.transform.Find("X_zone_animation").GetComponent<Animator>().speed  / (CalculAnimationSpeed(randomTimer)));
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            photonView.RPC("SendTimer", RpcTarget.All, randomTimer);
         gameManager.ui_Manager.DisplayKeyAndTorch(false);
+
+       
     }
 
     public float CalculAnimationSpeed(float timer)
     {
         return timer/ 60;
+    }
+
+    [PunRPC]
+    public void SendTimer(float randomTimer)
+    {
+        StartCoroutine(CouroutineEndGame(randomTimer));
+        this.transform.Find("X_zone_animation").gameObject.SetActive(true);
+        this.transform.Find("X_zone_animation").Find("Timer").GetComponent<Timer>().LaunchTimer(randomTimer, true);
+        this.transform.Find("X_zone_animation").GetComponent<Animator>().speed = (this.transform.Find("X_zone_animation").GetComponent<Animator>().speed / (CalculAnimationSpeed(randomTimer)));
     }
 
     public IEnumerator SpawnMonsterCouroutine( float timer)
@@ -255,7 +264,9 @@ public class MonstersRoom : TrialsRoom
 
     public IEnumerator CouroutineEndGame(float seconde)
     {
-        yield return new WaitForSeconds(seconde);
+        //yield return new WaitForSeconds(seconde);
+
+        yield return new WaitForSeconds(10);
         if (!isLoose)
         {
             GiveTeamAward();
@@ -281,7 +292,7 @@ public class MonstersRoom : TrialsRoom
         DisplayGloballyAward(randomInt);
         DesactivateRoom();
         DesactivateRoomChild();
-        gameManager.ui_Manager.DisplayKeyAndTorch(true);
+        //gameManager.ui_Manager.DisplayKeyAndTorch(true);
         this.transform.Find("X_zone_animation").GetComponent<Animator>().speed = 1;
         this.transform.Find("X_zone_animation").Find("Timer").GetComponent<Timer>().ResetTimer();
     }

@@ -92,7 +92,8 @@ public class Dungeon : ScriptableObject
             int randomSpeciallity = Random.Range(0, 14);
             int randomSpeciallity2 = Random.Range(0, 2);
 
-            randomSpeciallity = 3;
+            randomSpeciallity = 2;
+
             if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
                 room.chest = true;
             if (randomSpeciallity == 1 && setting.listSpeciallyRoom[1])

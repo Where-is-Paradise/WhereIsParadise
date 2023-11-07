@@ -36,6 +36,8 @@ public class ColliderZindexLabyrinth : MonoBehaviour
         {
             return;
         }
+        if (!collision.transform.parent.parent.gameObject.GetComponent<PhotonView>().IsMine)
+            return;
         ObstacleLabyrinth obstacle = this.transform.parent.GetComponent<ObstacleLabyrinth>();
         obstacle.labyrinthRoom.SendObjectAwardFind(obstacle.labyrinthRoom.gameManagerParent.GetPlayerMineGO().GetComponent<PhotonView>().ViewID, obstacle.indexObject, obstacle.indexObjectInList);
         obstacle.DesactivateAward();

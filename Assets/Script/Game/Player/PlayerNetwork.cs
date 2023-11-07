@@ -1176,8 +1176,10 @@ public class PlayerNetwork : MonoBehaviourPun
         GameObject awardObject = player.GetOnlyChildActive(GameObject.Find("Room").transform.Find("Special").Find("AwardObject").gameObject);
         awardObject.SetActive(false);
         GameObject speciallyRoom = player.GetOnlyChildActive(GameObject.Find("Room").transform.Find("Special").gameObject);
+        if (!speciallyRoom.GetComponent<TrialsRoom>())
+            return;
         speciallyRoom.GetComponent<TrialsRoom>().ReactivateCurrentRoom();
-        if(awardObject.name == "MiniMap")
+        if(awardObject.name == "KeyAndTorch")
             speciallyRoom.GetComponent<TrialsRoom>().ApplyGlobalAward(0);
         else
             speciallyRoom.GetComponent<TrialsRoom>().ApplyGlobalAward(1);

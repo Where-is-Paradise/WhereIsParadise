@@ -296,7 +296,7 @@ public class Door : MonoBehaviour
     {
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBlind)
         {
-            this.transform.Find("LightsExploration").Find("BlindLight").gameObject.SetActive(true);
+            DisplayTransparencyLightExploration();
             return;
         }
         if (gameManager.game.currentRoom.IsFoggy)
@@ -321,7 +321,7 @@ public class Door : MonoBehaviour
         }
         else
         {
-            this.transform.Find("LightsExploration").Find("BlackLight").gameObject.SetActive(true);
+            this.transform.Find("LightsExploration").Find("RedLight").gameObject.SetActive(true);
         }
         StartCoroutine(Desactivatelight(isBlue));
     }
@@ -331,7 +331,7 @@ public class Door : MonoBehaviour
         if(isBlue)
             this.transform.Find("LightsExploration").Find("GreenEndAnimation").gameObject.SetActive(true);
         else
-            this.transform.Find("LightsExploration").Find("DarkAnimation").gameObject.SetActive(true);
+            this.transform.Find("LightsExploration").Find("RedEndAnimation").gameObject.SetActive(true);
         this.transform.Find("LightsExploration").Find("GreenLight").gameObject.SetActive(false);
         this.transform.Find("LightsExploration").Find("BlackLight").gameObject.SetActive(false);
         this.transform.Find("LightsExploration").Find("RedLight").gameObject.SetActive(false);

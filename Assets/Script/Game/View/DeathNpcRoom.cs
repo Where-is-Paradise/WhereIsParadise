@@ -34,6 +34,7 @@ public class DeathNpcRoom : TrialsRoom
         yield return new WaitForSeconds(2);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.deathNPCIsLaunch = true;
+        gameManager.ActivateCollisionTPOfAllDoor(false);
         StartDeathNPCRoom();
     }
 
@@ -51,7 +52,6 @@ public class DeathNpcRoom : TrialsRoom
         }
         loose = false;
         photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, false);
-        
         death_NPC = GameObject.Find("DeathNPC_1").GetComponent<Death_NPC>();
         death_NPC_2 = GameObject.Find("DeathNPC_2").GetComponent<Death_NPC>();
         StartCoroutine(death_NPC.RandomScenario());

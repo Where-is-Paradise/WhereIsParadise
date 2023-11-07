@@ -63,9 +63,10 @@ public class LabyrinthRoom : TrialsRoom
 
         if (!gameManagerParent.speciallyIsLaunch)
             return;
+        gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().ActivateCollisionLabyrinth();
         if (!gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
-        gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().ActivateCollisionLabyrinth();
+
         FirstRandomPATH();
         SecondeRandomPATH();
         AddPathInside();
@@ -101,7 +102,7 @@ public class LabyrinthRoom : TrialsRoom
         listInitalObstacleLeft.Add(GetObtacleByPosition(21, 13));
         listInitalObstacleLeft.Add(GetObtacleByPosition(21, 14));
         gameManagerParent.speciallyIsLaunch = true;
-
+        gameManagerParent.ActivateCollisionTPOfAllDoor(false);
         if (gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             int randomInitialRight = Random.Range(0, listInitalObstacleRight.Count);
@@ -388,7 +389,7 @@ public class LabyrinthRoom : TrialsRoom
         int indexObstacle = Random.Range(0, listPotentialAward.Count);
         int indexAward = ChooseRandomObject(listPotentialAward,indexObstacle, false,0);
         int indexObstacle2 = Random.Range(0, listPotentialAward.Count);
-        if (indexAward == 0 || indexAward == 4)
+        if (indexAward == 0 || indexAward == 3)
         {
             ChooseRandomObject(listPotentialAward, indexObstacle2, true,1);
         }
@@ -480,7 +481,7 @@ public class LabyrinthRoom : TrialsRoom
     [PunRPC]
     public void SendListIndexAward(int indexPlayer, int indexAward)
     {
-        Debug.LogError(indexPlayer + " " + indexAward);
+ 
         listIndexAwardByPlayer.Add(new KeyValuePair<int, int>(indexPlayer, indexAward));
     }
 
@@ -491,16 +492,28 @@ public class LabyrinthRoom : TrialsRoom
         ReactivateCurrentRoom();
         foreach (KeyValuePair<int, int> indexAwardAndPlayer in listIndexAwardByPlayer)
         {
-            indexObject = indexAwardAndPlayer.Value;
-            ActivateObjectPower(indexAwardAndPlayer.Key);
+            photonView.RPC("SendActivateObject", RpcTarget.All, indexAwardAndPlayer.Key, indexAwardAndPlayer.Value);
             Debug.LogError(indexAwardAndPlayer.Key);
         }
-
         DesactivateRoom();
-       
-        
+        photonView.RPC("SendClearKeyValuePair", RpcTarget.All);
     }
     
+    [PunRPC]
+    public void SendActivateObject(int key , int indexObject)
+    {
+        this.indexObject = indexObject;
+        ActivateObjectPower(key);
+        
+    }
+
+    [PunRPC]
+    public void SendClearKeyValuePair()
+    {
+        listIndexAwardByPlayer.Clear();
+        gameManagerParent.ActivateCollisionTPOfAllDoor(true);
+    }
+
     public void SendDestroyAllObstacle()
     {
         photonView.RPC("DestroyAllObstacle", RpcTarget.All);
@@ -514,6 +527,7 @@ public class LabyrinthRoom : TrialsRoom
         }
         ResetScalePlayer();
         ResetAllData();
+
 
     }
 

@@ -790,7 +790,7 @@ public class PlayerGO : MonoBehaviour
     {
         for(int i =0;  i< listObject.transform.childCount; i++)
         {
-            if (listObject.transform.GetChild(i).gameObject.activeSelf && listObject.transform.GetChild(i).name != "AwardObject")
+            if (listObject.transform.GetChild(i).gameObject.activeSelf && listObject.transform.GetChild(i).name != "AwardObject" && listObject.transform.GetChild(i).name != "VirusRoom" && listObject.transform.GetChild(i).name != "FoggyRoom")
             {
                 return listObject.transform.GetChild(i).gameObject;
             }
@@ -1362,11 +1362,6 @@ public class PlayerGO : MonoBehaviour
         if (gameManager.game.currentRoom.isLabyrintheHide)
         {
             gameManager.gameManagerNetwork.SendLaunchLabyrinthRoom();
-        }
-
-        if (gameManager.game.currentRoom.IsVirus && gameManager.game.key_counter > 0)
-        {
-            launchVoteDoorMobile = true;
         }
 
         gameManager.gameManagerNetwork.SendCloseDoorWhenVoteCoroutine();

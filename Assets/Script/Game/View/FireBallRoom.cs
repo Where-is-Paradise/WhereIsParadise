@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,7 +38,8 @@ public class FireBallRoom : TrialsRoom
         roomIsLaunch = true;
         StartCoroutine(ShotFireBallFrequency());
         StartCoroutine(ReduceFrequencyCouroutine());
-       
+        photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, false);
+
     }
 
     public void ChooseRandomTurret()
@@ -74,6 +76,13 @@ public class FireBallRoom : TrialsRoom
         DestroyAllFireball();
         roomIsLaunch = false;
         gameManager.speciallyIsLaunch = false;
+        photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, true);
+    }
+
+    [PunRPC]
+    public void SendIgnoreCollisionPlayer(bool ignore)
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(ignore);
     }
 
     public void DestroyAllFireball()
