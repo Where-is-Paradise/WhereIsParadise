@@ -1349,6 +1349,17 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.rooms[indexRoom].isLabyrintheHide = isLabyrintheHide;
     }
 
+    public void SendIsImpostorRoomData(int indexRoom, bool isImpostorRoom)
+    {
+        photonView.RPC("SetIsImpostorRoomData", RpcTarget.All, indexRoom, isImpostorRoom);
+    }
+
+    [PunRPC]
+    public void SetIsImpostorRoomData(int indexRoom, bool isImpostorRoom)
+    {
+        gameManager.game.dungeon.rooms[indexRoom].isImpostorRoom = isImpostorRoom;
+    }
+
     public void SendJailRoom(int indexRoom , bool isJail)
     {
         photonView.RPC("SetJailRoom", RpcTarget.All, indexRoom, isJail);

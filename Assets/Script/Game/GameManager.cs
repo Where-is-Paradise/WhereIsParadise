@@ -119,6 +119,7 @@ public class GameManager : MonoBehaviourPun
 
     public bool canVoteDoor = false;
 
+    public List<int> listIndexImpostorObject = new List<int>();
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -202,7 +203,8 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.SetNBKey();
             SetInitialPositionPlayers();
             AssignPowerOfImposter();
-            AssignObjectPowerOfImposter();
+            InitiatiateListIndexObject();
+            //AssignObjectPowerOfImposter();
             gameManagerNetwork.SendDisplayLightAllAvailableDoor(true);
             gameManagerNetwork.SendDisplayPowerImpostorInGame();
             gameManagerNetwork.SendDisplayObjectPowerImpostor();
@@ -410,24 +412,23 @@ public class GameManager : MonoBehaviourPun
     }
     public void AssignObjectPowerOfImposter()
     {
-        List<int> listIndexPower = new List<int>();
         if (setting.listObjectImpostor[0])
-            listIndexPower.Add(0);
+            listIndexImpostorObject.Add(0);
         if (setting.listObjectImpostor[1])
-            listIndexPower.Add(1);
+            listIndexImpostorObject.Add(1);
         if (setting.listObjectImpostor[2])
-            listIndexPower.Add(2);
+            listIndexImpostorObject.Add(2);
 
 
-        if (listIndexPower.Count == 1)
+        if (listIndexImpostorObject.Count == 1)
         {
             foreach (GameObject player in GetAllImpostor())
             {
-                player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[0]);
+                player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexImpostorObject[0]);
             }
             return;
         }
-        if (listIndexPower.Count == 0)
+        if (listIndexImpostorObject.Count == 0)
         {
             foreach (GameObject player in GetAllImpostor())
             {
@@ -437,11 +438,21 @@ public class GameManager : MonoBehaviourPun
         }
         foreach (GameObject player in GetAllImpostor())
         {
-            int randomInt = Random.Range(0, listIndexPower.Count);
-            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[randomInt]);
+            int randomInt = Random.Range(0, listIndexImpostorObject.Count);
+            player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexImpostorObject[randomInt]);
             //player.GetComponent<PlayerNetwork>().SendIndexObjectPower(listIndexPower[1]);
-            listIndexPower.RemoveAt(randomInt);
+            listIndexImpostorObject.RemoveAt(randomInt);
         }
+    }
+
+    public void InitiatiateListIndexObject()
+    {
+        if (setting.listObjectImpostor[0])
+            listIndexImpostorObject.Add(0);
+        if (setting.listObjectImpostor[1])
+            listIndexImpostorObject.Add(1);
+        if (setting.listObjectImpostor[2])
+            listIndexImpostorObject.Add(2);
     }
 
     public void ResetVoteExploration()
@@ -987,6 +998,11 @@ public class GameManager : MonoBehaviourPun
             {
                 gameManagerNetwork.SendLabyrinthData(room.GetIndex(), room.isLabyrintheHide);
             }
+            if (room.isImpostorRoom)
+            {
+                gameManagerNetwork.SendIsImpostorRoomData(room.GetIndex(), room.isImpostorRoom);
+            }
+
             counter++;
         }
     }
@@ -2801,6 +2817,11 @@ public class GameManager : MonoBehaviourPun
             UpdateColorDoor(room);
             return;
         }
+        if (room.isImpostorRoom)
+        {
+            ui_Manager.DisplayImpostorRoom(true);
+        }
+
         if (room.IsExit || room.IsHell)
         {
             ui_Manager.DisplaySpeciallyLevers(false, 0);

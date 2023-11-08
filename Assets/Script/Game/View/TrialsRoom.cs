@@ -186,6 +186,32 @@ public class TrialsRoom : MonoBehaviourPun
         }
     }
 
+    public void ActivateImpostorObject(int indexPlayer)
+    {
+        if (!gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
+            return;
+
+        float randomfloat = Random.Range(0, 100);
+
+        if(randomfloat < 40)
+        {
+            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManagerParent.listIndexImpostorObject[0]);
+            gameManagerParent.ui_Manager.DisplayInformationObjectWon(5);
+        }
+        else if ( randomfloat < 80)
+        {
+            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManagerParent.listIndexImpostorObject[2]);
+            gameManagerParent.ui_Manager.DisplayInformationObjectWon(6);
+        }
+        else
+        {
+            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManagerParent.listIndexImpostorObject[1]);
+            gameManagerParent.ui_Manager.DisplayInformationObjectWon(7);
+        }
+        gameManagerParent.ui_Manager.DisplayObjectPowerImpostorInGame();
+        gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasImpostorObject = true;
+    }
+
     public void ResetHeartForAllPlayer()
     {
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");

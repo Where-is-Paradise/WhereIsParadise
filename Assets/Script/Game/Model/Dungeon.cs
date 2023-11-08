@@ -76,6 +76,7 @@ public class Dungeon : ScriptableObject
         }
 
         InsertSpeciallyRoom2();
+        InsertImpostorRoom();
     }
 
     public void InsertSpeciallyRoom2()
@@ -83,7 +84,7 @@ public class Dungeon : ScriptableObject
         foreach (Room room in trueListRoomDungeon)
         {
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 25)
+            if (randomIsHide <= 100)
             {
                 room.isHide = true;
                 continue;
@@ -92,7 +93,7 @@ public class Dungeon : ScriptableObject
             int randomSpeciallity = Random.Range(0, 14);
             int randomSpeciallity2 = Random.Range(0, 2);
 
-            randomSpeciallity = 2;
+            randomSpeciallity = 7;
 
             if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
                 room.chest = true;
@@ -159,6 +160,37 @@ public class Dungeon : ScriptableObject
 
         }
     }
+
+    public void InsertImpostorRoom()
+    {
+        int randomDistance = Random.Range(2, 4);
+        List<Room> listroomInDistance = GetListRoomByDistance(initialRoom, randomDistance);
+        int randomIndex = Random.Range(0, listroomInDistance.Count);
+        listroomInDistance[randomIndex].isImpostorRoom = true;
+        //listroomInDistance[randomIndex].isHide = false;
+        Debug.Log(listroomInDistance[randomIndex].Index);
+        ResetSpeciallyRoom(listroomInDistance[randomIndex]);
+    }
+
+    public void ResetSpeciallyRoom(Room room)
+    {
+            room.chest = false;
+            room.isSacrifice = false;
+            room.fireBall = false;
+            room.isAx = false;
+            room.isSword = false;
+            room.isSwordDamocles = false;
+            room.isDeathNPC = false;
+            room.isLostTorch = false;
+            room.isMonsters = false;
+            room.isPurification = false;
+            room.isResurection = false;
+            room.isPray = false;
+            room.isNPC = false;
+            room.isLabyrintheHide = false;
+            room.isTrial = false;
+    }
+
 
     public bool AssignRandomExit(int distance)
     {

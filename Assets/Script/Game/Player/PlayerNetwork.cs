@@ -1162,6 +1162,8 @@ public class PlayerNetwork : MonoBehaviourPun
         GameObject speciallyRoom = player.GetOnlyChildActive(GameObject.Find("Room").transform.Find("Special").gameObject);
         speciallyRoom.GetComponent<TrialsRoom>().ReactivateCurrentRoom();
         speciallyRoom.GetComponent<TrialsRoom>().ActivateObjectPower(indexPlayer);
+        if(player.isImpostor && !player.hasImpostorObject)
+            speciallyRoom.GetComponent<TrialsRoom>().ActivateImpostorObject(indexPlayer);
     }
 
 

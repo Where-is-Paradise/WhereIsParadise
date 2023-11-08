@@ -154,8 +154,8 @@ public class Hexagone : MonoBehaviourPun
         if (gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.dungeon.initialRoom) == 
             gameManager.game.dungeon.GetPathFindingDistance(gameManager.game.dungeon.initialRoom, gameManager.game.dungeon.exit))
             return;
-        if (this.room.isHide)
-            return;
+/*        if (this.room.isHide)
+            return;*/
         GameObject Information_Speciality = this.transform.Find("Information_Speciality").gameObject;
         Information_Speciality.SetActive(display);
         if (this.room.isSpecial && !this.room.isTrial)
@@ -169,6 +169,12 @@ public class Hexagone : MonoBehaviourPun
             Information_Speciality.transform.Find("Hexagone").Find("TrailRoom").gameObject.SetActive(display);
             Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
             Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
+        }
+        if (this.room.isImpostorRoom)
+        {
+            Information_Speciality.transform.Find("Hexagone").Find("ImpostorRoom").gameObject.SetActive(display);
+            Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
+            Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
         }
     }
 }

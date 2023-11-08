@@ -1493,6 +1493,10 @@ setting_button_echapMenu.SetActive(false);
         GameObject.Find("Special").transform.Find("LabyrinthHideRoom").gameObject.SetActive(display);
         DisplaySpeciallyLevers(display, 14);
     }
+    public void DisplayImpostorRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("ImpostorRoom").gameObject.SetActive(display);
+    }
 
     public void DisplayUI_Mobile_SpecialRoom(bool display)
     {

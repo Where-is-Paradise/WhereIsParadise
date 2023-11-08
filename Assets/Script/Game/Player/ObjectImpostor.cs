@@ -162,14 +162,14 @@ public class ObjectImpostor : MonoBehaviour
         switch (index)
         {
             case 0:
-                timerToUsing = 30;
+                timerToUsing = 10;
                 break;
             case 1:
-                timerToUsing = 300;
+                timerToUsing = 10;
                 //timerToUsing = 10;
                 break;
             case 2:
-                timerToUsing = 110;
+                timerToUsing = 10;
                 break;
         }
         timerToUsing += initalTimerPlus;

@@ -170,6 +170,7 @@ public class PlayerGO : MonoBehaviour
     public List<bool> listTrialObject;
 
     public bool isLeftNpc = false;
+    public bool hasImpostorObject = false;
 
     private void Awake()
     {
@@ -266,6 +267,7 @@ public class PlayerGO : MonoBehaviour
         ChangeSystemSyncPostionToTrial();
         Dash();
         DashIsAvailable();
+        
     }
 
 
@@ -1211,6 +1213,8 @@ public class PlayerGO : MonoBehaviour
             {
                 if(gameManager.teamHasWinTrialRoom && !isTouchInTrial)
                     playerNetwork.SendDesactivateObjectTeam();
+                if (gameManager.game.currentRoom.isImpostorRoom)
+                    GameObject.Find("ImpostorRoom").GetComponent<ImpostorRoom>().CollisionObject(collision.gameObject.name);
             }
         }
     }

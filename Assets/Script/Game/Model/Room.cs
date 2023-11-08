@@ -88,6 +88,8 @@ public class Room : ScriptableObject
     public bool isHide = false;
     public bool isTrial = false;
 
+    public bool isImpostorRoom = false;
+
     public List<Chest> chestList = null;
 
     public int nbKeyInPath = 0;
