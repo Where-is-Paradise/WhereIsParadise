@@ -107,7 +107,6 @@ public class GameManager : MonoBehaviourPun
     public int nbKeyWhenJail = 0;
 
     public int viewIdIsMine;
-    public List<float> listProbalitySpecialyRoom = new List<float>();
     public SaveDataNetwork dataGame;
     public bool timerStart = false;
     public bool paradiseHasChange = false;
@@ -120,6 +119,10 @@ public class GameManager : MonoBehaviourPun
     public bool canVoteDoor = false;
 
     public List<int> listIndexImpostorObject = new List<int>();
+
+    public List<float> listProbabilitySpecialityRoom = new List<float>();
+    public List<bool> listBoolapparitionSpecialityRoom = new List<bool>();
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -157,15 +160,10 @@ public class GameManager : MonoBehaviourPun
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendQuitTutorialN7(false);
         }
-        /*        listProbalitySpecialyRoom.Add(0);
-                listProbalitySpecialyRoom.Add(70);
-                listProbalitySpecialyRoom.Add(0);*/
-        listProbalitySpecialyRoom.Add(35);
-        listProbalitySpecialyRoom.Add(57);
-        listProbalitySpecialyRoom.Add(65);
 
         viewIdIsMine = GetPlayerMineGO().GetComponent<PhotonView>().ViewID;
-
+        InitiatiateListIndexObject();
+        InitateProbabilityTab();
         StartCoroutine(CouroutineTimerStart());
     }
     public IEnumerator MasterClientCreateMap()
@@ -203,7 +201,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.SetNBKey();
             SetInitialPositionPlayers();
             AssignPowerOfImposter();
-            InitiatiateListIndexObject();
+            
             //AssignObjectPowerOfImposter();
             gameManagerNetwork.SendDisplayLightAllAvailableDoor(true);
             gameManagerNetwork.SendDisplayPowerImpostorInGame();
@@ -798,7 +796,7 @@ public class GameManager : MonoBehaviourPun
         {
             gameManagerNetwork.SendIsDiscorved(true, roomTeam.Index);
         }
-        //InsertSpeciallyRoom(roomTeam, isExpedition);
+        InsertSpeciallyRoom(roomTeam);
         GameObject newDoor = GetDoorGo(indexDoor);
         gameManagerNetwork.SendOpenDoor(indexDoor, game.currentRoom.X, game.currentRoom.Y, isExpedition, roomTeam.GetIndex(), newDoor.GetComponent<Door>().GetRoomBehind().Index);
     }
@@ -3268,41 +3266,108 @@ public class GameManager : MonoBehaviourPun
         }
         CloseDoorWhenVote(false);
     }
-    public void InsertSpeciallyRoom(Room room, bool isInExpedition)
+    public void InsertSpeciallyRoom(Room room)
     {
-        if (!(GetPlayerMineGO().GetComponent<PlayerGO>().isBoss || (GetPlayerMineGO().GetComponent<PlayerGO>().isChooseForExpedition && isInExpedition)))
+        if (!GetPlayerMineGO().GetComponent<PlayerGO>().isBoss )
         {
             return;
         }
 
-        if ((room.IsExit || room.IsHell || room.isSpecial || room.IsInitiale || room.isTraped) || !room.isHide)
+        if ((room.IsExit || room.IsHell || room.IsInitiale))
         {
             return;
         }
-        if (game.dungeon.GetPathFindingDistance(room, game.dungeon.initialRoom) == game.dungeon.GetPathFindingDistance(game.dungeon.initialRoom, game.dungeon.exit))
+        if (!room.isSpecial)
             return;
 
-        int indexSpeciality = -1;
-        if (counterRoom % 2 != 0)
+        if (room.isTrial)
         {
-            indexSpeciality = InsertRandomSpeciallity(room);
+            float randomInt = Random.Range(0, 100);
+            if(randomInt < AdditionalProba(0))
+            {
+                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index,0);
+                CalculProbabiltySpeciality(0);
+            }
+            else if(randomInt < AdditionalProba(1))
+            {
+                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 1);
+                CalculProbabiltySpeciality(1);
+            }
+            else if (randomInt < AdditionalProba(2))
+            {
+                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 2);
+                CalculProbabiltySpeciality(2);
+            }
+            else if (randomInt < AdditionalProba(3))
+            {
+                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 3);
+                CalculProbabiltySpeciality(3);
+            }
+            else if (randomInt < AdditionalProba(4))
+            {
+                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 4);
+                CalculProbabiltySpeciality(4);
+            }
+            else if (randomInt < AdditionalProba(5))
+            {
+                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 5);
+                CalculProbabiltySpeciality(5);
+            }
+            else if (randomInt < AdditionalProba(6))
+            {
+                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
+                CalculProbabiltySpeciality(6);
+            }
+            else if (randomInt < AdditionalProba(7))
+            {
+                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
+                CalculProbabiltySpeciality(7);
+            }
         }
-        else
-        {
-            indexSpeciality = InsertSpeciallyN2(room);
-        }
-        counterRoom++;
+    }
+    public void InitateProbabilityTab()
+    {
+        listProbabilitySpecialityRoom.Add(12.5f); // fireball
+        listProbabilitySpecialityRoom.Add(12.5f); // sword
+        listProbabilitySpecialityRoom.Add(12.5f); // ax
+        listProbabilitySpecialityRoom.Add(12.5f); // damocles
+        listProbabilitySpecialityRoom.Add(12.5f); // torch
+        listProbabilitySpecialityRoom.Add(12.5f); // deathNPC
+        listProbabilitySpecialityRoom.Add(12.5f); // monster
+        listProbabilitySpecialityRoom.Add(12.5f); // labyrinth
 
-        if (indexSpeciality > -1)
-        {
-            room.isSpecial = true;
-            gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, indexSpeciality);
+        listBoolapparitionSpecialityRoom.Add(false); // fireball
+        listBoolapparitionSpecialityRoom.Add(false); // sword
+        listBoolapparitionSpecialityRoom.Add(false); // ax
+        listBoolapparitionSpecialityRoom.Add(false); // damocles
+        listBoolapparitionSpecialityRoom.Add(false); // torch
+        listBoolapparitionSpecialityRoom.Add(false); // deathNPC
+        listBoolapparitionSpecialityRoom.Add(false); // monster
+        listBoolapparitionSpecialityRoom.Add(false); // labyrinth
+    }
+    public void CalculProbabiltySpeciality(int indexSpeciality)
+    {
+        listBoolapparitionSpecialityRoom[indexSpeciality] = true;
+        listProbabilitySpecialityRoom[indexSpeciality]  -= 10.5f;
+        gameManagerNetwork.SendUpdateListSpecialityProbality(listProbabilitySpecialityRoom[indexSpeciality], indexSpeciality);
 
-        }
-        else
+        for (int i =0; i < listProbabilitySpecialityRoom.Count; i++)
         {
-            room.isNotSpecial = true;
+            if ( i == indexSpeciality)
+                continue;
+            listProbabilitySpecialityRoom[i] += 1.5f;
+            gameManagerNetwork.SendUpdateListSpecialityProbality(listProbabilitySpecialityRoom[i], i);
         }
+    }
+
+    public float AdditionalProba(int index)
+    {
+        float returnValue = 0;
+        for(int i = index;  i >= 0 ; i--)
+        {
+            returnValue += listProbabilitySpecialityRoom[index];
+        }
+        return returnValue;
     }
 
     public bool ISTrailsRoom(Room room)

@@ -68,9 +68,7 @@ public class AxRoom : TrialsRoom
         gameManager.CloseDoorWhenVote(true);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            //gameManager.gameManagerNetwork.SendActivateAllObstacles(true ,this.name);
             SendObstalceGroup();
-            //gameManager.ui_Manager.SetRandomObstacles(this.gameObject);
         }
         
     }

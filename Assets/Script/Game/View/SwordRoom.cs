@@ -36,6 +36,10 @@ public class SwordRoom : TrialsRoom
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.CloseDoorWhenVote(true);
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            SendObstalceGroup();
+        }
     }
 
     public void DisplaySwordAllPlayer(bool display)
@@ -122,6 +126,7 @@ public class SwordRoom : TrialsRoom
     public void SendDesactivateRoomChild()
     {
         photonView.RPC("SetDesactivateRoom", RpcTarget.All);
+        SendResetObstacle();
     }
 
     [PunRPC]
@@ -129,6 +134,7 @@ public class SwordRoom : TrialsRoom
     {
         DisplaySwordAllPlayer(false);
         roomIsLaunched = false;
+        
     }
 
     public void ResetIsTouchBySwordAllPlayer()

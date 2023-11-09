@@ -44,10 +44,6 @@ public class ObjectImpostor : MonoBehaviour
             return;
         if (powerIsReset)
             return;
-/*        if(indexPower == 0)
-        {
-            GetAllSituationToResetInvisiblity();
-        }*/
             
         GetAllSituationToCanUsed();
         ChangeScaleByPlayer();
@@ -56,19 +52,10 @@ public class ObjectImpostor : MonoBehaviour
         else
             DisplayButtonCanUsed(false);
 
-/*        if(indexPower == 0)
-        {
-            if (isNearOfPlayer && colliderIsImpostor)
-                DisplayButtonCanUsed(true);
-            else
-                DisplayButtonCanUsed(false);
-        }*/
-
         if(gameManager.timer.timeLeft < 0 && !cantTemporyUsed)
         {
             cantTemporyUsed = true;
         }
-
     }
 
     public void UsePower()
@@ -111,21 +98,10 @@ public class ObjectImpostor : MonoBehaviour
             colliderIsImpostor = false;
 
         if (isClickedInButtonPower)
-        {
-/*            if (indexPower == 0 && !isOtherToInvisible)
-            {
-                if (collision.transform.parent.GetComponent<PlayerGO>().isImpostor)
-                {
-                    this.collision = collision;
-                    LaunchPowerByindex(4);
-                }
-                return;
-            }*/
-               
+        {               
             if (collision.transform.parent.GetComponent<PlayerGO>().isImpostor)
                 return;
             this.collision = collision;
-
             LaunchPowerByindex(indexPower);
         }
     }
@@ -137,6 +113,7 @@ public class ObjectImpostor : MonoBehaviour
         if (!gameManager || !gameManager.SamePositionAtMine(collision.transform.parent.GetComponent<PhotonView>().ViewID))
             return;
         isNearOfPlayer = true;
+        DisplayPrevisualisationLightRed(true, collision.transform.parent.GetComponent<PhotonView>().ViewID);
     }
 
     public void OnTriggerExit2D(Collider2D collision)
@@ -145,8 +122,18 @@ public class ObjectImpostor : MonoBehaviour
         {
             isNearOfPlayer = false;
             colliderIsImpostor = false;
+            DisplayPrevisualisationLightRed(false, collision.transform.parent.GetComponent<PhotonView>().ViewID);
         }
-            
+        
+    }
+    public void DisplayPrevisualisationLightRed(bool display, int indexPlayer)
+    {
+        PlayerGO playerSelected = gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>();
+        playerSelected.transform.Find("Skins").GetChild(playerSelected.indexSkin).Find("Light_red").gameObject.SetActive(display);
+        if (display)
+            playerSelected.transform.Find("Skins").GetChild(playerSelected.indexSkin).Find("Light_red").GetComponent<SpriteRenderer>().color = new Color(221 / 255f, 14 / 255f, 14 / 255f, 210 / 255f);
+        else
+            playerSelected.transform.Find("Skins").GetChild(playerSelected.indexSkin).Find("Light_red").GetComponent<SpriteRenderer>().color = new Color(221 / 255f, 14 / 255f, 14 / 255f, 255 / 255f);
     }
 
     public IEnumerator CoroutineSetCanUsed()
@@ -166,7 +153,6 @@ public class ObjectImpostor : MonoBehaviour
                 break;
             case 1:
                 timerToUsing = 10;
-                //timerToUsing = 10;
                 break;
             case 2:
                 timerToUsing = 10;
@@ -252,7 +238,6 @@ public class ObjectImpostor : MonoBehaviour
         {
             ResetInvisiblityPower();
             ResetOtherInvisiblityPower();
-            //DisplayInvisibleResetButton(false);
             DisplayButtonCanUsed(false);
             gameManager.ui_Manager.DisplayN2PotionObject(false);
             gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
@@ -263,7 +248,6 @@ public class ObjectImpostor : MonoBehaviour
         {
             ResetInvisiblityPower();
             ResetOtherInvisiblityPower();
-            //DisplayInvisibleResetButton(false);
             DisplayButtonCanUsed(false);
             gameManager.ui_Manager.DisplayN2PotionObject(false);
             gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
@@ -274,7 +258,6 @@ public class ObjectImpostor : MonoBehaviour
         {
             ResetInvisiblityPower();
             ResetOtherInvisiblityPower();
-            //DisplayInvisibleResetButton(false);
             DisplayButtonCanUsed(false);
             gameManager.ui_Manager.DisplayN2PotionObject(false);
             gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
@@ -285,7 +268,6 @@ public class ObjectImpostor : MonoBehaviour
         {
             ResetInvisiblityPower();
             ResetOtherInvisiblityPower();
-            //DisplayInvisibleResetButton(false);
             DisplayButtonCanUsed(false);
             gameManager.ui_Manager.DisplayN2PotionObject(false);
             gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
@@ -296,16 +278,12 @@ public class ObjectImpostor : MonoBehaviour
         {
             ResetInvisiblityPower();
             ResetOtherInvisiblityPower();
-            //DisplayInvisibleResetButton(false);
             DisplayButtonCanUsed(false);
             gameManager.ui_Manager.DisplayN2PotionObject(false);
             gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
             powerIsReset = true;
             return;
         }
-
-/*        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
-        gameManager.ui_Manager.DesactivateObjectPowerImpostor(true);*/
     }
     public void GetAllSituationToCanUsed()
     {
@@ -354,7 +332,6 @@ public class ObjectImpostor : MonoBehaviour
         }
         if (!canUsed)
         {
-            //gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate();
             gameManager.ui_Manager.DisplayObjectPowerBigger(false);
             return;
         }

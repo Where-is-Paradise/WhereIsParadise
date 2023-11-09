@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ImpostorRoom : MonoBehaviour
+public class ImpostorRoom : TrialsRoom
 {
     public GameManager gameManager;
 

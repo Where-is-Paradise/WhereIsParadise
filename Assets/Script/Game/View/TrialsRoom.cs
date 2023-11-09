@@ -316,18 +316,16 @@ public class TrialsRoom : MonoBehaviourPun
     {
         this.transform.Find("Obstacles").gameObject.SetActive(true);
         int childCount = this.transform.Find("Obstacles").childCount;
-        for (int i = 0; i < childCount; i++)
-        {
-            int randomGroupObstacle = Random.Range(0, this.transform.Find("Obstacles").GetChild(i).childCount);
-            photonView.RPC("SetObstalceGroup", RpcTarget.All, i , randomGroupObstacle);
-        }
+        int randomGroupObstacle = Random.Range(0, this.transform.Find("Obstacles").childCount);
+        photonView.RPC("SetObstalceGroup", RpcTarget.All, randomGroupObstacle);
+
     }
 
     [PunRPC]
-    public void SetObstalceGroup(int i, int randomGroupObstacle)
+    public void SetObstalceGroup(int randomGroupObstacle)
     {
         this.transform.Find("Obstacles").gameObject.SetActive(true);
-        this.transform.Find("Obstacles").GetChild(i).GetChild(randomGroupObstacle).gameObject.SetActive(true);
+        this.transform.Find("Obstacles").GetChild(randomGroupObstacle).gameObject.SetActive(true);
     }
 
     public void SendResetObstacle()
@@ -342,12 +340,7 @@ public class TrialsRoom : MonoBehaviourPun
         int childCount = this.transform.Find("Obstacles").childCount;
         for (int i =0; i < childCount; i++)
         {
-            int childCount2 = this.transform.Find("Obstacles").GetChild(i).childCount;
-            for (int j = 0; j < childCount2; j++)
-            {
-                this.transform.Find("Obstacles").GetChild(i).GetChild(j).gameObject.SetActive(false);
-            }
-         
+            this.transform.Find("Obstacles").GetChild(i).gameObject.SetActive(false);
         }
        
     }

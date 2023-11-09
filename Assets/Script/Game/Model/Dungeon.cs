@@ -84,16 +84,16 @@ public class Dungeon : ScriptableObject
         foreach (Room room in trueListRoomDungeon)
         {
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 100)
+            if (randomIsHide <= 35)
             {
                 room.isHide = true;
                 continue;
             }
 
-            int randomSpeciallity = Random.Range(0, 14);
+/*            int randomSpeciallity = Random.Range(0, 14);
             int randomSpeciallity2 = Random.Range(0, 2);
 
-            randomSpeciallity = 7;
+            randomSpeciallity = 4;
 
             if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
                 room.chest = true;
@@ -154,10 +154,10 @@ public class Dungeon : ScriptableObject
                 room.isTrial = true;
             }
             if (randomSpeciallity == 14)
-                room.IsFoggy = true;
+                room.IsFoggy = true;*/
 
             room.isSpecial = true;
-
+            room.isTrial = true;
         }
     }
 
@@ -167,7 +167,7 @@ public class Dungeon : ScriptableObject
         List<Room> listroomInDistance = GetListRoomByDistance(initialRoom, randomDistance);
         int randomIndex = Random.Range(0, listroomInDistance.Count);
         listroomInDistance[randomIndex].isImpostorRoom = true;
-        //listroomInDistance[randomIndex].isHide = false;
+        listroomInDistance[randomIndex].isHide = false;
         Debug.Log(listroomInDistance[randomIndex].Index);
         ResetSpeciallyRoom(listroomInDistance[randomIndex]);
     }

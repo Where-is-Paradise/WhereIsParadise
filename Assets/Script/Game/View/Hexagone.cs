@@ -154,8 +154,8 @@ public class Hexagone : MonoBehaviourPun
         if (gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.dungeon.initialRoom) == 
             gameManager.game.dungeon.GetPathFindingDistance(gameManager.game.dungeon.initialRoom, gameManager.game.dungeon.exit))
             return;
-/*        if (this.room.isHide)
-            return;*/
+        if (this.room.isHide)
+            return;
         GameObject Information_Speciality = this.transform.Find("Information_Speciality").gameObject;
         Information_Speciality.SetActive(display);
         if (this.room.isSpecial && !this.room.isTrial)

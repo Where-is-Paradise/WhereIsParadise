@@ -1500,7 +1500,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         photonView.RPC("SetUpdateNeighbourSpeciality", RpcTarget.All, indexRoom, indexSpeciality);
     }
 
-    [PunRPC]
+/*    [PunRPC]
     public void SetUpdateNeighbourSpeciality(int indexRoom, int indexSpeciality)
     {
         Room room = gameManager.game.dungeon.GetRoomByIndex(indexRoom);
@@ -1556,6 +1556,50 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;
 
+    }*/
+
+    [PunRPC]
+    public void SetUpdateNeighbourSpeciality(int indexRoom, int indexSpeciality)
+    {
+        Room room = gameManager.game.dungeon.GetRoomByIndex(indexRoom);
+        switch (indexSpeciality)
+        {
+            case 0:
+                room.fireBall = true;
+                break;
+            case 1:
+                room.isSword = true;
+                break;
+            case 2:
+                room.isAx = true;
+                break;
+            case 3:
+                room.isSwordDamocles = true;
+                break;
+            case 4:
+                room.isLostTorch = true;
+                break;
+            case 5:
+                room.isDeathNPC = true;
+                break;
+            case 6:
+                room.isMonsters = true;
+                break;
+            case 7:
+                room.isLabyrintheHide = true;
+                break;
+        }
+    }
+
+    public void SendUpdateListSpecialityProbality(float newValue, int indexSpeciality)
+    {
+        photonView.RPC("SetUpdateListSpecialityProbality", RpcTarget.All, newValue, indexSpeciality);
+    }
+
+    [PunRPC]
+    public void SetUpdateListSpecialityProbality(float newValue, int indexSpeciality)
+    {
+        gameManager.listProbabilitySpecialityRoom[indexSpeciality] = newValue;
     }
 
     public void SendCatchInJailRoom(int indexDoorExpedition)
