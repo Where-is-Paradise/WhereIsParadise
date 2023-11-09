@@ -2179,10 +2179,10 @@ public class PlayerGO : MonoBehaviour
         }
         if (!gameManager)
             return;
-        if (!gameManager.game.currentRoom.isTrial)
+/*        if (!gameManager.game.currentRoom.isTrial)
             return;
         if (!gameManager.speciallyIsLaunch)
-            return;
+            return;*/
         if (gameManager.game.currentRoom.isLabyrintheHide)
             return;
         if (!avaibleDash)
@@ -2279,7 +2279,7 @@ public class PlayerGO : MonoBehaviour
     {
         avaibleDash = false;
         GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f/255f, 96f / 255f, 96f / 255f);
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSeconds(0.5f);
         avaibleDash = true;
         GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(255f, 255f, 255f);
     }
