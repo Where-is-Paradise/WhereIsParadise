@@ -208,10 +208,6 @@ public class MonsterNPC : MonoBehaviourPun
         return null;
     }
 
-
-
-
-
     public void SetPlayerColor(GameObject player)
     {
         player.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);

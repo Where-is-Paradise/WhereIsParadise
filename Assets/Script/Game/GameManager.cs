@@ -775,8 +775,20 @@ public class GameManager : MonoBehaviourPun
 
     public void OpenDoor(GameObject door, bool isExpedition)
     {
+
+
         int indexDoor = door.GetComponent<Door>().index;
         roomTeam = game.GetRoomByNeigbourID(indexDoor);
+
+        Debug.Log(roomTeam.isIllustion);
+        if (roomTeam.isIllustion)
+        {
+            ui_Manager.DisplayIllustionRoom(true);
+            MixRoomNeigbour(roomTeam);
+            indexDoor = door.GetComponent<Door>().index;
+            //ChangeDoorIndex(roomTeam);
+        }
+
         soundOpenDoor.Play();
         door.transform.Find("coulissClose").gameObject.SetActive(false);
         door.transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
@@ -1486,9 +1498,9 @@ public class GameManager : MonoBehaviourPun
         //CloseDoorExplorationWhenVote(false);
     }
 
-    public void ChangePositionPlayerWhenTakeDoor(GameObject player, GameObject doorEnter)
+    public void ChangePositionPlayerWhenTakeDoor(GameObject player, int indexDoor)
     {
-        int indexDoorExit = GetIndexDoorAfterCrosse(doorEnter.GetComponent<Door>().index);
+        int indexDoorExit = GetIndexDoorAfterCrosse(indexDoor);
         GameObject door = GetDoorGo(indexDoorExit);
         player.transform.position = door.transform.GetChild(3).transform.position;
     }
@@ -1498,25 +1510,45 @@ public class GameManager : MonoBehaviourPun
         GameObject[] doors = TreeDoorById();
 
 
-
-
-        for(int i = 0; i< doorsParent.transform.childCount; i++)
+        if (room.isIllustion)
         {
-            if (room.door_isOpen[i] && i == doorsParent.transform.GetChild(i).GetComponent<Door>().index)
+            for (int i = 0; i < doorsParent.transform.childCount; i++)
             {
-                doorsParent.transform.GetChild(i).Find("coulissClose").gameObject.SetActive(false);
-                doorsParent.transform.GetChild(i).transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
-                doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll = true;
-            }
-            else
-            {
-                doorsParent.transform.GetChild(i).Find("coulissClose").gameObject.SetActive(true);
-                //doorsParent.transform.GetChild(i).transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
-                doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll = false;
+                if (room.door_isOpen[i])
+                {
+                    GetDoorGoInParent(i).transform.Find("coulissClose").gameObject.SetActive(false);
+                    GetDoorGoInParent(i).transform.transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
+                    GetDoorGoInParent(i).transform.GetComponent<Door>().isOpenForAll = true;
+                }
+                else
+                {
+                    GetDoorGoInParent(i).transform.Find("coulissClose").gameObject.SetActive(true);
+                    GetDoorGoInParent(i).transform.GetComponent<Door>().isOpenForAll = false;
+                }
             }
         }
+        else
+        {
+            for (int i = 0; i < doorsParent.transform.childCount; i++)
+            {
+                if (room.door_isOpen[i] && i == doorsParent.transform.GetChild(i).GetComponent<Door>().index)
+                {
+                    doorsParent.transform.GetChild(i).Find("coulissClose").gameObject.SetActive(false);
+                    doorsParent.transform.GetChild(i).transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
+                    doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll = true;
+                }
+                else
+                {
+                    doorsParent.transform.GetChild(i).Find("coulissClose").gameObject.SetActive(true);
+                    //doorsParent.transform.GetChild(i).transform.GetChild(6).GetComponent<Animator>().SetBool("open", false);
+                    doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll = false;
+                }
+            }
 
-        if (isInExepedtion)
+
+        }
+
+            if (isInExepedtion)
         {
             foreach (GameObject door in doors)
             {
@@ -1734,6 +1766,21 @@ public class GameManager : MonoBehaviourPun
         }
         return null;
     }
+    public GameObject GetDoorGoInParent(int index)
+    {
+        //GameObject[] doors = TreeDoorById();
+        GameObject doors = GameObject.Find("Doors");
+
+        for(int i =0; i < doors.transform.childCount; i++)
+        {
+            if (doors.transform.GetChild(i).GetComponent<Door>().index == index)
+            {
+                return doors.transform.GetChild(i).gameObject;
+            }
+        }
+
+        return null;
+    }
 
     public Room GetDoorExpedition(int idPlayer)
     {
@@ -1867,15 +1914,33 @@ public class GameManager : MonoBehaviourPun
     {
         int indexDoor = door.GetComponent<Door>().index;
         ResetDoorsActive();
-        game.currentRoom = game.GetRoomByNeigbourID(indexDoor);
-        int indexNeWDoor3 = GetIndexDoorAfterCrosse(indexDoor);
-        CloseAllDoor(game.currentRoom, false);
+        ResetIndexDoor();
+        Room oldroom = game.currentRoom;  
+        
+        // SI oldroom est uen salle illision alors ouvrir la bonne porte avec le bonne index 
 
+        game.currentRoom = game.GetRoomByNeigbourID(indexDoor);
+        
+      
+
+        if (game.currentRoom.isIllustion)
+        {
+            SetDoorNoneObstacle(game.currentRoom);
+            SetDoorObstacle(game.currentRoom);
+            //GameObject.Find("Special").transform.Find("IllusionRoom").gameObject.SetActive(true);
+            ChangeDoorIndex(game.currentRoom);
+            
+        }
+        int indexNeWDoor3 = GetIndexDoorAfterCrosse(indexDoor);
+
+        
+        CloseAllDoor(game.currentRoom, false);
 
         if (!CheckDoorIsOpenByRoom(game.currentRoom.X, game.currentRoom.Y, indexNeWDoor3))
         {
             ResetVoteVD();
             GameObject newDoor = GetDoorGo(indexNeWDoor3);
+            Debug.Log("NEW DOOR " + newDoor.GetComponent<Door>().index);
             game.currentRoom.door_isOpen[newDoor.GetComponent<Door>().index] = true;
         }
 
@@ -1888,9 +1953,9 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.HideDistanceRoom();
         SetPositionPlayer(player);
         PlayerGO playerGo = player.GetComponent<PlayerGO>();
-        ChangePositionPlayerWhenTakeDoor(player, door);
+        ChangePositionPlayerWhenTakeDoor(player, indexDoor);
 
-        int indexNeWDoor2 = GetIndexDoorAfterCrosse(door.GetComponent<Door>().index);
+        int indexNeWDoor2 = GetIndexDoorAfterCrosse(indexDoor);
         GameObject newDoor2 = GetDoorGo(indexNeWDoor2);
         newDoor2.transform.GetChild(6).GetComponent<Animator>().SetBool("open", true);
         newDoor2.GetComponent<Door>().isOpenForAll = true;
@@ -1978,6 +2043,9 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplayAllDoorLightExploration(true);
 
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
+
+
+
     }
 
 
@@ -2575,6 +2643,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.ChangeColorAllPlayerSkinToFoggy(false);
         ui_Manager.DisplayLetterInSkull(false);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+       
 
         UpdateColorDoor(room);
         if (room.explorationIsUsed)
@@ -2818,6 +2887,11 @@ public class GameManager : MonoBehaviourPun
         if (room.isImpostorRoom)
         {
             ui_Manager.DisplayImpostorRoom(true);
+        }
+        if (room.isIllustion)
+        {
+            ui_Manager.DisplayIllustionRoom(true);
+           
         }
 
         if (room.IsExit || room.IsHell)
@@ -3280,6 +3354,8 @@ public class GameManager : MonoBehaviourPun
         if (!room.isSpecial)
             return;
 
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 5);
+        return;*/
         if (room.isTrial)
         {
             float randomInt = Random.Range(0, 100);
@@ -4021,4 +4097,106 @@ public class GameManager : MonoBehaviourPun
         //room.is
     }
 
+    public void ResetIndexDoor()
+    {
+        GameObject doors = GameObject.Find("Doors");
+
+        for(int i =0; i < doors.transform.childCount; i++)
+        {
+            if (doors.transform.GetChild(i).GetComponent<Door>().doorName == "A")
+                doors.transform.GetChild(i).GetComponent<Door>().index = 0;
+            if (doors.transform.GetChild(i).GetComponent<Door>().doorName == "B")
+                doors.transform.GetChild(i).GetComponent<Door>().index = 1;
+            if (doors.transform.GetChild(i).GetComponent<Door>().doorName == "C")
+                doors.transform.GetChild(i).GetComponent<Door>().index = 2;
+            if (doors.transform.GetChild(i).GetComponent<Door>().doorName == "D")
+                doors.transform.GetChild(i).GetComponent<Door>().index = 3;
+            if (doors.transform.GetChild(i).GetComponent<Door>().doorName == "E")
+                doors.transform.GetChild(i).GetComponent<Door>().index = 4;
+            if (doors.transform.GetChild(i).GetComponent<Door>().doorName == "F")
+                doors.transform.GetChild(i).GetComponent<Door>().index = 5;
+        }
+
+    }
+
+    public void GetIndexDoorIsOpenInIllusionRoom(int indexInList)
+    {
+
+    }
+
+    public void MixRoomNeigbour(Room room)
+    {
+        if (room.doorsMixed)
+            return;
+        List<int> listPivot = new List<int>
+        {
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+        };
+        List<int> doors = room.ReturnIndexDoorNeigbour();
+
+        for (int i = 0; i < doors.Count; i++)
+        {
+            int randomInt = Random.Range(0, 6);
+            if (listPivot[randomInt] != -1)
+            {
+                do
+                {
+                    randomInt = (randomInt + 1) % listPivot.Count;
+                } while (listPivot[randomInt] != -1);
+                listPivot[randomInt] = doors[i];
+            }
+            else
+                listPivot[randomInt] = doors[i];
+        }
+        for (int j = 0; j < listPivot.Count; j++)
+        {
+            //Debug.Log(j + " " + listPivot[j]);
+            if (listPivot[j] == -1)
+            {
+                listPivot.RemoveAt(j);
+                j--;
+            }
+
+        }
+        room.listIndexDoor = listPivot;
+        room.doorsMixed = true;
+    }
+
+
+    public void ChangeDoorIndex(Room room)
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        List<GameObject> doorsTree = TreeListDoor(doors);
+        Debug.Log(room.listIndexDoor.Count);
+        for (int i = 0; i < doors.Length; i++)
+        {
+            Debug.Log( i + " " + doorsTree[i].GetComponent<Door>().index + " " + room.listIndexDoor[i]);
+            doorsTree[i].GetComponent<Door>().index = room.listIndexDoor[i];
+        }
+    }
+
+    public List<GameObject> TreeListDoor(GameObject[] doors)
+    {
+        List<int> listTree = new List<int>();
+
+        for(int i =0; i < doors.Length; i++)
+        {
+            listTree.Add(doors[i].GetComponent<Door>().index); 
+        }
+        listTree.Sort();
+
+        List<GameObject> listReturnDoor = new List<GameObject>();
+
+        foreach(int indexDoor in listTree)
+        {
+            listReturnDoor.Add(GetDoorGo(indexDoor));
+        }
+        return listReturnDoor;
+
+    }
 }

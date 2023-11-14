@@ -25,6 +25,7 @@ public class Door : MonoBehaviour
     public bool IsCloseNotPermantly = false;
     public bool closeForTimerExploration = false;
     public int counterPlayerCollisionSelected = 0;
+    public int old_index = -1;
 
     // Start is called before the first frame update
     void Start()

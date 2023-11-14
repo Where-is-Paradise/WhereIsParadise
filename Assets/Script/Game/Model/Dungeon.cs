@@ -84,80 +84,42 @@ public class Dungeon : ScriptableObject
         foreach (Room room in trueListRoomDungeon)
         {
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 35)
+            if (randomIsHide <= 55) //37
             {
                 room.isHide = true;
+                //room.isIllustion = true;
                 continue;
             }
-
-/*            int randomSpeciallity = Random.Range(0, 14);
-            int randomSpeciallity2 = Random.Range(0, 2);
-
-            randomSpeciallity = 4;
-
-            if (randomSpeciallity == 0 && setting.listSpeciallyRoom[0])
-                room.chest = true;
-            if (randomSpeciallity == 1 && setting.listSpeciallyRoom[1])
-                room.isSacrifice = true;
-            if (randomSpeciallity == 2 && setting.listTrialRoom[0])
-            {
-                room.fireBall = true;
+            float randomIsTrial = Random.Range(0, 100);
+            if(randomIsTrial < 75)
                 room.isTrial = true;
-            }
-            if (randomSpeciallity == 3 && setting.listTrialRoom[3])
+            else
             {
-                room.isAx = true;
-                room.isTrial = true;
+                float randomSpeciality = Random.Range(0, 100);
+                if(randomSpeciality < 40 && setting.listSpeciallyRoom[0])
+                {
+                    room.chest = true;
+                }
+                else if(randomSpeciality < 65 && setting.listSpeciallyRoom[5])
+                {
+                    room.isPurification = true;
+                }
+                else if(randomSpeciality < 80 && setting.listSpeciallyRoom[1])
+                {
+                    room.isSacrifice = true;
+                }
+                else if(randomSpeciality < 95) {
+                    room.isNPC = true;
+                    int random = Random.Range(0, 2);
+                    if (random == 0)
+                        room.evilIsLeft = true;
+                }else
+                {
+                    if(setting.listSpeciallyRoom[4])
+                        room.isResurection = true;
+                }
             }
-            if (randomSpeciallity == 4 && setting.listTrialRoom[4])
-            {
-                room.isSword = true;
-                room.isTrial = true;
-            }
-            if (randomSpeciallity == 5 && setting.listTrialRoom[2])
-            {
-                room.isSwordDamocles = true;
-                room.isTrial = true;
-            }
-
-            if (randomSpeciallity == 6 && setting.listTrialRoom[1])
-            {
-                room.isDeathNPC = true;
-                room.isTrial = true;
-            }
-            if (randomSpeciallity == 7 && setting.listTrialRoom[6])
-            {
-                room.isLostTorch = true;
-                room.isTrial = true;
-            }
-            if (randomSpeciallity == 8 && setting.listTrialRoom[5])
-            {
-                room.isMonsters = true;
-                room.isTrial = true;
-            }
-            if (randomSpeciallity == 9 && setting.listSpeciallyRoom[5])
-                room.isPurification = true;
-            if (randomSpeciallity == 10 && setting.listSpeciallyRoom[4])
-                room.isResurection = true;
-            if (randomSpeciallity == 11 && setting.listSpeciallyRoom[6])
-                room.isPray = true;
-            if (randomSpeciallity == 12 && setting.listSpeciallyRoom[3])
-            {
-                room.isNPC = true;
-                int random = Random.Range(0, 2);
-                if (random == 0)
-                    room.evilIsLeft = true;
-            }
-            if (randomSpeciallity == 13 && setting.listTrialRoom[7])
-            {
-                room.isLabyrintheHide = true;
-                room.isTrial = true;
-            }
-            if (randomSpeciallity == 14)
-                room.IsFoggy = true;*/
-
             room.isSpecial = true;
-            room.isTrial = true;
         }
     }
 

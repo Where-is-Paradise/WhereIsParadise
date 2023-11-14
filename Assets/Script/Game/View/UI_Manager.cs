@@ -1497,6 +1497,10 @@ setting_button_echapMenu.SetActive(false);
     {
         GameObject.Find("Special").transform.Find("ImpostorRoom").gameObject.SetActive(display);
     }
+    public void DisplayIllustionRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("IllusionRoom").gameObject.SetActive(display);
+    }
 
     public void DisplayUI_Mobile_SpecialRoom(bool display)
     {

@@ -24,20 +24,20 @@ public class TrialsRoom : MonoBehaviourPun
     
     public void GetAward(int playerWinnerindex)
     {
-        int randomInt = Random.Range(0, 4);
+        float randomFloat = Random.Range(0, 100);
         Debug.Log(playerWinnerindex);
         playerwinner = gameManagerParent.GetPlayer(playerWinnerindex).GetComponent<PlayerGO>();
         int indexPlayerMine = playerwinner.GetComponent<PhotonView>().ViewID;
-        photonView.RPC("SendRandomInt", RpcTarget.All, randomInt, indexPlayerMine) ;
+        photonView.RPC("SendRandomInt", RpcTarget.All, randomFloat, indexPlayerMine) ;
     }
 
     [PunRPC]
-    public void SendRandomInt(int randomInt, int indexPlayer)
+    public void SendRandomInt(float randomFloat, int indexPlayer)
     {
-        GetRandomAward(randomInt, indexPlayer);
+        GetRandomAward(randomFloat, indexPlayer);
     }
 
-    public void GetRandomAward(int randomInt, int indexPlayer)
+    public void GetRandomAward(float randomFloat, int indexPlayer)
     {
         //randomInt = 5;
         //int randomtrwo = Random.Range(0, 2);
@@ -47,44 +47,45 @@ public class TrialsRoom : MonoBehaviourPun
                     randomInt = 3;*/
         //randomInt = 4;
 
-        Debug.Log(randomInt);
+        Debug.Log(randomFloat);
 
-        switch (randomInt)
+        if(randomFloat < 50)
         {
-            case 0:
-                // bluetorch
-                DisplayAwardObject(0);
-                indexObject = 0;
-                break;
-            case 1:
-                if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasMap)
-                {
-                    if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
-                        return;
-                    Debug.Log("Has map restart");
-                    GetAward(indexPlayer);
+            // bluetorch
+            DisplayAwardObject(0);
+            indexObject = 0; 
+        }
+        else if (randomFloat < 70)
+        {
+            if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasMap)
+            {
+                if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
                     return;
-                }
-                
-                DisplayAwardObject(1);
-                indexObject = 1;
-                break;
-            case 2:
-                if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasProtection)
-                {
-                    if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
-                        return;
-                    Debug.Log("Has protection restart");
-                    GetAward(indexPlayer);
+                Debug.Log("Has map restart");
+                GetAward(indexPlayer);
+                return;
+            }
+
+            DisplayAwardObject(1);
+            indexObject = 1;
+        }
+        else if(randomFloat < 90)
+        {
+            if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasProtection)
+            {
+                if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
                     return;
-                }
-                DisplayAwardObject(2);
-                indexObject = 2;
-                break;
-            case 3:
-                DisplayAwardObject(5);
-                indexObject = 3;
-                break;
+                Debug.Log("Has protection restart");
+                GetAward(indexPlayer);
+                return;
+            }
+            DisplayAwardObject(2);
+            indexObject = 2;
+        }
+        else
+        {
+            DisplayAwardObject(5);
+            indexObject = 3;
         }
         gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasWinFireBallRoom = true;
         playerwinner = gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>();

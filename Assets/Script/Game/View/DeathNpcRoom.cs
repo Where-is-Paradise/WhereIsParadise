@@ -66,7 +66,7 @@ public class DeathNpcRoom : TrialsRoom
         gameManager.speciallyIsLaunch = true;
         gameManager.deathNPCIsLaunch = true;
         gameManager.ActivateCollisionTPOfAllDoor(false);
-        StartCoroutine(CouroutineEndGame(randomTimer));
+        StartCoroutine(CouroutineEndGame(10));
         DisplayTimer(randomTimer);
     }
     public void DisplayTimer(float randomTimer)
@@ -111,9 +111,10 @@ public class DeathNpcRoom : TrialsRoom
         yield return new WaitForSeconds(secondes);
         if (!loose && gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            SendDesactivateNPC();
+           
             photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, true);
             photonView.RPC("SendVictoryTeam", RpcTarget.All, Random.Range(0, 2));
+            SendDesactivateNPC();
             gameManager.deathNPCIsLaunch = false;
         }
       
@@ -121,6 +122,11 @@ public class DeathNpcRoom : TrialsRoom
     [PunRPC]
     public void SendVictoryTeam(int randomInt)
     {
+        if (death_NPC && death_NPC_2)
+        {
+            death_NPC.DisplayTargetImg(false);
+            death_NPC_2.DisplayTargetImg(false);
+        }
         GiveAward(randomInt);
         HideTimer();
     }

@@ -16,30 +16,27 @@ public class Death_NPC : MonoBehaviourPun
     private float oldHorizontal;
     private float oldVertical;
     public int index;
-   
+    public PlayerGO target;
+
 
     private Vector2 direction = new Vector2(0, 0);
     private bool canDash = false;
     private bool canDashTarget = false;
     private bool canCircleDash = false;
     private bool canTransition = false;
+    public bool invisibilityScenario = false;
+    public bool moveToTarget = false;
 
-    private Vector3 target = new Vector3(0,0,0);
+    private Vector3 target2 = new Vector3(0,0,0);
 
     private float old_x = 0;
     private float old_y = 0;
-
+   
     // Start is called before the first frame update
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         deathNPC_Room = GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>();
-        
-/*        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-        {
-            gameManager.TeleportAllPlayerInRoomOfBoss();
-            StartCoroutine(StartDeathNPCRoomAfterTeleportation());
-        }*/
     }
 
     // Update is called once per frame
@@ -64,8 +61,15 @@ public class Death_NPC : MonoBehaviourPun
             DashCircle();
         }
         if (canDashTarget)
-            DashDirectionTarget(target);
-        CalculVelocity();
+            DashDirectionTarget(target2);
+        if (invisibilityScenario)
+            ChangeTransparencyToInvisibilty();
+        if (moveToTarget)
+            MoveOnTarget();
+
+        if(!moveToTarget)
+            CalculVelocity();
+      
     }
 
     public void ChangeTransparencyToInvisibilty()
@@ -99,39 +103,6 @@ public class Death_NPC : MonoBehaviourPun
 
 
 
-
-    public IEnumerator SetIsInvisibleCoroutine()
-    {
-        if (this.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-        {
-            photonView.RPC("SendIsInvisible", RpcTarget.All, true);
-            int randomInt = Random.Range(2, 7);
-            yield return new WaitForSeconds(randomInt);
-            StartCoroutine(SetNotInvisibleCoroutine());
-        }     
-    }
-    public IEnumerator SetNotInvisibleCoroutine()
-    {
-        if (this.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-        {
-            photonView.RPC("SendIsInvisible", RpcTarget.All, false);
-            yield return new WaitForSeconds(1.2f);
-            StartCoroutine(SetIsInvisibleCoroutine());
-        }
-    }
-
-    [PunRPC]
-    public void SendIsInvisible(bool isInvisible)
-    {
-        this.isInvisible = isInvisible;
-    }
-
-    public IEnumerator CanHideDeathGodCoroutine()
-    {
-        yield return new WaitForSeconds(0.2f);
-        CanHideDeathGod = true;  
-    }
-
     public void ChangeScaleForSituation()
     {
         
@@ -145,61 +116,7 @@ public class Death_NPC : MonoBehaviourPun
         }
     }
 
-    public GameObject GetPlayerWithMinDistance()
-    {
-        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
-        GameObject playerWithMinDistance = listPlayer[0];
-        float minDistance = 1000;
-        foreach(GameObject player in listPlayer)
-        {
-            if (player.GetComponent<PlayerGO>().isTouchInTrial || player.GetComponent<PlayerGO>().isSacrifice 
-                || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) || player.GetComponent<PlayerGO>().isInJail)
-            {
-                Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), true);
-                continue;
-            }
-            float subX = Mathf.Abs(player.transform.position.x - this.transform.position.x);
-            float subY = Mathf.Abs(player.transform.position.y - this.transform.position.y);
-            float distance = (subX + subY) / 2;
-            if(distance < minDistance)
-            {
-                minDistance = distance;
-                playerWithMinDistance = player;
-            }
-        }
 
-        return playerWithMinDistance;
-    }
-
-    public void SetTargetOfPathFinding()
-    {
-        GameObject playerTarget = GetPlayerWithMinDistance();
-        SetIndexTarget(playerTarget.GetComponent<PhotonView>().ViewID);
-        //SetMaxSpeed(4f);
-    }
-
-    public IEnumerator ChangerSpeedCoroutine()
-    {
-        yield return new WaitForSeconds(1);
-        if (gameManager.deathNPCIsLaunch)
-        {
-            float newSpeed = this.GetComponent<AIPath>().maxSpeed + 0.1f;
-            SetMaxSpeed(newSpeed);
-            StartCoroutine(ChangerSpeedCoroutine());
-        }
-        else
-        {
-            this.GetComponent<AIPath>().maxSpeed = 0;
-        }
-       
-    }
-
-/*    public IEnumerator UpdatePositionCoroutine()
-    {
-        yield return new WaitForSeconds(0.3f);
-        SendUpdatePosition(this.transform.position.x, this.transform.position.y);
-        StartCoroutine(UpdatePositionCoroutine());
-    }*/
 
     public void SendUpdatePosition(float x, float y)
     {
@@ -266,10 +183,14 @@ public class Death_NPC : MonoBehaviourPun
             return;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial = true;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
-
-        if (TestLastPlayer())
+        if (target)
         {
-           
+            if (target.GetComponent<PhotonView>().ViewID == indexPlayer)
+                DisplayTargetImg(false);
+        }
+      
+        if (TestLastPlayer())
+        {        
             photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, true);
             photonView.RPC("SendLooseGame", RpcTarget.All);
             //StartCoroutine(CouroutineDesactivateAll());
@@ -288,6 +209,7 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void SendLooseGame()
     {
+        DisplayTargetImg(false);
         deathNPC_Room.DesactivateRoom();
         deathNPC_Room.loose = true;
         deathNPC_Room.ReactivateCurrentRoom();
@@ -461,17 +383,6 @@ public class Death_NPC : MonoBehaviourPun
         photonView.RPC("DesactivateNPC", RpcTarget.All);
     }
 
-    public void ChangeSizeCollision()
-    {
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-        {
-            GetComponent<CapsuleCollider2D>().size = new Vector2(1.57f, 1.7f);
-        }
-        else
-        {
-            GetComponent<CapsuleCollider2D>().size = new Vector2(2.7f, 1.7f);
-        }
-    }
 
     public IEnumerator SendPostionCouroutine()
     {
@@ -491,21 +402,6 @@ public class Death_NPC : MonoBehaviourPun
 
     }
 
-
-    public void ChangeDirectionBrutally()
-    {
-        float horizontal = GetComponent<Rigidbody2D>().velocity.y;
-        float vertical = GetComponent<Rigidbody2D>().velocity.x;
-
-        if (((oldHorizontal == 0 && Mathf.Abs(horizontal) > 0) || (oldHorizontal > 0 && horizontal < 0) || (oldHorizontal < 0 && horizontal > 0))
-            || (oldVertical == 0 && Mathf.Abs(vertical) > 0 || (oldVertical > 0 && vertical < 0) || (oldVertical < 0 && vertical > 0)))
-        {
-            SendPosition(this.transform.position.x, this.transform.position.y);
-        }
-        oldHorizontal = horizontal;
-        oldVertical = vertical;
-    }
-
     public IEnumerator RandomScenario()
     {
         // 0 dash
@@ -514,6 +410,15 @@ public class Death_NPC : MonoBehaviourPun
         // invisibilité
 
         int indexScenario = Random.Range(0, 3);
+        float randomSeconde = Random.Range(3, 8);
+        int randomInvisbility = Random.Range(0,4);
+        if(randomInvisbility == 0)
+        {
+            invisibilityScenario = true;
+            Invisibility();
+        }
+
+
         //Debug.Log(indexScenario);
         //indexScenario = 1;
         Debug.Log("SCENARIO :  " + (indexScenario+1));
@@ -521,7 +426,7 @@ public class Death_NPC : MonoBehaviourPun
         {
             DashStraight();
             canDash = true;
-            yield return new WaitForSeconds(6);
+            yield return new WaitForSeconds(randomSeconde);
             canDash = false;
         }
         if (indexScenario == 1)
@@ -532,17 +437,23 @@ public class Death_NPC : MonoBehaviourPun
             initialTimeCounter = Random.Range(0f, 10f);
             width = Random.Range(1f, 5.5f);
             height = Random.Range(0.5f, 3.75f);
-            target = GetFuturePositionOfDashCircle();
+            target2 = GetFuturePositionOfDashCircle();
             canDashTarget = true;
-            yield return new WaitForSeconds(6);
+            yield return new WaitForSeconds(randomSeconde);
             canCircleDash = false;
 
         }
         if(indexScenario == 2)
         {
-            StartCoroutine(Teleportation());
-            yield return new WaitForSeconds(8);
+            moveToTarget = true;
+            ChangeRandomTarget();
+            DisplayTargetImg(true);
+            yield return new WaitForSeconds(randomSeconde);
+            moveToTarget = false;
+            this.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+            DisplayTargetImg(false);
         }
+        invisibilityScenario = false;
         StartCoroutine(RandomScenario());
 
     }
@@ -634,7 +545,7 @@ public class Death_NPC : MonoBehaviourPun
     }
 
     float timeCounter = 0;
-    float speed = 2.5f;
+    float speed = 1.5f;
     float width = 1;
     float height = 1;
     float initialTimeCounter = 0;
@@ -704,8 +615,66 @@ public class Death_NPC : MonoBehaviourPun
 
     public void Invisibility()
     {
-
+        StartCoroutine(SetIsInvisibleCoroutine());
     }
+
+    public IEnumerator SetIsInvisibleCoroutine()
+    {
+        if (this.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            photonView.RPC("SendIsInvisible", RpcTarget.All, true);
+            float randomInt = Random.Range(0.5f, 2);
+            yield return new WaitForSeconds(randomInt);
+            if (invisibilityScenario)
+                StartCoroutine(SetNotInvisibleCoroutine());
+        }
+    }
+    public IEnumerator SetNotInvisibleCoroutine()
+    {
+        if (this.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            photonView.RPC("SendIsInvisible", RpcTarget.All, false);
+            float randomInt = Random.Range(2, 7);
+            yield return new WaitForSeconds(randomInt);
+            if(invisibilityScenario)
+                StartCoroutine(SetIsInvisibleCoroutine());
+        }
+    }
+
+/*    public IEnumerator CoroutineEndInvisibility()
+    {
+        yield return new WaitForSeconds(7);
+        invisibilityScenario = false;
+    }*/
+
+    [PunRPC]
+    public void SendIsInvisible(bool isInvisible)
+    {
+        this.isInvisible = isInvisible;
+    }
+    public void MoveOnTarget()
+    {
+        if (!target)
+        {
+            return;
+        }
+
+        float vectorX = target.transform.position.x - this.transform.position.x;
+        float vectorY = target.transform.position.y - this.transform.position.y;
+
+        
+        this.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(new Vector3(vectorX, vectorY)) * speed * 1.75f;
+
+        if(this.GetComponent<Rigidbody2D>().velocity.x > 0)
+        {
+            this.transform.localScale = new Vector2(Mathf.Abs(this.transform.localScale.x), this.transform.localScale.y);
+        }
+        else
+        {
+            this.transform.localScale = new Vector2(-Mathf.Abs(this.transform.localScale.x), this.transform.localScale.y);
+        }
+    }
+
     public void CalculVelocity()
     {
         if( old_x < this.transform.position.x)
@@ -716,6 +685,40 @@ public class Death_NPC : MonoBehaviourPun
         {
             this.transform.localScale = new Vector2(-Mathf.Abs(this.transform.localScale.x), this.transform.localScale.y);
         }
+    }
+
+
+    public void ChangeRandomTarget()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        List<GameObject> listPotentialPlayer = new List<GameObject>();
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchInTrial)
+                continue;
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            if (player.GetComponent<PlayerGO>().isInJail)
+                continue;
+            listPotentialPlayer.Add(player);
+        }
+        if (listPotentialPlayer.Count == 0)
+            return;
+        int randomIndexPlayer = Random.Range(0, listPotentialPlayer.Count);
+        target = listPotentialPlayer[randomIndexPlayer].GetComponent<PlayerGO>();
+    }
+
+    public void DisplayTargetImg(bool display)
+    {
+        if(target)
+            photonView.RPC("SendDisplayTarget",RpcTarget.All, target.GetComponent<PhotonView>().ViewID, display);
+    }
+
+    [PunRPC]
+    public void SendDisplayTarget(int indexPlayer, bool display)
+    {
+        gameManager.GetPlayer(indexPlayer).transform.Find("TargetImgInDeathRoom").gameObject.SetActive(display);
+        this.transform.Find("targetIMG").gameObject.SetActive(display);
     }
 
     public void SendIndex(int index)

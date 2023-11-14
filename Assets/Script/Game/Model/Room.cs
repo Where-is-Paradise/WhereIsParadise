@@ -84,6 +84,7 @@ public class Room : ScriptableObject
     public bool isResurection = false;
     public bool isPray = false;
     public bool isLabyrintheHide = false;
+    public bool isIllustion = false;
 
     public bool isHide = false;
     public bool isTrial = false;
@@ -106,6 +107,9 @@ public class Room : ScriptableObject
     public string doorNameLongerNPC = "Z";
     public string doorNameShorterNPC = "Z";
 
+    public bool doorsMixed = false;
+    public List<int> listIndexDoor = new List<int>();
+
     public void Init(int pos_X, int pos_Y)
     {
         this.x = pos_X;
@@ -123,8 +127,11 @@ public class Room : ScriptableObject
         for (int i = 0; i < 6; i++)
         {
             door_isOpen.Add(false);
+            listIndexDoor.Add(i);
         }
         chestList = new List<Chest>();
+
+
     }
 
     public static Room CreateInstance(int pos_X, int pos_Y)
@@ -317,6 +324,41 @@ public class Room : ScriptableObject
 
         }
         return false;
+
+    }
+
+    public int GetNbDoor()
+    {
+        int counter = 0;
+        foreach (Room room in listNeighbour)
+        {
+
+            if (!room.isObstacle)
+            {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    public List<int> ReturnIndexDoorNeigbour()
+    {
+        List<int> tabReturn = new List<int>();
+
+        if (!left_neighbour.IsObstacle)
+            tabReturn.Add(0);
+        if (!up_Left_neighbour.IsObstacle)
+            tabReturn.Add(1);
+        if (!up_Right_neighbour.IsObstacle)
+            tabReturn.Add(2);
+        if (!right_neighbour.IsObstacle)
+            tabReturn.Add(3);
+        if (!down_Right_neighbour.IsObstacle)
+            tabReturn.Add(4);
+        if (!down_Left_neighbour.IsObstacle)
+            tabReturn.Add(5);
+
+        return tabReturn;
 
     }
 

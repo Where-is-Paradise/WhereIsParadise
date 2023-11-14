@@ -238,8 +238,11 @@ public class Game : ScriptableObject
     public Room GetRoomByNeigbourID(int roomID)
     {
         Room room = null;
- /*       if (currentRoom == null)
-            return;*/
+        /*       if (currentRoom == null)
+                   return;*/
+/*        if (currentRoom.isIllustion)
+            roomID = MixNumberIllusion(roomID);*/
+
         switch (roomID)
         {
             case 0 :
@@ -264,6 +267,10 @@ public class Game : ScriptableObject
         return room;
     }
 
+    public int MixNumberIllusion(int index)
+    {
+        return currentRoom.listIndexDoor[index];
+    }
 
     public PlayerDun GetBoss()
     {
