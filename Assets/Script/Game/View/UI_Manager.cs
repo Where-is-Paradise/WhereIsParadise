@@ -99,6 +99,7 @@ public class UI_Manager : MonoBehaviour
     public GameObject ReconnexionPanel;
 
     public GameObject panelChooseRoom;
+    public GameObject panelChooseRoomTrap;
 
     public GameObject panelInformationObjectWon;
 
@@ -2125,6 +2126,17 @@ setting_button_echapMenu.SetActive(false);
         gameManager.gameManagerNetwork.SendDisplayDoorLever(true);
     }
 
+    public void OnClickButtonKeyTraped()
+    {
+        panelChooseRoomTrap.SetActive(true);
+/*        canvasInGame.transform.Find("Exploration").Find("MagicalKeyTrap").Find("Bigger").gameObject.SetActive(false);
+        canvasInGame.transform.Find("Exploration").Find("MagicalKey").gameObject.SetActive(false);
+        */
+        
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayMagicalKey(false);
+        DisplayAllDoorLightExploration(false);
+    }
+
     public void UpdateRoomWithMagicalkey(int indexChoice)
     {
         int indexDoor = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collsionDoorIndexForExploration;
@@ -2135,6 +2147,16 @@ setting_button_echapMenu.SetActive(false);
         gameManager.gameManagerNetwork.SendNewSpeciallyRoom(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().GetRoomBehind().Index, indexChoice);
         gameManager.gameManagerNetwork.SendOrangeDoor(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().index);
     }
+    public void UpdateRoomWithTrapedkey(int indexChoice)
+    {
+        int indexDoor = gameManager.GetPlayerMineGO().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().collision.GetComponent<Door>().index;
+        if (!gameManager.GetDoorGo(indexDoor))
+            return;
+
+        gameManager.gameManagerNetwork.SendNewTrapedRoom(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().GetRoomBehind().Index, indexChoice);
+        gameManager.gameManagerNetwork.SendOrangeDoor(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().index);
+    }
+
     public void DisplayButtonBlackTorch(bool display)
     {
         canvasInGame.transform.Find("Exploration").Find("BlackTorch").gameObject.SetActive(display);

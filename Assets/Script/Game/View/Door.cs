@@ -246,6 +246,25 @@ public class Door : MonoBehaviour
 
     public Room GetRoomBehind()
     {
+        if (gameManager.game.currentRoom.isIllustion)
+        {
+            switch (this.doorName)
+            {
+                case "A":
+                    return gameManager.game.currentRoom.left_neighbour;
+                case "B":
+                    return gameManager.game.currentRoom.up_Left_neighbour;
+                case "C":
+                    return gameManager.game.currentRoom.up_Right_neighbour;
+                case "D":
+                    return gameManager.game.currentRoom.right_neighbour;
+                case "E":
+                    return gameManager.game.currentRoom.down_Right_neighbour;
+                case "F":
+                    return gameManager.game.currentRoom.down_Left_neighbour;
+            }
+            return null;
+        }
         switch (this.index)
         {
             case 0:

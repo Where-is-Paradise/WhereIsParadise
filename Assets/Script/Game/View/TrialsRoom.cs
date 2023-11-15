@@ -52,7 +52,7 @@ public class TrialsRoom : MonoBehaviourPun
         if(randomFloat < 50)
         {
             // bluetorch
-            DisplayAwardObject(0);
+            DisplayAwardObject(6);
             indexObject = 0; 
         }
         else if (randomFloat < 70)
@@ -194,15 +194,21 @@ public class TrialsRoom : MonoBehaviourPun
 
         float randomfloat = Random.Range(0, 100);
 
-        if(randomfloat < 40)
+        if(randomfloat < 30)
         {
             gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManagerParent.listIndexImpostorObject[0]);
             gameManagerParent.ui_Manager.DisplayInformationObjectWon(5);
         }
-        else if ( randomfloat < 80)
+        else if ( randomfloat < 60)
         {
             gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManagerParent.listIndexImpostorObject[2]);
             gameManagerParent.ui_Manager.DisplayInformationObjectWon(6);
+        }
+        else if (randomfloat < 90)
+        {
+            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManagerParent.listIndexImpostorObject[3]);
+            gameManagerParent.ui_Manager.DisplayInformationObjectWon(8);
+
         }
         else
         {

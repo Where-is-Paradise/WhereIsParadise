@@ -907,6 +907,13 @@ public class PlayerNetwork : MonoBehaviourPun
                 room.isPray = true;
                 room.isTraped = true;
                 break;
+            case 4:
+                room.isIllustion = true;
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    player.gameManager.MixRoomNeigbour(room);
+                }
+                break;
         }
         room.isTraped = true;
 

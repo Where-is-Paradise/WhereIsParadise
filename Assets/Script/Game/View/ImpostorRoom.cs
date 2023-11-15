@@ -29,17 +29,20 @@ public class ImpostorRoom : TrialsRoom
             return;
         
         float randomfloat = Random.Range(0, 100);
-        if (randomfloat < 40)
+        if (randomfloat < 30)
         {
             this.transform.Find("potion").gameObject.SetActive(true);
         }
-        else if (randomfloat < 80)
+        else if (randomfloat < 60)
         {
             this.transform.Find("book").gameObject.SetActive(true);
         }
+        else if (randomfloat < 90)
+        {
+            this.transform.Find("key").gameObject.SetActive(true);
+        }
         else
         {
-            
             this.transform.Find("knife").gameObject.SetActive(true);
         }
     }
@@ -63,6 +66,11 @@ public class ImpostorRoom : TrialsRoom
                 gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManager.listIndexImpostorObject[1]);
                 gameManager.ui_Manager.DisplayInformationObjectWon(7);
                 this.transform.Find("knife").gameObject.SetActive(false);
+                break;
+            case "key":
+                gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManager.listIndexImpostorObject[3]);
+                gameManager.ui_Manager.DisplayInformationObjectWon(8);
+                this.transform.Find("key").gameObject.SetActive(false);
                 break;
 
         }

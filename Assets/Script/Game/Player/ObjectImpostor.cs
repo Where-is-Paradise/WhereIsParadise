@@ -47,6 +47,7 @@ public class ObjectImpostor : MonoBehaviour
             
         GetAllSituationToCanUsed();
         ChangeScaleByPlayer();
+        
         if (isNearOfPlayer)
             DisplayButtonCanUsed(true);
         else
@@ -64,18 +65,13 @@ public class ObjectImpostor : MonoBehaviour
             return;
         if (powerIsUsed)
             return;
-        if (indexPower != 0)
-            return;
         if (cantTemporyUsed)
             return;
         if (colliderIsImpostor && !isOtherToInvisible) 
         {
             return;
         }
-        if(isOtherToInvisible)
-            LaunchPowerByindex(4);
-        else
-            LaunchPowerByindex(indexPower);
+        LaunchPowerByindex(indexPower);
     }
 
     public void OnTriggerStay2D(Collider2D collision)
@@ -86,20 +82,24 @@ public class ObjectImpostor : MonoBehaviour
             return;
         if (!player.GetComponent<PhotonView>().IsMine)
             return;
-        if (collision.tag != "CollisionTrigerPlayer")
+        if (collision.tag != "CollisionTrigerPlayer" && indexPower != 3)
+            return;
+        if (indexPower == 3 && collision.tag != "Door")
             return;
         colliderIsImpostor = false;
-        if (!gameManager.SamePositionAtMine(collision.transform.parent.GetComponent<PhotonView>().ViewID))
+        if (indexPower != 3 && !gameManager.SamePositionAtMine(collision.transform.parent.GetComponent<PhotonView>().ViewID))
             return;
         isNearOfPlayer = true;
-        if (collision.transform.parent.GetComponent<PlayerGO>().isImpostor)
-            colliderIsImpostor = true;
-        else
-            colliderIsImpostor = false;
-
+        if(indexPower != 3)
+        {
+            if (collision.transform.parent.GetComponent<PlayerGO>().isImpostor)
+                colliderIsImpostor = true;
+            else
+                colliderIsImpostor = false;
+        }
         if (isClickedInButtonPower)
         {               
-            if (collision.transform.parent.GetComponent<PlayerGO>().isImpostor)
+            if (indexPower != 3  && collision.transform.parent.GetComponent<PlayerGO>().isImpostor)
                 return;
             this.collision = collision;
             LaunchPowerByindex(indexPower);
@@ -108,21 +108,33 @@ public class ObjectImpostor : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag != "CollisionTrigerPlayer")
+        if (collision.tag != "CollisionTrigerPlayer" && indexPower != 3)
             return;
-        if (!gameManager || !gameManager.SamePositionAtMine(collision.transform.parent.GetComponent<PhotonView>().ViewID))
+        if (indexPower == 3 && collision.tag != "Door")
             return;
+        if(indexPower != 3)
+        {
+            if (!gameManager || !gameManager.SamePositionAtMine(collision.transform.parent.GetComponent<PhotonView>().ViewID))
+                return;
+        }
         isNearOfPlayer = true;
-        DisplayPrevisualisationLightRed(true, collision.transform.parent.GetComponent<PhotonView>().ViewID);
+        if(indexPower != 3)
+            DisplayPrevisualisationLightRed(true, collision.transform.parent.GetComponent<PhotonView>().ViewID);
     }
 
     public void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.tag == "CollisionTrigerPlayer")
+        if (collision.tag == "CollisionTrigerPlayer" && indexPower != 3)
         {
             isNearOfPlayer = false;
             colliderIsImpostor = false;
             DisplayPrevisualisationLightRed(false, collision.transform.parent.GetComponent<PhotonView>().ViewID);
+        }
+        if(collision.tag == "Door" && indexPower == 3)
+        {
+            isNearOfPlayer = false;
+            colliderIsImpostor = false;
+            // previsu
         }
         
     }
@@ -149,13 +161,13 @@ public class ObjectImpostor : MonoBehaviour
         switch (index)
         {
             case 0:
-                timerToUsing = 10;
+                timerToUsing = 0;
                 break;
             case 1:
-                timerToUsing = 10;
+                timerToUsing = 0;
                 break;
             case 2:
-                timerToUsing = 10;
+                timerToUsing = 0;
                 break;
         }
         timerToUsing += initalTimerPlus;
@@ -180,6 +192,11 @@ public class ObjectImpostor : MonoBehaviour
                 break;
             case 2:
                 CursedPower();
+                powerIsUsed = true;
+                gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
+                break;
+            case 3:
+                KeyTrapPower();
                 powerIsUsed = true;
                 gameManager.ui_Manager.DesactivateObjectPowerImpostor(false);
                 break;
@@ -217,12 +234,16 @@ public class ObjectImpostor : MonoBehaviour
         collision.transform.parent.GetComponent<PlayerNetwork>().SendIsCursed(true);
         gameManager.ui_Manager.DisplayImgInHexagoneUseWhenCursedPlayer();
     }
-
     public void BlindPower()
     {
         collision.transform.parent.GetComponent<PlayerNetwork>().SendIsBlind(true);
     }
 
+    public void KeyTrapPower()
+    {
+        // display 
+        gameManager.ui_Manager.OnClickButtonKeyTraped();
+    }
 
     public void GetAllSituationToResetInvisiblity()
     {

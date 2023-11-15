@@ -2220,6 +2220,52 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
     }
 
+    public void SendNewTrapedRoom(int indexRoom, int indexSpeciallity)
+    {
+        photonView.RPC("SetNewTrapedRoom", RpcTarget.All, indexRoom, indexSpeciallity);
+    }
+
+
+    [PunRPC]
+    public void SetNewTrapedRoom(int indexRoom, int indexSpeciallity)
+    {
+        gameManager.ResetSpeciallyRoomState(gameManager.game.dungeon.GetRoomByIndex(indexRoom));
+
+        switch (indexSpeciallity)
+        {
+            case 0:
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).IsFoggy = true;
+                break;
+            case 1:
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).IsVirus = true;
+                break;
+            case 2:
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).isPray = true;
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).isTraped = true;
+                break;
+            case 3:
+                Room room = gameManager.game.dungeon.GetRoomByIndex(indexRoom);
+                room.chest = true;
+                room.isTraped = true;
+                if (!PhotonNetwork.IsMasterClient)
+                    return;
+                gameManager.game.dungeon.InsertChestRoom(indexRoom);
+                for (int i = 0; i < 2; i++)
+                {
+                    gameManager.gameManagerNetwork.SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                }
+                break;
+            case 4:
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).isIllustion = true;
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    gameManager.MixRoomNeigbour(gameManager.game.dungeon.GetRoomByIndex(indexRoom));
+                }
+                break;
+        }
+    }
+
+
 
     public void SendOrangeDoor(int indexDoor)
     {
@@ -2287,5 +2333,34 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).speciallyPowerIsUsed = isUsed;
     }
 
+    public void SendListIndexDoor(int indexRoom, int value, int i)
+    {
+        photonView.RPC("SetListIndexDoor", RpcTarget.Others, indexRoom, value, i);
+    }
+
+    [PunRPC]
+    public void SetListIndexDoor(int indexRoom, int value, int i)
+    {
+        Room room = gameManager.game.dungeon.GetRoomByIndex(indexRoom);
+        room.listIndexDoor[i] = value;
+    }
+
+    public void SendResetNoneValueInListIndexDoor(int indexRoom)
+    {
+        photonView.RPC("SetResetNoneValueInListIndexDoor", RpcTarget.Others, indexRoom);
+    }
+    [PunRPC]
+    public void SetResetNoneValueInListIndexDoor(int indexRoom)
+    {
+        Room room = gameManager.game.dungeon.GetRoomByIndex(indexRoom);
+        for (int j = 0; j < room.listIndexDoor.Count; j++)
+        {
+            if (room.listIndexDoor[j] == -1)
+            {
+                room.listIndexDoor.RemoveAt(j);
+                j--;
+            }
+        }
+    }
 
 }
