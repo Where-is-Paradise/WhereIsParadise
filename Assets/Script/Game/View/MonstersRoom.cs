@@ -68,6 +68,10 @@ public class MonstersRoom : TrialsRoom
 
     public IEnumerator LaunchMonsterRoom()
     {
+        gameManager.CloseDoorWhenVote(true);
+        gameManager.ActivateCollisionTPOfAllDoor(false);
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         yield return new WaitForSeconds(2);
         isLoose = false;
         roomIsLaunch = true;
@@ -76,9 +80,9 @@ public class MonstersRoom : TrialsRoom
         gameManager.speciallyIsLaunch = true;
         canSpawn = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
-        gameManager.CloseDoorWhenVote(true);
+       
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
-        gameManager.ActivateCollisionTPOfAllDoor(false);
+        
         float randomTimer = Random.Range(25, 80);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             photonView.RPC("SendTimer", RpcTarget.All, randomTimer);

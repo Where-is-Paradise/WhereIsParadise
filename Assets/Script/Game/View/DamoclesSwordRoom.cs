@@ -30,11 +30,14 @@ public class DamoclesSwordRoom : TrialsRoom
     }
     public IEnumerator LaunchDamoclesRoomAfterTeleportation()
     {
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
+        gameManager.ActivateCollisionTPOfAllDoor(false);
+        gameManager.CloseDoorWhenVote(true);
         yield return new WaitForSeconds(2);
         gameManager.damoclesIsLaunch = true;
-        gameManager.CloseDoorWhenVote(true);
         gameManager.speciallyIsLaunch = true;
-        gameManager.ActivateCollisionTPOfAllDoor(false);
+        
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         speciallyLaunched = true;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)

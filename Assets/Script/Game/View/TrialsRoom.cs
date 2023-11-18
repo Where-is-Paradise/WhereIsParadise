@@ -133,6 +133,8 @@ public class TrialsRoom : MonoBehaviourPun
         {
             gameManagerParent.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(true);
         }
+        gameManagerParent.ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
+        gameManagerParent.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);
     }
 
     public void ActivateObjectPower(int indexPlayer)

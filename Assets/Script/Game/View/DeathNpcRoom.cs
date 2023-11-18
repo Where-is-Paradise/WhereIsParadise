@@ -29,8 +29,12 @@ public class DeathNpcRoom : TrialsRoom
     }
     public IEnumerator StartDeathNPCRoomAfterTeleportation()
     {
+        gameManager.ActivateCollisionTPOfAllDoor(false);
+        gameManager.CloseDoorWhenVote(true);
         gameManager.InstantiateDeathNPC(1);
         gameManager.InstantiateDeathNPC(2);
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         yield return new WaitForSeconds(2);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.deathNPCIsLaunch = true;

@@ -51,7 +51,7 @@ public class Death_NPC : MonoBehaviourPun
         {
             return;
         }
-        gameManager.CloseDoorWhenVote(true);
+        
         if (canDash)
         {
             DashDirection();

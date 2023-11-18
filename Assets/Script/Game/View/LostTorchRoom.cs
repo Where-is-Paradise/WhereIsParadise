@@ -30,12 +30,16 @@ public class LostTorchRoom : TrialsRoom
 
     public IEnumerator LaunchLostTorchRoomAfterTeleportation()
     {
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
+        gameManager.ActivateCollisionTPOfAllDoor(false);
+        gameManager.CloseDoorWhenVote(true);
         yield return new WaitForSeconds(2);
         SpawnLostTorch();
         gameManager.speciallyIsLaunch = true;
-        gameManager.ActivateCollisionTPOfAllDoor(false);
+      
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
-        gameManager.CloseDoorWhenVote(true);
+       
 
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             SendObstalceGroup();

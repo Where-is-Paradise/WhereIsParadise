@@ -130,7 +130,6 @@ public class Dungeon : ScriptableObject
         int randomIndex = Random.Range(0, listroomInDistance.Count);
         listroomInDistance[randomIndex].isImpostorRoom = true;
         listroomInDistance[randomIndex].isHide = false;
-        Debug.Log(listroomInDistance[randomIndex].Index);
         ResetSpeciallyRoom(listroomInDistance[randomIndex]);
     }
 

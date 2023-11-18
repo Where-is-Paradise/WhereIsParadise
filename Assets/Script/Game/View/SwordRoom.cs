@@ -27,15 +27,18 @@ public class SwordRoom : TrialsRoom
         StartCoroutine(LaunchSwordRoomAfterTeleporation());
     }
     public IEnumerator LaunchSwordRoomAfterTeleporation() {
+
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
+        gameManager.ActivateCollisionTPOfAllDoor(false);
+        gameManager.CloseDoorWhenVote(true);
         yield return new WaitForSeconds(2);
         DisplaySwordAllPlayer(true);
         DisplayHeartsFoAllPlayer(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         roomIsLaunched = true;
         gameManager.speciallyIsLaunch = true;
-        gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
-        gameManager.CloseDoorWhenVote(true);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             SendObstalceGroup();

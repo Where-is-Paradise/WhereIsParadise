@@ -262,6 +262,8 @@ public class GameManager : MonoBehaviourPun
 
     public IEnumerator LauchVoteDoorCoroutine()
     {
+        ui_Manager.DisplayTrapPowerButtonDesactivate(true);
+        ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         yield return new WaitForSeconds(5.3f);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         //StartCoroutine(ui_Manager.DesactivateLightAroundPlayers());
@@ -312,6 +314,11 @@ public class GameManager : MonoBehaviourPun
         }
         CloseDoorWhenVote(false);
         ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = 0;
+        ui_Manager.DisplayTrapPowerButtonDesactivate(false);
+        ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
+
+        ui_Manager.DisplayObjectPowerButtonDesactivate(false);
+        ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);
     }
 /*    public void voteDoorCouroutineLittleBefore()
     {
@@ -412,12 +419,12 @@ public class GameManager : MonoBehaviourPun
     }
     public void AssignObjectPowerOfImposter()
     {
-/*        if (setting.listObjectImpostor[0])
+        if (setting.listObjectImpostor[0])
             listIndexImpostorObject.Add(0);
         if (setting.listObjectImpostor[1])
             listIndexImpostorObject.Add(1);
         if (setting.listObjectImpostor[2])
-            listIndexImpostorObject.Add(2);*/
+            listIndexImpostorObject.Add(2);
         listIndexImpostorObject.Add(3);
 
         if (listIndexImpostorObject.Count == 1)
@@ -1502,7 +1509,6 @@ public class GameManager : MonoBehaviourPun
         GameObject[] doors = TreeDoorById();
         for (int i = 0; i < doorsParent.transform.childCount; i++)
         {
-            Debug.Log("i " + i + " " + room.door_isOpen[i] + " " + GetDoorGoInParent(i).GetComponent<Door>().index);
             if (room.door_isOpen[i] && i == GetDoorGoInParent(i).GetComponent<Door>().index)
             {
                 GetDoorGoInParent(i).transform.Find("coulissClose").gameObject.SetActive(false);
@@ -2015,6 +2021,8 @@ public class GameManager : MonoBehaviourPun
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
 
 
+        ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
+        ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);
 
     }
 
@@ -3324,8 +3332,8 @@ public class GameManager : MonoBehaviourPun
         if (!room.isSpecial)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 5);
-        return;*/
+        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 2);
+        return;
         if (room.isTrial)
         {
             float randomInt = Random.Range(0, 100);

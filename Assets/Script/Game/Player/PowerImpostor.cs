@@ -13,7 +13,8 @@ public class PowerImpostor : MonoBehaviourPun
     public float timerToUsing = 30;
     public bool timerLaunch = false;
     public bool canUsed = false;
-    
+    public PlayerGO player;
+    public bool powerIsStart = false;
 
     public Collider2D collision;
     // Start is called before the first frame update
@@ -21,33 +22,24 @@ public class PowerImpostor : MonoBehaviourPun
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         GetTimerToUsingByIndex(indexPower);
+        DisplayButtonDesactivateTimer(true, timerToUsing);
         StartCoroutine(CanUsedTimerCoroutine());
+        player = this.transform.parent.GetComponent<PlayerGO>();
     }
 
     // Update is called once per frame
     void Update()
     {
         indexPower = this.transform.parent.GetComponent<PlayerGO>().indexPower;
-        ExecuteTimer();
-        
-    }
-
-    public void ExecuteTimer()
-    {
-        if (timerLaunch)
-        {
-            timerToUsing -= Time.deltaTime;
-            if (timerToUsing < 0)
-            {
-                timerLaunch = false;
-
-            }
-        }
+        if (!powerIsStart)
+            return;
+        GetAllSituationToCanUsed();
     }
 
     public IEnumerator CanUsedTimerCoroutine()
     {
         yield return new WaitForSeconds(timerToUsing);
+        powerIsStart = true;
         DisplayButtonDesactivateTimer(false, 0);
         canUsed = true;
         if (!this.transform.parent.GetComponent<PlayerGO>().gameManager.timer.timerLaunch &&
@@ -157,7 +149,7 @@ public class PowerImpostor : MonoBehaviourPun
     {
         if (powerIsUsed)
         {
-            this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate();
+            this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(false);
             this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerBigger(false);
             return;
         }
@@ -167,6 +159,12 @@ public class PowerImpostor : MonoBehaviourPun
             return;
         }
         this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerBigger(display);
+       
+    }
+
+    public void DisplayButtonCanUsed2(bool display)
+    {
+        this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(display);
     }
 
     public void GetTimerToUsingByIndex(int index)
@@ -185,6 +183,36 @@ public class PowerImpostor : MonoBehaviourPun
                 break;
         }
         //timerToUsing += initalTimerPlus;
+    }
+
+    public void GetAllSituationToCanUsed()
+    {
+        if (!gameManager)
+            return;
+        if (powerIsUsed)
+        {
+            this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
+            this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerBigger(false);
+            return;
+        }
+        if (gameManager.speciallyIsLaunch)
+        {
+            canUsed = false;
+            //gameManager.ui_Manager.DisplayTrapPowerButtonDesactivateTime(false, 0);
+            DisplayButtonCanUsed2(true);
+            return;
+        };
+        //canUsed = true;
+    }
+    bool couroutineIsUsed = false;
+    public IEnumerator CouroutineCanUsed(float secondes)
+    {
+        couroutineIsUsed = true;
+        yield return new WaitForSeconds(secondes);
+        if (!couroutineIsUsed)
+            canUsed = true;
+        else
+            canUsed = false;
     }
 
     public void DisplayButtonDesactivateTimer(bool display, float timer)

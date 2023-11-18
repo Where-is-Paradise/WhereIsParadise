@@ -1646,25 +1646,48 @@ setting_button_echapMenu.SetActive(false);
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             return;
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower == -1)
+            return;
         canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").gameObject.SetActive(display);
-        if(display)
+        canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").Find("Text_timer").gameObject.SetActive(display);
+        if (display)
+        {
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().canUsed = false;
             canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").Find("Text_timer").GetComponent<TimerDisplay>().timeLeft = timer;
+            canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").Find("Text_timer").GetComponent<TimerDisplay>().timerLaunch = true;
+        }
+           
     }
     public void DisplayTrapPowerButtonDesactivateTime(bool display, float timer)
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             return;
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower == -1)
+            return;
         canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").gameObject.SetActive(display);
-        if (display)
+        canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").Find("Text_timer").gameObject.SetActive(true);
+        canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").Find("Text_timer").GetComponent<TimerDisplay>().timeLeft = 0;
+        if (display) {
             canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").Find("Text_timer").GetComponent<TimerDisplay>().timeLeft = timer;
+            canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").Find("Text_timer").GetComponent<TimerDisplay>().timerLaunch = true;
+        }
     }
 
     public void DisplayObjectPowerButtonDesactivate(bool display)
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             return;
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower == -1)
+            return;
         canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").gameObject.SetActive(display);
         canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").Find("Text_timer").gameObject.SetActive(!display);
+
+        if (display)
+        {
+            gameManager.GetPlayerMineGO().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().canUsed = false;
+            canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Bigger").gameObject.SetActive(false);
+        }
+
     }
     public void HideObjectPowerButtonDesactivate()
     {
@@ -1674,12 +1697,21 @@ setting_button_echapMenu.SetActive(false);
         canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Timer").Find("Text_timer").gameObject.SetActive(false);
     }
 
-    public void DisplayTrapPowerButtonDesactivate()
+    public void DisplayTrapPowerButtonDesactivate(bool display)
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             return;
-        canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").gameObject.SetActive(true);
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower == -1)
+            return;
+        canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").gameObject.SetActive(display);
         canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Timer").Find("Text_timer").gameObject.SetActive(false);
+
+        if (display)
+        {
+            gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().canUsed = false;
+            canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).Find("Bigger").gameObject.SetActive(false);   
+        }
+
     }
 
 

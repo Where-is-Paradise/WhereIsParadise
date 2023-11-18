@@ -33,6 +33,10 @@ public class FireBallRoom : TrialsRoom
     public void LanchFireBallRoom()
     {
         gameManager.speciallyIsLaunch = true;
+        gameManager.CloseDoorWhenVote(true);
+        gameManager.ActivateCollisionTPOfAllDoor(false);
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         roomIsLaunch = true;

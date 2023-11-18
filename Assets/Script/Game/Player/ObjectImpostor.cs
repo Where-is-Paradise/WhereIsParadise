@@ -30,9 +30,10 @@ public class ObjectImpostor : MonoBehaviour
         gameManager = player.gameManager;
         if (indexPower == -1)
             return;
-        GetTimerToUsingByIndex(indexPower);
-        DisplayButtonDesactivateTimer(true, timerToUsing);
-        StartCoroutine(CoroutineSetCanUsed());
+        //GetTimerToUsingByIndex(indexPower);
+        //DisplayButtonDesactivateTimer(true, timerToUsing);
+        //StartCoroutine(CoroutineSetCanUsed());
+        canUsed = true;
     }
 
     // Update is called once per frame
@@ -45,7 +46,7 @@ public class ObjectImpostor : MonoBehaviour
         if (powerIsReset)
             return;
             
-        GetAllSituationToCanUsed();
+        //GetAllSituationToCanUsed();
         ChangeScaleByPlayer();
         
         if (isNearOfPlayer)
@@ -152,7 +153,7 @@ public class ObjectImpostor : MonoBehaviour
     {
         yield return new WaitForSeconds(timerToUsing);
         canUsed = true;
-        DisplayButtonDesactivateTimer(false, timerToUsing);
+        //DisplayButtonDesactivateTimer(false, timerToUsing);
     }
 
     public void GetTimerToUsingByIndex(int index)
@@ -313,21 +314,25 @@ public class ObjectImpostor : MonoBehaviour
         if (gameManager.timer.timerLaunch)
         {
             cantTemporyUsed = true;
+            gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 15);
             return;
         }
         if (gameManager.speciallyIsLaunch)
         {
             cantTemporyUsed = true;
+            gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 15);
             return;
         };
         if (player.GetComponent<PlayerGO>().hasWinFireBallRoom)
         {
             cantTemporyUsed = true;
+            gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 15);
             return;
         }
         if (player.GetComponent<PlayerGO>().haveToGoToExpedition)
         {
             cantTemporyUsed = true;
+            gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 15);
             return;
         }
 
@@ -356,12 +361,12 @@ public class ObjectImpostor : MonoBehaviour
             gameManager.ui_Manager.DisplayObjectPowerBigger(false);
             return;
         }
-        if (cantTemporyUsed)
+/*        if (cantTemporyUsed)
         {
             gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
             gameManager.ui_Manager.DisplayObjectPowerBigger(false);
             return;
-        }
+        }*/
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(false);
         gameManager.ui_Manager.DisplayObjectPowerBigger(display);
     }

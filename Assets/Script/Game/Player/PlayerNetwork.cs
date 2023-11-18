@@ -1091,8 +1091,7 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetChangeSyncFunction(bool change)
     {
-        this.GetComponent<PhotonTransformViewClassic>().enabled = change;
-        this.GetComponent<PhotonRigidbody2DView>().enabled = !change;
+        this.GetComponent<PhotonRigidbody2DView>().preciseSyncPosition = change;
     }
 
     public void SendResetHeart()

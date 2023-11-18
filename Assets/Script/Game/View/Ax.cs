@@ -37,18 +37,20 @@ public class Ax : MonoBehaviourPun
             this.GetComponent<CircleCollider2D>().enabled = false;
             return;
         }
-        if (!axRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+/*        if (!axRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
-        }
+        }*/
         this.GetComponent<Rigidbody2D>().velocity = direction * speed;
         if(nbBounds == maxBoudns)
         {
-            PhotonNetwork.Destroy(this.gameObject);
+            //PhotonNetwork.Destroy(this.gameObject);
+            Destroy(this.gameObject);
         }
         if(speed == 0)
         {
-            PhotonNetwork.Destroy(this.gameObject);
+            //PhotonNetwork.Destroy(this.gameObject);
+            Destroy(this.gameObject);
         }
     }
 
@@ -60,13 +62,19 @@ public class Ax : MonoBehaviourPun
 
     public void OnTriggerEnter2D(Collider2D nameWallColsion)
     {
-        if (!axRoom || !axRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+/*        if (!axRoom || !axRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            return;
+        }*/
+        if (!axRoom)
         {
             return;
         }
-        if(nameWallColsion.gameObject.tag  == "Obstacle")
+
+        if (nameWallColsion.gameObject.tag  == "Obstacle")
         {
-            PhotonNetwork.Destroy(this.gameObject);
+            //PhotonNetwork.Destroy(this.gameObject);
+            Destroy(this.gameObject);
         }
 
         IsTouchPlayer(nameWallColsion);
@@ -146,7 +154,8 @@ public class Ax : MonoBehaviourPun
             if (collision.gameObject.GetComponent<PlayerGO>().isTouchInTrial)
                 return;
 
-            photonView.RPC("SendIsTouchPlayer", RpcTarget.All, collision.gameObject.GetComponent<PhotonView>().ViewID);
+            SendIsTouchPlayer(collision.gameObject.GetComponent<PhotonView>().ViewID);
+            //photonView.RPC("SendIsTouchPlayer", RpcTarget.All, collision.gameObject.GetComponent<PhotonView>().ViewID);
         }
     }
 
@@ -332,7 +341,8 @@ public class Ax : MonoBehaviourPun
     public void DesactivateAxRoom()
     {
         this.axRoom.DesactivateRoomChild();
-        PhotonNetwork.Destroy(this.gameObject);
+        Destroy(this.gameObject);
+        //PhotonNetwork.Destroy(this.gameObject);
     }
 
     public void SendLancher(int indexPlayer)

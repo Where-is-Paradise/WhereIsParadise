@@ -16036,6 +16036,7 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 1
+  preciseSyncPosition: 0
 --- !u!70 &3112151206528221642
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -18176,6 +18177,8 @@ MonoBehaviour:
   timerToUsing: 0
   timerLaunch: 0
   canUsed: 0
+  player: {fileID: 0}
+  powerIsStart: 0
   collision: {fileID: 0}
 --- !u!114 &208173725058215940
 MonoBehaviour:

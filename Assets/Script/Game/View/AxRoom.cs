@@ -13,6 +13,9 @@ public class AxRoom : TrialsRoom
     public bool canShoot = true;
 
     public bool beforeLastDisconnect = false;
+
+    public GameObject prefabAx;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,15 +60,18 @@ public class AxRoom : TrialsRoom
     }
     public IEnumerator LaunchAxRoomAfterTeleportation()
     {
+        gameManager.ActivateCollisionTPOfAllDoor(false);
+        gameManager.CloseDoorWhenVote(true);
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         yield return new WaitForSeconds(2);
         DiplayAxForAllPlayer(true);
         DisplayHeartsFoAllPlayer(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         isLaunch = true;
         gameManager.speciallyIsLaunch = true;
-        gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
-        gameManager.CloseDoorWhenVote(true);
+       
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             SendObstalceGroup();
@@ -116,17 +122,24 @@ public class AxRoom : TrialsRoom
     [PunRPC]
     public void ShotAxToDirection( float positionX, float positionY, float directionX, float directionY , int indexPlayer)
     {
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            return;
+/*        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;*/
 
-        GameObject newAx = PhotonNetwork.Instantiate("Ax", new Vector3(positionX,positionY), Quaternion.identity);
-        newAx.GetComponent<Ax>().SendLancher(indexPlayer);
-        newAx.GetComponent<Ax>().SendSpeedAndDirection(5, directionX, directionY);
+        //GameObject newAx = PhotonNetwork.Instantiate("Ax", new Vector3(positionX,positionY), Quaternion.identity);
+        GameObject newAx = GameObject.Instantiate(prefabAx, new Vector3(positionX, positionY), Quaternion.identity);
+
+/*        newAx.GetComponent<Ax>().SendLancher(indexPlayer);
+        newAx.GetComponent<Ax>().SendSpeedAndDirection(5, directionX, directionY);*/
+
+
+        newAx.GetComponent<Ax>().SetLancher(indexPlayer);
+        newAx.GetComponent<Ax>().SetSpeedAndDirection(5, directionX, directionY);
+
         newAx.GetComponent<Ax>().player = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
-        Debug.Log(newAx.GetComponent<Ax>().GetNumberLastPlayer());
         if (newAx.GetComponent<Ax>().GetNumberLastPlayer() == 2)
         {
-            newAx.GetComponent<Ax>().SendBounds(6);
+            //newAx.GetComponent<Ax>().SendBounds(6);
+            newAx.GetComponent<Ax>().SetBounds(6);
         }
 
     }

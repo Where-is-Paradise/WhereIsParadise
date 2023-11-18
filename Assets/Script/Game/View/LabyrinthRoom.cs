@@ -103,6 +103,10 @@ public class LabyrinthRoom : TrialsRoom
         listInitalObstacleLeft.Add(GetObtacleByPosition(21, 14));
         gameManagerParent.speciallyIsLaunch = true;
         gameManagerParent.ActivateCollisionTPOfAllDoor(false);
+        gameManagerParent.CloseDoorWhenVote(true);
+        gameManagerParent.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
+        gameManagerParent.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
+
         if (gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             int randomInitialRight = Random.Range(0, listInitalObstacleRight.Count);

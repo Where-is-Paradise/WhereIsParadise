@@ -1500,63 +1500,6 @@ public class GameManagerNetwork : MonoBehaviourPun
         photonView.RPC("SetUpdateNeighbourSpeciality", RpcTarget.All, indexRoom, indexSpeciality);
     }
 
-/*    [PunRPC]
-    public void SetUpdateNeighbourSpeciality(int indexRoom, int indexSpeciality)
-    {
-        Room room = gameManager.game.dungeon.GetRoomByIndex(indexRoom);
-        switch (indexSpeciality)
-        {
-            case 0:
-                room.chest = true;
-                for (int i = 0; i < 2; i++)
-                {
-                    if(room.chestList.Count > 0)
-                        SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
-                }
-                break;
-            case 1:
-                room.fireBall = true;
-                break;
-            case 2:
-                room.isSacrifice = true;
-                break;
-            case 3:
-                room.isDeathNPC = true;
-                break;
-            case 4:
-                room.isSwordDamocles = true;
-                break;
-            case 5:
-                room.isAx = true;
-                break;
-            case 6:
-                room.isSword = true;
-                break;
-            case 7:
-                room.isLostTorch = true;
-                break;
-            case 8:
-                room.isMonsters = true;
-                break;
-            case 9:
-                room.isLabyrintheHide = true;
-                break;
-            case 10:
-                room.isNPC = true;
-                break;
-            case 11:
-                room.isResurection = true;
-                break;
-            case 12:
-                room.isPurification = true;
-                break;
-            case 13:
-                room.isPray = true;
-                break;
-        }
-        gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;
-
-    }*/
 
     [PunRPC]
     public void SetUpdateNeighbourSpeciality(int indexRoom, int indexSpeciality)

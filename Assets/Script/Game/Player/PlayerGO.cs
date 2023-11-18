@@ -849,13 +849,13 @@ public class PlayerGO : MonoBehaviour
     {
         if (gameManager && gameManager.speciallyIsLaunch)
         {
-            this.GetComponent<PhotonTransformViewClassic>().enabled = false;
-            this.GetComponent<PhotonRigidbody2DView>().enabled = true;
+            this.GetComponent<PhotonRigidbody2DView>().preciseSyncPosition = true;
+            SendChangeSyncFunction(true);
         }
         else
         {
-            this.GetComponent<PhotonTransformViewClassic>().enabled = true;
-            this.GetComponent<PhotonRigidbody2DView>().enabled = false;
+            this.GetComponent<PhotonRigidbody2DView>().preciseSyncPosition = false;
+            SendChangeSyncFunction(false);
         }
     }
 

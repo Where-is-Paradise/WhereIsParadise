@@ -39,6 +39,8 @@ namespace Photon.Pun
 
         private float lastReceivedTime;
 
+        public bool preciseSyncPosition = false;
+
         public void Awake()
         {
             this.m_Body = GetComponent<Rigidbody2D>();
@@ -50,8 +52,16 @@ namespace Photon.Pun
         {
             if (!this.photonView.IsMine)
             {
-                this.m_Body.position = Vector2.MoveTowards(this.m_Body.position, this.m_NetworkPosition, this.m_Distance * (2.75f / PhotonNetwork.SerializationRate));
-                this.m_Body.rotation = Mathf.MoveTowards(this.m_Body.rotation, this.m_NetworkRotation, this.m_Angle * (2.75f / PhotonNetwork.SerializationRate));
+                if (preciseSyncPosition)
+                {
+                    this.m_Body.position = Vector2.MoveTowards(this.m_Body.position, this.m_NetworkPosition, this.m_Distance * (2.75f / PhotonNetwork.SerializationRate));
+                    this.m_Body.rotation = Mathf.MoveTowards(this.m_Body.rotation, this.m_NetworkRotation, this.m_Angle * (2.75f / PhotonNetwork.SerializationRate));
+                }
+                else
+                {
+                    this.m_Body.position = Vector2.MoveTowards(this.m_Body.position, this.m_NetworkPosition, this.m_Distance * (1.5f / PhotonNetwork.SerializationRate));
+                    this.m_Body.rotation = Mathf.MoveTowards(this.m_Body.rotation, this.m_NetworkRotation, this.m_Angle * (1.5f / PhotonNetwork.SerializationRate));
+                }
             }
         }
 
