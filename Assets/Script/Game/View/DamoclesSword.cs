@@ -47,12 +47,20 @@ public class DamoclesSword : MonoBehaviourPun
             if (collision.transform.parent.GetComponent<PlayerGO>().isTouchInTrial)
                 return;
             int indexplayer = collision.transform.parent.gameObject.GetComponent<PhotonView>().ViewID;
-            damoclesRoom.SendCurrentPlayer(indexplayer);
-            damoclesRoom.SendChangePositionAtPlayer(indexplayer);
-            SendCanChangePlayer(false);
-            StartCoroutine(CanChangePlayerCoroutine());
-            
+            photonView.RPC("SendChangeToBoss", RpcTarget.All, indexplayer);  
         }
+    }
+
+    [PunRPC]
+    public void SendChangeToBoss(int indexPlayer)
+    {
+        if (!damoclesRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            return;
+        damoclesRoom.SendCurrentPlayer(indexPlayer);
+        damoclesRoom.SendChangePositionAtPlayer(indexPlayer);
+        SendCanChangePlayer(false);
+        StartCoroutine(CanChangePlayerCoroutine());
+
     }
 
     public void SendCanChangePlayer(bool canChangePlayer)

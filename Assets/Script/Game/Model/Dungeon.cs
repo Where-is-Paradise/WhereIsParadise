@@ -84,14 +84,14 @@ public class Dungeon : ScriptableObject
         foreach (Room room in trueListRoomDungeon)
         {
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 55) //37
+            if (randomIsHide <= 40) //40
             {
-                room.isHide = true;
-                //room.isIllustion = true;
+                //room.isHide = true;
+                room.isSacrifice= true;
                 continue;
             }
             float randomIsTrial = Random.Range(0, 100);
-            if(randomIsTrial < 75)
+            if(randomIsTrial < 70) // 70
                 room.isTrial = true;
             else
             {

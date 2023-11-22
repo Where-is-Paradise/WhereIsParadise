@@ -84,7 +84,9 @@ public class PowerImpostor : MonoBehaviourPun
                 return;
             if (this.transform.parent.GetComponent<PlayerGO>().gameManager.OnePlayerHaveToGoToExpedition())
                 return;
-    
+            if (player.isSacrifice)
+                return;
+
             SetRedColorPlayer(true, collision.transform.parent.GetComponent<Door>().index);
             isNearOfDoor = true;
             DisplayButtonCanUsed(isNearOfDoor);

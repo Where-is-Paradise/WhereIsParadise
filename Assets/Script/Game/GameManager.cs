@@ -381,14 +381,14 @@ public class GameManager : MonoBehaviourPun
     public void AssignPowerOfImposter()
     {
         List<int> listIndexPower = new List<int>();
-/*        if (setting.listTrapRoom[0])
+        if (setting.listTrapRoom[0])
             listIndexPower.Add(0);
         if (setting.listTrapRoom[1])
             listIndexPower.Add(1);
         if (setting.listTrapRoom[2])
             listIndexPower.Add(2);
         if (setting.listTrapRoom[3])
-            listIndexPower.Add(3);*/
+            listIndexPower.Add(3);
 
         listIndexPower.Add(4);
 
@@ -807,7 +807,7 @@ public class GameManager : MonoBehaviourPun
         {
             gameManagerNetwork.SendIsDiscorved(true, roomTeam.Index);
         }
-        InsertSpeciallyRoom(roomTeam);
+    
         GameObject newDoor = GetDoorGo(indexDoor);
         gameManagerNetwork.SendOpenDoor(indexDoor, game.currentRoom.X, game.currentRoom.Y, isExpedition, roomTeam.GetIndex(), newDoor.GetComponent<Door>().GetRoomBehind().Index);
     }
@@ -2628,6 +2628,29 @@ public class GameManager : MonoBehaviourPun
         {
             //ui_Manager.DisplayLeverExploration(false);
         }
+        if (room.IsFoggy)
+        {
+            ui_Manager.DisplayFoggyRoom(true);
+            ui_Manager.ChangeColorAllPlayerSkinToFoggy(true);
+            ui_Manager.DisplayLeverVoteDoor(true);
+            UpdateColorDoor(room);
+        }
+        if (room.IsVirus)
+        {
+            ui_Manager.DisplayVirusRoom(true);
+            ui_Manager.DisplayLeverVoteDoor(true);
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            UpdateColorDoor(room);
+        }
+        if (room.isImpostorRoom)
+        {
+            ui_Manager.DisplayImpostorRoom(true);
+        }
+        if (room.isIllustion)
+        {
+            ui_Manager.DisplayIllustionRoom(true);
+
+        }
         if (room.chest)
         {
             ui_Manager.DisplayChestRoom(true);
@@ -2686,20 +2709,7 @@ public class GameManager : MonoBehaviourPun
             UpdateColorDoor(room);
             return;
         }
-        if (room.IsFoggy)
-        {
-            ui_Manager.DisplayFoggyRoom(true);
-            ui_Manager.ChangeColorAllPlayerSkinToFoggy(true);
-            ui_Manager.DisplayLeverVoteDoor(true);
-            UpdateColorDoor(room);
-        }
-        if (room.IsVirus)
-        {
-            ui_Manager.DisplayVirusRoom(true);
-            ui_Manager.DisplayLeverVoteDoor(true);
-            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-            UpdateColorDoor(room);
-        }
+       
         if (room.isDeathNPC)
         {
             ui_Manager.DisplayDeathNPCRoom(true);
@@ -2862,15 +2872,7 @@ public class GameManager : MonoBehaviourPun
             UpdateColorDoor(room);
             return;
         }
-        if (room.isImpostorRoom)
-        {
-            ui_Manager.DisplayImpostorRoom(true);
-        }
-        if (room.isIllustion)
-        {
-            ui_Manager.DisplayIllustionRoom(true);
-           
-        }
+        
 
         if (room.IsExit || room.IsHell)
         {
@@ -3320,7 +3322,7 @@ public class GameManager : MonoBehaviourPun
     }
     public void InsertSpeciallyRoom(Room room)
     {
-        if (!GetPlayerMineGO().GetComponent<PlayerGO>().isBoss )
+        if (!PhotonNetwork.IsMasterClient )
         {
             return;
         }
@@ -3331,9 +3333,11 @@ public class GameManager : MonoBehaviourPun
         }
         if (!room.isSpecial)
             return;
-
-        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 2);
-        return;
+        if (room.speciallyIsInsert)
+            return;
+/*
+        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 4);
+        return;*/
         if (room.isTrial)
         {
             float randomInt = Random.Range(0, 100);
@@ -3377,6 +3381,7 @@ public class GameManager : MonoBehaviourPun
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
                 CalculProbabiltySpeciality(7);
             }
+            room.speciallyIsInsert = true;
         }
     }
     public void InitateProbabilityTab()
@@ -4074,6 +4079,8 @@ public class GameManager : MonoBehaviourPun
         room.isTraped = false;
         room.IsVirus = false;
         room.isIllustion = false;
+        room.isSpecial = false;
+        room.isTrial = false;
         //room.is
     }
 

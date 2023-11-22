@@ -81,10 +81,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.SetBoss(indexNewBoss);
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().isBoss = true;
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerNetwork>().SendDisplayCrown(true);
-/*        gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().explorationPowerIsAvailable = true;
-        gameManager.ui_Manager.DisabledButtonPowerExploration(!gameManager.IsBoss());*/
-/*        if (gameManager.GetPlayer(indexNewBoss).GetComponent<PhotonView>().IsMine)
-            gameManager.ui_Manager.DisplayAllDoorLightExploration(true);*/
+        gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
     }
 
 
@@ -484,6 +481,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SendResultOneDoorVote(int indexDoor, int resultVote, int xVote)
     {
+        if (!gameManager.SamePositionAtBoss())
+            return;
         gameManager.GetDoorGo(indexDoor).GetComponent<Door>().nbVote = resultVote;
         gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = xVote;
         gameManager.canVoteDoor = false;
@@ -984,7 +983,7 @@ public class GameManagerNetwork : MonoBehaviourPun
             gameManager.game.dungeon.GetRoomByIndex(indexRoomBehind).door_isOpen[indexNeWDoor3] = true;
             Room roomTeam2 = gameManager.game.dungeon.GetRoomByIndex(indexRoomTeam);
 
-
+            gameManager.InsertSpeciallyRoom(roomTeam2);
             if (roomTeam2.isJail)
             {
                 roomTeam2.speciallyPowerIsUsed = true;
@@ -1020,6 +1019,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                 gameManager.UpdateSpecialsRooms(gameManager.game.currentRoom);
             }       
         }
+       
 
     }
     public void SendIsInJail(bool isInJail, int indexPlayer , int indexRoom)
@@ -1532,6 +1532,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                 room.isLabyrintheHide = true;
                 break;
         }
+        room.speciallyIsInsert = true;
     }
 
     public void SendUpdateListSpecialityProbality(float newValue, int indexSpeciality)
@@ -2161,6 +2162,9 @@ public class GameManagerNetwork : MonoBehaviourPun
                 gameManager.game.dungeon.GetRoomByIndex(indexRoom).isPurification = true;
                 break;
         }
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;
+
+        
     }
 
     public void SendNewTrapedRoom(int indexRoom, int indexSpeciallity)
@@ -2172,7 +2176,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetNewTrapedRoom(int indexRoom, int indexSpeciallity)
     {
-        gameManager.ResetSpeciallyRoomState(gameManager.game.dungeon.GetRoomByIndex(indexRoom));
+       
 
         switch (indexSpeciallity)
         {
@@ -2183,10 +2187,12 @@ public class GameManagerNetwork : MonoBehaviourPun
                 gameManager.game.dungeon.GetRoomByIndex(indexRoom).IsVirus = true;
                 break;
             case 2:
+                gameManager.ResetSpeciallyRoomState(gameManager.game.dungeon.GetRoomByIndex(indexRoom));
                 gameManager.game.dungeon.GetRoomByIndex(indexRoom).isPray = true;
                 gameManager.game.dungeon.GetRoomByIndex(indexRoom).isTraped = true;
                 break;
             case 3:
+                gameManager.ResetSpeciallyRoomState(gameManager.game.dungeon.GetRoomByIndex(indexRoom));
                 Room room = gameManager.game.dungeon.GetRoomByIndex(indexRoom);
                 room.chest = true;
                 room.isTraped = true;
@@ -2306,4 +2312,15 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
     }
 
+    public void SendTemporyCloseDoor()
+    {
+        photonView.RPC("SetTemporyCloseDoor", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetTemporyCloseDoor()
+    {
+        gameManager.CloseDoorWhenVote(false);
+        gameManager.ActivateCollisionTPOfAllDoor(true);
+    }
 }

@@ -50,16 +50,19 @@ public class LostTorchRoom : TrialsRoom
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
-        int randomSpawnIndex = Random.Range(0, listSpawn.transform.childCount);
-        photonView.RPC("SendSpawn", RpcTarget.All, randomSpawnIndex);
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        int randomSpawnIndex = Random.Range(0, listPlayer.Length);
+        photonView.RPC("SendSpawn", RpcTarget.All, listPlayer[randomSpawnIndex].GetComponent<PhotonView>().ViewID);
+        LaunchTimer();
     }
 
     [PunRPC]
-    public void SendSpawn(int indexSpawn)
+    public void SendSpawn(int indexPlayer)
     {
-        GameObject spawn = listSpawn.transform.GetChild(indexSpawn).gameObject;
+        GameObject spawn = gameManager.GetPlayer(indexPlayer);
         lostTorch.gameObject.SetActive(true);
-        lostTorch.transform.position = spawn.transform.position;
+        lostTorch.transform.parent = spawn.transform;
+        lostTorch.currentPlayer = gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>();
     }
 
     public void LaunchTimer()

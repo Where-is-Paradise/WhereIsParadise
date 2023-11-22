@@ -88,8 +88,9 @@ public class Room : ScriptableObject
 
     public bool isHide = false;
     public bool isTrial = false;
+    public bool speciallyIsInsert = false;
 
-    public bool isImpostorRoom = false;
+public bool isImpostorRoom = false;
 
     public List<Chest> chestList = null;
 
@@ -109,6 +110,7 @@ public class Room : ScriptableObject
 
     public bool doorsMixed = false;
     public List<int> listIndexDoor = new List<int>();
+
 
     public void Init(int pos_X, int pos_Y)
     {

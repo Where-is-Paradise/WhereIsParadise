@@ -1002,25 +1002,26 @@ public class PlayerGO : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+/*        if (collision.gameObject.CompareTag("Player"))
         {
-            if (gameManager && gameManager.fireBallIsLaunch && !collision.gameObject.GetComponent<PlayerGO>().isTouchByFireBall)
+            if (gameManager && gameManager.fireBallIsLaunch && !collision.gameObject.GetComponent<PlayerGO>().isTouchInTrial)
             {
                 Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), false);
                 return;
             }
-            if (gameManager && gameManager.deathNPCIsLaunch && !collision.gameObject.GetComponent<PlayerGO>().isTouchByDeath)
+            if (gameManager && gameManager.deathNPCIsLaunch && !collision.gameObject.GetComponent<PlayerGO>().isTouchInTrial)
             {
                 Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), false);
                 return;
             }
-            if(gameManager && gameManager.damoclesIsLaunch && !collision.gameObject.GetComponent<PlayerGO>().isDeadBySwordDamocles)
+            if(gameManager && gameManager.damoclesIsLaunch && !collision.gameObject.GetComponent<PlayerGO>().isTouchInTrial)
             {
                 Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), false);
                 return;
             }
+            Debug.Log()
             Physics2D.IgnoreCollision(collision.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>());
-        }
+        }*/
         
     }
 
@@ -1043,6 +1044,8 @@ public class PlayerGO : MonoBehaviour
         if (gameManager.voteDoorHasProposed)
             return;
         if (hasBlackTorch)
+            return;
+        if (isBoss && !hasWinFireBallRoom)
             return;
         gameManager.ui_Manager.DisplayButtonPowerExplorationBigger(enter);
         collsionDoorIndexForExploration = collision.transform.parent.gameObject.GetComponent<Door>().index;
@@ -1109,24 +1112,27 @@ public class PlayerGO : MonoBehaviour
     public void IgnoreCollisionAllPlayer(bool ignore)
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
+        Debug.Log(ignore + "  IGNORE");
         foreach(GameObject player in players)
         {
-            if(GetPlayerMineGO().GetComponent<PhotonView>().IsMine  )
+            if (player.GetComponent<PhotonView>().ViewID != this.GetComponent<PhotonView>().ViewID)
             {
-                if (player.GetComponent<PhotonView>().ViewID != this.GetComponent<PhotonView>().ViewID)
+                if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isSacrifice && 
+                    !player.GetComponent<PlayerGO>().isInJail)
                 {
-                    if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isSacrifice && 
-                        !player.GetComponent<PlayerGO>().isInJail && !player.GetComponent<PlayerGO>().isTouchInTrial)
-                    {
-                        player.GetComponent<CapsuleCollider2D>().isTrigger = ignore;
-                        Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), ignore);
-                    }
+                    player.GetComponent<CapsuleCollider2D>().isTrigger = ignore;
+                    Debug.Log(player.GetComponent<PhotonView>().ViewID + "  " + this.GetComponent<PhotonView>().ViewID) ;
+                    Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), ignore);
                 }
-             
-            }    
+            }
         }
     }
+
+/*    public void IgnoreCollision(bool ignore)
+    {
+        player.GetComponent<CapsuleCollider2D>().isTrigger = ignore;
+        Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), ignore);
+    }*/
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
@@ -1743,12 +1749,6 @@ public class PlayerGO : MonoBehaviour
             changeBoss = false;
             return;
         }
-        if (gameManager && gameManager.fireBallIsLaunch)
-        {
-            //playerNetwork.SendResetWantToChangeBoss();
-            changeBoss = false;
-            return;
-        }
         if (displayChatInput)
         {
             return;
@@ -1920,8 +1920,6 @@ public class PlayerGO : MonoBehaviour
         if (gameManager.expeditionHasproposed || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed)
         {
             canLaunchExplorationLever = false;
-            //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
-            GameObject.Find("Levers").transform.Find("Exploration_lever").Find("Hexagone").Find("HexagoneBiggerAndLight").gameObject.SetActive(false);
             gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(false);
             return;
         }
@@ -1930,8 +1928,7 @@ public class PlayerGO : MonoBehaviour
             return;
         }
         canLaunchExplorationLever = isEnter;
-        //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
-        GameObject.Find("Levers").transform.Find("Exploration_lever").Find("Hexagone").Find("HexagoneBiggerAndLight").gameObject.SetActive(isEnter);
+
         gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(isEnter);
 
         if (isEnter)
@@ -2026,10 +2023,6 @@ public class PlayerGO : MonoBehaviour
         if (gameManager.expeditionHasproposed || gameManager.timer.timerLaunch || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed){
             //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
             gameManager.ui_Manager.mobileCanvas.transform.Find("Change_Boss").gameObject.SetActive(false);
-            return;
-        }
-        if (hasWinFireBallRoom)
-        {
             return;
         }
 
@@ -2179,16 +2172,18 @@ public class PlayerGO : MonoBehaviour
         }
         if (!gameManager)
             return;
-/*        if (!gameManager.game.currentRoom.isTrial)
+        if (!gameManager.game.currentRoom.isTrial)
             return;
         if (!gameManager.speciallyIsLaunch)
-            return;*/
+            return;
         if (gameManager.game.currentRoom.isLabyrintheHide)
             return;
         if (!avaibleDash)
         {
             return;
         }
+        if (isTouchInTrial)
+            return;
         float horizontal = InputManager.GetAxis("Horizontal");
         float vertical = InputManager.GetAxis("Vertical");
         if((horizontal > -0.1f && horizontal < 0.1f) && (vertical < 0.1f && vertical > -0.1f))
@@ -2279,7 +2274,7 @@ public class PlayerGO : MonoBehaviour
     {
         avaibleDash = false;
         GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f/255f, 96f / 255f, 96f / 255f);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(3.5f);
         avaibleDash = true;
         GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(255f, 255f, 255f);
     }

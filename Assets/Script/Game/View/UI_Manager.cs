@@ -1413,13 +1413,6 @@ setting_button_echapMenu.SetActive(false);
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
         {
-            if (!gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
-            {
-                //gameManager.HidePlayerNotInSameRoom(player.GetComponent<PhotonView>().ViewID, false);
-                player.transform.GetChild(0).gameObject.SetActive(false);
-                player.transform.GetChild(1).gameObject.SetActive(false);
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
-            }
             player.transform.Find("ActivityCanvas").Find("NumberVoteSacrifice").gameObject.SetActive(false);
         }
     }
@@ -1633,11 +1626,16 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayObjectPowerBigger(bool display)
     {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower == -1)
+            return;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("Bigger").gameObject.SetActive(display);
     }
     public void DisplayObjectResetInvisibility(bool display)
     {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower == -1)
+            return;
+
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).Find("BiggerReset").gameObject.SetActive(display);
     }
@@ -1763,9 +1761,9 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisabledButtonPowerExploration(bool display)
     {
-        if (!display && gameManager.game.currentRoom.explorationIsUsed)
-            return;
         canvasInGame.transform.Find("Exploration").Find("Torch").Find("Disabled").gameObject.SetActive(display);
+        if (display)
+            DisplayButtonPowerExplorationBigger(false);
     }
 
     public void DisplayImgInHexagoneUseWhenCursedPlayer()
@@ -1815,9 +1813,7 @@ setting_button_echapMenu.SetActive(false);
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach(GameObject player in players)
         {
-            if (player.GetComponent<PlayerGO>().isSacrifice && !player.GetComponent<PhotonView>().IsMine)
-                continue;
-            if (player.GetComponent<PlayerGO>().isInvisible && !player.GetComponent<PhotonView>().IsMine)
+            if (player.GetComponent<PlayerGO>().isSacrifice)
                 continue;
             if (display)
             {
@@ -2097,8 +2093,6 @@ setting_button_echapMenu.SetActive(false);
                 return;
             if (gameManager.voteDoorHasProposed)
                 return;
-            if (gameManager.ISTrailsRoom(gameManager.game.currentRoom) && !playerMine.hasWinFireBallRoom)
-                return;
         }
         
         GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
@@ -2178,6 +2172,7 @@ setting_button_echapMenu.SetActive(false);
        
         gameManager.gameManagerNetwork.SendNewSpeciallyRoom(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().GetRoomBehind().Index, indexChoice);
         gameManager.gameManagerNetwork.SendOrangeDoor(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().index);
+        gameManager.gameManagerNetwork.SendTemporyCloseDoor();
     }
     public void UpdateRoomWithTrapedkey(int indexChoice)
     {

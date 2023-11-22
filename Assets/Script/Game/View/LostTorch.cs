@@ -70,11 +70,11 @@ public class LostTorch : MonoBehaviourPun
     [PunRPC]
     public void ChangeCurrentPlayer(int indexPlayer)
     {
-        if (!currentPlayer)
+/*        if (!currentPlayer)
         {
             if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
                 GameObject.Find("LostTorchRoom").GetComponent<LostTorchRoom>().LaunchTimer();
-        }
+        }*/
         this.currentPlayer = gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>();
         this.transform.parent = this.currentPlayer.transform;
         canChangePlayer = false;

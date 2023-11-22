@@ -52,7 +52,7 @@ public class TrialsRoom : MonoBehaviourPun
         if(randomFloat < 50)
         {
             // bluetorch
-            DisplayAwardObject(6);
+            DisplayAwardObject(0);
             indexObject = 0; 
         }
         else if (randomFloat < 70)
@@ -254,6 +254,8 @@ public class TrialsRoom : MonoBehaviourPun
                 {
                     player.transform.GetChild(0).gameObject.SetActive(true);
                     player.transform.GetChild(1).gameObject.SetActive(true);
+                    if (player.GetComponent<PlayerGO>().hasProtection)
+                        player.transform.Find("TrialObject").Find("AuraProtection").gameObject.SetActive(true);
                 }
             }
             player.GetComponent<PlayerGO>().ResetHeart();
@@ -286,24 +288,37 @@ public class TrialsRoom : MonoBehaviourPun
         switch (randomInt)
         {
             case 0:
+                if (gameManagerParent.allPlayerHaveMap)
+                {
+                    if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
+                        return;
+                    Debug.Log("Has map restart");
+                    DisplayGloballyAward(Random.Range(1,3));
+                    return;
+                }
                 DisplayAwardObject(1);
                 indexObject = 0;
                 break;
             case 1:
-                Debug.Log("Magical Key restart");
                 DisplayAwardObject(4);
-                indexObject = 4;
+                indexObject = 1;
+                break;
+            case 2:
+                DisplayAwardObject(6);
+                indexObject = 2;
                 break;
         }
     }
-    public void ApplyGlobalAward(int indexObject)
+    public void ApplyGlobalAward()
     {
         switch (indexObject)
         {
             case 0:
-                gameManagerParent.game.key_counter++;
-                gameManagerParent.game.nbTorch++;
-                gameManagerParent.ui_Manager.LaunchAnimationAddKey();
+                foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+                {
+                    player.GetComponent<PlayerGO>().hasMap = true;
+                }
+                gameManagerParent.allPlayerHaveMap = true;
                 StartCoroutine(CouroutineActivateDoorLever(2));
                 break;
 
@@ -314,7 +329,14 @@ public class TrialsRoom : MonoBehaviourPun
                
                 gameManagerParent.ui_Manager.DisplayAllDoorLightOther(true);
                 gameManagerParent.ui_Manager.DisplayMagicalKeyButton();
-
+                gameManagerParent.CloseDoorWhenVote(true);
+                gameManagerParent.ActivateCollisionTPOfAllDoor(false);
+                break;
+            case 2:
+                gameManagerParent.game.key_counter++;
+                gameManagerParent.game.nbTorch++;
+                gameManagerParent.ui_Manager.LaunchAnimationAddKey();
+                StartCoroutine(CouroutineActivateDoorLever(2));
                 break;
         }
         gameManagerParent.teamHasWinTrialRoom = false;

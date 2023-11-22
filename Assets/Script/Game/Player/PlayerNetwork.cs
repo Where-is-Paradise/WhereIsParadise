@@ -409,15 +409,12 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetDisplayCharacter(bool display)
     {
         player.isTouchByFireBall = !display;
-        for (int i = 0; i < player.transform.childCount; i++)
+        if (display)
         {
-            if (player.gameManager.SamePositionAtBoss())
-            {
-                player.transform.GetChild(i).gameObject.SetActive(display);
-
-            }
-
+            transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+            return;
         }
+        transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0f);
     }
 
 
@@ -446,9 +443,24 @@ public class PlayerNetwork : MonoBehaviourPun
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_Cursed").gameObject.SetActive(false);
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_red").gameObject.SetActive(false);
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_redDark").gameObject.SetActive(false);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Crown").gameObject.SetActive(false);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Horns").gameObject.SetActive(false);
         player.transform.Find("TrialObject").gameObject.SetActive(false);
         LaunchSacrificeAnimation();
         player.gameManager.SacrificeIsUsedOneTimes = true;
+
+        if (player.isImpostor)
+        {
+            player.transform.Find("PowerImpostor").GetComponent<PowerImpostor>().powerIsUsed = true;
+            player.transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().powerIsUsed = true;
+            if (player.GetComponent<PhotonView>().IsMine)
+            {
+                player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(false);
+                player.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerBigger(false);
+                player.gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
+                player.gameManager.ui_Manager.DisplayObjectPowerBigger(false);
+            }
+        }
     }
 
     public void LaunchSacrificeAnimation()
@@ -588,7 +600,7 @@ public class PlayerNetwork : MonoBehaviourPun
         player.GetComponent<PlayerGO>().gameManager.CloseDoorWhenVote(false);
         player.GetComponent<PlayerGO>().gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice = false;
         player.gameManager.ui_Manager.HideNuVoteSacrificeForAllPlayer();
-        player.gameManager.HidePlayerNotInSameRoom();
+        //player.gameManager.HidePlayerNotInSameRoom();
 
 
     }
@@ -786,6 +798,8 @@ public class PlayerNetwork : MonoBehaviourPun
             player.transform.GetChild(0).gameObject.SetActive(false);
             player.transform.GetChild(1).gameObject.SetActive(false);
             player.transform.Find("Skins").GetChild(player.indexSkin).Find("Sword").gameObject.SetActive(false);
+            if (player.hasProtection)
+                player.transform.Find("TrialObject").Find("AuraProtection").gameObject.SetActive(false);
         }
     }
 
@@ -1187,10 +1201,8 @@ public class PlayerNetwork : MonoBehaviourPun
         if (!speciallyRoom.GetComponent<TrialsRoom>())
             return;
         speciallyRoom.GetComponent<TrialsRoom>().ReactivateCurrentRoom();
-        if(awardObject.name == "KeyAndTorch")
-            speciallyRoom.GetComponent<TrialsRoom>().ApplyGlobalAward(0);
-        else
-            speciallyRoom.GetComponent<TrialsRoom>().ApplyGlobalAward(1);
+        speciallyRoom.GetComponent<TrialsRoom>().ApplyGlobalAward();
+
     }
 
 

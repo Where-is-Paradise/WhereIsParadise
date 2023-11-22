@@ -90,6 +90,10 @@ public class ObjectImpostor : MonoBehaviour
         colliderIsImpostor = false;
         if (indexPower != 3 && !gameManager.SamePositionAtMine(collision.transform.parent.GetComponent<PhotonView>().ViewID))
             return;
+        if (gameManager.speciallyIsLaunch)
+            return;
+        if (player.isSacrifice)
+            return;
         isNearOfPlayer = true;
         if(indexPower != 3)
         {
@@ -113,11 +117,15 @@ public class ObjectImpostor : MonoBehaviour
             return;
         if (indexPower == 3 && collision.tag != "Door")
             return;
-        if(indexPower != 3)
+        if (player.isSacrifice)
+            return;
+        if (indexPower != 3)
         {
             if (!gameManager || !gameManager.SamePositionAtMine(collision.transform.parent.GetComponent<PhotonView>().ViewID))
                 return;
         }
+        if (!canUsed)
+            return;
         isNearOfPlayer = true;
         if(indexPower != 3)
             DisplayPrevisualisationLightRed(true, collision.transform.parent.GetComponent<PhotonView>().ViewID);

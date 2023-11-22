@@ -52,8 +52,11 @@ public class FireBall : MonoBehaviourPun
 
     public void ChangeDirection(Collider2D nameWallColsion)
     {
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            return;
+        if (gameManager)
+        {
+            if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                return;
+        }
         string nameWall = nameWallColsion.gameObject.name;
         if (nameWall == "Left" || nameWall == "Right" )
         {
@@ -115,7 +118,7 @@ public class FireBall : MonoBehaviourPun
             {
                 return;
             }
-            collision.gameObject.GetComponent<PlayerGO>().DisplayCharacter(false);
+           
             photonView.RPC("SendMineIsTouch", RpcTarget.All, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
             //collision.gameObject.GetComponent<PlayerGO>().rankTouchBall = gameManager.GetPlayerSameRoom(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID) .Count -  GetAllPlayerTouchByFireBall();
             //collision.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
@@ -140,6 +143,7 @@ public class FireBall : MonoBehaviourPun
             return;
 
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial = true;
+        SetPlayerColor(gameManager.GetPlayer(indexPlayer));
         if (TestLastPlayer())
         {
             fireballRoom.roomIsLaunch = false;
@@ -231,6 +235,12 @@ public class FireBall : MonoBehaviourPun
         return null;
     }
 
+
+    public void SetPlayerColor(GameObject player)
+    {
+        player.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
+        player.gameObject.GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
+    }
 
     public int GetAllPlayerTouchByFireBall()
     {
