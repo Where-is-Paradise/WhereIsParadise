@@ -60,7 +60,7 @@ public class PrayRoom : MonoBehaviour
     }
     public void DisplayResultOfPray()
     {
-        if (gameManager.game.currentRoom.isTraped)
+        if (gameManager.game.currentRoom.isTraped && !gameManager.game.currentRoom.IsFoggy && !gameManager.game.currentRoom.isIllustion && !gameManager.game.currentRoom.IsVirus)
         {
             DisplayChangeParadise();
             gameManager.ChangePositionParadise();

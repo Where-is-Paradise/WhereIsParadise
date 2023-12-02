@@ -44,7 +44,7 @@ public class PurificationRoom : MonoBehaviour
     {
         if (!this.transform.Find("zone").gameObject.GetComponent<ZonePurification>().currentPlayer)
             return false;
-        this.transform.Find("zone").gameObject.GetComponent<ZonePurification>().currentPlayer.GetComponent<PlayerNetwork>().SendIsCursed(false);
+        this.transform.Find("zone").gameObject.GetComponent<ZonePurification>().currentPlayer.GetComponent<PlayerNetwork>().SendPurification();
         return true;
     }
     public void ActivateZone(bool active)

@@ -270,7 +270,7 @@ public class MonstersRoom : TrialsRoom
     {
         //yield return new WaitForSeconds(seconde);
 
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(seconde);
         if (!isLoose)
         {
             GiveTeamAward();

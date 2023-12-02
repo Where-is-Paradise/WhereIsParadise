@@ -92,8 +92,11 @@ public class ObjectImpostor : MonoBehaviour
             return;
         if (gameManager.speciallyIsLaunch)
             return;
+        if (collision.transform.parent.GetComponent<PlayerGO>().hasProtection)
+            return;
         if (player.isSacrifice)
             return;
+
         isNearOfPlayer = true;
         if(indexPower != 3)
         {

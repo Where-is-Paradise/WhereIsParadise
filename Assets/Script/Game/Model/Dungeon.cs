@@ -76,7 +76,7 @@ public class Dungeon : ScriptableObject
         }
 
         InsertSpeciallyRoom2();
-        InsertImpostorRoom();
+        //InsertImpostorRoom();
     }
 
     public void InsertSpeciallyRoom2()
@@ -86,8 +86,8 @@ public class Dungeon : ScriptableObject
             int randomIsHide = Random.Range(0, 100);
             if (randomIsHide <= 40) //40
             {
-                //room.isHide = true;
-                room.isSacrifice= true;
+                room.isHide = true;
+                //room.isSacrifice= true;
                 continue;
             }
             float randomIsTrial = Random.Range(0, 100);
@@ -104,19 +104,15 @@ public class Dungeon : ScriptableObject
                 {
                     room.isPurification = true;
                 }
-                else if(randomSpeciality < 80 && setting.listSpeciallyRoom[1])
+                else if(randomSpeciality < 85 && setting.listSpeciallyRoom[1])
                 {
                     room.isSacrifice = true;
                 }
-                else if(randomSpeciality < 95) {
+                else if(randomSpeciality <= 100) {
                     room.isNPC = true;
                     int random = Random.Range(0, 2);
                     if (random == 0)
                         room.evilIsLeft = true;
-                }else
-                {
-                    if(setting.listSpeciallyRoom[4])
-                        room.isResurection = true;
                 }
             }
             room.isSpecial = true;
@@ -125,13 +121,14 @@ public class Dungeon : ScriptableObject
 
     public void InsertImpostorRoom()
     {
-        int randomDistance = Random.Range(2, 4);
+        int randomDistance = Random.Range(2, 7);
         List<Room> listroomInDistance = GetListRoomByDistance(initialRoom, randomDistance);
         int randomIndex = Random.Range(0, listroomInDistance.Count);
         listroomInDistance[randomIndex].isImpostorRoom = true;
         listroomInDistance[randomIndex].isHide = false;
         ResetSpeciallyRoom(listroomInDistance[randomIndex]);
     }
+
 
     public void ResetSpeciallyRoom(Room room)
     {
@@ -607,6 +604,11 @@ public class Dungeon : ScriptableObject
         }
 
 
+    }
+
+    public void ResetChest(Room room)
+    {
+        room.chestList.Clear();
     }
 
     public void SetListRoomTraversed()

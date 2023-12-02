@@ -171,6 +171,7 @@ public class PlayerGO : MonoBehaviour
 
     public bool isLeftNpc = false;
     public bool hasImpostorObject = false;
+    public bool hasOneTrapPower = false;
 
     private void Awake()
     {
@@ -321,13 +322,17 @@ public class PlayerGO : MonoBehaviour
         if (GameObject.Find("GameManager"))
         {
             gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-            
-/*            if(!gameManager.isActuallySpecialityTime)
-                SetSkinBoss(isBoss);*/
-            if (!hideImpostorInformation)
-                SetSkinImpostor(isImpostor);
-            else
-                SetSkinImpostor(false);
+
+            /*            if(!gameManager.isActuallySpecialityTime)
+                            SetSkinBoss(isBoss);*/
+            if (!isSacrifice)
+            {
+                if (!hideImpostorInformation)
+                    SetSkinImpostor(isImpostor);
+                else
+                    SetSkinImpostor(false);
+            }
+          
 
             if (gameManager.timer.timerFinish && !gameManager.alreadyPass)
             {
@@ -694,6 +699,8 @@ public class PlayerGO : MonoBehaviour
                 if (gameManager.game.currentRoom.isLabyrintheHide && gameManager.speciallyIsLaunch)
                     return;
             }
+            if (isSacrifice)
+                return;
         }
         if (this.transform.Find("Skins").GetChild(indexSkin).gameObject.activeSelf)
         {
@@ -849,13 +856,17 @@ public class PlayerGO : MonoBehaviour
     {
         if (gameManager && gameManager.speciallyIsLaunch)
         {
+            if(!this.GetComponent<PhotonRigidbody2DView>().preciseSyncPosition)
+                SendChangeSyncFunction(true);
             this.GetComponent<PhotonRigidbody2DView>().preciseSyncPosition = true;
-            SendChangeSyncFunction(true);
+            
         }
         else
         {
+            if(this.GetComponent<PhotonRigidbody2DView>().preciseSyncPosition)
+                SendChangeSyncFunction(false);
             this.GetComponent<PhotonRigidbody2DView>().preciseSyncPosition = false;
-            SendChangeSyncFunction(false);
+         
         }
     }
 
@@ -1112,7 +1123,6 @@ public class PlayerGO : MonoBehaviour
     public void IgnoreCollisionAllPlayer(bool ignore)
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        Debug.Log(ignore + "  IGNORE");
         foreach(GameObject player in players)
         {
             if (player.GetComponent<PhotonView>().ViewID != this.GetComponent<PhotonView>().ViewID)
@@ -1121,18 +1131,11 @@ public class PlayerGO : MonoBehaviour
                     !player.GetComponent<PlayerGO>().isInJail)
                 {
                     player.GetComponent<CapsuleCollider2D>().isTrigger = ignore;
-                    Debug.Log(player.GetComponent<PhotonView>().ViewID + "  " + this.GetComponent<PhotonView>().ViewID) ;
                     Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), ignore);
                 }
             }
         }
     }
-
-/*    public void IgnoreCollision(bool ignore)
-    {
-        player.GetComponent<CapsuleCollider2D>().isTrigger = ignore;
-        Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), ignore);
-    }*/
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
@@ -1603,11 +1606,14 @@ public class PlayerGO : MonoBehaviour
         }
         if (gameManager.speciallyIsLaunch)
             return;
-
         if (OnePlayerHasWinFireball())
             return;
+        if (gameManager.indexPlayerPreviousExploration == this.transform.GetComponent<PhotonView>().ViewID)
+            return;
+        if (gameManager.onePlayerHasTorch && !this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf)
+            return;
 
-        GetComponent<PlayerNetwork>().SendDisplayBlueTorch(!this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);; ;
+        GetComponent<PlayerNetwork>().SendDisplayBlueTorch(!this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);
     }
     public void ClickToVoteSacrifice()
     {
@@ -2115,12 +2121,16 @@ public class PlayerGO : MonoBehaviour
 
     public IEnumerator MovingDeathAnimationWaitCouroutine()
     {
-        yield return new WaitForSeconds(2.81f);
+        if(GetComponent<PhotonView>().IsMine)
+            yield return new WaitForSeconds(2.6f);
+        else
+            yield return new WaitForSeconds(2.6f);
         animationDeath = true;
     }
 
     public void MovingUpForDeathAnimation()
     {
+       
         this.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).Translate(new Vector3(0, 2.3f * Time.deltaTime));
         this.transform.Find("Skins").GetChild(indexSkin).Find("Eyes1").Translate(new Vector3(0, 2.3f * Time.deltaTime));
         this.transform.Find("InfoCanvas").Translate(new Vector3(0, 2.3f * Time.deltaTime));

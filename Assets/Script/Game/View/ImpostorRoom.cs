@@ -29,15 +29,15 @@ public class ImpostorRoom : TrialsRoom
             return;
         
         float randomfloat = Random.Range(0, 100);
-        if (randomfloat < 30)
+        if (randomfloat < 35)
         {
             this.transform.Find("potion").gameObject.SetActive(true);
         }
-        else if (randomfloat < 60)
+        else if (randomfloat < 75)
         {
             this.transform.Find("book").gameObject.SetActive(true);
         }
-        else if (randomfloat < 90)
+        else if (randomfloat < 100)
         {
             this.transform.Find("key").gameObject.SetActive(true);
         }

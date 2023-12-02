@@ -80,7 +80,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         //gameManager.game.NumberExpeditionAvailable(gameManager.setting.LIMITED_TORCH, 0);
         if (player.GetComponent<PlayerGO>().isBoss)
         {
-            gameManager.ChangeBoss();
+            gameManager.ChangeBoss2();
         }
         if (gameManager.speciallyIsLaunch || gameManager.fireBallIsLaunch)
         {

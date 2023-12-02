@@ -60,7 +60,7 @@ public class Hexagone : MonoBehaviourPun
         {
             this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(false);
         }
-       
+           
     }
 
 
@@ -77,21 +77,22 @@ public class Hexagone : MonoBehaviourPun
 #if UNITY_IOS || UNITY_ANDROID
         return;
 #endif
-        if (!this.room.IsObstacle && (this.room.isSpecial || this.room.IsExit || this.room.IsHell ) && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        if (!this.room.IsObstacle && (this.room.isSpecial || this.room.IsExit || this.room.IsHell ))
         {
-            if (!gameManager.ui_Manager.blueWallPaper.transform.Find("Canvas").Find("Text_timer").gameObject.activeSelf)
+            if (gameManager.ui_Manager.map.activeSelf)
             {
 
                 this.transform.Find("Canvas").Find("ImpostorPower").gameObject.SetActive(false);
                 this.transform.Find("Canvas").Find("Distance_text").gameObject.SetActive(true);
-                if (this.room.IsExit)
-                    this.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(false);
-                if (this.room.IsHell)
-                    this.transform.Find("Canvas").Find("Hell").gameObject.SetActive(false);
+                if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+                {
+                    if (this.room.IsExit)
+                        this.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(false);
+                    if (this.room.IsHell)
+                        this.transform.Find("Canvas").Find("Hell").gameObject.SetActive(false);
+                }
                 if (this.room.isSpecial)
-                    this.transform.Find("Information_Speciality").gameObject.SetActive(false);
-
-               
+                    this.transform.Find("Information_Speciality").gameObject.SetActive(false);     
             }
         }
 
@@ -126,17 +127,20 @@ public class Hexagone : MonoBehaviourPun
         return;
 #endif
 
-        if ( !this.room.IsObstacle && (this.room.isSpecial || this.room.IsExit || this.room.IsHell) && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
+        if ( !this.room.IsObstacle && (this.room.isSpecial || this.room.IsExit || this.room.IsHell) && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
         {
-            if (!gameManager.ui_Manager.blueWallPaper.transform.Find("Canvas").Find("Text_timer").gameObject.activeSelf)
+            if (gameManager.ui_Manager.map.activeSelf)
             {
 
                 this.transform.Find("Canvas").Find("ImpostorPower").gameObject.SetActive(true);
                 //this.transform.Find("Canvas").Find("Distance_text").gameObject.SetActive(false);
-                if (this.room.IsExit)
-                    this.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
-                if (this.room.IsHell)
-                    this.transform.Find("Canvas").Find("Hell").gameObject.SetActive(true);
+                if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+                {
+                    if (this.room.IsExit)
+                        this.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
+                    if (this.room.IsHell)
+                        this.transform.Find("Canvas").Find("Hell").gameObject.SetActive(true);
+                }
                 if (this.room.isSpecial)
                     this.transform.Find("Information_Speciality").gameObject.SetActive(true);
         

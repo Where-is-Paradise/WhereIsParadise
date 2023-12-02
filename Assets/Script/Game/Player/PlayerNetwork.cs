@@ -280,7 +280,7 @@ public class PlayerNetwork : MonoBehaviourPun
         player.wantToChangeBoss = !player.wantToChangeBoss;
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("ChangeBoss").gameObject.SetActive(player.wantToChangeBoss);
 
-        if (!PhotonNetwork.IsMasterClient)
+        if (!player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
         }
@@ -446,7 +446,9 @@ public class PlayerNetwork : MonoBehaviourPun
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Crown").gameObject.SetActive(false);
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Horns").gameObject.SetActive(false);
         player.transform.Find("TrialObject").gameObject.SetActive(false);
+
         LaunchSacrificeAnimation();
+
         player.gameManager.SacrificeIsUsedOneTimes = true;
 
         if (player.isImpostor)
@@ -465,7 +467,7 @@ public class PlayerNetwork : MonoBehaviourPun
 
     public void LaunchSacrificeAnimation()
     {
-        GetComponent<PhotonTransformViewClassic>().m_PositionModel.SynchronizeEnabled = false;
+        GetComponent<PhotonTransformViewClassic>().enabled = false;
         GetComponent<PhotonRigidbody2DView>().enabled = false;
         GetComponent<Lag_Compensation>().enabled = false;
         player.canMove = false;
@@ -480,10 +482,35 @@ public class PlayerNetwork : MonoBehaviourPun
         if (player.transform.position.x > 6.6)
             player.transform.position = new Vector3(6.6f, this.transform.position.y);
         player.old_y_position = player.transform.position.y;
+        this.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).GetComponent<SpriteRenderer>().sortingOrder = -54;
         StartCoroutine(player.CanMoveActiveCoroutine());
         StartCoroutine(player.MovingDeathAnimationWaitCouroutine());
 
 
+    }
+
+    public IEnumerator LaunchSacrificeAnimationCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        GetComponent<PhotonTransformViewClassic>().m_PositionModel.SynchronizeEnabled = false;
+        GetComponent<PhotonRigidbody2DView>().enabled = false;
+        GetComponent<Lag_Compensation>().enabled = false;
+        player.canMove = false;
+        if (player.gameManager.SamePositionAtMine(player.GetComponent<PhotonView>().ViewID))
+        {
+            player.transform.Find("DeathPlayerAnimation").GetComponent<Animator>().SetBool("death", true);
+            player.transform.Find("DeathPlayerAnimation").GetComponent<CircleCollider2D>().enabled = true;
+            if (player.transform.position.y < -2.35f)
+                player.transform.position = new Vector3(this.transform.position.x, -2f);
+            if (player.transform.position.x < -6.6f)
+                player.transform.position = new Vector3(-6.6f, this.transform.position.y);
+            if (player.transform.position.x > 6.6)
+                player.transform.position = new Vector3(6.6f, this.transform.position.y);
+            player.old_y_position = player.transform.position.y;
+            this.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).GetComponent<SpriteRenderer>().sortingOrder = -54;
+            StartCoroutine(player.CanMoveActiveCoroutine());
+            StartCoroutine(player.MovingDeathAnimationWaitCouroutine());
+        }
     }
 
     public IEnumerator HidePlayerCouroutine()
@@ -841,6 +868,19 @@ public class PlayerNetwork : MonoBehaviourPun
             player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_Cursed").gameObject.SetActive(isCursed);
     }
 
+    public void SendPurification()
+    {
+        photonView.RPC("SetPurification", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetPurification()
+    {
+        player.GetComponent<PlayerGO>().isCursed = false;
+        player.GetComponent<PlayerGO>().isBlind = false;
+    }
+
+
     public void SendDistanceCursed(int distanceCursed, int indexRoom)
     {
         photonView.RPC("SetDistanceCursed", RpcTarget.All, distanceCursed, indexRoom);
@@ -900,26 +940,33 @@ public class PlayerNetwork : MonoBehaviourPun
     public void InsertPowerToDoor(int indexRoom, int indexPower)
     {
         Room room = player.gameManager.game.dungeon.GetRoomByIndex(indexRoom);
+        
         switch (indexPower)
         {
             case 0:
                 room.IsFoggy = true;
                 break;
             case 1:
+                player.gameManager.ResetSpeciallyRoomState(room);
                 room.chest = true;
                 room.isTraped = true;
                 if (PhotonNetwork.IsMasterClient)
                 {
                     player.gameManager.game.dungeon.InsertChestRoom(room.Index);
-                    player.gameManager.gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 0);
+                    for (int i = 0; i < 2; i++)
+                    {
+                        player.gameManager.gameManagerNetwork.SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                    }
+                   
                 }
                 break;
             case 2:
                 room.IsVirus = true;
                 break;
             case 3:
+                player.gameManager.ResetSpeciallyRoomState(room);
                 room.isPray = true;
-                room.isTraped = true;
+                room.isTraped = true;      
                 break;
             case 4:
                 room.isIllustion = true;
@@ -1141,10 +1188,10 @@ public class PlayerNetwork : MonoBehaviourPun
         player.explorationPowerIsAvailable = dislay;
         if (player.GetComponent<PhotonView>().IsMine)
         {
-
             player.gameManager.ui_Manager.DisabledButtonPowerExploration(!dislay);
             player.gameManager.ui_Manager.DisplayAllDoorLightExploration(dislay);
         }
+        player.gameManager.onePlayerHasTorch = dislay;
 
 
     }
@@ -1182,7 +1229,7 @@ public class PlayerNetwork : MonoBehaviourPun
         GameObject speciallyRoom = player.GetOnlyChildActive(GameObject.Find("Room").transform.Find("Special").gameObject);
         speciallyRoom.GetComponent<TrialsRoom>().ReactivateCurrentRoom();
         speciallyRoom.GetComponent<TrialsRoom>().ActivateObjectPower(indexPlayer);
-        if(player.isImpostor && !player.hasImpostorObject)
+        if(player.isImpostor && !player.hasOneTrapPower)
             speciallyRoom.GetComponent<TrialsRoom>().ActivateImpostorObject(indexPlayer);
     }
 

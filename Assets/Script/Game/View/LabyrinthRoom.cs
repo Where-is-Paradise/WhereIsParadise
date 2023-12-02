@@ -516,6 +516,9 @@ public class LabyrinthRoom : TrialsRoom
     {
         listIndexAwardByPlayer.Clear();
         gameManagerParent.ActivateCollisionTPOfAllDoor(true);
+        gameManagerParent.CloseDoorWhenVote(false);
+        gameManagerParent.ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
+        gameManagerParent.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);
     }
 
     public void SendDestroyAllObstacle()

@@ -82,6 +82,23 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerGO>().isBoss = true;
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerNetwork>().SendDisplayCrown(true);
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
+
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            gameManager.ui_Manager.DisplayPanelBossInformation(true);
+        }
+        StartCoroutine(gameManager.CanChangeBossCoroutine());
+    }
+
+    public void SendIndexBoss(int indexBoss)
+    {
+        photonView.RPC("SetIndexBoss", RpcTarget.All, indexBoss);
+    }
+
+    [PunRPC]
+    public void SetIndexBoss(int indexBoss)
+    {
+        gameManager.indexBoss = indexBoss;
     }
 
 
@@ -1385,6 +1402,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         Room newParadise = gameManager.game.dungeon.GetRoomByIndex(index);
         gameManager.game.dungeon.exit = newParadise;
         newParadise.IsExit = true;
+        gameManager.ResetSpeciallyRoomState(newParadise);
+        gameManager.GetHexagone(newParadise.Index).DiplayInformationSpeciallyRoom(false);
         gameManager.SetCurrentRoomColor();
         gameManager.game.dungeon.SetPathFindingDistanceAllRoom();
     }
@@ -2110,13 +2129,13 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendDisplayTrappedDoor(int indexDoor)
     {
-        photonView.RPC("DisplayTrappedDoor", RpcTarget.Others, indexDoor);
+        photonView.RPC("DisplayTrappedDoor", RpcTarget.All, indexDoor);
     }
 
     [PunRPC]
     public void DisplayTrappedDoor(int indexDoor)
     {
-        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             return;
 
         Door door = gameManager.GetDoorGo(indexDoor).GetComponent<Door>();
@@ -2141,13 +2160,15 @@ public class GameManagerNetwork : MonoBehaviourPun
             case 0:
                 Room room = gameManager.game.dungeon.GetRoomByIndex(indexRoom);
                 room.chest = true;
-                if (!PhotonNetwork.IsMasterClient)
-                    return;
-                gameManager.game.dungeon.InsertChestRoom(indexRoom);
-                for (int i = 0; i < 2; i++)
+                if (PhotonNetwork.IsMasterClient)
                 {
-                    gameManager.gameManagerNetwork.SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                    gameManager.game.dungeon.InsertChestRoom(indexRoom);
+                    for (int i = 0; i < 2; i++)
+                    {
+                        gameManager.gameManagerNetwork.SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                    }
                 }
+
                 break;
             case 1:
                 gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSacrifice = true;
@@ -2164,7 +2185,6 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;
 
-        
     }
 
     public void SendNewTrapedRoom(int indexRoom, int indexSpeciallity)
@@ -2212,6 +2232,8 @@ public class GameManagerNetwork : MonoBehaviourPun
                 }
                 break;
         }
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).isTraped = true;
+
     }
 
 
@@ -2322,5 +2344,41 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.CloseDoorWhenVote(false);
         gameManager.ActivateCollisionTPOfAllDoor(true);
+    }
+
+    public void SendIndexPreviousExplorater(int indexPlayer)
+    {
+        photonView.RPC("SetIndexPreviousExplorater", RpcTarget.All, indexPlayer);
+    }
+
+    [PunRPC]
+    public void SetIndexPreviousExplorater(int indexPlayer)
+    {
+        gameManager.indexPlayerPreviousExploration = indexPlayer;
+    }
+
+    public void SendChangeBoss2()
+    {
+        photonView.RPC("SetChangeBoss2", RpcTarget.All);
+    }
+    
+    [PunRPC]
+    public void SetChangeBoss2()
+    {
+        gameManager.ChangeBoss();
+    }
+
+    public void SendImpostorRoom()
+    {
+        photonView.RPC("SetImpostorRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetImpostorRoom()
+    {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        {
+            gameManager.game.dungeon.InsertImpostorRoom();
+        }
     }
 }

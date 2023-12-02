@@ -70,7 +70,7 @@ public class DeathNpcRoom : TrialsRoom
         gameManager.speciallyIsLaunch = true;
         gameManager.deathNPCIsLaunch = true;
         gameManager.ActivateCollisionTPOfAllDoor(false);
-        StartCoroutine(CouroutineEndGame(10));
+        StartCoroutine(CouroutineEndGame(randomTimer));
         DisplayTimer(randomTimer);
     }
     public void DisplayTimer(float randomTimer)

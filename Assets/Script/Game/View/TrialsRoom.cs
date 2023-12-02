@@ -25,7 +25,6 @@ public class TrialsRoom : MonoBehaviourPun
     public void GetAward(int playerWinnerindex)
     {
         float randomFloat = Random.Range(0, 100);
-        Debug.Log(playerWinnerindex);
         playerwinner = gameManagerParent.GetPlayer(playerWinnerindex).GetComponent<PlayerGO>();
         int indexPlayerMine = playerwinner.GetComponent<PhotonView>().ViewID;
         photonView.RPC("SendRandomInt", RpcTarget.All, randomFloat, indexPlayerMine) ;
@@ -46,9 +45,6 @@ public class TrialsRoom : MonoBehaviourPun
                 else
                     randomInt = 3;*/
         //randomInt = 4;
-
-        Debug.Log(randomFloat);
-
         if(randomFloat < 50)
         {
             // bluetorch
@@ -194,31 +190,40 @@ public class TrialsRoom : MonoBehaviourPun
         if (!gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
             return;
 
+        Debug.LogError("sa passe " + indexPlayer);
+
         float randomfloat = Random.Range(0, 100);
 
-        if(randomfloat < 30)
+        if(randomfloat < 20)
         {
-            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManagerParent.listIndexImpostorObject[0]);
-            gameManagerParent.ui_Manager.DisplayInformationObjectWon(5);
+            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(gameManagerParent.listIndexImpostorPower[0]);
+            gameManagerParent.ui_Manager.DisplayInformationObjectWon(9);
         }
-        else if ( randomfloat < 60)
+        else if ( randomfloat < 40)
         {
-            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManagerParent.listIndexImpostorObject[2]);
-            gameManagerParent.ui_Manager.DisplayInformationObjectWon(6);
+            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(gameManagerParent.listIndexImpostorPower[1]);
+            gameManagerParent.ui_Manager.DisplayInformationObjectWon(10);
         }
-        else if (randomfloat < 90)
+        else if (randomfloat < 60)
         {
-            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManagerParent.listIndexImpostorObject[3]);
-            gameManagerParent.ui_Manager.DisplayInformationObjectWon(8);
+            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(gameManagerParent.listIndexImpostorPower[2]);
+            gameManagerParent.ui_Manager.DisplayInformationObjectWon(11);
 
+        }
+        else if(randomfloat < 60)
+        {
+            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(gameManagerParent.listIndexImpostorPower[3]);
+            gameManagerParent.ui_Manager.DisplayInformationObjectWon(12);
         }
         else
         {
-            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexObjectPower(gameManagerParent.listIndexImpostorObject[1]);
-            gameManagerParent.ui_Manager.DisplayInformationObjectWon(7);
+            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(gameManagerParent.listIndexImpostorPower[4]);
+            gameManagerParent.ui_Manager.DisplayInformationObjectWon(13);
         }
-        gameManagerParent.ui_Manager.DisplayObjectPowerImpostorInGame();
-        gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasImpostorObject = true;
+
+
+        gameManagerParent.ui_Manager.DisplayPowerImpostorInGame();
+        gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasOneTrapPower = true;
     }
 
     public void ResetHeartForAllPlayer()

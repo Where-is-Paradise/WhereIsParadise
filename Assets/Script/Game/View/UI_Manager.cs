@@ -102,6 +102,9 @@ public class UI_Manager : MonoBehaviour
     public GameObject panelChooseRoomTrap;
 
     public GameObject panelInformationObjectWon;
+    public GameObject panelInformationPowerWon;
+
+    public GameObject panelBossInformation;
 
     // Start is called before the first frame update
     void Start()
@@ -933,9 +936,9 @@ setting_button_echapMenu.SetActive(false);
                 resumePanel.transform.GetChild(0).GetChild(2).gameObject.SetActive(true);
                 for (int i = 0; i < 3; i++)
                 {
-                    resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("Image").GetComponent<Image>().sprite =
+                    resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("Image").GetComponent<Image>().sprite =
                         listImpostorsName[i].transform.Find("Skins").GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().sprite;
-                    resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("eye").gameObject.SetActive(listImpostorsName[i].transform.Find("Skins")
+                    resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("eye").gameObject.SetActive(listImpostorsName[i].transform.Find("Skins")
                         .GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.activeSelf);
                 }
             }
@@ -943,9 +946,9 @@ setting_button_echapMenu.SetActive(false);
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("Image").GetComponent<Image>().sprite =
+                    resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("Image").GetComponent<Image>().sprite =
                         listImpostorsName[i].transform.Find("Skins").GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().sprite;
-                    resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("eye").gameObject.SetActive(listImpostorsName[i].transform.Find("Skins")
+                    resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("eye").gameObject.SetActive(listImpostorsName[i].transform.Find("Skins")
                         .GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.activeSelf);
                 }
             }
@@ -1190,7 +1193,7 @@ setting_button_echapMenu.SetActive(false);
             if (chest.isAward)
             {
                 GameObject chestRoomAward = chestRoom.transform.GetChild(chest.index).Find("Award").gameObject;
-                if (!gameManager.game.currentRoom.isTraped)
+                if (!gameManager.game.currentRoom.isTraped || (gameManager.game.currentRoom.isTraped && (gameManager.game.currentRoom.IsFoggy || gameManager.game.currentRoom.isIllustion || gameManager.game.currentRoom.IsVirus)))
                 {
                     chestRoomAward.SetActive(display);
                     chestRoomAward.transform.GetChild(chest.indexAward).gameObject.SetActive(display);
@@ -1209,7 +1212,8 @@ setting_button_echapMenu.SetActive(false);
             else
             {
                 GameObject chestRoomPenalty = chestRoom.transform.GetChild(chest.index).Find("Penalty").gameObject;
-                if (gameManager.game.currentRoom.isTraped)
+                Debug.Log(gameManager.game.currentRoom.isTraped + " " + gameManager.game.currentRoom.IsFoggy + " " + gameManager.game.currentRoom.isIllustion + " " + gameManager.game.currentRoom.IsVirus);
+                if (gameManager.game.currentRoom.isTraped && !gameManager.game.currentRoom.IsFoggy && !gameManager.game.currentRoom.isIllustion && !gameManager.game.currentRoom.IsVirus)
                 {
                     chestRoomPenalty.SetActive(display);
                     chestRoomPenalty.transform.GetChild(chest.indexAward).gameObject.SetActive(display);
@@ -1607,6 +1611,11 @@ setting_button_echapMenu.SetActive(false);
         canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower).gameObject.SetActive(true);
     }
 
+    public void HidePowerButtonImpostor()
+    {
+        canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).gameObject.SetActive(false);
+    }
+
     public void DesactivateObjectPowerImpostor(bool interactable)
     {
         canvasInGame.transform.Find("Object").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexObjectPower)
@@ -1755,6 +1764,7 @@ setting_button_echapMenu.SetActive(false);
 
             //gameManager.ui_Manager.DisplayAllDoorLightExploration(false);
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
+            gameManager.gameManagerNetwork.SendIndexPreviousExplorater(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
         }
            
     }
@@ -1846,7 +1856,7 @@ setting_button_echapMenu.SetActive(false);
         Room room = hexagone.Room;
         if (!room)
             return;
-        if (room.IsExit || room.IsHell || room.IsObstacle || room.IsInitiale || room.IsTraversed)
+        if (room.IsObstacle || room.IsInitiale || room.IsTraversed)
             return;
         if (room.isHide)
         {
@@ -1854,36 +1864,16 @@ setting_button_echapMenu.SetActive(false);
             interogationPoint.SetActive(display);
             return;
         }
-/*        GameObject Information_Speciality = hexagone.transform.Find("Information_Speciality").gameObject;
-        Information_Speciality.SetActive(display);
-        if (room.isAx)
-            Information_Speciality.transform.Find("Hexagone").Find("Ax").gameObject.SetActive(display);
-        if (room.isSword)
-            Information_Speciality.transform.Find("Hexagone").Find("Sword").gameObject.SetActive(display);
-        if (room.isSwordDamocles)
-            Information_Speciality.transform.Find("Hexagone").Find("Damocles").gameObject.SetActive(display);
-        if (room.isDeathNPC)
-            Information_Speciality.transform.Find("Hexagone").Find("GodDeath").gameObject.SetActive(display);
-        if (room.fireBall)
-            Information_Speciality.transform.Find("Hexagone").Find("Gargouille").gameObject.SetActive(display);
-        if (room.chest)
-            Information_Speciality.transform.Find("Hexagone").Find("Chest").gameObject.SetActive(display);
-        if (room.isSacrifice)
-            Information_Speciality.transform.Find("Hexagone").Find("Sacrifice").gameObject.SetActive(display);
-        if (room.isLostTorch)
-            Information_Speciality.transform.Find("Hexagone").Find("LostTorch").gameObject.SetActive(display);
-        if (room.isMonsters)
-            Information_Speciality.transform.Find("Hexagone").Find("Monsters").gameObject.SetActive(display);
-        if (room.isResurection)
-            Information_Speciality.transform.Find("Hexagone").Find("Resurection").gameObject.SetActive(display);
-        if (room.isPurification)
-            Information_Speciality.transform.Find("Hexagone").Find("Purification").gameObject.SetActive(display);
-        if (room.isPray)
-            Information_Speciality.transform.Find("Hexagone").Find("Pray").gameObject.SetActive(display);
-        if (room.isNPC)
-            Information_Speciality.transform.Find("Hexagone").Find("NPC").gameObject.SetActive(display);
-        if (room.isLabyrintheHide)
-            Information_Speciality.transform.Find("Hexagone").Find("Labyrinthe").gameObject.SetActive(display);*/
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+        {
+            if (room.IsExit)
+                hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
+            if (room.IsHell)
+                hexagone.transform.Find("Canvas").Find("Hell").gameObject.SetActive(true);
+        }
+       
+        if (room.isSpecial)
+            hexagone.gameObject.transform.Find("Information_Speciality").gameObject.SetActive(true);
     }
     
     public void DisplayLightLeverSpeciallyRoom(bool display)
@@ -2154,11 +2144,7 @@ setting_button_echapMenu.SetActive(false);
 
     public void OnClickButtonKeyTraped()
     {
-        panelChooseRoomTrap.SetActive(true);
-/*        canvasInGame.transform.Find("Exploration").Find("MagicalKeyTrap").Find("Bigger").gameObject.SetActive(false);
-        canvasInGame.transform.Find("Exploration").Find("MagicalKey").gameObject.SetActive(false);
-        */
-        
+        panelChooseRoomTrap.SetActive(true);        
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayMagicalKey(false);
         DisplayAllDoorLightExploration(false);
     }
@@ -2181,7 +2167,7 @@ setting_button_echapMenu.SetActive(false);
             return;
 
         gameManager.gameManagerNetwork.SendNewTrapedRoom(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().GetRoomBehind().Index, indexChoice);
-        gameManager.gameManagerNetwork.SendOrangeDoor(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().index);
+        gameManager.gameManagerNetwork.SendDisplayTrappedDoor(indexDoor);
     }
 
     public void DisplayButtonBlackTorch(bool display)
@@ -2222,6 +2208,11 @@ setting_button_echapMenu.SetActive(false);
         panelInformationObjectWon.gameObject.transform.Find("Panel").GetChild(index).gameObject.SetActive(true);
 
     }
+    public void DisplayInformationPowerWon(int index)
+    {
+        panelInformationPowerWon.gameObject.SetActive(true);
+        panelInformationPowerWon.gameObject.transform.Find("Panel").GetChild(index).gameObject.SetActive(true);
+    }
 
     public void DisplayButtonNPCBigger(bool display)
     {
@@ -2231,6 +2222,11 @@ setting_button_echapMenu.SetActive(false);
     {
         bool isLeft = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isLeftNpc;
         GameObject.Find("NPCRoom").GetComponent<NPCRoom>().SendDisplayDistanceByNpc(isLeft);
+    }
+
+    public void DisplayPanelBossInformation(bool display)
+    {
+        panelBossInformation.SetActive(display); 
     }
 
 }
