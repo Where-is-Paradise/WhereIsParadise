@@ -37,7 +37,7 @@ public class DamoclesSwordRoom : TrialsRoom
         yield return new WaitForSeconds(2);
         gameManager.damoclesIsLaunch = true;
         gameManager.speciallyIsLaunch = true;
-        
+        gameManagerParent.DisplayTorchBarre(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         speciallyLaunched = true;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)

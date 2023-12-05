@@ -156,7 +156,7 @@ public class GameManager : MonoBehaviourPun
         game.setting = setting;
         game.Launch(25, 25);
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
-
+        //Debug.Log("dsjfnsdkjlfs")
         StartCoroutine(MasterClientCreateMap());
         /*        if (PhotonNetwork.IsMasterClient)
                 {
@@ -210,6 +210,7 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendBoss(GetBoss().GetComponent<PhotonView>().ViewID);
             game.SetKeyCounter();
             game.key_counter = game.key_counter + setting.KEY_ADDITIONAL + 3;
+            //game.key_counter = 1;
             gameManagerNetwork.SendKey(game.key_counter);
             ui_Manager.SetNBKey();
             SetInitialPositionPlayers();
@@ -2143,12 +2144,15 @@ public class GameManager : MonoBehaviourPun
                     player.transform.GetChild(0).gameObject.SetActive(true);
                     player.transform.GetChild(1).gameObject.SetActive(true);
                     player.transform.Find("TrialObject").gameObject.SetActive(true);
+                    if(indexPlayerPreviousExploration == player.GetComponent<PhotonView>().ViewID)
+                        player.transform.Find("TorchBarre").gameObject.SetActive(true);
                 }
                 else
                 {
                     player.transform.GetChild(0).gameObject.SetActive(false);
                     player.transform.GetChild(1).gameObject.SetActive(false);
                     player.transform.Find("TrialObject").gameObject.SetActive(false);
+                    player.transform.Find("TorchBarre").gameObject.SetActive(false);
                 }
             }
         }
@@ -3422,9 +3426,9 @@ public class GameManager : MonoBehaviourPun
             return;
         if (room.speciallyIsInsert)
             return;
-/*
-        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 4);
-        return;*/
+
+        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 0);
+        return;
         if (room.isTrial)
         {
             float randomInt = Random.Range(0, 100);
@@ -4279,4 +4283,13 @@ public class GameManager : MonoBehaviourPun
         yield return new WaitForSeconds(3);
         canChangeBoss = true;
     }
+
+    public void DisplayTorchBarre(bool display)
+    {
+        if (indexPlayerPreviousExploration == -1)
+            return;
+        GetPlayer(indexPlayerPreviousExploration).transform.Find("TorchBarre").gameObject.SetActive(display);
+    }
+
+
 }

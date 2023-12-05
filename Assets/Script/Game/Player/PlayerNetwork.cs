@@ -446,6 +446,7 @@ public class PlayerNetwork : MonoBehaviourPun
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Crown").gameObject.SetActive(false);
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Horns").gameObject.SetActive(false);
         player.transform.Find("TrialObject").gameObject.SetActive(false);
+        player.transform.Find("TorchBarre").gameObject.SetActive(false);
 
         LaunchSacrificeAnimation();
 

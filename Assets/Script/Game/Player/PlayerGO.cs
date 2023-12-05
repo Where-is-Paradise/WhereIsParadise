@@ -173,6 +173,8 @@ public class PlayerGO : MonoBehaviour
     public bool hasImpostorObject = false;
     public bool hasOneTrapPower = false;
 
+    public bool canCollisionToDoorExploration = true;
+
     private void Awake()
     {
         displayChatInput = false;
@@ -668,6 +670,7 @@ public class PlayerGO : MonoBehaviour
                         transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).GetComponent<SpriteRenderer>().sortingOrder = -12;
                     }
                 }
+
             }
         }
        
@@ -776,6 +779,8 @@ public class PlayerGO : MonoBehaviour
             return;
         }
 
+        CollisionWithDoorToExploration(collision, true);
+
         if (!collision.CompareTag("Zone_vote"))
         {
             return;
@@ -793,6 +798,9 @@ public class PlayerGO : MonoBehaviour
         {
             GetComponent<PlayerNetwork>().SendVoteExplorationDisplay(true);
         }
+
+
+
     }
 
     public GameObject GetOnlyChildActive(GameObject listObject)
@@ -1042,12 +1050,14 @@ public class PlayerGO : MonoBehaviour
     {
         if (!GetComponent<PhotonView>().IsMine)
             return;
+        
         if (!explorationPowerIsAvailable)
             return;
         if (gameManager.game.currentRoom.explorationIsUsed)
             return;
         if (!collision.gameObject.name.Equals("CollisionPowerImpostor"))
             return;
+        Debug.Log("sa passe");
         if (collision.transform.parent.gameObject.GetComponent<Door>().barricade)
             return;
         if (collision.transform.parent.gameObject.GetComponent<Door>().isOpenForAll)
@@ -1058,9 +1068,22 @@ public class PlayerGO : MonoBehaviour
             return;
         if (isBoss && !hasWinFireBallRoom)
             return;
+        Debug.Log(canCollisionToDoorExploration);
+        if (enter && !canCollisionToDoorExploration)
+            return;
+        
         gameManager.ui_Manager.DisplayButtonPowerExplorationBigger(enter);
         collsionDoorIndexForExploration = collision.transform.parent.gameObject.GetComponent<Door>().index;
 
+        if (!enter)
+            StartCoroutine(CanCollisionToDoorExplorationCoroutine());
+    }
+
+    public IEnumerator CanCollisionToDoorExplorationCoroutine()
+    {
+        canCollisionToDoorExploration = false;
+        yield return new WaitForSeconds(0.5f);
+        canCollisionToDoorExploration = true;
     }
 
     public void CollisionWithDoorToMagicalKey(Collider2D collision, bool enter)
@@ -1137,6 +1160,12 @@ public class PlayerGO : MonoBehaviour
         }
     }
 
+    public void IgnoreCollisionPlayer(int indexPlayer, bool ignore)
+    {
+        Physics2D.IgnoreCollision(this.transform.GetComponent<CapsuleCollider2D>(), gameManager.GetPlayer(indexPlayer).transform.GetComponent<CapsuleCollider2D>(), ignore);
+        
+    }
+
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (!GetComponent<PhotonView>().IsMine)
@@ -1208,7 +1237,7 @@ public class PlayerGO : MonoBehaviour
 
         }
 
-        CollisionWithDoorToExploration(collision, true);
+        //CollisionWithDoorToExploration(collision, true);
         CollisionWithDoorToMagicalKey(collision, true);
         CollisionWithDoorToBlackTorch(collision, true);
         CollisionWithNPC(collision, true);
@@ -2354,6 +2383,7 @@ public class PlayerGO : MonoBehaviour
             this.transform.Find("CollisionLabyrinth").Find("collisionLeft").gameObject.SetActive(false);
         }
     }
+
 
 
 }

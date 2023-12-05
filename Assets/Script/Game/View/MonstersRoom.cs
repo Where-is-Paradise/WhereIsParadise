@@ -72,6 +72,7 @@ public class MonstersRoom : TrialsRoom
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
+        gameManagerParent.DisplayTorchBarre(false);
         yield return new WaitForSeconds(2);
         isLoose = false;
         roomIsLaunch = true;

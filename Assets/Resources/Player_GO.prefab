@@ -15829,6 +15829,7 @@ MonoBehaviour:
   isLeftNpc: 0
   hasImpostorObject: 0
   hasOneTrapPower: 0
+  canCollisionToDoorExploration: 1
 --- !u!114 &7384524027293410437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32846,7 +32847,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8225434564344018659
 Transform:
   m_ObjectHideFlags: 0

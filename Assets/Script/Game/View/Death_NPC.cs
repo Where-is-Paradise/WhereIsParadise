@@ -43,6 +43,8 @@ public class Death_NPC : MonoBehaviourPun
     void Update()
     {
         ChangeScaleForSituation();
+
+        ChangeTransparencyToInvisibilty();
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
@@ -62,8 +64,7 @@ public class Death_NPC : MonoBehaviourPun
         }
         if (canDashTarget)
             DashDirectionTarget(target2);
-        if (invisibilityScenario)
-            ChangeTransparencyToInvisibilty();
+       
         if (moveToTarget)
             MoveOnTarget();
 
@@ -74,33 +75,72 @@ public class Death_NPC : MonoBehaviourPun
 
     public void ChangeTransparencyToInvisibilty()
     {
-        if (isInvisible && !isTranparencying)
+        if (isInvisible)
         {
+            if (tranparency > 0)
+            {
+                this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+                this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+                tranparency = (tranparency - 3f);
+                if (tranparency <= 0)
+                {
+                    tranparency = 0;
+                }
+                this.transform.Find("targetIMG").gameObject.SetActive(false);
+            }
+        }
+        if (!isInvisible)
+        {
+            if (tranparency < 255)
+            {
+                this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+                this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+                tranparency = (tranparency + 3f);
+                if (tranparency > 255)
+                {
+                    tranparency = 255;
+                }
+                if (moveToTarget)
+                {
+                    this.transform.Find("targetIMG").gameObject.SetActive(true);
+                }
+                    
+
+            }
+        }
+
+        if (IsNearOFOnePlayer())
+        {
+            if (!isInvisible)
+                return;
+            tranparency = 25f;
             this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
             this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
-            tranparency = (tranparency - 2f);
-            if (tranparency < 0)
+
+            if (moveToTarget)
             {
-                isTranparencying = true;
-                isInvertTranparencying = false;
+                this.transform.Find("targetIMG").gameObject.SetActive(true);
             }
 
-
+            //isInvisible = false;
         }
-        if (!isInvisible && !isInvertTranparencying)
-        {
-            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
-            this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
-            tranparency = (tranparency + 2f);
-            if (tranparency > 255)
-            {
-                isInvertTranparencying = true;
-                isTranparencying = false;
-            }
-
-        }
+        
     }
 
+
+    public bool IsNearOFOnePlayer()
+    {
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            Debug.Log((this.transform.position.x - player.transform.position.x) + " " + (this.transform.position.y - player.transform.position.y));
+            if (Mathf.Abs((this.transform.position.x - player.transform.position.x)) < 2f && Mathf.Abs((this.transform.position.y - player.transform.position.y)) < 2f)
+                return true;
+                
+        }
+        return false;
+
+        
+    }
 
 
     public void ChangeScaleForSituation()
@@ -178,11 +218,12 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void DeathTouchPlayerEvent(int indexPlayer)
     {
-        SendIgnoreCollisionPlayer(true);
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial = true;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
+        photonView.RPC("SendIgnoreCollisionOnePlayer", RpcTarget.All, indexPlayer,true);
+
         if (target)
         {
             if (target.GetComponent<PhotonView>().ViewID == indexPlayer)
@@ -204,6 +245,12 @@ public class Death_NPC : MonoBehaviourPun
     public void SendIgnoreCollisionPlayer(bool ignore)
     {
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(ignore);
+    }
+
+    [PunRPC]
+    public void SendIgnoreCollisionOnePlayer(int indexPlayer,  bool ignore)
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionPlayer(indexPlayer, ignore);
     }
 
     [PunRPC]
@@ -411,16 +458,18 @@ public class Death_NPC : MonoBehaviourPun
 
         int indexScenario = Random.Range(0, 3);
         float randomSeconde = Random.Range(3, 8);
-        int randomInvisbility = Random.Range(0,4);
-        if(randomInvisbility == 0)
+        int randomInvisbility = Random.Range(0,2);
+
+        if (randomInvisbility == 0)
         {
             invisibilityScenario = true;
+            photonView.RPC("SendInvisibilityScenario", RpcTarget.All , true);
             Invisibility();
         }
 
 
         //Debug.Log(indexScenario);
-        //indexScenario = 1;
+        //indexScenario = 2;
         Debug.Log("SCENARIO :  " + (indexScenario+1));
         if (indexScenario == 0)
         {
@@ -446,13 +495,15 @@ public class Death_NPC : MonoBehaviourPun
         if(indexScenario == 2)
         {
             moveToTarget = true;
+            photonView.RPC("SendMoveToTarget", RpcTarget.All, true);
             ChangeRandomTarget();
             DisplayTargetImg(true);
             yield return new WaitForSeconds(randomSeconde);
-            moveToTarget = false;
+            photonView.RPC("SendMoveToTarget", RpcTarget.All, false);
             this.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
             DisplayTargetImg(false);
         }
+        photonView.RPC("SendInvisibilityScenario", RpcTarget.All, false);
         invisibilityScenario = false;
         StartCoroutine(RandomScenario());
 
@@ -623,7 +674,7 @@ public class Death_NPC : MonoBehaviourPun
         if (this.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             photonView.RPC("SendIsInvisible", RpcTarget.All, true);
-            float randomInt = Random.Range(0.5f, 2);
+            float randomInt = Random.Range(2, 7);
             yield return new WaitForSeconds(randomInt);
             if (invisibilityScenario)
                 StartCoroutine(SetNotInvisibleCoroutine());
@@ -641,11 +692,23 @@ public class Death_NPC : MonoBehaviourPun
         }
     }
 
-/*    public IEnumerator CoroutineEndInvisibility()
+    [PunRPC]
+    public void SendInvisibilityScenario(bool invisibilityScenario)
     {
-        yield return new WaitForSeconds(7);
-        invisibilityScenario = false;
-    }*/
+        this.invisibilityScenario = invisibilityScenario;
+    }
+
+    [PunRPC]
+    public void SendMoveToTarget(bool moveOnTarget)
+    {
+        this.moveToTarget = moveOnTarget;
+    }
+
+    /*    public IEnumerator CoroutineEndInvisibility()
+        {
+            yield return new WaitForSeconds(7);
+            invisibilityScenario = false;
+        }*/
 
     [PunRPC]
     public void SendIsInvisible(bool isInvisible)
@@ -663,7 +726,7 @@ public class Death_NPC : MonoBehaviourPun
         float vectorY = target.transform.position.y - this.transform.position.y;
 
         
-        this.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(new Vector3(vectorX, vectorY)) * speed * 1.75f;
+        this.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(new Vector3(vectorX, vectorY)) * speed * 1.9f;
 
         if(this.GetComponent<Rigidbody2D>().velocity.x > 0)
         {
@@ -710,7 +773,7 @@ public class Death_NPC : MonoBehaviourPun
 
     public void DisplayTargetImg(bool display)
     {
-        if(target)
+        if(target && !isInvisible)
             photonView.RPC("SendDisplayTarget",RpcTarget.All, target.GetComponent<PhotonView>().ViewID, display);
     }
 

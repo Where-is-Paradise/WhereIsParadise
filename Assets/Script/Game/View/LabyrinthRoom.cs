@@ -106,6 +106,7 @@ public class LabyrinthRoom : TrialsRoom
         gameManagerParent.CloseDoorWhenVote(true);
         gameManagerParent.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
         gameManagerParent.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
+        gameManagerParent.DisplayTorchBarre(false);
 
         if (gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {

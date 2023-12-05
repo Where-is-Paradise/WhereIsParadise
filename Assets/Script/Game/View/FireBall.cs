@@ -141,7 +141,7 @@ public class FireBall : MonoBehaviourPun
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
-
+        photonView.RPC("SendIgnoreCollisionOnePlayer", RpcTarget.All, indexPlayer, true);
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial = true;
         SetPlayerColor(gameManager.GetPlayer(indexPlayer));
         if (TestLastPlayer())
@@ -173,6 +173,12 @@ public class FireBall : MonoBehaviourPun
     {
         if(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().IsMine)
             PhotonNetwork.Destroy(this.gameObject);
+    }
+
+    [PunRPC]
+    public void SendIgnoreCollisionOnePlayer(int indexPlayer, bool ignore)
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionPlayer(indexPlayer, ignore);
     }
 
 

@@ -934,8 +934,9 @@ setting_button_echapMenu.SetActive(false);
             if (gameManager.numberPlayer > 6)
             {
                 resumePanel.transform.GetChild(0).GetChild(2).gameObject.SetActive(true);
-                for (int i = 0; i < 3; i++)
+                for (int i =0; i < 3; i++)
                 {
+                    resumePanel.transform.Find("Impostors").Find("Impostor" + i).Find("Text").GetComponent<Text>().text = listImpostorsName[i].GetComponent<PlayerGO>().playerName;
                     resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("Image").GetComponent<Image>().sprite =
                         listImpostorsName[i].transform.Find("Skins").GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().sprite;
                     resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("eye").gameObject.SetActive(listImpostorsName[i].transform.Find("Skins")
@@ -946,6 +947,7 @@ setting_button_echapMenu.SetActive(false);
             {
                 for (int i = 0; i < 2; i++)
                 {
+                    resumePanel.transform.Find("Impostors").Find("Impostor" + i).Find("Text").GetComponent<Text>().text = listImpostorsName[i].GetComponent<PlayerGO>().playerName;
                     resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("Image").GetComponent<Image>().sprite =
                         listImpostorsName[i].transform.Find("Skins").GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().sprite;
                     resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("eye").gameObject.SetActive(listImpostorsName[i].transform.Find("Skins")

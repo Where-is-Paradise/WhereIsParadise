@@ -2354,7 +2354,12 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetIndexPreviousExplorater(int indexPlayer)
     {
+        if (gameManager.indexPlayerPreviousExploration != -1)
+        {
+            gameManager.GetPlayer(gameManager.indexPlayerPreviousExploration).transform.Find("TorchBarre").gameObject.SetActive(false);
+        }
         gameManager.indexPlayerPreviousExploration = indexPlayer;
+        gameManager.GetPlayer(indexPlayer).transform.Find("TorchBarre").gameObject.SetActive(true);
     }
 
     public void SendChangeBoss2()

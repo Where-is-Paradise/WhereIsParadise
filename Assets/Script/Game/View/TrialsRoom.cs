@@ -131,6 +131,8 @@ public class TrialsRoom : MonoBehaviourPun
         }
         gameManagerParent.ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
         gameManagerParent.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);
+
+        gameManagerParent.DisplayTorchBarre(true);
     }
 
     public void ActivateObjectPower(int indexPlayer)

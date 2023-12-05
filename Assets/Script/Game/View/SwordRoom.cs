@@ -32,6 +32,7 @@ public class SwordRoom : TrialsRoom
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.CloseDoorWhenVote(true);
+        gameManagerParent.DisplayTorchBarre(false);
         yield return new WaitForSeconds(2);
         DisplaySwordAllPlayer(true);
         DisplayHeartsFoAllPlayer(true);

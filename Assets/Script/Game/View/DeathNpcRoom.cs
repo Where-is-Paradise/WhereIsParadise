@@ -35,6 +35,8 @@ public class DeathNpcRoom : TrialsRoom
         gameManager.InstantiateDeathNPC(2);
         gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
+        gameManagerParent.DisplayTorchBarre(false);
+        
         yield return new WaitForSeconds(2);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.deathNPCIsLaunch = true;
@@ -155,6 +157,15 @@ public class DeathNpcRoom : TrialsRoom
             death_NPC_2.SendHideAndResetNPC();
 
         }
-        
+        HideTargetOfAllPlayer();
+    }
+
+    public void HideTargetOfAllPlayer()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach(GameObject player in players)
+        {
+            player.transform.Find("TargetImgInDeathRoom").gameObject.SetActive(false);
+        }
     }
 }

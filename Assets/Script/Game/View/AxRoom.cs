@@ -64,6 +64,7 @@ public class AxRoom : TrialsRoom
         gameManager.CloseDoorWhenVote(true);
         gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
+        gameManagerParent.DisplayTorchBarre(false);
         yield return new WaitForSeconds(2);
         DiplayAxForAllPlayer(true);
         DisplayHeartsFoAllPlayer(true);
