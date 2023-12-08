@@ -77,10 +77,12 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
             gameManager.ResetLeverDisconnect();
         if (gameManager.timer.timerLaunch)
             StartCoroutine(HideZoneCouroutine());
-        //gameManager.game.NumberExpeditionAvailable(gameManager.setting.LIMITED_TORCH, 0);
+
+        if(PhotonNetwork.IsMasterClient)
+            gameManager.RemovePlayerOfList(player);
         if (player.GetComponent<PlayerGO>().isBoss)
-        {
-            gameManager.ChangeBoss2();
+        {   
+            gameManager.ChangeBossWithMasterClient();
         }
         if (gameManager.speciallyIsLaunch || gameManager.fireBallIsLaunch)
         {

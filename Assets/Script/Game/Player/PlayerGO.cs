@@ -1057,7 +1057,6 @@ public class PlayerGO : MonoBehaviour
             return;
         if (!collision.gameObject.name.Equals("CollisionPowerImpostor"))
             return;
-        Debug.Log("sa passe");
         if (collision.transform.parent.gameObject.GetComponent<Door>().barricade)
             return;
         if (collision.transform.parent.gameObject.GetComponent<Door>().isOpenForAll)
@@ -1068,7 +1067,6 @@ public class PlayerGO : MonoBehaviour
             return;
         if (isBoss && !hasWinFireBallRoom)
             return;
-        Debug.Log(canCollisionToDoorExploration);
         if (enter && !canCollisionToDoorExploration)
             return;
         

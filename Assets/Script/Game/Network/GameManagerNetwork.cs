@@ -83,7 +83,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerNetwork>().SendDisplayCrown(true);
         gameManager.GetPlayer(indexNewBoss).GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
 
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss && !gameManager.isEndGame)
         {
             gameManager.ui_Manager.DisplayPanelBossInformation(true);
         }
@@ -2383,7 +2383,57 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
         {
-            gameManager.game.dungeon.InsertImpostorRoom();
+            int indexRoom = gameManager.game.dungeon.InsertImpostorRoom();
+            SendResetSpeciallyRoomToImpostor(indexRoom);
         }
     }
+
+    public void SendResetSpeciallyRoomToImpostor(int indexRoom)
+    {
+        photonView.RPC("SetResetSpeciallyRoomToImpostor", RpcTarget.Others, indexRoom);
+    }
+
+    [PunRPC]
+    public void SetResetSpeciallyRoomToImpostor(int indexRoom)
+    {
+        gameManager.ResetSpeciallyRoomState(gameManager.game.dungeon.GetRoomByIndex(indexRoom));
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).isHide = true;
+        gameManager.GetHexagone(indexRoom).DiplayInformationSpeciallyRoom(false);
+        
+        //gameManager.game.dungeon.GetRoomByIndex(indexRoom).isImpostorRoom = true;
+    }
+
+    public void SendIsEndGame(bool isEndGame)
+    {
+        photonView.RPC("SetIsEndGame", RpcTarget.All, isEndGame);
+    }
+
+    [PunRPC]
+    public void SetIsEndGame(bool value)
+    {
+        gameManager.isEndGame = value;
+    }
+
+    public void SendPlayerList(int indexList, int  indexPlayer)
+    {
+        photonView.RPC("SetPlayerList", RpcTarget.Others, indexList , indexPlayer);
+    }
+
+    [PunRPC]
+    public void SetPlayerList(int indexList, int indexPlayer)
+    {
+        gameManager.listPlayerFinal.Add(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>());
+    }
+
+    public void SendClearPlayerList()
+    {
+        photonView.RPC("SetClearPlayerList", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetClearPlayerList()
+    {
+        gameManager.listPlayerFinal.Clear();
+    }
+
 }

@@ -40,11 +40,14 @@ public class DamoclesSwordRoom : TrialsRoom
         gameManagerParent.DisplayTorchBarre(false);
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         speciallyLaunched = true;
+        DisplayHeartsFoAllPlayer(true);
+        
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             SendObstalceGroup();
             GameObject player = ChoosePlayerRandomly();
             SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
             CounterLaunch(15);
         }  
     }
@@ -87,6 +90,7 @@ public class DamoclesSwordRoom : TrialsRoom
         this.currentPlayer = gameManager.GetPlayer(indexPlayer);
         currentPlayer.GetComponent<PlayerGO>().damoclesSwordIsAbove = true;
         ChangePositionAtPlayer(indexPlayer);
+        sword.transform.position += new Vector3(0f, 1.5f);
     }
 
     public void SendChangePositionAtPlayer(int indexPlayer)
@@ -99,7 +103,6 @@ public class DamoclesSwordRoom : TrialsRoom
     {
         GameObject player = gameManager.GetPlayer(indexPlayer);
         sword.transform.position = player.transform.position;
-        sword.transform.position += new Vector3(0.1f, 1.3f);
         sword.transform.parent = player.transform;
     }
 
@@ -111,7 +114,7 @@ public class DamoclesSwordRoom : TrialsRoom
     public IEnumerator TimerCouroutine(float seconde)
     {
         yield return new WaitForSeconds(seconde);
-        photonView.RPC("KillCurrentPlayer", RpcTarget.All);
+        //
         StartCoroutine(CouroutineAnimationDeath());
     }
 
@@ -119,15 +122,25 @@ public class DamoclesSwordRoom : TrialsRoom
     {
         canChangePlayer = false;
         yield return new WaitForSeconds(0.4f);
+        
         if (this.currentPlayer)
         {
-            SetPlayerColor(this.currentPlayer);
-            GameObject player = ChoosePlayerRandomly();
-            SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
-            photonView.RPC("SendCanChangePlayer", RpcTarget.All, true);
+            currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom--;
+            currentPlayer.GetComponent<PlayerNetwork>()
+                .SendLifeTrialRoom(currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom);
+            photonView.RPC("KillCurrentPlayer", RpcTarget.All, currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom);
             canChangePlayer = true;
+            if (currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom == 0)
+            {
+                currentPlayer.GetComponent<PlayerGO>().isTouchInTrial = true;
+                SetPlayerColor(this.currentPlayer);
+                GameObject player = ChoosePlayerRandomly();
+                SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
+                photonView.RPC("SendCanChangePlayer", RpcTarget.All, true);
+               
+            }
+        }
 
-        } 
         if (TestLastPlayer())
         {
             GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
@@ -163,16 +176,17 @@ public class DamoclesSwordRoom : TrialsRoom
 
 
     [PunRPC]
-    public void KillCurrentPlayer()
+    public void KillCurrentPlayer(int nbLife)
     {
         sword.transform.localPosition = new Vector3(0, 0);
-        if (!this.currentPlayer)
-        {
-            //SendCurrentPlayer(gameManager.GetRandomPlayerID());
-            return;
-        }      
-        this.currentPlayer.GetComponent<PlayerGO>().isTouchInTrial = true;
-        //canChangePlayer = false;
+        if(nbLife > 0)
+            StartCoroutine(ReturnSwordPositionAfterAtack());
+    }
+
+    public IEnumerator ReturnSwordPositionAfterAtack()
+    {
+        yield return new WaitForSeconds(0.5f);
+        sword.transform.position += new Vector3(0f, 1.5f);
     }
 
     public void SetPlayerColor(GameObject player)
@@ -287,5 +301,17 @@ public class DamoclesSwordRoom : TrialsRoom
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
+    }
+
+    public void DisplayHeartsFoAllPlayer(bool display)
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
+                continue;
+
+            player.GetComponent<PlayerGO>().DisiplayHeartInitial(display);
+        }
     }
 }

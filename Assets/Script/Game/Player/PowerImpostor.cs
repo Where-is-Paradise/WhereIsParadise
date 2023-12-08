@@ -53,7 +53,7 @@ public class PowerImpostor : MonoBehaviourPun
             return;
         if(collision.transform.parent &&  collision.transform.parent.tag == "Door")
         {
-            SetRedColorPlayer(false, collision.transform.parent.GetComponent<Door>().index);
+            SetRedLightColorPlayer(false, collision.transform.parent.GetComponent<Door>().index);
             if (!canUsed)
                 return;
             if (!this.transform.parent.GetComponent<PlayerGO>().gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
@@ -85,7 +85,7 @@ public class PowerImpostor : MonoBehaviourPun
             if (player.isSacrifice)
                 return;
 
-            SetRedColorPlayer(true, collision.transform.parent.GetComponent<Door>().index);
+            SetRedLightColorPlayer(true, collision.transform.parent.GetComponent<Door>().index);
             isNearOfDoor = true;
             DisplayButtonCanUsed(isNearOfDoor);
             this.collision = collision;
@@ -98,7 +98,7 @@ public class PowerImpostor : MonoBehaviourPun
             return;
         if (collision.transform.parent && collision.transform.parent.tag == "Door")
         {
-            SetRedColorPlayer(false , collision.transform.parent.GetComponent<Door>().index);
+            SetRedLightColorPlayer(false , collision.transform.parent.GetComponent<Door>().index);
             isNearOfDoor = false;
             DisplayButtonCanUsed(isNearOfDoor);
         }
@@ -118,7 +118,7 @@ public class PowerImpostor : MonoBehaviourPun
             gameManager.ResetSpeciallyRoomState(room);
         this.transform.parent.GetComponent<PlayerNetwork>().SendInsertPowerToDoor(room.Index, indexPower);
         this.transform.parent.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.DisplayLightAllAvailableDoor(false);
-        SetRedColorPlayer(false, door.index);
+        SetRedLightColorPlayer(false, door.index);
         photonView.RPC("SetRedColorDoor", RpcTarget.All, collision.transform.parent.GetComponent<Door>().index, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
         DisplayButtonCanUsed(false);
         gameManager.ui_Manager.HidePowerButtonImpostor();
@@ -154,7 +154,7 @@ public class PowerImpostor : MonoBehaviourPun
         gameManager.gameManagerNetwork.SendDisplayTrappedDoor(indexDoor);
     }
 
-    public void SetRedColorPlayer(bool display, int indexDoor)
+    public void SetRedLightColorPlayer(bool display, int indexDoor)
     {
         gameManager.GetDoorGo(indexDoor).transform.Find("RedLight").gameObject.SetActive(display);
     }

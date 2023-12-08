@@ -119,7 +119,7 @@ public class Dungeon : ScriptableObject
         }
     }
 
-    public void InsertImpostorRoom()
+    public int InsertImpostorRoom()
     {
         int randomDistance = Random.Range(2, 7);
         List<Room> listroomInDistance = GetListRoomByDistance(initialRoom, randomDistance);
@@ -127,6 +127,9 @@ public class Dungeon : ScriptableObject
         listroomInDistance[randomIndex].isImpostorRoom = true;
         listroomInDistance[randomIndex].isHide = false;
         ResetSpeciallyRoom(listroomInDistance[randomIndex]);
+        Debug.LogError("Index impostor room : " + listroomInDistance[randomIndex].Index);
+
+        return listroomInDistance[randomIndex].Index;
     }
 
 

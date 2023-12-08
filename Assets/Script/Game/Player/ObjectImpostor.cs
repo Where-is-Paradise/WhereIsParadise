@@ -92,10 +92,22 @@ public class ObjectImpostor : MonoBehaviour
             return;
         if (gameManager.speciallyIsLaunch)
             return;
-        if (collision.transform.parent.GetComponent<PlayerGO>().hasProtection)
+        if (indexPower != 3 && collision.transform.parent.GetComponent<PlayerGO>().hasProtection)
             return;
         if (player.isSacrifice)
             return;
+        if (indexPower == 3 && collision.GetComponent<Door>().GetRoomBehind().isTraped)
+        {
+            isNearOfPlayer = false;
+            gameManager.ui_Manager.DisplayObjectPowerBigger(false);
+            return;
+        }
+        if (indexPower == 3 && collision.GetComponent<Door>().isOpenForAll)
+        {
+            isNearOfPlayer = false;
+            gameManager.ui_Manager.DisplayObjectPowerBigger(false);
+            return;
+        }
 
         isNearOfPlayer = true;
         if(indexPower != 3)
@@ -112,6 +124,8 @@ public class ObjectImpostor : MonoBehaviour
             this.collision = collision;
             LaunchPowerByindex(indexPower);
         }
+        if(indexPower == 3)
+            SetRedLightColorDoor(true, collision.GetComponent<Door>().index);
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -127,11 +141,33 @@ public class ObjectImpostor : MonoBehaviour
             if (!gameManager || !gameManager.SamePositionAtMine(collision.transform.parent.GetComponent<PhotonView>().ViewID))
                 return;
         }
+
         if (!canUsed)
             return;
+        if (indexPower == 3 && collision.GetComponent<Door>().GetRoomBehind().isTraped)
+        {
+            isNearOfPlayer = false;
+            gameManager.ui_Manager.DisplayObjectPowerBigger(false);
+            return;
+        }
+        if (indexPower == 3 && collision.GetComponent<Door>().isOpenForAll)
+        {
+            isNearOfPlayer = false;
+            gameManager.ui_Manager.DisplayObjectPowerBigger(false);
+            return;
+        }
+
         isNearOfPlayer = true;
         if(indexPower != 3)
+        {
             DisplayPrevisualisationLightRed(true, collision.transform.parent.GetComponent<PhotonView>().ViewID);
+
+        }
+        else
+        {
+            SetRedLightColorDoor(true, collision.GetComponent<Door>().index);
+        }
+            
     }
 
     public void OnTriggerExit2D(Collider2D collision)
@@ -146,6 +182,7 @@ public class ObjectImpostor : MonoBehaviour
         {
             isNearOfPlayer = false;
             colliderIsImpostor = false;
+            SetRedLightColorDoor(false, collision.GetComponent<Door>().index);
             // previsu
         }
         
@@ -390,6 +427,10 @@ public class ObjectImpostor : MonoBehaviour
     public void DisplayButtonDesactivateTimer(bool display , float timer)
     {
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(display, timer);
+    }
+    public void SetRedLightColorDoor(bool display, int indexDoor)
+    {
+        gameManager.GetDoorGo(indexDoor).transform.Find("RedLight").gameObject.SetActive(display);
     }
 
 }

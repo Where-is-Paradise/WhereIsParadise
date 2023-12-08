@@ -77,7 +77,7 @@ public class Hexagone : MonoBehaviourPun
 #if UNITY_IOS || UNITY_ANDROID
         return;
 #endif
-        if (!this.room.IsObstacle && (this.room.isSpecial || this.room.IsExit || this.room.IsHell ))
+        if (!this.room.IsObstacle && (this.room.isSpecial || this.room.IsExit || this.room.IsHell || this.room.isImpostorRoom))
         {
             if (gameManager.ui_Manager.map.activeSelf)
             {
@@ -90,9 +90,12 @@ public class Hexagone : MonoBehaviourPun
                         this.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(false);
                     if (this.room.IsHell)
                         this.transform.Find("Canvas").Find("Hell").gameObject.SetActive(false);
+                    if (this.room.isImpostorRoom)
+                        this.transform.Find("Information_Speciality").gameObject.SetActive(false);
                 }
                 if (this.room.isSpecial)
-                    this.transform.Find("Information_Speciality").gameObject.SetActive(false);     
+                    this.transform.Find("Information_Speciality").gameObject.SetActive(false);
+                
             }
         }
 
@@ -127,7 +130,7 @@ public class Hexagone : MonoBehaviourPun
         return;
 #endif
 
-        if ( !this.room.IsObstacle && (this.room.isSpecial || this.room.IsExit || this.room.IsHell) && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
+        if ( !this.room.IsObstacle && (this.room.isSpecial || this.room.IsExit || this.room.IsHell || this.room.isImpostorRoom) && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
         {
             if (gameManager.ui_Manager.map.activeSelf)
             {
@@ -140,6 +143,8 @@ public class Hexagone : MonoBehaviourPun
                         this.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
                     if (this.room.IsHell)
                         this.transform.Find("Canvas").Find("Hell").gameObject.SetActive(true);
+                    if (this.room.isImpostorRoom)
+                        this.transform.Find("Information_Speciality").gameObject.SetActive(true);
                 }
                 if (this.room.isSpecial)
                     this.transform.Find("Information_Speciality").gameObject.SetActive(true);
@@ -155,13 +160,21 @@ public class Hexagone : MonoBehaviourPun
             return;
         if (room.IsExit || room.IsHell || room.IsObstacle || room.IsInitiale || room.IsTraversed)
             return;
+        if (!gameManager)
+            return;
         if (gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.dungeon.initialRoom) == 
             gameManager.game.dungeon.GetPathFindingDistance(gameManager.game.dungeon.initialRoom, gameManager.game.dungeon.exit))
             return;
         if (this.room.isHide)
+        {
+            GameObject Information_Speciality2 = this.transform.Find("Information_Speciality").gameObject;
+            Information_Speciality2.SetActive(false);
             return;
+        }
+            
         GameObject Information_Speciality = this.transform.Find("Information_Speciality").gameObject;
         Information_Speciality.SetActive(display);
+        
         if (this.room.isSpecial && !this.room.isTrial)
         {
             Information_Speciality.transform.Find("Hexagone").Find("SpeciallyRoom").gameObject.SetActive(display);
@@ -176,6 +189,7 @@ public class Hexagone : MonoBehaviourPun
         }
         if (this.room.isImpostorRoom)
         {
+           
             Information_Speciality.transform.Find("Hexagone").Find("ImpostorRoom").gameObject.SetActive(display);
             Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
             Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);

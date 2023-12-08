@@ -7,6 +7,7 @@ public class DamoclesSword : MonoBehaviourPun
 {
     public DamoclesSwordRoom damoclesRoom;
     public bool canChangePlayer = true;
+    private bool canKillPlayer = true;
 
     public void Update()
     {
@@ -42,10 +43,9 @@ public class DamoclesSword : MonoBehaviourPun
                 return;
             if (collision.transform.parent.GetComponent<PhotonView>().ViewID == damoclesRoom.currentPlayer.GetComponent<PhotonView>().ViewID)
                 return;
-            if (!canChangePlayer)
-                return;
             if (collision.transform.parent.GetComponent<PlayerGO>().isTouchInTrial)
                 return;
+            Debug.Log("sa passe");
             int indexplayer = collision.transform.parent.gameObject.GetComponent<PhotonView>().ViewID;
             photonView.RPC("SendChangeToBoss", RpcTarget.All, indexplayer);  
         }
@@ -56,8 +56,11 @@ public class DamoclesSword : MonoBehaviourPun
     {
         if (!damoclesRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
-        damoclesRoom.SendCurrentPlayer(indexPlayer);
+        if (!canChangePlayer)
+            return;
         damoclesRoom.SendChangePositionAtPlayer(indexPlayer);
+        damoclesRoom.SendCurrentPlayer(indexPlayer);
+       
         SendCanChangePlayer(false);
         StartCoroutine(CanChangePlayerCoroutine());
 
@@ -79,4 +82,5 @@ public class DamoclesSword : MonoBehaviourPun
         yield return new WaitForSeconds(0.75f);
         SendCanChangePlayer(true);
     }
+
 }

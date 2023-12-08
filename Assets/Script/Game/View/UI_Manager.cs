@@ -1872,6 +1872,8 @@ setting_button_echapMenu.SetActive(false);
                 hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
             if (room.IsHell)
                 hexagone.transform.Find("Canvas").Find("Hell").gameObject.SetActive(true);
+            if (room.isImpostorRoom)
+                hexagone.transform.Find("Information_Speciality").gameObject.SetActive(true);
         }
        
         if (room.isSpecial)
@@ -2170,6 +2172,7 @@ setting_button_echapMenu.SetActive(false);
 
         gameManager.gameManagerNetwork.SendNewTrapedRoom(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().GetRoomBehind().Index, indexChoice);
         gameManager.gameManagerNetwork.SendDisplayTrappedDoor(indexDoor);
+        gameManager.GetPlayerMineGO().transform.Find("ImpostorObject").GetComponent<ObjectImpostor>().SetRedLightColorDoor(false, gameManager.GetDoorGo(indexDoor).GetComponent<Door>().index);
     }
 
     public void DisplayButtonBlackTorch(bool display)

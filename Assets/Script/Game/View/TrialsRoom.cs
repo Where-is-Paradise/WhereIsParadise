@@ -307,6 +307,13 @@ public class TrialsRoom : MonoBehaviourPun
                 indexObject = 0;
                 break;
             case 1:
+                if (gameManagerParent.GetNumberDoorCanBeModifaiteBySpeciallity() == 0)
+                {
+                    Debug.Log("Has map restart");
+                    DisplayGloballyAward(Random.Range(0, 3));
+                    return;
+                }
+
                 DisplayAwardObject(4);
                 indexObject = 1;
                 break;

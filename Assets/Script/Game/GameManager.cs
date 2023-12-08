@@ -134,6 +134,8 @@ public class GameManager : MonoBehaviourPun
 
     public bool onePlayerHasTorch = false;
 
+    public bool isEndGame = false;
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -177,7 +179,7 @@ public class GameManager : MonoBehaviourPun
         InitiatiateListIndexPower();
         InitateProbabilityTab();
         StartCoroutine(CouroutineTimerStart());
-        InitatePlayerList();
+      
     }
     public IEnumerator MasterClientCreateMap()
     {
@@ -188,6 +190,7 @@ public class GameManager : MonoBehaviourPun
                        setting.DISPLAY_OBSTACLE_MAP, setting.DISPLAY_KEY_MAP, setting.RANDOM_ROOM_ADDKEYS,
                        setting.LIMITED_TORCH, setting.TORCH_ADDITIONAL);*/
             game.CreationMap();
+            InitatePlayerList();
             ChangeBoss();
             game.AssignRole();
             SendRole();
@@ -226,6 +229,7 @@ public class GameManager : MonoBehaviourPun
                GetPlayerMineGO().GetComponent<PlayerGO>().roomUsedWhenCursed.Index);
 
             counterRoom = Random.Range(0, 2);
+           
         }
     }
 
@@ -281,6 +285,18 @@ public class GameManager : MonoBehaviourPun
         TreePlayerList(listPlayerFinal);
     }
 
+    public void RemovePlayerOfList(GameObject playerRemoved)
+    {
+        listPlayerFinal.Remove(playerRemoved.GetComponent<PlayerGO>());
+        gameManagerNetwork.SendClearPlayerList();
+        int i = 0;
+        foreach (PlayerGO player in listPlayerFinal)
+        {
+            gameManagerNetwork.SendPlayerList(i, player.GetComponent<PhotonView>().ViewID);
+            i++;
+        }
+    }
+
     public void TreePlayerList(List<PlayerGO> listPlayer)
     {
         List<int> listIndexPlayer = new List<int>();
@@ -291,11 +307,14 @@ public class GameManager : MonoBehaviourPun
 
         listIndexPlayer.Sort();
         listPlayerFinal.Clear();
+        int i = 0;
         foreach (int index in listIndexPlayer)
         {
             listPlayerFinal.Add(GetPlayer(index).GetComponent<PlayerGO>());
+            gameManagerNetwork.SendPlayerList(i, index);
+            i++;
         }
-
+       
     }
     public IEnumerator CouroutineTimerStart()
     {
@@ -1929,8 +1948,30 @@ public class GameManager : MonoBehaviourPun
             return;
 
         Debug.Log(indexBoss + " " +  listPlayerFinal.Count);
-        if (indexBoss + 1 == listPlayerFinal.Count)
+        if (indexBoss + 1 == listPlayerFinal.Count || listPlayerFinal.Count == 1)
         { 
+            indexBoss = 0;
+            gameManagerNetwork.SendBoss(listPlayerFinal[indexBoss].GetComponent<PhotonView>().ViewID);
+            gameManagerNetwork.SendIndexBoss(indexBoss);
+        }
+        else
+        {
+            indexBoss++;
+            gameManagerNetwork.SendBoss(listPlayerFinal[indexBoss].GetComponent<PhotonView>().ViewID);
+            gameManagerNetwork.SendIndexBoss(indexBoss);
+        }
+    }
+
+    public void ChangeBossWithMasterClient()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        if (!canChangeBoss)
+            return;
+
+        Debug.Log(indexBoss + " " + listPlayerFinal.Count);
+        if (indexBoss + 1 == listPlayerFinal.Count)
+        {
             indexBoss = 0;
             gameManagerNetwork.SendBoss(listPlayerFinal[indexBoss].GetComponent<PhotonView>().ViewID);
             gameManagerNetwork.SendIndexBoss(indexBoss);
@@ -3427,7 +3468,7 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 0);
+        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 3);
         return;
         if (room.isTrial)
         {
@@ -3976,6 +4017,7 @@ public class GameManager : MonoBehaviourPun
     public IEnumerator SacrificeAllLostSoul()
     {
         ui_Manager.HideSpeciallyDisplay();
+        gameManagerNetwork.SendIsEndGame(true);
         yield return new WaitForSeconds(4);
         if (!GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
         {
@@ -4280,7 +4322,7 @@ public class GameManager : MonoBehaviourPun
     public IEnumerator CanChangeBossCoroutine()
     {
         canChangeBoss = false;
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(0.5f);
         canChangeBoss = true;
     }
 

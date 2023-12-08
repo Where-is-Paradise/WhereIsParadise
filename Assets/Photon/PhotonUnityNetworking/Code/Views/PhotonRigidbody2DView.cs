@@ -54,8 +54,8 @@ namespace Photon.Pun
             {
                 if (preciseSyncPosition)
                 {
-                    this.m_Body.position = Vector2.MoveTowards(this.m_Body.position, this.m_NetworkPosition, this.m_Distance * (3f / PhotonNetwork.SerializationRate));
-                    this.m_Body.rotation = Mathf.MoveTowards(this.m_Body.rotation, this.m_NetworkRotation, this.m_Angle * (3f / PhotonNetwork.SerializationRate));
+                    this.m_Body.position = Vector2.MoveTowards(this.m_Body.position, this.m_NetworkPosition, this.m_Distance * (2.5f / PhotonNetwork.SerializationRate));
+                    this.m_Body.rotation = Mathf.MoveTowards(this.m_Body.rotation, this.m_NetworkRotation, this.m_Angle * (2.5f / PhotonNetwork.SerializationRate));
                 }
                 else
                 {
@@ -104,7 +104,7 @@ namespace Photon.Pun
                     {
                         this.m_Body.velocity = (Vector2)stream.ReceiveNext();
 
-                        this.m_NetworkPosition += this.m_Body.velocity * (lag * 1.75f);
+                        this.m_NetworkPosition += this.m_Body.velocity * (lag * 4 );
 
                         this.m_Distance = Vector2.Distance(this.m_Body.position, this.m_NetworkPosition);
                     }
