@@ -1401,11 +1401,15 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.exit.IsExit = false;
         Room newParadise = gameManager.game.dungeon.GetRoomByIndex(index);
         gameManager.game.dungeon.exit = newParadise;
-        newParadise.IsExit = true;
+        newParadise.isNewParadise = true;
         gameManager.ResetSpeciallyRoomState(newParadise);
-        gameManager.GetHexagone(newParadise.Index).DiplayInformationSpeciallyRoom(false);
+        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            gameManager.GetHexagone(newParadise.Index).DiplayInformationSpeciallyRoom(false);
+        newParadise.IsExit = true;
         gameManager.SetCurrentRoomColor();
         gameManager.game.dungeon.SetPathFindingDistanceAllRoom();
+        
+        
     }
 
 
@@ -2104,6 +2108,17 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.paradiseHasChange = paradiseHadChange;
     }
 
+    public void SendOldSpecialityIndex(int indexRoom , int indexOldSpeciality)
+    {
+        photonView.RPC("SetOldSpecialityIndex", RpcTarget.All, indexRoom, indexOldSpeciality);
+    }
+
+    [PunRPC]
+    public void SetOldSpecialityIndex(int indexRoom, int indexOldSpeciality)
+    {
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).isOldSpeciality = indexOldSpeciality;
+    }
+
     public void SendActivateAllObstacles(bool display, string nameObject)
     {
         photonView.RPC("SetActivateAllObstacles", RpcTarget.All, display, nameObject);
@@ -2385,6 +2400,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
             int indexRoom = gameManager.game.dungeon.InsertImpostorRoom();
             SendResetSpeciallyRoomToImpostor(indexRoom);
+            gameManager.GetHexagone(indexRoom).DiplayInformationSpeciallyRoom(false);
         }
     }
 
@@ -2434,6 +2450,68 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetClearPlayerList()
     {
         gameManager.listPlayerFinal.Clear();
+    }
+
+    public void SendEndVoteDoorCoroutine(int indexDoor)
+    {
+        photonView.RPC("SetEndVoteDoorCoroutine", RpcTarget.All, indexDoor);
+    }
+
+    [PunRPC]
+    public void SetEndVoteDoorCoroutine(int indexDoor)
+    {
+        GameObject door = gameManager.GetDoorGo(indexDoor);
+
+        if (gameManager.SamePositionAtBoss() && gameManager.VerifyVoteVD(door.GetComponent<Door>().nbVote))
+        {
+            if (door.GetComponent<Door>().nbVote == 0 || gameManager.game.currentRoom.IsVirus)
+            {
+                if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                {
+                    List<GameObject> listDoorAvailable = gameManager.GetDoorAvailable();
+                    int indexDoorCurrent = Random.Range(0, listDoorAvailable.Count);
+                    SendRandomIndexDoor(listDoorAvailable[indexDoorCurrent].GetComponent<Door>().index);
+                }
+            }
+            else
+            {
+                gameManager.ui_Manager.SetNBKey();
+                gameManager.ui_Manager.LaunchAnimationBrokenKey();
+                if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                    gameManager.gameManagerNetwork.SendKeyNumber();
+                if (gameManager.SamePositionAtBoss())
+                    gameManager.OpenDoor(door, false);
+                gameManager.expeditionHasproposed = false;
+                gameManager.alreaydyExpeditionHadPropose = false;
+
+            }
+            StartCoroutine(gameManager.ChangeBossCoroutine(0.1f));
+        }
+
+        gameManager.ui_Manager.ResetNbVote();
+        gameManager.ui_Manager.DesactiveZoneDoor();
+        gameManager.voteDoorHasProposed = false;
+        gameManager.timer.ResetTimer();
+        gameManager.ClearDoor();
+        gameManager.ClearExpedition();
+        gameManager.ui_Manager.DisplayKeyAndTorch(true);
+        gameManager.alreadyPass = false;
+        gameManager.SetAlreadyHideForAllPlayers();
+        gameManager.UpdateSpecialsRooms(gameManager.game.currentRoom);
+        if (gameManager.game.currentRoom.IsVirus)
+            gameManager.ui_Manager.ResetLetterDoor();
+        if (gameManager.game.dungeon.initialRoom.HasSameLocation(gameManager.game.currentRoom))
+        {
+            gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
+
+        }
+        gameManager.CloseDoorWhenVote(false);
+        gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = 0;
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(false);
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
+
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(false);
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);
     }
 
 }

@@ -111,6 +111,8 @@ public bool isImpostorRoom = false;
     public bool doorsMixed = false;
     public List<int> listIndexDoor = new List<int>();
 
+    public bool isNewParadise = false;
+    public int isOldSpeciality = 0;
 
     public void Init(int pos_X, int pos_Y)
     {

@@ -31,6 +31,7 @@ public class PowerImpostor : MonoBehaviourPun
     void Update()
     {
         indexPower = this.transform.parent.GetComponent<PlayerGO>().indexPower;
+        indexPower = 3;
         if (!powerIsStart)
             return;
         GetAllSituationToCanUsed();

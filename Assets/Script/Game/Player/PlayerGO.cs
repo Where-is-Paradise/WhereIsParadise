@@ -276,6 +276,9 @@ public class PlayerGO : MonoBehaviour
 
     void Update()
     {
+
+        //hasMap = true;
+
         if (isMovingAutomaticaly)
         {
             return;
@@ -1093,6 +1096,8 @@ public class PlayerGO : MonoBehaviour
         if (collision.transform.parent.gameObject.GetComponent<Door>().barricade)
             return;
         if (collision.transform.parent.gameObject.GetComponent<Door>().isOpenForAll)
+            return;
+        if(!gameManager)
             return;
         gameManager.ui_Manager.DisplayMagicalKeyButtonBigger(enter);
         collsionDoorIndexForExploration = collision.transform.parent.gameObject.GetComponent<Door>().index;

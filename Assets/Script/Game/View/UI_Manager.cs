@@ -1858,7 +1858,7 @@ setting_button_echapMenu.SetActive(false);
         Room room = hexagone.Room;
         if (!room)
             return;
-        if (room.IsObstacle || room.IsInitiale || room.IsTraversed)
+        if (room.IsObstacle || room.IsInitiale || room.IsTraversed )
             return;
         if (room.isHide)
         {
@@ -1877,7 +1877,10 @@ setting_button_echapMenu.SetActive(false);
         }
        
         if (room.isSpecial)
+        {
             hexagone.gameObject.transform.Find("Information_Speciality").gameObject.SetActive(true);
+        }
+            
     }
     
     public void DisplayLightLeverSpeciallyRoom(bool display)

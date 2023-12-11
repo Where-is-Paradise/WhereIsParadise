@@ -84,7 +84,7 @@ public class Dungeon : ScriptableObject
         foreach (Room room in trueListRoomDungeon)
         {
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 40) //40
+            if (randomIsHide <= 1) //40
             {
                 room.isHide = true;
                 //room.isSacrifice= true;

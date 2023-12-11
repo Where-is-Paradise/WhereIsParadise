@@ -329,8 +329,14 @@ public class GameManager : MonoBehaviourPun
         yield return new WaitForSeconds(5.3f);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         //StartCoroutine(ui_Manager.DesactivateLightAroundPlayers());
-        GameObject door = GetDoorWithMajority();
-        if (SamePositionAtBoss() && VerifyVoteVD(door.GetComponent<Door>().nbVote))
+        if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            GameObject door = GetDoorWithMajority();
+            gameManagerNetwork.SendEndVoteDoorCoroutine(door.GetComponent<Door>().index);
+        }
+        
+
+       /* if (SamePositionAtBoss() && VerifyVoteVD(door.GetComponent<Door>().nbVote))
         {
             if (door.GetComponent<Door>().nbVote == 0 || game.currentRoom.IsVirus)
             {
@@ -379,12 +385,8 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
 
         ui_Manager.DisplayObjectPowerButtonDesactivate(false);
-        ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);
+        ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);*/
     }
-/*    public void voteDoorCouroutineLittleBefore()
-    {
-        voteDoorHasProposed
-    }*/
 
     public IEnumerator LaunchExploration()
     {
@@ -661,23 +663,6 @@ public class GameManager : MonoBehaviourPun
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
         }
-
-
-/*        if (room.isSpecial && !room.isTrial)
-        {
-            GameObject Information_Speciality = hex.transform.Find("Information_Speciality").gameObject;
-            Information_Speciality.SetActive(true);
-            Information_Speciality.transform.Find("Hexagone").Find("SpeciallyRoom").gameObject.SetActive(true);
-            Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(5f / 255f, 156f / 255f, 154f / 255f);
-        }
-        if (room.isTrial)
-        {
-            GameObject Information_Speciality = hex.transform.Find("Information_Speciality").gameObject;
-            Information_Speciality.SetActive(true);
-            Information_Speciality.transform.Find("Hexagone").Find("TrailRoom").gameObject.SetActive(true);
-            Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
-        }*/
-
     }
 
     public void SpawnPlayer()
@@ -3416,9 +3401,18 @@ public class GameManager : MonoBehaviourPun
         Room newParadise = listRoomWithCorrectDistance[randomIndex];
         game.dungeon.exit.IsExit = false;
         game.dungeon.exit = newParadise;
-        newParadise.IsExit = true;
+        newParadise.isNewParadise = true;
+        if (newParadise.isSpecial && !newParadise.isTrial)
+            newParadise.isOldSpeciality = 1;
+        if (newParadise.isSpecial && newParadise.isTrial)
+            newParadise.isOldSpeciality = 2;
+        gameManagerNetwork.SendOldSpecialityIndex(newParadise.Index, newParadise.isOldSpeciality);
+        ResetSpeciallyRoomState(newParadise);
+        if (GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            GetHexagone(newParadise.Index).DiplayInformationSpeciallyRoom(false);
         gameManagerNetwork.SendChangementParadiseBool(true);
         gameManagerNetwork.SendNewParadise(newParadise.Index);
+        newParadise.IsExit = true;
         SetCurrentRoomColor();
         game.dungeon.SetPathFindingDistanceAllRoom();
         ui_Manager.SetDistanceTextAwardChest(0);
@@ -4174,6 +4168,8 @@ public class GameManager : MonoBehaviourPun
                 return door.GetComponent<Door>();
         }
         return listDoor[0].GetComponent<Door>();
+        
+
     }
 
     // inverse funtion of GetDoorShorter 
@@ -4332,6 +4328,7 @@ public class GameManager : MonoBehaviourPun
             return;
         GetPlayer(indexPlayerPreviousExploration).transform.Find("TorchBarre").gameObject.SetActive(display);
     }
+
 
 
 }
