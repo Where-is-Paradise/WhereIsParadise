@@ -1,5 +1,6 @@
 ﻿using CI.QuickSave;
 using Photon.Pun;
+using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -129,6 +130,11 @@ public class UI_Managment : MonoBehaviourPun
     // Start is called before the first frame update
     void Start()
     {
+
+        Debug.Log(SteamFriends.GetPersonaName());
+
+        Debug.Log(SteamUser.GetSteamID());
+
         index_menu = 1;
         //ChangeColorButton(listButton_menu1, index_menu);
         if (GameObject.Find("BackToMenu"))
@@ -508,7 +514,7 @@ public class UI_Managment : MonoBehaviourPun
     public void SetPlayerName(GameObject player)
     {
         
-        if(playerName_input.text.Length == 0)
+/*        if(playerName_input.text.Length == 0)
         {
             if(playerNameJoin_input.text.Length == 0)
             {
@@ -523,21 +529,25 @@ public class UI_Managment : MonoBehaviourPun
         else
         {
             player.GetComponent<PlayerGO>().SetPlayerName(playerName_input.text);
-        }
+        }*/
+
+         player.GetComponent<PlayerGO>().SetPlayerName(SteamFriends.GetPersonaName());
  
     }
 
     public void SetPlayerNameMatchmaking(GameObject player)
     {
 
-        if (playerName_input.text.Length == 0)
+/*        if (playerName_input.text.Length == 0)
         {
             player.GetComponent<PlayerGO>().SetPlayerName(playerName_matchmaking.text);
         }
         else
         {
             player.GetComponent<PlayerGO>().SetPlayerName(playerName_matchmaking.text);
-        }
+        }*/
+
+        player.GetComponent<PlayerGO>().SetPlayerName(SteamFriends.GetPersonaName());
     }
 
     public void SetSkin(GameObject player)

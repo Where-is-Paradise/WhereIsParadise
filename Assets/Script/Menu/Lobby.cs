@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
+using Steamworks;
+using System;
 
 public class Lobby : MonoBehaviourPunCallbacks
 {
@@ -56,7 +58,10 @@ public class Lobby : MonoBehaviourPunCallbacks
         versionIsCorrect = true;
         StartCoroutine(GetText());
         ConnectToMaster();
-        
+        //StartCoroutine(GetUserInfoRquest());
+        //StartCoroutine(waittotes());
+
+        Debug.Log(SteamApps.GetCurrentGameLanguage());
     }
 
     // Update is called once per frame
@@ -500,7 +505,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         string code = "";
         for (int i = 0; i < sizeCode; i++)
         {
-            char chara_code = glyphs[Random.Range(0, glyphs.Length)];
+            char chara_code = glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
             code += chara_code;
         }
         return code;
@@ -627,5 +632,129 @@ public class Lobby : MonoBehaviourPunCallbacks
     }
 
 
+    public IEnumerator TestPurchasing()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("key", "110CECAF8B4523084D352599DD2EFFA2");
+        form.AddField("orderid", 1016);
+        form.AddField("steamid", "" + SteamUser.GetSteamID().m_SteamID);
+        form.AddField("appid", 1746620);
+        form.AddField("itemcount", 2);
+        form.AddField("language", "en");
+        form.AddField("currency", "EUR");
+        form.AddField("itemid[0]", 10);
+        form.AddField("qty[0]", 1);
+        form.AddField("amount[0]", 199);
+        form.AddField("description[0]", "description");
+        form.AddField("itemid[1]", 45);
+        form.AddField("qty[1]", 1);
+        form.AddField("amount[1]", 199);
+        form.AddField("description[1]", "description");
+
+
+        UnityWebRequest www = UnityWebRequest.Post("https://partner.steam-api.com/ISteamMicroTxnSandbox/InitTxn/v3", form);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.downloadHandler.text);
+            //Debug.Log(form);
+            //StartCoroutine(GetText());
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.text);
+
+            SteamAPI.RunCallbacks();
+            Callback<MicroTxnAuthorizationResponse_t> m_MicroTxnAuthorizationResponse = Callback<MicroTxnAuthorizationResponse_t>.Create(OnMicrotransactionResponse);
+
+        }
+
+
+    }
+
+
+    public IEnumerator GetUserInfoRquest()
+    {
+        string apikey = "110CECAF8B4523084D352599DD2EFFA2";
+        string steamId = ""+SteamUser.GetSteamID();
+        UnityWebRequest userInfo = UnityWebRequest.Get("https://partner.steam-api.com/ISteamMicroTxnSandbox/GetUserInfo/v2/?key=" + apikey + "&appid=1746620&steamid=" + steamId + "&format=json");
+        
+        yield return userInfo.SendWebRequest();
+
+        if (userInfo.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(userInfo.result);
+            StartCoroutine(GetUserInfoRquest());
+        }
+        else
+        {
+            // Show results as tex
+          
+            //Debug.Log(userInfo.downloadHandler.text);
+
+            //JsonUtility.FromJson(userInfo.downloadHandler.text);
+
+            //{"response":{"result":"OK","params":{"state":"","country":"FR","currency":"EUR","status":"Trusted"}}}
+            try
+            {
+                UserInfoResponse userInfoObject = JsonUtility.FromJson<UserInfoResponse>(userInfo.downloadHandler.text);
+
+               
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e);
+            }
+
+            //Debug.Log(ParserJson.ParseStringToJson(userInfo.downloadHandler.text, "status"));
+
+            // Or retrieve results as binary data
+            //byte[] results = www.downloadHandler.data;
+        }
+    }
+
+    public IEnumerator waittotes()
+    {
+        yield return new WaitForSeconds(5);
+        StartCoroutine(TestPurchasing());
+    }
     
+
+    public void OnMicrotransactionResponse(MicroTxnAuthorizationResponse_t pCallback)
+    {
+        if (pCallback.m_bAuthorized == 1)
+        {
+            StartCoroutine(FinaliseTransaction());
+        }
+        else
+        {
+            Debug.Log("c pas payé sale radin, ou sale pauvre");
+        }
+
+    }
+
+    public IEnumerator FinaliseTransaction()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("key", "110CECAF8B4523084D352599DD2EFFA2");
+        form.AddField("orderid", 1016);
+        form.AddField("steamid", "" + SteamUser.GetSteamID().m_SteamID);
+        form.AddField("appid", 1746620);
+
+        UnityWebRequest www = UnityWebRequest.Post("https://partner.steam-api.com/ISteamMicroTxnSandbox/FinalizeTxn/v2", form);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.downloadHandler.text);
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.text);
+
+            // verifié si le result c "OK" et donné largennnntt
+        }
+    }
+
 }
