@@ -15830,6 +15830,7 @@ MonoBehaviour:
   hasImpostorObject: 0
   hasOneTrapPower: 0
   canCollisionToDoorExploration: 1
+  Inventory: 
 --- !u!114 &7384524027293410437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18174,9 +18175,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
-  indexPower: 0
-  powerIsUsed: 0
-  isNearOfDoor: 0
+  indexPower: 537818816
+  powerIsUsed: 56
+  isNearOfDoor: 2
   timerToUsing: 0
   timerLaunch: 0
   canUsed: 0

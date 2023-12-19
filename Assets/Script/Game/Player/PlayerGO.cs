@@ -175,6 +175,9 @@ public class PlayerGO : MonoBehaviour
 
     public bool canCollisionToDoorExploration = true;
 
+
+    public List<int> Inventory = new List<int>();
+
     private void Awake()
     {
         displayChatInput = false;
@@ -2387,6 +2390,26 @@ public class PlayerGO : MonoBehaviour
         }
     }
 
+    
+    public void AddInInventory(int index)
+    {
+        Inventory.Add(index);
+    }
+    public void ManageInventoryTest()
+    {
+        AddInInventory(5);
+        AddInInventory(7);
+        AddInInventory(7);
+        AddInInventory(7);
+        AddInInventory(7);
+        AddInInventory(7);
+        AddInInventory(7);
+        AddInInventory(7);
+        AddInInventory(12);
+        AddInInventory(7);
+        AddInInventory(7);
+        AddInInventory(9);
+    }
 
 
 }
