@@ -178,6 +178,9 @@ public class PlayerGO : MonoBehaviour
 
     public List<int> Inventory = new List<int>();
 
+    [HideInInspector]
+    public int blackSoul_money = 900; 
+
     private void Awake()
     {
         displayChatInput = false;

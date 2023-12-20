@@ -15831,6 +15831,7 @@ MonoBehaviour:
   hasOneTrapPower: 0
   canCollisionToDoorExploration: 1
   Inventory: 
+  blackSoul_money: 4000
 --- !u!114 &7384524027293410437
 MonoBehaviour:
   m_ObjectHideFlags: 0
