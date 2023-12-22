@@ -4,6 +4,8 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using Luminosity.IO;
+using UnityEngine.Networking;
+using Steamworks;
 
 public class PlayerGO : MonoBehaviour
 {
@@ -209,6 +211,7 @@ public class PlayerGO : MonoBehaviour
         listTrialObject.Add(hasMap);
         listTrialObject.Add(hasProtection);
         listTrialObject.Add(hasTrueEyes);
+        StartCoroutine(GetListSkinIndexInServer());
     }
 
     private void enhanceOwners()
@@ -2412,6 +2415,42 @@ public class PlayerGO : MonoBehaviour
         AddInInventory(7);
         AddInInventory(7);
         AddInInventory(9);
+    }
+
+    public IEnumerator GetListSkinIndexInServer()
+    {
+
+        string steamId = SteamUser.GetSteamID().ToString();
+        WWWForm form = new WWWForm();
+        UnityWebRequest www = UnityWebRequest.Post("http://127.0.0.1:8090/player/find?steamId="+ steamId, form);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.downloadHandler.text);
+        }
+        else
+        {
+
+            Debug.LogError(www.downloadHandler.text);
+            RequestSkin skinreturn = JsonUtility.FromJson<RequestSkin>(www.downloadHandler.text);
+
+            if (skinreturn.response.skins == null)
+            {
+                string pseudoSteam = SteamFriends.GetPersonaName();
+                UnityWebRequest www2 = UnityWebRequest.Post("http://127.0.0.1:8090/player/addPlayer?steamId=" + steamId +"&pseudoSteam="+ pseudoSteam, form);
+                yield return www2.SendWebRequest();
+                StartCoroutine(GetListSkinIndexInServer());
+            }
+            else
+            {
+                for (int i = 0; i < skinreturn.response.skins.Length; i++)
+                {
+                    AddInInventory(skinreturn.response.skins[i].id);
+                    Debug.Log("  skin : " + skinreturn.response.skins[i].name);
+                }
+            }
+        }
     }
 
 

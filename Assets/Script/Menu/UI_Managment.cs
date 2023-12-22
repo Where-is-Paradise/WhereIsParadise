@@ -131,9 +131,9 @@ public class UI_Managment : MonoBehaviourPun
     void Start()
     {
 
-        Debug.Log(SteamFriends.GetPersonaName());
+/*        Debug.Log(SteamFriends.GetPersonaName());
 
-        Debug.Log(SteamUser.GetSteamID());
+        Debug.Log(SteamUser.GetSteamID());*/
 
         index_menu = 1;
         //ChangeColorButton(listButton_menu1, index_menu);

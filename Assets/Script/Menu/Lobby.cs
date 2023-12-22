@@ -61,7 +61,8 @@ public class Lobby : MonoBehaviourPunCallbacks
         //StartCoroutine(GetUserInfoRquest());
         //StartCoroutine(waittotes());
 
-        Debug.Log(SteamApps.GetCurrentGameLanguage());
+        //Debug.Log(SteamApps.GetCurrentGameLanguage());
+        //StartCoroutine(TestRequestSkin());
     }
 
     // Update is called once per frame
@@ -753,6 +754,48 @@ public class Lobby : MonoBehaviourPunCallbacks
         {
             Debug.Log(www.downloadHandler.text);
 
+            // verifié si le result c "OK" et donné largennnntt
+        }
+    }
+
+    public IEnumerator TestRequestSkin()
+    {
+        WWWForm form = new WWWForm();
+        UnityWebRequest www = UnityWebRequest.Post("http://127.0.0.1:8090/player/find?steamId=9999", form);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.downloadHandler.text);
+            Debug.Log(www.result);
+            Debug.Log(www.error);
+        }
+        else
+        {
+            //{"response":{"_id":"658582d5cf7d26f3a6845da4","steamId":"9999","pseudoSteam":"Homertimes","skins":[{"id":20,"name":"Hades","_id":"658585024450f15605132a9f"},{"id":9,"name":"Hollow","_id":"65858ebf7a45a3fd8ff874c7"},{"id":16,"name":"little nightmare","_id":"65858ec97a45a3fd8ff874cb"}],"id":1,"__v":16}}
+
+            Debug.Log(www.downloadHandler.text);
+
+
+            try
+            {
+                RequestSkin skinreturn = JsonUtility.FromJson<RequestSkin>(www.downloadHandler.text);
+                Debug.Log(skinreturn.response.skins[0].id + " " + skinreturn.response.skins[0].name);
+
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
+            
+            
+            
+            //Debug.Log(skinreturn.response[0]);
+
+
+          
+
+            //Debug.Log(ParserJson.ParseStringToJson(userInfo.downloadHandler.text, "status"));
             // verifié si le result c "OK" et donné largennnntt
         }
     }
