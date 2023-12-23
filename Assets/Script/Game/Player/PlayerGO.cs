@@ -2449,6 +2449,7 @@ public class PlayerGO : MonoBehaviour
                     AddInInventory(skinreturn.response.skins[i].id);
                     Debug.Log("  skin : " + skinreturn.response.skins[i].name);
                 }
+                blackSoul_money = skinreturn.response.money;
             }
         }
     }

@@ -1,6 +1,8 @@
+using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
@@ -101,19 +103,14 @@ public class Inventory : MonoBehaviour
             return;
 
         }
-        // requete pour connaitre le prix
-        if (lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money < 250)
+        int priceSkin = GetPriceOfSkin(current_indexItemBuy);
+        if (lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money < priceSkin)
         {
             panelNoMoreMoney.SetActive(true);
             return;
         }
+        StartCoroutine(AddSkinRequest(current_indexItemBuy, priceSkin));
        
-        lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money -= 250;
-        UpdateValeuPlayerMoneyUI(lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money);
-        lobby.GetPlayerMineGO().GetComponent<PlayerGO>().AddInInventory(current_indexItemBuy);
-        AddOneSkinInventory(current_indexItemBuy);
-        DisplayNextButton();
-        ResetCurrentIndexItem();
     }
 
     public void UpdateValeuPlayerMoneyUI(int newValue)
@@ -121,4 +118,147 @@ public class Inventory : MonoBehaviour
         UI_moneyPlayer.transform.Find("Text").GetComponent<Text>().text = newValue + "";
     }
 
+    public IEnumerator AddSkinRequest(int idSkin, int price)
+    {
+        string steamId = SteamUser.GetSteamID().ToString();
+        string idSkinString = idSkin + "";
+        string nameString = GetNameOfSkin(idSkin);
+        string money = price +" ";
+        WWWForm form = new WWWForm();
+        UnityWebRequest www = UnityWebRequest.Post("http://127.0.0.1:8090/player/addSkin?steamId=" + steamId + "&idSkin=" + idSkinString + "&nameSkin=" + nameString +"&money="+ money, form);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError(www.downloadHandler.text);
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.text);
+
+            if (ParserJson.ParseStringToJson(www.downloadHandler.text, "code") == "407")
+            {
+                panelNoMoreMoney.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("sa passe quand meme");
+                lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money -= price;
+                UpdateValeuPlayerMoneyUI(lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money);
+                lobby.GetPlayerMineGO().GetComponent<PlayerGO>().AddInInventory(idSkin);
+                AddOneSkinInventory(current_indexItemBuy);
+                ResetCurrentIndexItem();
+                DisplayNextButton();
+            }
+        }
+    }
+
+    public int GetPriceOfSkin(int indexSkin)
+    {
+        for(int i =0; i < parentAllSkin.transform.childCount; i++)
+        {
+            if (parentAllSkin.transform.GetChild(i).GetComponent<ProductSkin>().id == indexSkin)
+                return parentAllSkin.transform.GetChild(i).GetComponent<ProductSkin>().price;
+        }
+        return 200;
+    }
+    public string GetNameOfSkin(int indexSkin)
+    {
+        for (int i = 0; i < parentAllSkin.transform.childCount; i++)
+        {
+            if (parentAllSkin.transform.GetChild(i).GetComponent<ProductSkin>().id == indexSkin)
+                return parentAllSkin.transform.GetChild(i).GetComponent<ProductSkin>().nameProduct;
+        }
+        return "inconnue..";
+    }
+
+
+    public void BuyMoney(int indexMoney)
+    {
+        StartCoroutine(TestPurchasing(indexMoney));
+    }
+
+    public IEnumerator TestPurchasing(int indexMoney)
+    {
+        int price = 500;
+        if (indexMoney == 0)
+            price = 199;
+        else if (indexMoney == 1)
+            price = 599;
+        else if (indexMoney == 2)
+            price = 999;
+        else if (indexMoney == 3)
+            price = 1499;
+
+
+        WWWForm form = new WWWForm();
+        form.AddField("key", "110CECAF8B4523084D352599DD2EFFA2");
+        form.AddField("orderid", 1026);
+        form.AddField("steamid", "" + SteamUser.GetSteamID().m_SteamID);
+        form.AddField("appid", 1746620);
+        form.AddField("itemcount", 1);
+        form.AddField("language", "en");
+        form.AddField("currency", "EUR");
+        form.AddField("itemid[0]", 10);
+        form.AddField("qty[0]", 1);
+        form.AddField("amount[0]", price);
+        form.AddField("description[0]", "description");
+
+
+        UnityWebRequest www = UnityWebRequest.Post("https://partner.steam-api.com/ISteamMicroTxnSandbox/InitTxn/v3", form);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.downloadHandler.text);
+            //Debug.Log(form);
+            //StartCoroutine(GetText());
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.text);
+
+            //SteamAPI.RunCallbacks();
+            Callback<MicroTxnAuthorizationResponse_t> m_MicroTxnAuthorizationResponse = Callback<MicroTxnAuthorizationResponse_t>.Create(OnMicrotransactionResponse);
+
+        }
+
+
+    }
+
+    public void OnMicrotransactionResponse(MicroTxnAuthorizationResponse_t pCallback)
+    {
+        if (pCallback.m_bAuthorized == 1)
+        {
+            StartCoroutine(FinaliseTransaction());
+        }
+        else
+        {
+            Debug.Log("c pas payé sale radin, ou sale pauvre " + pCallback.m_bAuthorized);
+        }
+
+    }
+
+    public IEnumerator FinaliseTransaction()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("key", "110CECAF8B4523084D352599DD2EFFA2");
+        form.AddField("orderid", 1026);
+        form.AddField("steamid", "" + SteamUser.GetSteamID().m_SteamID);
+        form.AddField("appid", 1746620);
+
+        UnityWebRequest www = UnityWebRequest.Post("https://partner.steam-api.com/ISteamMicroTxnSandbox/FinalizeTxn/v2", form);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.downloadHandler.text);
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.text);
+
+            // verifié si le result c "OK" et donné largennnntt
+        }
+    }
 }

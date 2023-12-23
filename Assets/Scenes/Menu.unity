@@ -673,6 +673,7 @@ GameObject:
   - component: {fileID: 15828952}
   - component: {fileID: 15828951}
   - component: {fileID: 15828950}
+  - component: {fileID: 15828949}
   m_Layer: 0
   m_Name: panelSkinReturn2
   m_TagString: Untagged
@@ -701,6 +702,21 @@ RectTransform:
   m_AnchoredPosition: {x: -432, y: 49.426327}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &15828949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15828947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 2
+  nameProduct: Citrouille
+  price: 100
 --- !u!114 &15828950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -745,7 +761,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -1652,8 +1668,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 127.999825, y: 9.000036}
-  m_SizeDelta: {x: 63.213, y: 61.262}
+  m_AnchoredPosition: {x: 135.48578, y: 11.99996}
+  m_SizeDelta: {x: 93.132, y: 80.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &46274868
 MonoBehaviour:
@@ -3039,7 +3055,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -153.8, y: -429.1}
+  m_AnchoredPosition: {x: -160.00008, y: -429.10007}
   m_SizeDelta: {x: 923.3519, y: 796.0067}
   m_Pivot: {x: 0.55150294, y: 0.5}
 --- !u!114 &103443844
@@ -3100,17 +3116,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 103443844}
-        m_TargetAssemblyTypeName: ButtonSkin, Assembly-CSharp
-        m_MethodName: OnClickButton
-        m_Mode: 6
+      - m_Target: {fileID: 311451118}
+        m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
+        m_MethodName: BuyMoney
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &103443846
 MonoBehaviour:
@@ -3893,17 +3909,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 121694607}
-        m_TargetAssemblyTypeName: ButtonSkin, Assembly-CSharp
-        m_MethodName: OnClickButton
-        m_Mode: 6
+      - m_Target: {fileID: 311451118}
+        m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
+        m_MethodName: BuyMoney
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &121694609
 MonoBehaviour:
@@ -5098,6 +5114,7 @@ GameObject:
   - component: {fileID: 155303886}
   - component: {fileID: 155303885}
   - component: {fileID: 155303884}
+  - component: {fileID: 155303888}
   m_Layer: 0
   m_Name: panelSkinReturn13
   m_TagString: Untagged
@@ -5233,6 +5250,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 155303882}
   m_CullTransparentMesh: 1
+--- !u!114 &155303888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155303882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 13
+  nameProduct: Hollow Knigt
+  price: 500
 --- !u!1 &156960515
 GameObject:
   m_ObjectHideFlags: 0
@@ -5246,6 +5278,7 @@ GameObject:
   - component: {fileID: 156960518}
   - component: {fileID: 156960517}
   - component: {fileID: 156960520}
+  - component: {fileID: 156960521}
   m_Layer: 0
   m_Name: panelSkinReturn4
   m_TagString: Untagged
@@ -5381,6 +5414,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   result: {fileID: 1172795550}
   indexSkin: 4
+--- !u!114 &156960521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156960515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 4
+  nameProduct: Le fou du roi
+  price: 150
 --- !u!1 &158879069
 GameObject:
   m_ObjectHideFlags: 0
@@ -6263,8 +6311,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 165, y: 9}
-  m_SizeDelta: {x: 63.213, y: 61.262}
+  m_AnchoredPosition: {x: 197, y: 9}
+  m_SizeDelta: {x: 90.492, y: 81.737}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &188308585
 MonoBehaviour:
@@ -6316,6 +6364,7 @@ GameObject:
   - component: {fileID: 192066754}
   - component: {fileID: 192066753}
   - component: {fileID: 192066752}
+  - component: {fileID: 192066751}
   m_Layer: 0
   m_Name: panelSkinReturn5
   m_TagString: Untagged
@@ -6344,6 +6393,21 @@ RectTransform:
   m_AnchoredPosition: {x: -141, y: -241.99997}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &192066751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192066749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 5
+  nameProduct: Ange
+  price: 150
 --- !u!114 &192066752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6388,7 +6452,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -9805,6 +9869,7 @@ GameObject:
   - component: {fileID: 275872927}
   - component: {fileID: 275872926}
   - component: {fileID: 275872925}
+  - component: {fileID: 275872924}
   m_Layer: 0
   m_Name: panelSkinReturn3
   m_TagString: Untagged
@@ -9833,6 +9898,21 @@ RectTransform:
   m_AnchoredPosition: {x: -721, y: -242.00003}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &275872924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 275872922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 3
+  nameProduct: Scary movie
+  price: 150
 --- !u!114 &275872925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9877,7 +9957,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -12045,6 +12125,62 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 310604043}
   m_CullTransparentMesh: 1
+--- !u!1 &311451116
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 311451117}
+  - component: {fileID: 311451118}
+  m_Layer: 0
+  m_Name: InventoryManagement
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &311451117
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 311451116}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1093032186}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 4.8281255, y: 4.375061}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &311451118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 311451116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bec97e0b2296fa64291e85bd96c23407, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentAllSkin: {fileID: 1208782178}
+  lobby: {fileID: 0}
+  dynamicPanelInventory: {fileID: 662199308}
+  dynamicPanelInventory2: {fileID: 730134312}
+  UI_moneyPlayer: {fileID: 846346675}
+  current_indexItemBuy: -1
+  panelNoMoreMoney: {fileID: 657871879}
+  panelAlreadyHave: {fileID: 1394775737}
 --- !u!1 &312227029
 GameObject:
   m_ObjectHideFlags: 0
@@ -13744,6 +13880,7 @@ GameObject:
   - component: {fileID: 342032924}
   - component: {fileID: 342032923}
   - component: {fileID: 342032922}
+  - component: {fileID: 342032921}
   m_Layer: 0
   m_Name: panelSkinReturn8
   m_TagString: Untagged
@@ -13772,6 +13909,21 @@ RectTransform:
   m_AnchoredPosition: {x: -143, y: 49.999935}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &342032921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342032919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 8
+  nameProduct: Squelette
+  price: 100
 --- !u!114 &342032922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13816,7 +13968,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -14766,7 +14918,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 4810
+  m_Text: 0
 --- !u!222 &363708671
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15123,6 +15275,7 @@ GameObject:
   - component: {fileID: 381208861}
   - component: {fileID: 381208860}
   - component: {fileID: 381208859}
+  - component: {fileID: 381208858}
   m_Layer: 0
   m_Name: panelSkinReturn1
   m_TagString: Untagged
@@ -15151,6 +15304,21 @@ RectTransform:
   m_AnchoredPosition: {x: -720, y: 49.42633}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &381208858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381208856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 1
+  nameProduct: Premier skin vert
+  price: 100
 --- !u!114 &381208859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15195,7 +15363,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -16270,8 +16438,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -48.000122, y: -1.4749699}
-  m_SizeDelta: {x: 320.007, y: 136.949}
+  m_AnchoredPosition: {x: -89.173, y: -0.000030518}
+  m_SizeDelta: {x: 445.134, y: 198}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &418755019
 MonoBehaviour:
@@ -16295,11 +16463,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 101
+    m_FontSize: 140
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 117
+    m_MinSize: 1
+    m_MaxSize: 155
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -18089,8 +18257,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -53.999878, y: 6.5250607}
-  m_SizeDelta: {x: 320.007, y: 136.949}
+  m_AnchoredPosition: {x: -101.067, y: 1.907}
+  m_SizeDelta: {x: 354.133, y: 182.45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &451057072
 MonoBehaviour:
@@ -18114,11 +18282,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 101
+    m_FontSize: 155
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 117
+    m_MinSize: 1
+    m_MaxSize: 160
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -22284,6 +22452,7 @@ GameObject:
   - component: {fileID: 538565842}
   - component: {fileID: 538565841}
   - component: {fileID: 538565844}
+  - component: {fileID: 538565845}
   m_Layer: 0
   m_Name: panelSkinReturn3
   m_TagString: Untagged
@@ -22419,6 +22588,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   result: {fileID: 1172795550}
   indexSkin: 3
+--- !u!114 &538565845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538565839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 3
+  nameProduct: Scary movie
+  price: 150
 --- !u!1 &542224717
 GameObject:
   m_ObjectHideFlags: 0
@@ -25626,6 +25810,7 @@ GameObject:
   - component: {fileID: 631530213}
   - component: {fileID: 631530212}
   - component: {fileID: 631530215}
+  - component: {fileID: 631530216}
   m_Layer: 0
   m_Name: panelSkinReturn5
   m_TagString: Untagged
@@ -25761,6 +25946,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   result: {fileID: 1172795550}
   indexSkin: 5
+--- !u!114 &631530216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631530210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 5
+  nameProduct: Ange
+  price: 150
 --- !u!1 &634722565
 GameObject:
   m_ObjectHideFlags: 0
@@ -26442,6 +26642,7 @@ GameObject:
   - component: {fileID: 651152068}
   - component: {fileID: 651152067}
   - component: {fileID: 651152066}
+  - component: {fileID: 651152065}
   m_Layer: 0
   m_Name: panelSkinReturn9
   m_TagString: Untagged
@@ -26470,6 +26671,21 @@ RectTransform:
   m_AnchoredPosition: {x: -721.40924, y: 79}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &651152065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651152063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 9
+  nameProduct: Canard
+  price: 300
 --- !u!114 &651152066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26514,7 +26730,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -27159,7 +27375,6 @@ GameObject:
   m_Component:
   - component: {fileID: 662199309}
   - component: {fileID: 662199311}
-  - component: {fileID: 662199310}
   m_Layer: 0
   m_Name: DynamicPanel
   m_TagString: Untagged
@@ -27184,29 +27399,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.044541303, y: 0.060700633}
   m_AnchorMax: {x: 0.5658167, y: 0.7271996}
-  m_AnchoredPosition: {x: -11.909668, y: 10.126465}
+  m_AnchoredPosition: {x: -11.909973, y: 10.126465}
   m_SizeDelta: {x: 23.82, y: 45.0868}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &662199310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 662199308}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bec97e0b2296fa64291e85bd96c23407, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentAllSkin: {fileID: 1208782178}
-  lobby: {fileID: 1740359033}
-  dynamicPanelInventory: {fileID: 662199308}
-  dynamicPanelInventory2: {fileID: 730134312}
-  UI_moneyPlayer: {fileID: 846346675}
-  current_indexItemBuy: -1
-  panelNoMoreMoney: {fileID: 657871879}
-  panelAlreadyHave: {fileID: 1394775737}
 --- !u!114 &662199311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29730,6 +29925,7 @@ GameObject:
   - component: {fileID: 730883879}
   - component: {fileID: 730883878}
   - component: {fileID: 730883877}
+  - component: {fileID: 730883876}
   m_Layer: 0
   m_Name: panelSkinReturn12
   m_TagString: Untagged
@@ -29758,6 +29954,21 @@ RectTransform:
   m_AnchoredPosition: {x: -142, y: -535}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &730883876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730883874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 12
+  nameProduct: Egypte
+  price: 200
 --- !u!114 &730883877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29802,7 +30013,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -33273,6 +33484,7 @@ GameObject:
   - component: {fileID: 815317382}
   - component: {fileID: 815317381}
   - component: {fileID: 815317380}
+  - component: {fileID: 815317379}
   m_Layer: 0
   m_Name: panelSkinReturn16
   m_TagString: Untagged
@@ -33294,13 +33506,28 @@ RectTransform:
   - {fileID: 1856043136}
   - {fileID: 1496682500}
   m_Father: {fileID: 2130199868}
-  m_RootOrder: 6
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: -721, y: -214.42645}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &815317379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815317377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 16
+  nameProduct: Dead cell
+  price: 500
 --- !u!114 &815317380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33345,7 +33572,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -35598,7 +35825,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &851433304
 Transform:
   m_ObjectHideFlags: 0
@@ -35720,17 +35947,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 852119634}
-        m_TargetAssemblyTypeName: ButtonSkin, Assembly-CSharp
-        m_MethodName: OnClickButton
-        m_Mode: 6
+      - m_Target: {fileID: 311451118}
+        m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
+        m_MethodName: BuyMoney
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &852119636
 MonoBehaviour:
@@ -35804,8 +36031,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 127.999825, y: 9.000036}
-  m_SizeDelta: {x: 63.213, y: 61.262}
+  m_AnchoredPosition: {x: 144.03148, y: 9.0000515}
+  m_SizeDelta: {x: 90.492, y: 81.737}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &854354739
 MonoBehaviour:
@@ -37049,7 +37276,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: BuyItem
         m_Mode: 1
@@ -37821,6 +38048,7 @@ GameObject:
   - component: {fileID: 907733454}
   - component: {fileID: 907733453}
   - component: {fileID: 907733456}
+  - component: {fileID: 907733457}
   m_Layer: 0
   m_Name: panelSkinReturn6
   m_TagString: Untagged
@@ -37956,6 +38184,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   result: {fileID: 1172795550}
   indexSkin: 6
+--- !u!114 &907733457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907733451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 6
+  nameProduct: "Fant\xF4me"
+  price: 200
 --- !u!1 &907860935
 GameObject:
   m_ObjectHideFlags: 0
@@ -38484,8 +38727,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 146.99982, y: 14.475037}
-  m_SizeDelta: {x: 63.213, y: 61.262}
+  m_AnchoredPosition: {x: 172, y: 18}
+  m_SizeDelta: {x: 103.692, y: 94.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &914653272
 MonoBehaviour:
@@ -41241,6 +41484,7 @@ GameObject:
   - component: {fileID: 995672449}
   - component: {fileID: 995672448}
   - component: {fileID: 995672447}
+  - component: {fileID: 995672446}
   m_Layer: 0
   m_Name: panelSkinReturn14
   m_TagString: Untagged
@@ -41262,13 +41506,28 @@ RectTransform:
   - {fileID: 1596433990}
   - {fileID: 211111174}
   m_Father: {fileID: 2130199868}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: -140.4093, y: -214.00003}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &995672446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 995672444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 14
+  nameProduct: Hades
+  price: 500
 --- !u!114 &995672447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41313,7 +41572,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -41985,7 +42244,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1014900852
 RectTransform:
   m_ObjectHideFlags: 0
@@ -43692,8 +43951,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 165, y: 9}
-  m_SizeDelta: {x: 63.213, y: 61.262}
+  m_AnchoredPosition: {x: 190, y: 12}
+  m_SizeDelta: {x: 93.132, y: 80.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1056236562
 MonoBehaviour:
@@ -44543,6 +44802,7 @@ RectTransform:
   - {fileID: 825602222}
   - {fileID: 1342333058}
   - {fileID: 1014900852}
+  - {fileID: 311451117}
   m_Father: {fileID: 851433304}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -44933,6 +45193,7 @@ GameObject:
   - component: {fileID: 1099507625}
   - component: {fileID: 1099507624}
   - component: {fileID: 1099507623}
+  - component: {fileID: 1099507627}
   m_Layer: 0
   m_Name: panelSkinReturn12
   m_TagString: Untagged
@@ -45068,6 +45329,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1099507621}
   m_CullTransparentMesh: 1
+--- !u!114 &1099507627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1099507621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 12
+  nameProduct: Egypte
+  price: 200
 --- !u!1 &1101471266
 GameObject:
   m_ObjectHideFlags: 0
@@ -47238,6 +47514,7 @@ GameObject:
   - component: {fileID: 1175847928}
   - component: {fileID: 1175847927}
   - component: {fileID: 1175847930}
+  - component: {fileID: 1175847931}
   m_Layer: 0
   m_Name: panelSkinReturn1
   m_TagString: Untagged
@@ -47373,6 +47650,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   result: {fileID: 1172795550}
   indexSkin: 1
+--- !u!114 &1175847931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1175847925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 1
+  nameProduct: Premier skin vert
+  price: 100
 --- !u!1 &1177951344
 GameObject:
   m_ObjectHideFlags: 0
@@ -47482,8 +47774,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -34, y: 4}
-  m_SizeDelta: {x: 320.007, y: 136.949}
+  m_AnchoredPosition: {x: -86.698, y: -0.000068665}
+  m_SizeDelta: {x: 404.18, y: 176.11}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1178054858
 MonoBehaviour:
@@ -47507,11 +47799,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 101
+    m_FontSize: 155
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 117
+    m_MinSize: 1
+    m_MaxSize: 155
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -49359,8 +49651,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 90.000244, y: 17.000067}
-  m_SizeDelta: {x: 63.213, y: 61.262}
+  m_AnchoredPosition: {x: 100.85164, y: 20.000038}
+  m_SizeDelta: {x: 101.052, y: 98.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1233226725
 MonoBehaviour:
@@ -53542,7 +53834,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1342333058
 RectTransform:
   m_ObjectHideFlags: 0
@@ -54198,7 +54490,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -525.9999, y: -429}
+  m_AnchoredPosition: {x: -535, y: -429.10007}
   m_SizeDelta: {x: 923.3519, y: 796.0067}
   m_Pivot: {x: 0.55150294, y: 0.5}
 --- !u!114 &1351681554
@@ -54259,17 +54551,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1351681554}
-        m_TargetAssemblyTypeName: ButtonSkin, Assembly-CSharp
-        m_MethodName: OnClickButton
-        m_Mode: 6
+      - m_Target: {fileID: 311451118}
+        m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
+        m_MethodName: BuyMoney
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1351681556
 MonoBehaviour:
@@ -56638,6 +56930,7 @@ GameObject:
   - component: {fileID: 1416808246}
   - component: {fileID: 1416808245}
   - component: {fileID: 1416808244}
+  - component: {fileID: 1416808243}
   m_Layer: 0
   m_Name: panelSkinReturn10
   m_TagString: Untagged
@@ -56666,6 +56959,21 @@ RectTransform:
   m_AnchoredPosition: {x: -431.4092, y: 79}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &1416808243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1416808241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 10
+  nameProduct: Docteur
+  price: 300
 --- !u!114 &1416808244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56710,7 +57018,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -58584,6 +58892,7 @@ GameObject:
   - component: {fileID: 1450684366}
   - component: {fileID: 1450684365}
   - component: {fileID: 1450684364}
+  - component: {fileID: 1450684363}
   m_Layer: 0
   m_Name: panelSkinReturn6
   m_TagString: Untagged
@@ -58612,6 +58921,21 @@ RectTransform:
   m_AnchoredPosition: {x: -721.40924, y: -537}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &1450684363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1450684361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 6
+  nameProduct: "Fant\xF4me"
+  price: 200
 --- !u!114 &1450684364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58656,7 +58980,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -59356,7 +59680,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.904, y: -346}
+  m_AnchoredPosition: {x: -28, y: -335}
   m_SizeDelta: {x: 601.473, y: 169.583}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1467418474
@@ -59381,7 +59705,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: e00995507c2406448b4c8429136104dd, type: 3}
-    m_FontSize: 117
+    m_FontSize: 137
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -60410,6 +60734,7 @@ GameObject:
   - component: {fileID: 1497811294}
   - component: {fileID: 1497811293}
   - component: {fileID: 1497811292}
+  - component: {fileID: 1497811291}
   m_Layer: 0
   m_Name: panelSkinReturn11
   m_TagString: Untagged
@@ -60438,6 +60763,21 @@ RectTransform:
   m_AnchoredPosition: {x: -140.4093, y: 79}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &1497811291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497811289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 11
+  nameProduct: Vampyre
+  price: 300
 --- !u!114 &1497811292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60482,7 +60822,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -61066,6 +61406,7 @@ GameObject:
   - component: {fileID: 1513082852}
   - component: {fileID: 1513082851}
   - component: {fileID: 1513082850}
+  - component: {fileID: 1513082849}
   m_Layer: 0
   m_Name: panelSkinReturn7
   m_TagString: Untagged
@@ -61094,6 +61435,21 @@ RectTransform:
   m_AnchoredPosition: {x: -435, y: -536.99994}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &1513082849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513082847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 7
+  nameProduct: Zombie
+  price: 200
 --- !u!114 &1513082850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61138,7 +61494,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -68182,6 +68538,7 @@ GameObject:
   - component: {fileID: 1675544989}
   - component: {fileID: 1675544988}
   - component: {fileID: 1675544991}
+  - component: {fileID: 1675544992}
   m_Layer: 0
   m_Name: panelSkinReturn7
   m_TagString: Untagged
@@ -68317,6 +68674,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   result: {fileID: 1172795550}
   indexSkin: 7
+--- !u!114 &1675544992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1675544986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 7
+  nameProduct: Zombie
+  price: 200
 --- !u!1 &1676410086
 GameObject:
   m_ObjectHideFlags: 0
@@ -69558,6 +69930,7 @@ GameObject:
   - component: {fileID: 1704153758}
   - component: {fileID: 1704153757}
   - component: {fileID: 1704153756}
+  - component: {fileID: 1704153755}
   m_Layer: 0
   m_Name: panelSkinReturn15
   m_TagString: Untagged
@@ -69579,13 +69952,28 @@ RectTransform:
   - {fileID: 1996171658}
   - {fileID: 1934788900}
   m_Father: {fileID: 2130199868}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: -721.40924, y: -514}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &1704153755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1704153753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 15
+  nameProduct: Little Nightmare
+  price: 500
 --- !u!114 &1704153756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69630,7 +70018,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -70428,6 +70816,7 @@ GameObject:
   - component: {fileID: 1720438960}
   - component: {fileID: 1720438959}
   - component: {fileID: 1720438958}
+  - component: {fileID: 1720438962}
   m_Layer: 0
   m_Name: panelSkinReturn11
   m_TagString: Untagged
@@ -70563,6 +70952,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1720438956}
   m_CullTransparentMesh: 1
+--- !u!114 &1720438962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720438956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 11
+  nameProduct: Vampyre
+  price: 300
 --- !u!1 &1721623503
 GameObject:
   m_ObjectHideFlags: 0
@@ -71378,6 +71782,7 @@ GameObject:
   - component: {fileID: 1745097736}
   - component: {fileID: 1745097735}
   - component: {fileID: 1745097738}
+  - component: {fileID: 1745097739}
   m_Layer: 0
   m_Name: panelSkinReturn8
   m_TagString: Untagged
@@ -71513,6 +71918,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   result: {fileID: 1172795550}
   indexSkin: 8
+--- !u!114 &1745097739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1745097733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 8
+  nameProduct: Squelette
+  price: 100
 --- !u!1 &1746231504
 GameObject:
   m_ObjectHideFlags: 0
@@ -72845,6 +73265,7 @@ GameObject:
   - component: {fileID: 1770118702}
   - component: {fileID: 1770118701}
   - component: {fileID: 1770118700}
+  - component: {fileID: 1770118699}
   m_Layer: 0
   m_Name: panelSkinReturn13
   m_TagString: Untagged
@@ -72866,13 +73287,28 @@ RectTransform:
   - {fileID: 1391374172}
   - {fileID: 773918561}
   m_Father: {fileID: 2130199868}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: -431.4091, y: -214}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &1770118699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1770118697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 13
+  nameProduct: Hollow Knigt
+  price: 500
 --- !u!114 &1770118700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72917,7 +73353,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -75772,8 +76208,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -48.000122, y: -1.4749699}
-  m_SizeDelta: {x: 320.007, y: 136.949}
+  m_AnchoredPosition: {x: -68.911, y: -0.000011444}
+  m_SizeDelta: {x: 404.61, y: 175.624}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1833218788
 MonoBehaviour:
@@ -75797,11 +76233,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 101
+    m_FontSize: 140
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 117
+    m_MinSize: 1
+    m_MaxSize: 140
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -75851,8 +76287,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 127, y: 17}
-  m_SizeDelta: {x: 63.213, y: 61.262}
+  m_AnchoredPosition: {x: 160, y: 20}
+  m_SizeDelta: {x: 101.052, y: 98.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1833539654
 MonoBehaviour:
@@ -76128,6 +76564,7 @@ GameObject:
   - component: {fileID: 1838790863}
   - component: {fileID: 1838790862}
   - component: {fileID: 1838790861}
+  - component: {fileID: 1838790865}
   m_Layer: 0
   m_Name: panelSkinReturn16
   m_TagString: Untagged
@@ -76263,6 +76700,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1838790859}
   m_CullTransparentMesh: 1
+--- !u!114 &1838790865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1838790859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 16
+  nameProduct: Dead cell
+  price: 500
 --- !u!1 &1842906999
 GameObject:
   m_ObjectHideFlags: 0
@@ -76697,6 +77149,7 @@ GameObject:
   - component: {fileID: 1847687452}
   - component: {fileID: 1847687451}
   - component: {fileID: 1847687454}
+  - component: {fileID: 1847687455}
   m_Layer: 0
   m_Name: panelSkinReturn2
   m_TagString: Untagged
@@ -76832,6 +77285,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   result: {fileID: 1172795550}
   indexSkin: 2
+--- !u!114 &1847687455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847687449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 2
+  nameProduct: Citrouille
+  price: 100
 --- !u!1 &1848349889
 GameObject:
   m_ObjectHideFlags: 0
@@ -78405,6 +78873,7 @@ GameObject:
   - component: {fileID: 1903516037}
   - component: {fileID: 1903516036}
   - component: {fileID: 1903516035}
+  - component: {fileID: 1903516034}
   m_Layer: 0
   m_Name: panelSkinReturn4
   m_TagString: Untagged
@@ -78433,6 +78902,21 @@ RectTransform:
   m_AnchoredPosition: {x: -432, y: -242}
   m_SizeDelta: {x: 705.3411, y: 665.2008}
   m_Pivot: {x: 0.55150294, y: 0.5}
+--- !u!114 &1903516034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903516032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 4
+  nameProduct: Le fou du roi
+  price: 150
 --- !u!114 &1903516035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78477,7 +78961,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ReserveItem
         m_Mode: 3
@@ -80926,6 +81410,7 @@ GameObject:
   - component: {fileID: 1960988685}
   - component: {fileID: 1960988684}
   - component: {fileID: 1960988683}
+  - component: {fileID: 1960988687}
   m_Layer: 0
   m_Name: panelSkinReturn9
   m_TagString: Untagged
@@ -81061,6 +81546,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1960988681}
   m_CullTransparentMesh: 1
+--- !u!114 &1960988687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960988681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 9
+  nameProduct: Canard
+  price: 300
 --- !u!1 &1963426084
 GameObject:
   m_ObjectHideFlags: 0
@@ -83002,7 +83502,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 662199310}
+      - m_Target: {fileID: 311451118}
         m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
         m_MethodName: ResetCurrentIndexItem
         m_Mode: 1
@@ -83065,6 +83565,7 @@ GameObject:
   - component: {fileID: 1992676708}
   - component: {fileID: 1992676707}
   - component: {fileID: 1992676706}
+  - component: {fileID: 1992676710}
   m_Layer: 0
   m_Name: panelSkinReturn10
   m_TagString: Untagged
@@ -83200,6 +83701,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1992676704}
   m_CullTransparentMesh: 1
+--- !u!114 &1992676710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992676704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 10
+  nameProduct: Docteur
+  price: 300
 --- !u!1 &1992853401
 GameObject:
   m_ObjectHideFlags: 0
@@ -85420,6 +85936,7 @@ GameObject:
   - component: {fileID: 2031793694}
   - component: {fileID: 2031793693}
   - component: {fileID: 2031793692}
+  - component: {fileID: 2031793696}
   m_Layer: 0
   m_Name: panelSkinReturn15
   m_TagString: Untagged
@@ -85555,6 +86072,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2031793690}
   m_CullTransparentMesh: 1
+--- !u!114 &2031793696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2031793690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 15
+  nameProduct: Little Nightmare
+  price: 500
 --- !u!1 &2033236293
 GameObject:
   m_ObjectHideFlags: 0
@@ -86405,8 +86937,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 109.99994, y: 14.475042}
-  m_SizeDelta: {x: 63.213, y: 61.262}
+  m_AnchoredPosition: {x: 111.30682, y: 18.000113}
+  m_SizeDelta: {x: 103.692, y: 94.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2050537358
 MonoBehaviour:
@@ -88446,6 +88978,7 @@ GameObject:
   - component: {fileID: 2099982093}
   - component: {fileID: 2099982092}
   - component: {fileID: 2099982091}
+  - component: {fileID: 2099982095}
   m_Layer: 0
   m_Name: panelSkinReturn14
   m_TagString: Untagged
@@ -88581,6 +89114,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2099982089}
   m_CullTransparentMesh: 1
+--- !u!114 &2099982095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099982089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb13503dd90c6b2489f06698057411aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 14
+  nameProduct: Hades
+  price: 500
 --- !u!1 &2103275553
 GameObject:
   m_ObjectHideFlags: 0
@@ -89144,10 +89692,10 @@ RectTransform:
   - {fileID: 651152064}
   - {fileID: 1416808242}
   - {fileID: 1497811290}
+  - {fileID: 815317378}
   - {fileID: 1770118698}
   - {fileID: 995672445}
   - {fileID: 1704153754}
-  - {fileID: 815317378}
   - {fileID: 259913830}
   - {fileID: 1754482818}
   m_Father: {fileID: 1014900852}

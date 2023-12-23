@@ -17,6 +17,7 @@ public class SkinsPlayer
     public string steamId;
     public string pseudoSteam;
     public Skin[] skins;
+    public int money;
     public string _id;
     public string __v;
     public int id;
