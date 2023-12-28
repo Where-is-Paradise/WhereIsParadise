@@ -19,6 +19,10 @@ public class Inventory : MonoBehaviour
     public GameObject panelNoMoreMoney;
     public GameObject panelAlreadyHave;
 
+    public int priceMoney = 0;
+
+    public string orderId = "";
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +31,8 @@ public class Inventory : MonoBehaviour
         AddSkinInventory();
         DisplayNextButton();
         UpdateValeuPlayerMoneyUI(lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money);
+        Callback<MicroTxnAuthorizationResponse_t> m_MicroTxnAuthorizationResponse = Callback<MicroTxnAuthorizationResponse_t>.Create(OnMicrotransactionResponse);
+
     }
 
     // Update is called once per frame
@@ -142,7 +148,6 @@ public class Inventory : MonoBehaviour
             }
             else
             {
-                Debug.Log("sa passe quand meme");
                 lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money -= price;
                 UpdateValeuPlayerMoneyUI(lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money);
                 lobby.GetPlayerMineGO().GetComponent<PlayerGO>().AddInInventory(idSkin);
@@ -180,47 +185,77 @@ public class Inventory : MonoBehaviour
 
     public IEnumerator TestPurchasing(int indexMoney)
     {
-        int price = 500;
-        if (indexMoney == 0)
-            price = 199;
-        else if (indexMoney == 1)
-            price = 599;
-        else if (indexMoney == 2)
-            price = 999;
-        else if (indexMoney == 3)
-            price = 1499;
+                int price = 599;
+                int priceMoney = 550;
+                if (indexMoney == 0)
+                {
+                    price = 199;
+                    priceMoney = 100;
+                }  
+                else if (indexMoney == 1)
+                {
+                    price = 599;
+                    priceMoney = 550;
+                }
+                else if (indexMoney == 2)
+                {
+                    price = 999;
+                    priceMoney = 1500;
+                }
+                else if (indexMoney == 3)
+                {
+                    price = 1499;
+                    priceMoney = 3000;
+                }
 
+                this.priceMoney = priceMoney;
+                
+        /*WWWForm form = new WWWForm();
+                form.AddField("key", "110CECAF8B4523084D352599DD2EFFA2");
+                form.AddField("orderid", 1035);
+                form.AddField("steamid", "" + SteamUser.GetSteamID().m_SteamID);
+                form.AddField("appid", 1746620);
+                form.AddField("itemcount", 1);
+                form.AddField("language", "en");
+                form.AddField("currency", "EUR");
+                form.AddField("itemid[0]", 10);
+                form.AddField("qty[0]", 1);
+                form.AddField("amount[0]", price);
+                form.AddField("description[0]", "description");
+
+
+                UnityWebRequest www = UnityWebRequest.Post("https://partner.steam-api.com/ISteamMicroTxnSandbox/InitTxn/v3", form);
+                yield return www.SendWebRequest();
+
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log(www.downloadHandler.text);
+                    //Debug.Log(form);
+                    //StartCoroutine(GetText());
+                }
+                else
+                {
+                    Debug.Log(www.downloadHandler.text);
+
+                    //SteamAPI.RunCallbacks();
+                    Callback<MicroTxnAuthorizationResponse_t> m_MicroTxnAuthorizationResponse = Callback<MicroTxnAuthorizationResponse_t>.Create(OnMicrotransactionResponse);
+
+                }*/
 
         WWWForm form = new WWWForm();
-        form.AddField("key", "110CECAF8B4523084D352599DD2EFFA2");
-        form.AddField("orderid", 1026);
-        form.AddField("steamid", "" + SteamUser.GetSteamID().m_SteamID);
-        form.AddField("appid", 1746620);
-        form.AddField("itemcount", 1);
-        form.AddField("language", "en");
-        form.AddField("currency", "EUR");
-        form.AddField("itemid[0]", 10);
-        form.AddField("qty[0]", 1);
-        form.AddField("amount[0]", price);
-        form.AddField("description[0]", "description");
+        string steamId = SteamUser.GetSteamID().ToString();
+        UnityWebRequest requestinit = UnityWebRequest.Post("http://127.0.0.1:8090/paiement/init?steamId=" + steamId, form);
+        yield return requestinit.SendWebRequest();
 
-
-        UnityWebRequest www = UnityWebRequest.Post("https://partner.steam-api.com/ISteamMicroTxnSandbox/InitTxn/v3", form);
-        yield return www.SendWebRequest();
-
-        if (www.result != UnityWebRequest.Result.Success)
+        if (requestinit.result != UnityWebRequest.Result.Success)
         {
-            Debug.Log(www.downloadHandler.text);
-            //Debug.Log(form);
-            //StartCoroutine(GetText());
+            Debug.Log(requestinit.downloadHandler.text);
         }
         else
         {
-            Debug.Log(www.downloadHandler.text);
-
-            //SteamAPI.RunCallbacks();
-            Callback<MicroTxnAuthorizationResponse_t> m_MicroTxnAuthorizationResponse = Callback<MicroTxnAuthorizationResponse_t>.Create(OnMicrotransactionResponse);
-
+            Debug.Log(requestinit.downloadHandler.text);
+            string orderIdReturnJson = ParserJson.ParseStringToJsonWithoutCote(requestinit.downloadHandler.text, "orderId");
+            this.orderId = orderIdReturnJson;
         }
 
 
@@ -241,24 +276,49 @@ public class Inventory : MonoBehaviour
 
     public IEnumerator FinaliseTransaction()
     {
+        /*        WWWForm form = new WWWForm();
+                form.AddField("key", "110CECAF8B4523084D352599DD2EFFA2");
+                form.AddField("orderid", 1035);
+                form.AddField("steamid", "" + SteamUser.GetSteamID().m_SteamID);
+                form.AddField("appid", 1746620);
+
+                UnityWebRequest www = UnityWebRequest.Post("https://partner.steam-api.com/ISteamMicroTxnSandbox/FinalizeTxn/v2", form);
+                yield return www.SendWebRequest();
+
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log(www.downloadHandler.text);
+                }
+                else
+                {
+                    Debug.Log(www.downloadHandler.text);
+                    string steamId = SteamUser.GetSteamID().ToString();
+                    UnityWebRequest requestAddMoney = UnityWebRequest.Post("http://127.0.0.1:8090/player/addMoney?steamId=" + steamId + "&money=" + this.priceMoney, form);
+                    yield return requestAddMoney.SendWebRequest();
+                    lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money = lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money + this.priceMoney;
+                    UpdateValeuPlayerMoneyUI(lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money);
+                }*/
+
         WWWForm form = new WWWForm();
-        form.AddField("key", "110CECAF8B4523084D352599DD2EFFA2");
-        form.AddField("orderid", 1026);
-        form.AddField("steamid", "" + SteamUser.GetSteamID().m_SteamID);
-        form.AddField("appid", 1746620);
+        string steamId = SteamUser.GetSteamID().ToString();
+        UnityWebRequest requestFinalise = UnityWebRequest.Post("http://127.0.0.1:8090/paiement/finalize?steamId=" + steamId + "&orderId=" + this.orderId, form);
+        yield return requestFinalise.SendWebRequest();
 
-        UnityWebRequest www = UnityWebRequest.Post("https://partner.steam-api.com/ISteamMicroTxnSandbox/FinalizeTxn/v2", form);
-        yield return www.SendWebRequest();
-
-        if (www.result != UnityWebRequest.Result.Success)
+        if (requestFinalise.result != UnityWebRequest.Result.Success)
         {
-            Debug.Log(www.downloadHandler.text);
+            Debug.Log(requestFinalise.downloadHandler.text);
         }
         else
         {
-            Debug.Log(www.downloadHandler.text);
+            Debug.Log(requestFinalise.downloadHandler.text);
+            UnityWebRequest requestAddMoney = UnityWebRequest.Post("http://127.0.0.1:8090/player/addMoney?steamId=" + steamId + "&money=" + this.priceMoney, form);
+            yield return requestAddMoney.SendWebRequest();
+            lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money = lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money + this.priceMoney;
+            UpdateValeuPlayerMoneyUI(lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money);
 
-            // verifié si le result c "OK" et donné largennnntt
         }
+
+
+
     }
 }
