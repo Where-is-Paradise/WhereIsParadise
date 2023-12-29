@@ -185,30 +185,8 @@ public class Inventory : MonoBehaviour
 
     public IEnumerator TestPurchasing(int indexMoney)
     {
-                int price = 599;
-                int priceMoney = 550;
-                if (indexMoney == 0)
-                {
-                    price = 199;
-                    priceMoney = 100;
-                }  
-                else if (indexMoney == 1)
-                {
-                    price = 599;
-                    priceMoney = 550;
-                }
-                else if (indexMoney == 2)
-                {
-                    price = 999;
-                    priceMoney = 1500;
-                }
-                else if (indexMoney == 3)
-                {
-                    price = 1499;
-                    priceMoney = 3000;
-                }
 
-                this.priceMoney = priceMoney;
+                this.priceMoney = 550;
                 
         /*WWWForm form = new WWWForm();
                 form.AddField("key", "110CECAF8B4523084D352599DD2EFFA2");
@@ -244,7 +222,8 @@ public class Inventory : MonoBehaviour
 
         WWWForm form = new WWWForm();
         string steamId = SteamUser.GetSteamID().ToString();
-        UnityWebRequest requestinit = UnityWebRequest.Post("http://127.0.0.1:8090/paiement/init?steamId=" + steamId, form);
+        Debug.Log("indexMoney : " + indexMoney);
+        UnityWebRequest requestinit = UnityWebRequest.Post("http://127.0.0.1:8090/paiement/init?steamId=" + steamId+"&idMoney="+ indexMoney, form);
         yield return requestinit.SendWebRequest();
 
         if (requestinit.result != UnityWebRequest.Result.Success)
@@ -311,11 +290,16 @@ public class Inventory : MonoBehaviour
         else
         {
             Debug.Log(requestFinalise.downloadHandler.text);
-            UnityWebRequest requestAddMoney = UnityWebRequest.Post("http://127.0.0.1:8090/player/addMoney?steamId=" + steamId + "&money=" + this.priceMoney, form);
-            yield return requestAddMoney.SendWebRequest();
-            lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money = lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money + this.priceMoney;
-            UpdateValeuPlayerMoneyUI(lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money);
+            /*            UnityWebRequest requestAddMoney = UnityWebRequest.Post("http://127.0.0.1:8090/player/addMoney?steamId=" + steamId + "&money=" + this.priceMoney, form);
+                        yield return requestAddMoney.SendWebRequest();
+                        lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money = lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money + this.priceMoney;
+                        UpdateValeuPlayerMoneyUI(lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money);*/
 
+
+            string blackSoulMoneyReturn = ParserJson.ParseStringToJson(requestFinalise.downloadHandler.text, "valueMoney");
+            int blackSoulMoneyInt = int.Parse(blackSoulMoneyReturn);
+            lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money = lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money + blackSoulMoneyInt;
+            UpdateValeuPlayerMoneyUI(lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money);
         }
 
 

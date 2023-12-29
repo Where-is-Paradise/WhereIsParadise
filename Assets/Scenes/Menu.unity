@@ -3027,7 +3027,6 @@ GameObject:
   - component: {fileID: 103443847}
   - component: {fileID: 103443846}
   - component: {fileID: 103443845}
-  - component: {fileID: 103443844}
   m_Layer: 0
   m_Name: panelMoney1 (3)
   m_TagString: Untagged
@@ -3058,20 +3057,6 @@ RectTransform:
   m_AnchoredPosition: {x: -160.00008, y: -429.10007}
   m_SizeDelta: {x: 923.3519, y: 796.0067}
   m_Pivot: {x: 0.55150294, y: 0.5}
---- !u!114 &103443844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 103443842}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe27ec98ff5554a41b0d3f7d17b7e1a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  result: {fileID: 0}
-  indexSkin: 0
 --- !u!114 &103443845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3123,7 +3108,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3820,7 +3805,6 @@ GameObject:
   - component: {fileID: 121694610}
   - component: {fileID: 121694609}
   - component: {fileID: 121694608}
-  - component: {fileID: 121694607}
   m_Layer: 0
   m_Name: panelMoney1
   m_TagString: Untagged
@@ -3851,20 +3835,6 @@ RectTransform:
   m_AnchoredPosition: {x: -535, y: -69}
   m_SizeDelta: {x: 923.3519, y: 796.0067}
   m_Pivot: {x: 0.55150294, y: 0.5}
---- !u!114 &121694607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 121694605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe27ec98ff5554a41b0d3f7d17b7e1a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  result: {fileID: 0}
-  indexSkin: 0
 --- !u!114 &121694608
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3916,7 +3886,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -12181,6 +12151,8 @@ MonoBehaviour:
   current_indexItemBuy: -1
   panelNoMoreMoney: {fileID: 657871879}
   panelAlreadyHave: {fileID: 1394775737}
+  priceMoney: 0
+  orderId: 
 --- !u!1 &312227029
 GameObject:
   m_ObjectHideFlags: 0
@@ -35858,7 +35830,6 @@ GameObject:
   - component: {fileID: 852119637}
   - component: {fileID: 852119636}
   - component: {fileID: 852119635}
-  - component: {fileID: 852119634}
   m_Layer: 0
   m_Name: panelMoney1 (1)
   m_TagString: Untagged
@@ -35889,20 +35860,6 @@ RectTransform:
   m_AnchoredPosition: {x: -160, y: -69}
   m_SizeDelta: {x: 923.3519, y: 796.0067}
   m_Pivot: {x: 0.55150294, y: 0.5}
---- !u!114 &852119634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 852119632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe27ec98ff5554a41b0d3f7d17b7e1a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  result: {fileID: 0}
-  indexSkin: 0
 --- !u!114 &852119635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35954,7 +35911,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -54462,7 +54419,6 @@ GameObject:
   - component: {fileID: 1351681557}
   - component: {fileID: 1351681556}
   - component: {fileID: 1351681555}
-  - component: {fileID: 1351681554}
   m_Layer: 0
   m_Name: panelMoney1 (2)
   m_TagString: Untagged
@@ -54493,20 +54449,6 @@ RectTransform:
   m_AnchoredPosition: {x: -535, y: -429.10007}
   m_SizeDelta: {x: 923.3519, y: 796.0067}
   m_Pivot: {x: 0.55150294, y: 0.5}
---- !u!114 &1351681554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1351681552}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe27ec98ff5554a41b0d3f7d17b7e1a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  result: {fileID: 0}
-  indexSkin: 0
 --- !u!114 &1351681555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54558,7 +54500,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
