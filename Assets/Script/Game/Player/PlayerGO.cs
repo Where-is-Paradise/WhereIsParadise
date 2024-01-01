@@ -211,7 +211,8 @@ public class PlayerGO : MonoBehaviour
         listTrialObject.Add(hasMap);
         listTrialObject.Add(hasProtection);
         listTrialObject.Add(hasTrueEyes);
-        StartCoroutine(GetListSkinIndexInServer());
+        //StartCoroutine(GetListSkinIndexInServer());
+        StartCoroutine(GetListSkinIndexInServerTestIP());
     }
 
     private void enhanceOwners()
@@ -2419,28 +2420,67 @@ public class PlayerGO : MonoBehaviour
 
     public IEnumerator GetListSkinIndexInServer()
     {
-
+        Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
+        string linkServer = setting.linkServerAws;
         string steamId = SteamUser.GetSteamID().ToString();
         WWWForm form = new WWWForm();
-        UnityWebRequest www = UnityWebRequest.Post("http://127.0.0.1:8090/player/find?steamId="+ steamId, form);
+        UnityWebRequest www = UnityWebRequest.Post(linkServer + "/player/find?steamId=" + steamId, form);
+        www.certificateHandler = new CertifcateValidator();
         yield return www.SendWebRequest();
-
         if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.Log(www.downloadHandler.text);
         }
         else
         {
-
             Debug.LogError(www.downloadHandler.text);
             RequestSkin skinreturn = JsonUtility.FromJson<RequestSkin>(www.downloadHandler.text);
 
             if (skinreturn.response.skins == null)
             {
                 string pseudoSteam = SteamFriends.GetPersonaName();
-                UnityWebRequest www2 = UnityWebRequest.Post("http://127.0.0.1:8090/player/addPlayer?steamId=" + steamId +"&pseudoSteam="+ pseudoSteam, form);
+                UnityWebRequest www2 = UnityWebRequest.Post(linkServer + "/player/addPlayer?steamId=" + steamId +"&pseudoSteam="+ pseudoSteam, form);
+                www2.certificateHandler = new CertifcateValidator();
                 yield return www2.SendWebRequest();
                 StartCoroutine(GetListSkinIndexInServer());
+            }
+            else
+            {
+                for (int i = 0; i < skinreturn.response.skins.Length; i++)
+                {
+                    AddInInventory(skinreturn.response.skins[i].id);
+                    Debug.Log("  skin : " + skinreturn.response.skins[i].name);
+                }
+                blackSoul_money = skinreturn.response.money;
+            }
+        }
+    }
+
+    public IEnumerator GetListSkinIndexInServerTestIP()
+    {
+        Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
+        string linkServer = setting.linkServerAws;
+        string steamId = setting.ip;
+        WWWForm form = new WWWForm();
+        UnityWebRequest www = UnityWebRequest.Post(linkServer + "/player/find?steamId=" + steamId, form);
+        www.certificateHandler = new CertifcateValidator();
+        yield return www.SendWebRequest();
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.downloadHandler.text);
+        }
+        else
+        {
+            Debug.LogError(www.downloadHandler.text);
+            RequestSkin skinreturn = JsonUtility.FromJson<RequestSkin>(www.downloadHandler.text);
+
+            if (skinreturn.response.skins == null)
+            {
+                string pseudoSteam = setting.ip;
+                UnityWebRequest www2 = UnityWebRequest.Post(linkServer + "/player/addPlayer?steamId=" + steamId + "&pseudoSteam=" + pseudoSteam, form);
+                www2.certificateHandler = new CertifcateValidator();
+                yield return www2.SendWebRequest();
+                StartCoroutine(GetListSkinIndexInServerTestIP());
             }
             else
             {

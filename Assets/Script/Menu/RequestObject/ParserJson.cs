@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class ParserJson
 {
-
-
     public static string ParseStringToJson(string text , string param)
     {
         string pivot = "";

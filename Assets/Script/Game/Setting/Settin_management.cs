@@ -46,6 +46,8 @@ public class Settin_management : MonoBehaviour
     public GameObject resolutionFirstConnexion;
     public GameObject languageFistConnexion;
 
+    public Text  formIp_value;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,6 +69,7 @@ public class Settin_management : MonoBehaviour
         LoadLanguage();
         LoadTutorial();
         LoadWelcome();
+        LoadTestSkinIP();
 
         //SetFullScreenModeListView();
         SetLanguageDropdown();
@@ -76,7 +79,7 @@ public class Settin_management : MonoBehaviour
 
         LoadServerRegion("");
 
-       
+        
     }
 
     // Update is called once per frame
@@ -509,6 +512,7 @@ public class Settin_management : MonoBehaviour
         QuickSaveRaw.LoadString("welcome.json");
     }
 
+
     public void LoadWelcome()
     {
 
@@ -524,6 +528,35 @@ public class Settin_management : MonoBehaviour
         }
 
         setting.welcome = displayWelcome;
+    }
+
+    public void SaveTestSkinIp()
+    {
+        QuickSaveWriter.Create("testSkinIp")
+                .Write("name", setting.ip)
+                .Commit();
+        QuickSaveRaw.LoadString("testSkinIp.json");
+    }
+
+    public void LoadTestSkinIP()
+    {
+        String displayWelcome = "";
+        try
+        {
+            QuickSaveReader.Create("testSkinIp")
+                      .Read<String>("name", (r) => { displayWelcome = r; });
+        }
+        catch (Exception e)
+        {
+            SaveTestSkinIp();
+        }
+
+        setting.ip = displayWelcome;
+    }
+    public void SetIpSettingValue()
+    {
+        setting.ip = formIp_value.text;
+        SaveTestSkinIp();
     }
 
     public void SetFullScreenMode(int index)

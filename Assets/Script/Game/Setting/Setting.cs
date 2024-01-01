@@ -6,6 +6,10 @@ using UnityEngine.UI;
 
 public class Setting : MonoBehaviour
 {
+    public bool PROD = false;
+    public string linkServerAws;
+    public bool MODE_TEST_SKIN_IP = false;
+    public string ip = "";
 
     public int NB_PLAYER_MAX = 10;
     public int KEY_ADDITIONAL = 1;
@@ -135,6 +139,12 @@ public class Setting : MonoBehaviour
         listObjectImpostor.Add(true); // Invisible potion
         listObjectImpostor.Add(true); // Satanic knife
         listObjectImpostor.Add(true); // Satanic book
+
+        if (PROD)
+            linkServerAws = "https://ec2-35-180-178-202.eu-west-3.compute.amazonaws.com";
+        else
+            linkServerAws = "localhost:8090";
+
     }
 
 

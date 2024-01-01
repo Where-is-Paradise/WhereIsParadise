@@ -104,7 +104,8 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     IEnumerator GetText()
     {
-        UnityWebRequest www = UnityWebRequest.Get("http://ec2-35-180-178-202.eu-west-3.compute.amazonaws.com/version");
+        UnityWebRequest www = UnityWebRequest.Get("https://ec2-35-180-178-202.eu-west-3.compute.amazonaws.com/version");
+        www.certificateHandler = new CertifcateValidator();
         yield return www.SendWebRequest();
 
         if (www.result != UnityWebRequest.Result.Success)

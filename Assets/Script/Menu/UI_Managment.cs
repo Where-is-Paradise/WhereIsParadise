@@ -124,6 +124,7 @@ public class UI_Managment : MonoBehaviourPun
     public GameObject panelLanguageReset;
     public GameObject panelFirstConnexion;
     public GameObject panelWelcome;
+    public GameObject panelTestSKIN_IP;
 
     public Version_http version;
     float k = -1;
@@ -275,14 +276,26 @@ public class UI_Managment : MonoBehaviourPun
     public void OnClickFirstConnexionPanel()
     {
         StartCoroutine(DisplayCoroutineWelcomePanel());
+        StartCoroutine(DisplayCoroutineIpPanel());
     }
 
     public IEnumerator DisplayCoroutineWelcomePanel()
     {
         yield return new WaitForSeconds(1);
+        Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
         if (setting.welcome)
         {
             panelWelcome.SetActive(true);
+        }
+    }
+    public IEnumerator DisplayCoroutineIpPanel()
+    {
+        yield return new WaitForSeconds(1);
+        Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
+        Debug.Log(setting.ip + " "  + (setting.ip == ""));
+        if (setting.MODE_TEST_SKIN_IP && setting.ip == "")
+        {
+            panelTestSKIN_IP.SetActive(true);
         }
     }
 
@@ -470,16 +483,7 @@ public class UI_Managment : MonoBehaviourPun
     public void SetDifficulty(GameObject difficulty_var)
     {
         Dropdown difficulty_dp = difficulty_var.GetComponent<Dropdown>();
-
-
         SetDifficultyValue(difficulty_dp.value);
-
-        /*        if(difficulty_dp.value == 2)
-                {
-                    distanceParadise = UnityEngine.Random.Range(8, 11);
-                }*/
-        
-        //setting.TORCH_ADDITIONAL = randomTorch;
     }
 
     public void SetDifficultyValue(int value)
@@ -504,50 +508,25 @@ public class UI_Managment : MonoBehaviourPun
         lobby.ConnectToRoom(code);
         isLoadingConnection = true;
         pannel_loadingConnection.SetActive(true);
-
-        /*        joinLobby_panel.SetActive(!joinLobby_panel.activeSelf);
-                backgroundImage.SetActive(false);
-                Canvas.SetActive(false);
-                waitingMap.SetActive(true);*/
     }
 
     public void SetPlayerName(GameObject player)
     {
-        
-/*        if(playerName_input.text.Length == 0)
-        {
-            if(playerNameJoin_input.text.Length == 0)
-            {
-                player.GetComponent<PlayerGO>().SetPlayerName(lobby.oldPlayerName);
-            }
-            else
-            {
-                player.GetComponent<PlayerGO>().SetPlayerName(playerNameJoin_input.text);
-            }
-           
-        }
+        Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
+        if (setting.MODE_TEST_SKIN_IP)
+            player.GetComponent<PlayerGO>().SetPlayerName(setting.ip);
         else
-        {
-            player.GetComponent<PlayerGO>().SetPlayerName(playerName_input.text);
-        }*/
-
-         player.GetComponent<PlayerGO>().SetPlayerName(SteamFriends.GetPersonaName());
+            player.GetComponent<PlayerGO>().SetPlayerName(SteamFriends.GetPersonaName());
  
     }
 
     public void SetPlayerNameMatchmaking(GameObject player)
     {
-
-/*        if (playerName_input.text.Length == 0)
-        {
-            player.GetComponent<PlayerGO>().SetPlayerName(playerName_matchmaking.text);
-        }
+        Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
+        if (setting.MODE_TEST_SKIN_IP)
+            player.GetComponent<PlayerGO>().SetPlayerName(setting.ip);
         else
-        {
-            player.GetComponent<PlayerGO>().SetPlayerName(playerName_matchmaking.text);
-        }*/
-
-        player.GetComponent<PlayerGO>().SetPlayerName(SteamFriends.GetPersonaName());
+            player.GetComponent<PlayerGO>().SetPlayerName(SteamFriends.GetPersonaName());
     }
 
     public void SetSkin(GameObject player)
