@@ -179,9 +179,11 @@ setting_button_echapMenu.SetActive(false);
         if(gameManager.gameIsReady)
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = !map.activeSelf;
 
-        //if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower != -1)
-            //DisplayPowerButton(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower, (map.activeSelf && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation));
-
+        if (map.activeSelf)
+        {
+            map = gameManager.CenterMapByPositionPlayer();
+        }
+      
         if (!blueWallPaper.activeSelf)
         {
             Camera.main.orthographicSize = 5.1f;
@@ -193,8 +195,6 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayTimerInMap(bool active)
     {
         blueWallPaper.transform.Find("Canvas").Find("Back").GetComponent<Button>().interactable = !active;
-        //blueWallPaper.transform.Find("Canvas").Find("TimerText").GetComponent<Text>().text = gameManager.timer.timeLeft.ToString();
-        //waitingPage_PowerImpostor.transform.Find("timer").GetComponent<Text>().text = gameManager.timer.timeLeft.ToString();
     }
 
     public void DisplayPowerButton(int indexPower, bool display)
@@ -1214,7 +1214,6 @@ setting_button_echapMenu.SetActive(false);
             else
             {
                 GameObject chestRoomPenalty = chestRoom.transform.GetChild(chest.index).Find("Penalty").gameObject;
-                Debug.Log(gameManager.game.currentRoom.isTraped + " " + gameManager.game.currentRoom.IsFoggy + " " + gameManager.game.currentRoom.isIllustion + " " + gameManager.game.currentRoom.IsVirus);
                 if (gameManager.game.currentRoom.isTraped && !gameManager.game.currentRoom.IsFoggy && !gameManager.game.currentRoom.isIllustion && !gameManager.game.currentRoom.IsVirus)
                 {
                     chestRoomPenalty.SetActive(display);
@@ -2236,6 +2235,8 @@ setting_button_echapMenu.SetActive(false);
     {
         panelBossInformation.SetActive(display); 
     }
+
+
 
 }
 

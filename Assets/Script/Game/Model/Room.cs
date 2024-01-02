@@ -7,9 +7,9 @@ public class Room : ScriptableObject
     [SerializeField]
     private int index;
     public int Index { get { return index; } }
-    private int x;
+    public int x;
     public int X { get { return x; } }
-    private int y;
+    public int y;
     public int Y { get { return y; } }
 
     private bool isExit;

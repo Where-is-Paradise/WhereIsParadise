@@ -38,7 +38,7 @@ public class Map_zoom : MonoBehaviour
 
             float difference = currentMagnitude - prevMagnitude;
 
-            Zoom(difference * 0.005f);
+            //Zoom(difference * 0.005f);
 
         }
         else if (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
@@ -47,10 +47,10 @@ public class Map_zoom : MonoBehaviour
             CanContinueToTransform(direction * 7);
             touchStart = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
-        if (!(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionParadise || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionHell))
+/*        if (!(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionParadise || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collisionHell))
         {
             Zoom(InputManager.GetAxis("Mouse ScrollWheel") * 0.2f);
-        }
+        }*/
         
     }
 

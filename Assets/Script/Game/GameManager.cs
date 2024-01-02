@@ -129,12 +129,12 @@ public class GameManager : MonoBehaviourPun
     public List<PlayerGO> listPlayerFinal = new List<PlayerGO>();
     public int indexBoss = 0;
 
-
     public bool canChangeBoss = true;
-
     public bool onePlayerHasTorch = false;
-
     public bool isEndGame = false;
+
+    public GameObject parentMap;
+    public GameObject parentMapCurrent;
 
     private void Awake()
     {
@@ -179,7 +179,7 @@ public class GameManager : MonoBehaviourPun
         InitiatiateListIndexPower();
         InitateProbabilityTab();
         StartCoroutine(CouroutineTimerStart());
-      
+        parentMapCurrent = parentMap.transform.parent.gameObject;
     }
     public IEnumerator MasterClientCreateMap()
     {
@@ -266,13 +266,6 @@ public class GameManager : MonoBehaviourPun
         {
             ui_Manager.MixDistanceForExploration();
         }
-
-        /*        if(timerStart && !VerifyHasWinFireBall() && (!speciallyIsLaunch || !fireBallIsLaunch) && 
-                    !ThereIsLever() && !timer.timerLaunch && !OnePlayerHaveToGoToExpedition() && !game.currentRoom.IsHell && !game.currentRoom.IsExit)
-                {
-                    RandomWinFireball();
-                }*/
-
        
     }
 
@@ -335,57 +328,6 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendEndVoteDoorCoroutine(door.GetComponent<Door>().index);
         }
         
-
-       /* if (SamePositionAtBoss() && VerifyVoteVD(door.GetComponent<Door>().nbVote))
-        {
-            if (door.GetComponent<Door>().nbVote == 0 || game.currentRoom.IsVirus)
-            {
-                if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-                {
-                    List<GameObject> listDoorAvailable = GetDoorAvailable();
-                    int indexDoorCurrent = Random.Range(0, listDoorAvailable.Count);
-                    gameManagerNetwork.SendRandomIndexDoor(listDoorAvailable[indexDoorCurrent].GetComponent<Door>().index);
-                }
-            }
-            else
-            {
-                ui_Manager.SetNBKey();
-                ui_Manager.LaunchAnimationBrokenKey();
-                if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-                    gameManagerNetwork.SendKeyNumber();
-                if (SamePositionAtBoss())
-                    OpenDoor(door, false);
-                expeditionHasproposed = false;
-                alreaydyExpeditionHadPropose = false;
-               
-            }
-            StartCoroutine(ChangeBossCoroutine(0.1f));
-        }
-        
-        ui_Manager.ResetNbVote();
-        ui_Manager.DesactiveZoneDoor();
-        voteDoorHasProposed = false;
-        timer.ResetTimer();
-        ClearDoor();
-        ClearExpedition();
-        ui_Manager.DisplayKeyAndTorch(true);
-        alreadyPass = false;
-        SetAlreadyHideForAllPlayers();
-        UpdateSpecialsRooms(game.currentRoom);
-        if (game.currentRoom.IsVirus)
-            ui_Manager.ResetLetterDoor();
-        if (game.dungeon.initialRoom.HasSameLocation(game.currentRoom))
-        {
-            ui_Manager.SetDistanceRoom(game.dungeon.initialRoom.DistancePathFinding, null);
-
-        }
-        CloseDoorWhenVote(false);
-        ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = 0;
-        ui_Manager.DisplayTrapPowerButtonDesactivate(false);
-        ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
-
-        ui_Manager.DisplayObjectPowerButtonDesactivate(false);
-        ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);*/
     }
 
     public IEnumerator LaunchExploration()
@@ -580,10 +522,10 @@ public class GameManager : MonoBehaviourPun
             newHexagone.Room = room;
 
 
-            float rankGap = room.Y % 2 != 0 ? 0.82f : 0;
+            float rankGap = room.Y % 2 != 0 ? 1.1475f : 0;
 
-            float positionTransformationX = (initial_X + rankGap) + (1.6f * room.X);
-            float positionTransformationY = (initial_Y) + (-1.41f * room.Y);
+            float positionTransformationX = (initial_X + rankGap) + (2.3f * room.X);
+            float positionTransformationY = (initial_Y) + (-2.01f * room.Y);
 
             newHexagone.transform.position = new Vector3(positionTransformationX, positionTransformationY);
 
@@ -602,6 +544,19 @@ public class GameManager : MonoBehaviourPun
         foreach (Hexagone hexagone in dungeon)
         {
             if (hexagone.Room.Index == index)
+            {
+                return hexagone;
+            }
+        }
+        return null;
+    }
+
+    public Hexagone GetHexagoneByPosition(int x, int y)
+    {
+
+        foreach (Hexagone hexagone in dungeon)
+        {
+            if (hexagone.Room.x == x && hexagone.Room.y == y)
             {
                 return hexagone;
             }
@@ -631,7 +586,7 @@ public class GameManager : MonoBehaviourPun
         {
             if (setting.DISPLAY_OBSTACLE_MAP || GetPlayerMine().GetIsImpostor())
             {
-                hex.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
+                hex.GetComponent<SpriteRenderer>().enabled = false;
                 hex.GetComponent<Hexagone>().distanceText.text = "";
                 hex.GetComponent<Hexagone>().index_text.text = "";
             }
@@ -4329,6 +4284,24 @@ public class GameManager : MonoBehaviourPun
         GetPlayer(indexPlayerPreviousExploration).transform.Find("TorchBarre").gameObject.SetActive(display);
     }
 
+    public GameObject currentHexagone;
+   
+    public GameObject CenterMapByPositionPlayer()
+    {
+        if (currentHexagone)
+        {
+            parentMap.transform.parent = parentMapCurrent.transform;
+            currentHexagone.transform.parent = parentMap.transform;
+        }
+        PlayerGO playerMine = GetPlayerMineGO().GetComponent<PlayerGO>();
+        Hexagone hexagoneWithPlayer = GetHexagoneByPosition(playerMine.position_X, playerMine.position_Y);
+        hexagoneWithPlayer.transform.parent = parentMap.transform.parent;
+        parentMap.transform.parent = hexagoneWithPlayer.transform;
+        hexagoneWithPlayer.transform.position = new Vector2(0, 0);
+        hexagoneWithPlayer.GetComponent<Map_zoom>().enabled = true;
+        currentHexagone = hexagoneWithPlayer.gameObject;
+        return hexagoneWithPlayer.gameObject;
+    }
 
 
 }

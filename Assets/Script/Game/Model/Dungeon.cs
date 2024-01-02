@@ -83,6 +83,9 @@ public class Dungeon : ScriptableObject
     {
         foreach (Room room in trueListRoomDungeon)
         {
+            if (room.IsObstacle)
+                continue;
+
             int randomIsHide = Random.Range(0, 100);
             if (randomIsHide <= 40) //40
             {
