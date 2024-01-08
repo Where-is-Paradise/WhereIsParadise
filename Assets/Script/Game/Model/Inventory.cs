@@ -44,6 +44,8 @@ public class Inventory : MonoBehaviour
 
     public void AddSkinInventory()
     {
+        if (!lobby.GetPlayerMineGO())
+            StartCoroutine(AddSkinInventoryCouroutine());
         int counterElement = 0;
         foreach(int index in lobby.GetPlayerMineGO().GetComponent<PlayerGO>().Inventory)
         {
@@ -69,6 +71,36 @@ public class Inventory : MonoBehaviour
             }
         }
        
+    }
+
+    public IEnumerator AddSkinInventoryCouroutine()
+    {
+        yield return new WaitForSeconds(3);
+        int counterElement = 0;
+        foreach (int index in lobby.GetPlayerMineGO().GetComponent<PlayerGO>().Inventory)
+        {
+            for (int i = 0; i < parentAllSkin.transform.childCount; i++)
+            {
+                if (i == index)
+                {
+                    if (counterElement < maxElementInPanel)
+                    {
+                        GameObject newPanel = Instantiate(parentAllSkin.transform.Find("panelSkinReturn" + index).gameObject);
+                        newPanel.transform.parent = dynamicPanelInventory.transform;
+                        newPanel.transform.localScale = new Vector2(0.4f, 0.4f);
+                    }
+                    else
+                    {
+                        GameObject newPanel = Instantiate(parentAllSkin.transform.Find("panelSkinReturn" + index).gameObject);
+                        newPanel.transform.parent = dynamicPanelInventory2.transform;
+                        newPanel.transform.localScale = new Vector2(0.4f, 0.4f);
+                    }
+                    counterElement++;
+                }
+
+            }
+        }
+
     }
 
     public void AddOneSkinInventory(int indexSkin)
@@ -138,15 +170,18 @@ public class Inventory : MonoBehaviour
             steamId = SteamUser.GetSteamID().ToString();
 
         WWWForm form = new WWWForm();
+        Debug.LogError(steamId);
+        Debug.LogError(lobby.setting.MODE_TEST_SKIN_IP);
         UnityWebRequest www = UnityWebRequest.Post(linkRequest + "/player/find?steamId=" + steamId, form);
         www.certificateHandler = new CertifcateValidator();
         yield return www.SendWebRequest();
         if (www.result != UnityWebRequest.Result.Success)
         {
-            Debug.Log(www.downloadHandler.text);
+            Debug.LogError(www.downloadHandler.text);
         }
         else
         {
+            Debug.LogError(www.downloadHandler.text);
             RequestSkin skinreturn = JsonUtility.FromJson<RequestSkin>(www.downloadHandler.text);
             lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money = skinreturn.response.money;
             UpdateValeuPlayerMoneyUI(lobby.GetPlayerMineGO().GetComponent<PlayerGO>().blackSoul_money);

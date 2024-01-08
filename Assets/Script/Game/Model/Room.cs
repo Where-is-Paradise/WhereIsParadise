@@ -89,8 +89,9 @@ public class Room : ScriptableObject
     public bool isHide = false;
     public bool isTrial = false;
     public bool speciallyIsInsert = false;
+    public bool isTeamTrial = false;
 
-public bool isImpostorRoom = false;
+    public bool isImpostorRoom = false;
 
     public List<Chest> chestList = null;
 

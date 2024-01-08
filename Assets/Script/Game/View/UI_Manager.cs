@@ -106,6 +106,9 @@ public class UI_Manager : MonoBehaviour
 
     public GameObject panelBossInformation;
 
+    public GameObject mapLostSoul;
+    public GameObject buttonDisplayMapImpostor;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -122,6 +125,8 @@ setting_button_echapMenu.SetActive(false);
         {
             listTutorialBool.Add(false);
         }
+
+
     }
 
     // Update is called once per frame
@@ -168,7 +173,8 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayMap()
     {
-        
+        if (mapLostSoul.activeSelf)
+            return;
 
         if (!echap_menu.activeSelf)
         {
@@ -181,15 +187,42 @@ setting_button_echapMenu.SetActive(false);
 
         if (map.activeSelf)
         {
-            map = gameManager.CenterMapByPositionPlayer();
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasMap)
+                map = gameManager.CenterMapByPositionPlayer();
         }
-      
+         
         if (!blueWallPaper.activeSelf)
         {
             Camera.main.orthographicSize = 5.1f;
         }
         if (!map.activeSelf)
             DesactivateInformationSpecallyRoomAllHexagone();
+
+        gameManager.SetCurrentRoomColor();
+    }
+
+    public void DisplayMapLostSoul(bool isBackButton)
+    {
+        if (!mapLostSoul.activeSelf && isBackButton)
+            return;
+
+        if (!echap_menu.activeSelf)
+        {
+            mapLostSoul.SetActive(!mapLostSoul.activeSelf);
+            blueWallPaper.SetActive(!blueWallPaper.activeSelf);
+        }
+
+        if (gameManager.gameIsReady)
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = !mapLostSoul.activeSelf;
+
+        if (mapLostSoul.activeSelf)
+        {
+            mapLostSoul = gameManager.CenterMapLostSoulByPostionPlayer();
+        }
+        if (!blueWallPaper.activeSelf)
+        {
+            Camera.main.orthographicSize = 5.1f;
+        }
     }
 
     public void DisplayTimerInMap(bool active)
@@ -2236,7 +2269,67 @@ setting_button_echapMenu.SetActive(false);
         panelBossInformation.SetActive(display); 
     }
 
+   
 
+    public void DisplayMapImpostorInButtonPanel()
+    {
+
+        if (map.activeSelf)
+        {
+            DisplayMap();
+            DisplayMapLostSoul(false);
+        }
+        else
+        {
+            DisplayMapLostSoul(false);
+            DisplayMap();
+        }
+        
+    }
+    public bool lastIsImpostor = false;
+
+    public void DisplayMapImpostor()
+    {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            buttonDisplayMapImpostor.SetActive(true);
+
+        if (map.activeSelf || mapLostSoul.activeSelf)
+        {
+            if (map.activeSelf)
+                lastIsImpostor = true;
+            else
+                lastIsImpostor = false;
+            HidePanel(mapLostSoul);
+            HidePanel(map);
+            HidePanel(blueWallPaper);
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
+        }
+        else
+        {
+            DisplayMapImpostorInSituation();
+        }
+        
+
+    }
+
+    public void DisplayMapImpostorInSituation()
+    {
+
+        if (lastIsImpostor)
+        {   
+            DisplayMap();
+        }
+        else
+        {
+            DisplayMapLostSoul(false);
+        }
+
+    }
+
+    public void ActiveSlideMap()
+    {
+        map.GetComponent<Map_zoom>().enabled = true;
+    }
 
 }
 

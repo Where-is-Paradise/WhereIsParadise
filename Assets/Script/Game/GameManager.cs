@@ -136,6 +136,10 @@ public class GameManager : MonoBehaviourPun
     public GameObject parentMap;
     public GameObject parentMapCurrent;
 
+    public GameObject lostSoulMap;
+    public GameObject lostSoulMapCurrent;
+    
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -180,6 +184,8 @@ public class GameManager : MonoBehaviourPun
         InitateProbabilityTab();
         StartCoroutine(CouroutineTimerStart());
         parentMapCurrent = parentMap.transform.parent.gameObject;
+        lostSoulMapCurrent = lostSoulMap.transform.parent.gameObject;
+        StartCoroutine(SetMapOFLostSoul(4f));
     }
     public IEnumerator MasterClientCreateMap()
     {
@@ -402,31 +408,6 @@ public class GameManager : MonoBehaviourPun
             player.GetComponent<PlayerNetwork>().SendIndexPower(-1);
         }
         return;
-
-        /*        if (listIndexPower.Count == 1)
-                {
-                    foreach (GameObject player in GetAllImpostor())
-                    {
-                        player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[0]);
-                    }
-                    return;
-                }
-                if (listIndexPower.Count == 0)
-                {
-                    foreach (GameObject player in GetAllImpostor())
-                    {
-                        player.GetComponent<PlayerNetwork>().SendIndexPower(-1);
-                    }
-                    return;
-                }
-                foreach (GameObject player in GetAllImpostor())
-                {
-                    int randomInt = Random.Range(0, listIndexPower.Count);
-                    player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[randomInt]);
-                    //player.GetComponent<PlayerNetwork>().SendIndexPower(listIndexPower[0]);
-                    listIndexPower.RemoveAt(randomInt);
-                }*/
-
     }
     public void AssignObjectPowerOfImposter()
     {
@@ -522,10 +503,10 @@ public class GameManager : MonoBehaviourPun
             newHexagone.Room = room;
 
 
-            float rankGap = room.Y % 2 != 0 ? 1.1475f : 0;
+            float rankGap = room.Y % 2 != 0 ? 1.4421f : 0;
 
-            float positionTransformationX = (initial_X + rankGap) + (2.3f * room.X);
-            float positionTransformationY = (initial_Y) + (-2.01f * room.Y);
+            float positionTransformationX = (initial_X + rankGap) + (2.8725f * room.X);
+            float positionTransformationY = (initial_Y) + (-2.475f * room.Y);
 
             newHexagone.transform.position = new Vector3(positionTransformationX, positionTransformationY);
 
@@ -618,6 +599,7 @@ public class GameManager : MonoBehaviourPun
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
         }
+       
     }
 
     public void SpawnPlayer()
@@ -2091,8 +2073,12 @@ public class GameManager : MonoBehaviourPun
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
 
 
-        ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
-        ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);
+        ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 3);
+        ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 3);
+
+
+        StartCoroutine(SetMapOFLostSoul(0.1f));
+
 
     }
 
@@ -2428,6 +2414,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplayKeyAndTorch(false);
         ui_Manager.HideSpeciallyDisplay();
         ui_Manager.DisplayAutelTutorialSpeciallyRoom(false);
+        ui_Manager.ActiveSlideMap();
 
     }
 
@@ -2854,7 +2841,6 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplayLostTorchRoom(false);
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
@@ -3417,7 +3403,7 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 5);
+        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 3);
         return;
         if (room.isTrial)
         {
@@ -4285,23 +4271,160 @@ public class GameManager : MonoBehaviourPun
     }
 
     public GameObject currentHexagone;
+    public GameObject currentHexagoneLostSoul;
    
     public GameObject CenterMapByPositionPlayer()
     {
         if (currentHexagone)
         {
-            parentMap.transform.parent = parentMapCurrent.transform;
+            parentMap.transform.SetParent(parentMapCurrent.transform);
             currentHexagone.transform.parent = parentMap.transform;
+            currentHexagone.GetComponent<Map_zoom>().enabled = false;
         }
         PlayerGO playerMine = GetPlayerMineGO().GetComponent<PlayerGO>();
         Hexagone hexagoneWithPlayer = GetHexagoneByPosition(playerMine.position_X, playerMine.position_Y);
         hexagoneWithPlayer.transform.parent = parentMap.transform.parent;
-        parentMap.transform.parent = hexagoneWithPlayer.transform;
+        parentMap.transform.SetParent(hexagoneWithPlayer.transform);
         hexagoneWithPlayer.transform.position = new Vector2(0, 0);
         hexagoneWithPlayer.GetComponent<Map_zoom>().enabled = true;
         currentHexagone = hexagoneWithPlayer.gameObject;
         return hexagoneWithPlayer.gameObject;
     }
 
+    public GameObject CenterMapLostSoulByPostionPlayer()
+    {
+        if (currentHexagoneLostSoul)
+        {
+            lostSoulMap.transform.parent = lostSoulMapCurrent.transform;
+            currentHexagoneLostSoul.transform.parent = lostSoulMap.transform;
+            currentHexagoneLostSoul.GetComponent<Map_zoom>().enabled = false;
+        }
+        PlayerGO playerMine = GetPlayerMineGO().GetComponent<PlayerGO>();
+        Hexagone hexagoneWithPlayer = GetHexagoneByPosition(playerMine.position_X, playerMine.position_Y);
+        Hexagone hexagoneLostSoulWithPlayer = GetHexagoneInLostSoulList(lostSoulMap, hexagoneWithPlayer);
+        hexagoneLostSoulWithPlayer.transform.parent = lostSoulMap.transform.parent;
+        lostSoulMap.transform.parent = hexagoneLostSoulWithPlayer.transform;
+        hexagoneLostSoulWithPlayer.transform.position = new Vector2(0, 0);
+        hexagoneLostSoulWithPlayer.GetComponent<Map_zoom>().enabled = true;
+        currentHexagoneLostSoul = hexagoneLostSoulWithPlayer.gameObject;
+        return hexagoneLostSoulWithPlayer.gameObject;
+    }
+
+    public IEnumerator SetMapOFLostSoul(float seconde)
+    {
+        yield return new WaitForSeconds(seconde);
+
+        ResetAllHexagoneWithPlayerIdentification(lostSoulMap);
+        PlayerGO playerMine = GetPlayerMineGO().GetComponent<PlayerGO>();
+        Hexagone hexagoneWithPlayer = GetHexagoneByPosition(playerMine.position_X, playerMine.position_Y);
+        if (!hexagoneWithPlayer)
+            StartCoroutine(SetMapOFLostSoul(4));
+        else
+        {
+            if (HexagoneExistInGameObject(lostSoulMap, hexagoneWithPlayer))
+            {
+                Hexagone hexagoneLostSoulWithPlayer = Instantiate(hexagoneWithPlayer, lostSoulMap.transform);
+                hexagoneLostSoulWithPlayer.GetComponent<HexagoneLostSoul>().indexRoom = hexagoneWithPlayer.Room.GetIndex();
+                hexagoneLostSoulWithPlayer.GetComponent<Hexagone>().enabled = false;
+                hexagoneLostSoulWithPlayer.GetComponent<BoxCollider>().enabled = false;
+            }
+            Hexagone HexagonePlayerInLostSoulList = GetHexagoneInLostSoulList(lostSoulMap, hexagoneWithPlayer);
+            SetDisplayHexagonePlayer(HexagonePlayerInLostSoulList, true);
+
+            foreach (Room roomNeighbour in hexagoneWithPlayer.Room.listNeighbour)
+            {
+                if (roomNeighbour.IsObstacle)
+                    continue;
+                if (HexagoneExistInGameObject(lostSoulMap, GetHexagone(roomNeighbour.Index)))
+                {
+                    Hexagone newHexa = Instantiate(GetHexagone(roomNeighbour.Index), lostSoulMap.transform);
+                    newHexa.GetComponent<HexagoneLostSoul>().indexRoom = roomNeighbour.GetIndex();
+                    newHexa.GetComponent<Hexagone>().enabled = false;
+                    newHexa.GetComponent<BoxCollider>().enabled = false;
+                    SetDisplayHexagoneHideSpeciality(newHexa);
+                }
+            }
+        }
+    }
+    public bool HexagoneExistInGameObject(GameObject parentMap, Hexagone hexagone)
+    {
+        if (parentMap.transform.parent.GetComponent<HexagoneLostSoul>())
+        {
+            if (parentMap.transform.parent.GetComponent<HexagoneLostSoul>().indexRoom == hexagone.Room.Index)
+                return false;
+        }
+
+        for(int i =0; i < parentMap.transform.childCount; i++)
+        {
+            if(parentMap.transform.GetChild(i).GetComponent<HexagoneLostSoul>().indexRoom == hexagone.Room.Index)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    public Hexagone GetHexagoneInLostSoulList(GameObject parentMap, Hexagone hexagone)
+    {
+        if (parentMap.transform.parent.GetComponent<HexagoneLostSoul>())
+        {
+            if (parentMap.transform.parent.GetComponent<HexagoneLostSoul>().indexRoom == hexagone.Room.Index)
+                return parentMap.transform.parent.GetComponent<Hexagone>();
+        }
+        for (int i = 0; i < parentMap.transform.childCount; i++)
+        {
+            if (parentMap.transform.GetChild(i).GetComponent<HexagoneLostSoul>().indexRoom == hexagone.Room.Index)
+                return parentMap.transform.GetChild(i).GetComponent<Hexagone>();
+        }
+        return null;
+    }
+    public void SetDisplayHexagonePlayer(Hexagone hexagone , bool active)
+    {
+        if(active)
+            hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
+        else
+        {
+            if(!GetHexagone(hexagone.GetComponent<HexagoneLostSoul>().indexRoom).Room.IsTraversed)
+                hexagone.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+        }
+          
+        hexagone.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(active);
+        hexagone.transform.Find("Information_Speciality").gameObject.SetActive(false);
+        hexagone.transform.Find("Light").gameObject.SetActive(false);
+    }
+    public void SetDisplayHexagoneHideSpeciality(Hexagone hexagone)
+    {
+        if (!GetHexagone(hexagone.GetComponent<HexagoneLostSoul>().indexRoom).Room.IsTraversed)
+            hexagone.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+        Debug.Log(hexagone.Room.GetIndex());
+        hexagone.transform.Find("Information_Speciality").gameObject.SetActive(false);
+        hexagone.transform.Find("Canvas").Find("Hell").gameObject.SetActive(false);
+        hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(false);
+        hexagone.transform.Find("Canvas").Find("Cursed").gameObject.SetActive(false);
+        hexagone.transform.Find("Light").gameObject.SetActive(false);
+    }
+
+    public void ResetAllHexagoneWithPlayerIdentification(GameObject parentMap)
+    {
+        if (parentMap.transform.parent.GetComponent<HexagoneLostSoul>())
+        {
+            SetDisplayHexagonePlayer(parentMap.transform.parent.GetComponent<Hexagone>(), false);
+        }
+        for (int i = 0; i < parentMap.transform.childCount; i++)
+        {
+            SetDisplayHexagonePlayer(parentMap.transform.GetChild(i).GetComponent<Hexagone>(), false);
+        }
+    }
+
+    public GameObject GetPlayerWithTorchBarre()
+    {
+        foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            if (!player.GetComponent<PlayerGO>().explorationPowerIsAvailable)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
 
 }

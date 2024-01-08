@@ -17,14 +17,15 @@ public class DamoclesSword : MonoBehaviourPun
         }
         if (damoclesRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            if (damoclesRoom.speciallyLaunched && !damoclesRoom.currentPlayer)
+/*            if (damoclesRoom.speciallyLaunched && !damoclesRoom.currentPlayer)
             {
                 GameObject player = damoclesRoom.ChoosePlayerRandomly();
+                damoclesRoom.SetCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
                 damoclesRoom.SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
                 damoclesRoom.SendChangePositionAtPlayer(player.GetComponent<PhotonView>().ViewID);
                 SendCanChangePlayer(false);
                 StartCoroutine(CanChangePlayerCoroutine());
-            }
+            }*/
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -45,7 +46,6 @@ public class DamoclesSword : MonoBehaviourPun
                 return;
             if (collision.transform.parent.GetComponent<PlayerGO>().isTouchInTrial)
                 return;
-            Debug.Log("sa passe");
             int indexplayer = collision.transform.parent.gameObject.GetComponent<PhotonView>().ViewID;
             photonView.RPC("SendChangeToBoss", RpcTarget.All, indexplayer);  
         }
@@ -59,6 +59,7 @@ public class DamoclesSword : MonoBehaviourPun
         if (!canChangePlayer)
             return;
         damoclesRoom.SendChangePositionAtPlayer(indexPlayer);
+        damoclesRoom.SetCurrentPlayer(indexPlayer);
         damoclesRoom.SendCurrentPlayer(indexPlayer);
        
         SendCanChangePlayer(false);

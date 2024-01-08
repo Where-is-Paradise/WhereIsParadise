@@ -470,10 +470,10 @@ public class GameManagerNetwork : MonoBehaviourPun
         StartCoroutine(gameManager.LauchVoteDoorCoroutine());
         gameManager.voteDoorHasProposed = true;
         gameManager.CloseDoorWhenVote(true);
-        if (gameManager.ui_Manager.map.activeSelf)
+        if (gameManager.ui_Manager.map.activeSelf || gameManager.ui_Manager.mapLostSoul.activeSelf)
         {
-            gameManager.ui_Manager.DisplayMap();
-           
+            gameManager.ui_Manager.map.SetActive(false);
+            gameManager.ui_Manager.mapLostSoul.SetActive(false);
         }
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canDisplayMap = false;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
@@ -2508,10 +2508,10 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.CloseDoorWhenVote(false);
         gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = 0;
         gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(false);
-        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 3);
 
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(false);
-        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 3);
     }
 
 }

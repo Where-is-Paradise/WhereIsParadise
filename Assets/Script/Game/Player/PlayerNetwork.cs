@@ -930,6 +930,7 @@ public class PlayerNetwork : MonoBehaviourPun
         player.gameManager.CloseAllDoor(player.gameManager.game.currentRoom, false);
         player.gameManager.gameManagerNetwork.SendUpdateHidePlayer();
         player.gameManager.ui_Manager.HideDistanceRoom();
+        StartCoroutine(player.gameManager.SetMapOFLostSoul(0.1f));
     }
 
     public void SendInsertPowerToDoor(int indexRoom, int indexPower)

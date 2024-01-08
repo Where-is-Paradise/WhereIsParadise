@@ -87,36 +87,44 @@ public class Dungeon : ScriptableObject
                 continue;
 
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 40) //40
+            if (randomIsHide <= 37) //37
             {
                 room.isHide = true;
-                room.isNPC = true;
+                //room.isNPC = true;
                 continue;
             }
             float randomIsTrial = Random.Range(0, 100);
-            if(randomIsTrial < 70) // 70
+            if(randomIsTrial < 55) // 70
                 room.isTrial = true;
             else
             {
-                float randomSpeciality = Random.Range(0, 100);
-                if(randomSpeciality < 40 && setting.listSpeciallyRoom[0])
+                if(randomIsTrial < 70)
                 {
-                    room.chest = true;
+                    room.isTeamTrial = true;
                 }
-                else if(randomSpeciality < 65 && setting.listSpeciallyRoom[5])
+                else
                 {
-                    room.isPurification = true;
-                }
-                else if(randomSpeciality < 85 && setting.listSpeciallyRoom[1])
-                {
-                    room.isSacrifice = true;
-                }
-                else if(randomSpeciality <= 100) {
-                    room.isNPC = true;
-                    int random = Random.Range(0, 2);
-                    if (random == 0)
-                        room.evilIsLeft = true;
-                }
+                    float randomSpeciality = Random.Range(0, 100);
+                    if (randomSpeciality < 25 && setting.listSpeciallyRoom[0])
+                    {
+                        room.chest = true;
+                    }
+                    else if (randomSpeciality < 50 && setting.listSpeciallyRoom[5])
+                    {
+                        room.isPurification = true;
+                    }
+                    else if (randomSpeciality < 75 && setting.listSpeciallyRoom[1])
+                    {
+                        room.isSacrifice = true;
+                    }
+                    else if (randomSpeciality <= 100)
+                    {
+                        room.isNPC = true;
+                        int random = Random.Range(0, 2);
+                        if (random == 0)
+                            room.evilIsLeft = true;
+                    }
+                } 
             }
             room.isSpecial = true;
         }

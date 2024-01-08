@@ -38,8 +38,9 @@ public class ResultSkinMenu : MonoBehaviour
         if (!canPress)
             return;
         lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkinColor(indexSkinColor, false);
-        this.transform.Find("ApplyButton").GetComponent<Button>().interactable = false;
+        this.transform.Find("ApplyButtonColor").GetComponent<Button>().interactable = false;
         lobby.setting.INDEX_SKIN_COLOR = indexSkinColor;
+        lobby.setting.INDEX_SKIN = 0;
     }
 
     public void ChangeCanPress(bool canPress)

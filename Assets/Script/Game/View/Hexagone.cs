@@ -18,6 +18,8 @@ public class Hexagone : MonoBehaviourPun
     public bool isLighted = false;
     public bool isLightByOther = false;
 
+    public bool isLostSoul = false;
+
     public Hexagone(Room room) {
         this.room = room;
     }
@@ -60,13 +62,15 @@ public class Hexagone : MonoBehaviourPun
         {
             this.transform.Find("Canvas").Find("Old_Paradise").gameObject.SetActive(false);
         }
-           
+
+
+        
     }
 
 
     private void OnMouseUp()
     {
-        OnClickToLight();
+       
     }
 
     void OnMouseOver()
@@ -101,14 +105,17 @@ public class Hexagone : MonoBehaviourPun
                     if (this.room.isNewParadise && !this.room.isHide)
                     {
                         this.transform.Find("Information_Speciality").gameObject.SetActive(false);
-                        Debug.Log("sa passse mon potte");
                     }
                         
                 }
             }
         }
 
-      
+        if (Input.GetMouseButtonDown(1))
+        {
+            OnClickToLight();
+        }
+
     }
 
     public void OnClickToLight()
@@ -172,10 +179,12 @@ public class Hexagone : MonoBehaviourPun
 
     public void DiplayInformationSpeciallyRoom(bool display)
     {
+
         if (!room)
             return;
         if (!gameManager)
             return;
+        
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
         {
             if (room.IsExit)
@@ -188,7 +197,6 @@ public class Hexagone : MonoBehaviourPun
         }
         if ( room.IsHell || room.IsObstacle || room.IsInitiale)
             return;
-        //Debug.LogError("sa passe freroooo " + room.Index);
 
         if (this.room.isHide)
         {
@@ -209,13 +217,13 @@ public class Hexagone : MonoBehaviourPun
             Information_Speciality.SetActive(false);
         }
             
-        if (this.room.isSpecial && !this.room.isTrial)
+        if (this.room.isSpecial && !this.room.isTrial && !this.room.isTeamTrial)
         {
             Information_Speciality.transform.Find("Hexagone").Find("SpeciallyRoom").gameObject.SetActive(display);
             Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
             Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
         } 
-        if (this.room.isTrial)
+        if (this.room.isTrial && !(this.room.isDeathNPC || this.room.isMonsters))
         {
             Information_Speciality.transform.Find("Hexagone").Find("TrailRoom").gameObject.SetActive(display);
             Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
@@ -227,6 +235,12 @@ public class Hexagone : MonoBehaviourPun
             Information_Speciality.transform.Find("Hexagone").Find("ImpostorRoom").gameObject.SetActive(display);
             Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
             Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
+        }
+        if(this.room.isTeamTrial)
+        {
+            Information_Speciality.transform.Find("Hexagone").Find("TeamTrailRoom").gameObject.SetActive(display);
+            Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 135 / 255f, 0 / 255f);
+            Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 135 / 255f, 0 / 255f);
         }
         if (this.room.isNewParadise)
         {

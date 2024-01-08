@@ -133,6 +133,10 @@ public class TrialsRoom : MonoBehaviourPun
         gameManagerParent.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);
 
         gameManagerParent.DisplayTorchBarre(true);
+
+        GameObject playerWithBarre = gameManagerParent.GetPlayerWithTorchBarre();
+        if(!playerWithBarre)
+            playerWithBarre.transform.Find("TorchBarre").gameObject.SetActive(true);
     }
 
     public void ActivateObjectPower(int indexPlayer)

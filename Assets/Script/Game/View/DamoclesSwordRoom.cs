@@ -46,8 +46,12 @@ public class DamoclesSwordRoom : TrialsRoom
         {
             SendObstalceGroup();
             GameObject player = ChoosePlayerRandomly();
+            SetCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
             SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
+            SendChangePositionAtPlayer(player.GetComponent<PhotonView>().ViewID);
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
+            sword.GetComponent<DamoclesSword>().SendCanChangePlayer(false);
+            StartCoroutine(sword.GetComponent<DamoclesSword>().CanChangePlayerCoroutine());
             CounterLaunch(15);
         }  
     }
@@ -78,7 +82,7 @@ public class DamoclesSwordRoom : TrialsRoom
 
     public void SendCurrentPlayer(int indexPlayer)
     {
-        photonView.RPC("SetCurrentPlayer", RpcTarget.All , indexPlayer);
+        photonView.RPC("SetCurrentPlayer", RpcTarget.Others , indexPlayer);
     }
 
     [PunRPC]
@@ -90,7 +94,6 @@ public class DamoclesSwordRoom : TrialsRoom
         this.currentPlayer = gameManager.GetPlayer(indexPlayer);
         currentPlayer.GetComponent<PlayerGO>().damoclesSwordIsAbove = true;
         ChangePositionAtPlayer(indexPlayer);
-        sword.transform.position += new Vector3(0f, 1.5f);
     }
 
     public void SendChangePositionAtPlayer(int indexPlayer)
@@ -104,6 +107,8 @@ public class DamoclesSwordRoom : TrialsRoom
         GameObject player = gameManager.GetPlayer(indexPlayer);
         sword.transform.position = player.transform.position;
         sword.transform.parent = player.transform;
+        sword.transform.localPosition = new Vector3(0f, 2.20f);
+         
     }
 
     public void CounterLaunch(float seconde)
@@ -114,7 +119,6 @@ public class DamoclesSwordRoom : TrialsRoom
     public IEnumerator TimerCouroutine(float seconde)
     {
         yield return new WaitForSeconds(seconde);
-        //
         StartCoroutine(CouroutineAnimationDeath());
     }
 
@@ -135,6 +139,7 @@ public class DamoclesSwordRoom : TrialsRoom
                 currentPlayer.GetComponent<PlayerGO>().isTouchInTrial = true;
                 SetPlayerColor(this.currentPlayer);
                 GameObject player = ChoosePlayerRandomly();
+                SetCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
                 SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
                 photonView.RPC("SendCanChangePlayer", RpcTarget.All, true);
                

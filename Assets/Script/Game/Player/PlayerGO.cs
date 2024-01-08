@@ -453,20 +453,23 @@ public class PlayerGO : MonoBehaviour
 
         if (gameManager)
         {
-            if (InputManager.GetButtonDown("Map") &&  (hasMap || isImpostor) && GetComponent<PhotonView>().IsMine && !displayChatInput)
+            if ((displayMap || ( isImpostor && InputManager.GetButtonDown("Map"))) && GetComponent<PhotonView>().IsMine && !displayChatInput)
             {
                 if (gameManager.setting.DISPLAY_MINI_MAP || gameManager.hellIsFind || gameManager.paradiseIsFind)
                 {
-                    gameManager.ui_Manager.DisplayMap();
-
-/*                    if (gameManager.ui_Manager.map.activeSelf)
+                    if (isImpostor)
                     {
-                        Camera.main.orthographicSize = 3f;
+                        gameManager.ui_Manager.DisplayMapImpostor();
                     }
                     else
                     {
-                        Camera.main.orthographicSize = resolution.currentOrthographicSize;
-                    }*/
+                        if (hasMap)
+                            gameManager.ui_Manager.DisplayMap();
+                        else
+                            gameManager.ui_Manager.DisplayMapLostSoul(false);
+                    }
+
+                    displayMap = false;
                 }
                 else
                 {
@@ -686,7 +689,13 @@ public class PlayerGO : MonoBehaviour
 
             }
         }
-       
+
+        if (!explorationPowerIsAvailable && isTouchInTrial)
+        {
+            this.transform.Find("TorchBarre").gameObject.SetActive(false);
+        }
+
+
     }
 
     public IEnumerator SetCanLauchExplorationLeverCoroutine()
@@ -2430,6 +2439,7 @@ public class PlayerGO : MonoBehaviour
         if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.Log(www.downloadHandler.text);
+            StartCoroutine(GetListSkinIndexInServer());
         }
         else
         {
@@ -2467,7 +2477,8 @@ public class PlayerGO : MonoBehaviour
         yield return www.SendWebRequest();
         if (www.result != UnityWebRequest.Result.Success)
         {
-            Debug.Log(www.downloadHandler.text);
+            Debug.LogError(www.downloadHandler.text);
+            StartCoroutine(GetListSkinIndexInServerTestIP());
         }
         else
         {
