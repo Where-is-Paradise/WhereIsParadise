@@ -163,6 +163,7 @@ public class GameManager : MonoBehaviourPun
         game.Launch(25, 25);
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         //Debug.Log("dsjfnsdkjlfs")
+        InitiatiateListIndexPower();
         StartCoroutine(MasterClientCreateMap());
         /*        if (PhotonNetwork.IsMasterClient)
                 {
@@ -180,7 +181,7 @@ public class GameManager : MonoBehaviourPun
 
         viewIdIsMine = GetPlayerMineGO().GetComponent<PhotonView>().ViewID;
         InitiatiateListIndexObject();
-        InitiatiateListIndexPower();
+     
         InitateProbabilityTab();
         StartCoroutine(CouroutineTimerStart());
         parentMapCurrent = parentMap.transform.parent.gameObject;
@@ -226,7 +227,7 @@ public class GameManager : MonoBehaviourPun
             //AssignPowerOfImposter();
             //AssignObjectPowerOfImposter();
             gameManagerNetwork.SendDisplayLightAllAvailableDoor(true);
-            //gameManagerNetwork.SendDisplayPowerImpostorInGame();
+            gameManagerNetwork.SendDisplayPowerImpostorInGame();
             //gameManagerNetwork.SendDisplayObjectPowerImpostor();
             gameManagerNetwork.SendImpostorRoom();
             GetPlayerMineGO().GetComponent<PlayerGO>().SetRoomCursed();
@@ -956,7 +957,7 @@ public class GameManager : MonoBehaviourPun
                 game.dungeon.InsertChestRoom(room.Index);
                 for (int i = 0; i < 2; i++)
                 {
-                    gameManagerNetwork.SendChestData(room.GetIndex(), room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                    gameManagerNetwork.SendChestData(room.GetIndex(), room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward, room.chestList[i].indexTrap);
                 }
             }
             if (room.fireBall)
@@ -1005,7 +1006,8 @@ public class GameManager : MonoBehaviourPun
             }
             if (room.isNPC)
             {
-                gameManagerNetwork.SendNPCData(room.GetIndex(), room.isNPC);
+                gameManagerNetwork.SendNPCData(room.GetIndex(), room.isNPC, room.indexEvilNPC, room.indexEvilNPC_2);
+
             }
             if (room.isLabyrintheHide)
             {
@@ -3166,8 +3168,6 @@ public class GameManager : MonoBehaviourPun
             ChestManagement(chest);
             StartCoroutine(CoroutineHideChest());
         }
-
-
         GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         game.dungeon.rooms[GetRoomOfBoss().GetComponent<Hexagone>().Room.Index].speciallyPowerIsUsed = true;
         CloseDoorWhenVote(false);
@@ -3210,13 +3210,18 @@ public class GameManager : MonoBehaviourPun
                     chest.transform.Find("Award").gameObject.SetActive(true);
                     chest.transform.Find("Award").transform.GetChild(game.currentRoom.chestList[0].indexAward).gameObject.SetActive(true);
                 }
+                else
+                {
+                    chest.transform.Find("Penalty").gameObject.SetActive(true);
+                    chest.transform.Find("Penalty").transform.GetChild(game.currentRoom.chestList[0].indexTrap).gameObject.SetActive(true);
+                }
             }
             else
             {
-                if (GetRoomOfBoss().GetComponent<Hexagone>().Room.isTraped && !GetRoomOfBoss().GetComponent<Hexagone>().Room.IsFoggy && !GetRoomOfBoss().GetComponent<Hexagone>().Room.isIllustion && !GetRoomOfBoss().GetComponent<Hexagone>().Room.IsVirus)
+                if (GetRoomOfBoss().GetComponent<Hexagone>().Room.isTraped && (!GetRoomOfBoss().GetComponent<Hexagone>().Room.IsFoggy && !GetRoomOfBoss().GetComponent<Hexagone>().Room.isIllustion && !GetRoomOfBoss().GetComponent<Hexagone>().Room.IsVirus))
                 {
                     chest.transform.Find("Penalty").gameObject.SetActive(true);
-                    chest.transform.Find("Penalty").transform.GetChild(game.currentRoom.chestList[0].indexAward).gameObject.SetActive(true);
+                    chest.transform.Find("Penalty").transform.GetChild(game.currentRoom.chestList[0].indexTrap).gameObject.SetActive(true);
                 }
             }
             AddBonusAndPenaltyChest(0, game.currentRoom.chestList[0].indexAward, game.currentRoom.chestList[0].isAward);
@@ -3232,13 +3237,18 @@ public class GameManager : MonoBehaviourPun
                         chest.transform.Find("Award").gameObject.SetActive(true);
                         chest.transform.Find("Award").transform.GetChild(game.currentRoom.chestList[1].indexAward).gameObject.SetActive(true);
                     }
+                    else
+                    {
+                        chest.transform.Find("Penalty").gameObject.SetActive(true);
+                        chest.transform.Find("Penalty").transform.GetChild(game.currentRoom.chestList[1].indexTrap).gameObject.SetActive(true);
+                    }
                 }
                 else
                 {
                     if (GetRoomOfBoss().GetComponent<Hexagone>().Room.isTraped && !GetRoomOfBoss().GetComponent<Hexagone>().Room.IsFoggy && !GetRoomOfBoss().GetComponent<Hexagone>().Room.isIllustion && !GetRoomOfBoss().GetComponent<Hexagone>().Room.IsVirus)
                     {
                         chest.transform.Find("Penalty").gameObject.SetActive(true);
-                        chest.transform.Find("Penalty").transform.GetChild(game.currentRoom.chestList[1].indexAward).gameObject.SetActive(true);
+                        chest.transform.Find("Penalty").transform.GetChild(game.currentRoom.chestList[1].indexTrap).gameObject.SetActive(true);
                     }
                 }
             }
@@ -3266,18 +3276,39 @@ public class GameManager : MonoBehaviourPun
                         gameManagerNetwork.SendTorchNumber(game.nbTorch);
                         ui_Manager.SetTorchNumber();
                     }
+                    else
+                    {
+                        if (game.currentRoom.chestList[indexChest].indexTrap == 2)
+                        {
+                            game.key_counter--;
+                            gameManagerNetwork.SendAnimationBrokenKey();
+                            ui_Manager.LaunchAnimationBrokenKey();
+                        }
+                        else
+                        {
+                            game.nbTorch--;
+                            gameManagerNetwork.SendTorchNumber(game.nbTorch);
+                            ui_Manager.SetTorchNumber();
+                        }
+                    }
 
                 }
                 else
                 {
                     if (GetRoomOfBoss().GetComponent<Hexagone>().Room.isTraped)
                     {
-                        game.key_counter--;
-                        game.nbTorch--;
-                        gameManagerNetwork.SendAnimationBrokenKey();
-                        ui_Manager.LaunchAnimationBrokenKey();
-                        gameManagerNetwork.SendTorchNumber(game.nbTorch);
-                        ui_Manager.SetTorchNumber();
+                        if (game.currentRoom.chestList[indexChest].indexTrap == 2)
+                        {
+                            game.key_counter--;
+                            gameManagerNetwork.SendAnimationBrokenKey();
+                            ui_Manager.LaunchAnimationBrokenKey();
+                        }
+                        else
+                        {
+                            game.nbTorch--;
+                            gameManagerNetwork.SendTorchNumber(game.nbTorch);
+                            ui_Manager.SetTorchNumber();
+                        }
                     }
                 }
                 gameManagerNetwork.SendKey(game.key_counter);
@@ -3403,8 +3434,8 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 3);
-        return;
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
+        return;*/
         if (room.isTrial)
         {
             float randomInt = Random.Range(0, 100);
@@ -3435,40 +3466,43 @@ public class GameManager : MonoBehaviourPun
             }
             else if (randomInt < AdditionalProba(5))
             {
-                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 5);
-                CalculProbabiltySpeciality(5);
-            }
-            else if (randomInt < AdditionalProba(6))
-            {
-                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
-                CalculProbabiltySpeciality(6);
-            }
-            else if (randomInt < AdditionalProba(7))
-            {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
                 CalculProbabiltySpeciality(7);
             }
             room.speciallyIsInsert = true;
         }
+        if (room.isTeamTrial)
+        {
+            float randomInt = Random.Range(0, 100);
+
+            if (randomInt < 50)
+            {
+                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
+            }
+            else
+            {
+                gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 5);
+            }
+        }
     }
     public void InitateProbabilityTab()
     {
-        listProbabilitySpecialityRoom.Add(12.5f); // fireball
-        listProbabilitySpecialityRoom.Add(12.5f); // sword
-        listProbabilitySpecialityRoom.Add(12.5f); // ax
-        listProbabilitySpecialityRoom.Add(12.5f); // damocles
-        listProbabilitySpecialityRoom.Add(12.5f); // torch
-        listProbabilitySpecialityRoom.Add(12.5f); // deathNPC
-        listProbabilitySpecialityRoom.Add(12.5f); // monster
-        listProbabilitySpecialityRoom.Add(12.5f); // labyrinth
+        listProbabilitySpecialityRoom.Add(15f); // fireball  0
+        listProbabilitySpecialityRoom.Add(15); // sword     1
+        listProbabilitySpecialityRoom.Add(15); // ax        2
+        listProbabilitySpecialityRoom.Add(15); // damocles  3
+        listProbabilitySpecialityRoom.Add(15); // torch     4
+    /*    listProbabilitySpecialityRoom.Add(12.5f); // deathNPC  5*/
+        /*listProbabilitySpecialityRoom.Add(12.5f); // monster   6*/
+        listProbabilitySpecialityRoom.Add(15f); // labyrinth 7
 
         listBoolapparitionSpecialityRoom.Add(false); // fireball
         listBoolapparitionSpecialityRoom.Add(false); // sword
         listBoolapparitionSpecialityRoom.Add(false); // ax
         listBoolapparitionSpecialityRoom.Add(false); // damocles
         listBoolapparitionSpecialityRoom.Add(false); // torch
-        listBoolapparitionSpecialityRoom.Add(false); // deathNPC
-        listBoolapparitionSpecialityRoom.Add(false); // monster
+/*        listBoolapparitionSpecialityRoom.Add(false); // deathNPC
+        listBoolapparitionSpecialityRoom.Add(false); // monster*/
         listBoolapparitionSpecialityRoom.Add(false); // labyrinth
     }
     public void CalculProbabiltySpeciality(int indexSpeciality)
@@ -4151,6 +4185,7 @@ public class GameManager : MonoBehaviourPun
         room.isIllustion = false;
         room.isSpecial = false;
         room.isTrial = false;
+        room.isTeamTrial = false;
         game.dungeon.ResetChest(room);
     }
 
@@ -4425,6 +4460,40 @@ public class GameManager : MonoBehaviourPun
             }
         }
         return null;
+    }
+
+    public void GiveImpostorObject()
+    {
+        float randomfloat = Random.Range(0, 100);
+        if (randomfloat < 20)
+        {
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[0]);
+            //ui_Manager.DisplayInformationObjectWon(9);
+        }
+        else if (randomfloat < 40)
+        {
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[1]);
+            //ui_Manager.DisplayInformationObjectWon(10);
+        }
+        else if (randomfloat < 60)
+        {
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[2]);
+            //ui_Manager.DisplayInformationObjectWon(11);
+
+        }
+        else if (randomfloat < 60)
+        {
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[3]);
+            //ui_Manager.DisplayInformationObjectWon(12);
+        }
+        else
+        {
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[4]);
+            //ui_Manager.DisplayInformationObjectWon(13);
+        }
+
+        ui_Manager.DisplayPowerImpostorInGame();
+        GetPlayerMineGO().GetComponent<PlayerGO>().hasOneTrapPower = true;
     }
 
 }

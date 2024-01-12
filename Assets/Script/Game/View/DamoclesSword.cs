@@ -56,6 +56,8 @@ public class DamoclesSword : MonoBehaviourPun
     {
         if (!damoclesRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
+        if (!damoclesRoom.canChangePlayer)
+            return;
         if (!canChangePlayer)
             return;
         damoclesRoom.SendChangePositionAtPlayer(indexPlayer);

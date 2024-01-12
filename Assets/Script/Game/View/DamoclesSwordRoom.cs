@@ -133,7 +133,7 @@ public class DamoclesSwordRoom : TrialsRoom
             currentPlayer.GetComponent<PlayerNetwork>()
                 .SendLifeTrialRoom(currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom);
             photonView.RPC("KillCurrentPlayer", RpcTarget.All, currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom);
-            canChangePlayer = true;
+           
             if (currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom == 0)
             {
                 currentPlayer.GetComponent<PlayerGO>().isTouchInTrial = true;
@@ -192,6 +192,7 @@ public class DamoclesSwordRoom : TrialsRoom
     {
         yield return new WaitForSeconds(0.5f);
         sword.transform.position += new Vector3(0f, 1.5f);
+        canChangePlayer = true;
     }
 
     public void SetPlayerColor(GameObject player)

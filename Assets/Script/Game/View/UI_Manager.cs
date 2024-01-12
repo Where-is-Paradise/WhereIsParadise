@@ -109,6 +109,8 @@ public class UI_Manager : MonoBehaviour
     public GameObject mapLostSoul;
     public GameObject buttonDisplayMapImpostor;
 
+    public GameObject panelChooseAwardTeamTrial;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -1227,9 +1229,10 @@ setting_button_echapMenu.SetActive(false);
         {
             if (chest.isAward)
             {
-                GameObject chestRoomAward = chestRoom.transform.GetChild(chest.index).Find("Award").gameObject;
+               
                 if (!gameManager.game.currentRoom.isTraped || (gameManager.game.currentRoom.isTraped && (gameManager.game.currentRoom.IsFoggy || gameManager.game.currentRoom.isIllustion || gameManager.game.currentRoom.IsVirus)))
                 {
+                    GameObject chestRoomAward = chestRoom.transform.GetChild(chest.index).Find("Award").gameObject;
                     chestRoomAward.SetActive(display);
                     chestRoomAward.transform.GetChild(chest.indexAward).gameObject.SetActive(display);
                     if (display)
@@ -1243,6 +1246,22 @@ setting_button_echapMenu.SetActive(false);
                         chestRoomAward.transform.GetChild(chest.indexAward).Find("Canvas").Find("PlusOne").GetComponent<Text>().color = new Color(255, 255, 255, 1f);
                     }
                 }
+                else
+                {
+                    GameObject chestRoomAward = chestRoom.transform.GetChild(chest.index).Find("Penalty").gameObject;
+                    chestRoomAward.SetActive(display);
+                    chestRoomAward.transform.GetChild(chest.indexTrap).gameObject.SetActive(display);
+                    if (display)
+                    {
+                        chestRoomAward.transform.GetChild(chest.indexTrap).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.4f);
+                        chestRoomAward.transform.GetChild(chest.indexTrap).Find("Canvas").Find("LessOne").GetComponent<Text>().color = new Color(255, 255, 255, 0.4f);
+                    }
+                    else
+                    {
+                        chestRoomAward.transform.GetChild(chest.indexTrap).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                        chestRoomAward.transform.GetChild(chest.indexTrap).Find("Canvas").Find("LessOne").GetComponent<Text>().color = new Color(255, 255, 255, 1f);
+                    }
+                }
             }
             else
             {
@@ -1250,16 +1269,16 @@ setting_button_echapMenu.SetActive(false);
                 if (gameManager.game.currentRoom.isTraped && !gameManager.game.currentRoom.IsFoggy && !gameManager.game.currentRoom.isIllustion && !gameManager.game.currentRoom.IsVirus)
                 {
                     chestRoomPenalty.SetActive(display);
-                    chestRoomPenalty.transform.GetChild(chest.indexAward).gameObject.SetActive(display);
+                    chestRoomPenalty.transform.GetChild(chest.indexTrap).gameObject.SetActive(display);
                     if (display)
                     {
-                        chestRoomPenalty.transform.GetChild(chest.indexAward).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.4f);
-                        chestRoomPenalty.transform.GetChild(chest.indexAward).Find("Canvas").transform.Find("LessOne").GetComponent<Text>().color = new Color(255, 255, 255, 0.4f);
+                        chestRoomPenalty.transform.GetChild(chest.indexTrap).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.4f);
+                        chestRoomPenalty.transform.GetChild(chest.indexTrap).Find("Canvas").transform.Find("LessOne").GetComponent<Text>().color = new Color(255, 255, 255, 0.4f);
                     }
                     else
                     {
-                        chestRoomPenalty.transform.GetChild(chest.indexAward).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
-                        chestRoomPenalty.transform.GetChild(chest.indexAward).Find("Canvas").transform.Find("LessOne").GetComponent<Text>().color = new Color(255, 255, 255, 1f);
+                        chestRoomPenalty.transform.GetChild(chest.indexTrap).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 1f);
+                        chestRoomPenalty.transform.GetChild(chest.indexTrap).Find("Canvas").transform.Find("LessOne").GetComponent<Text>().color = new Color(255, 255, 255, 1f);
                     }
                 }   
             }
@@ -2260,8 +2279,8 @@ setting_button_echapMenu.SetActive(false);
     }
     public void OnClickButtonNPC()
     {
-        bool isLeft = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isLeftNpc;
-        GameObject.Find("NPCRoom").GetComponent<NPCRoom>().SendDisplayDistanceByNpc(isLeft);
+        int indexNPC = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexNpc;
+        GameObject.Find("NPCRoom").GetComponent<NPCRoom>().SendDisplayDistanceByNpc(indexNPC);
     }
 
     public void DisplayPanelBossInformation(bool display)

@@ -85,6 +85,7 @@ public class MonstersRoom : TrialsRoom
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         
         float randomTimer = Random.Range(25, 80);
+        randomTimer = 10;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             photonView.RPC("SendTimer", RpcTarget.All, randomTimer);
         gameManager.ui_Manager.DisplayKeyAndTorch(false);

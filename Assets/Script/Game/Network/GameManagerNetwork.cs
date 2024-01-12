@@ -1214,15 +1214,15 @@ public class GameManagerNetwork : MonoBehaviourPun
         StartCoroutine(gameManager.LaunchTimerChest());
     }
 
-    public void SendChestData(int indexRoom , int index, bool isAward, int indexAward)
+    public void SendChestData(int indexRoom , int index, bool isAward, int indexAward, int indexTrap)
     {
-        photonView.RPC("SetChestData", RpcTarget.All, indexRoom,index, isAward, indexAward);
+        photonView.RPC("SetChestData", RpcTarget.Others, indexRoom,index, isAward, indexAward, indexTrap);
     }
 
     [PunRPC]
-    public void SetChestData(int indexRoom, int index, bool isAward, int indexAward)
+    public void SetChestData(int indexRoom, int index, bool isAward, int indexAward, int indexTrap)
     {
-        gameManager.game.dungeon.rooms[indexRoom].chestList.Add(Chest.CreateInstance(index, isAward, indexAward));
+        gameManager.game.dungeon.rooms[indexRoom].chestList.Add(Chest.CreateInstance(index, isAward, indexAward, indexTrap));
     }
 
     public void SendFireBallData(int indexRoom,bool isFireBall)
@@ -1344,15 +1344,17 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.rooms[indexRoom].isPray = isPray;
     }
 
-    public void SendNPCData(int indexRoom, bool isNpc)
+    public void SendNPCData(int indexRoom, bool isNpc, int indexEvil, int indexEvil_2)
     {
-        photonView.RPC("SetNPCData", RpcTarget.All, indexRoom, isNpc);
+        photonView.RPC("SetNPCData", RpcTarget.All, indexRoom, isNpc, indexEvil, indexEvil_2);
     }
 
     [PunRPC]
-    public void SetNPCData(int indexRoom, bool isNpc)
+    public void SetNPCData(int indexRoom, bool isNpc, int indexEvil, int indexEvil_2)
     {
         gameManager.game.dungeon.rooms[indexRoom].isNPC = isNpc;
+        gameManager.game.dungeon.rooms[indexRoom].indexEvilNPC = indexEvil;
+        gameManager.game.dungeon.rooms[indexRoom].indexEvilNPC_2 = indexEvil_2;
     }
 
     public void SendLabyrinthData(int indexRoom, bool isLabyrintheHide)
@@ -1967,7 +1969,9 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetDisplayPowerImpostorInGame()
     {
-        gameManager.ui_Manager.DisplayPowerImpostorInGame();
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+        gameManager.GiveImpostorObject();
     }
 
     public void SendDisplayObjectPowerImpostor()
@@ -2180,7 +2184,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                     gameManager.game.dungeon.InsertChestRoom(indexRoom);
                     for (int i = 0; i < 2; i++)
                     {
-                        gameManager.gameManagerNetwork.SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                        gameManager.gameManagerNetwork.SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward, room.chestList[i].indexTrap);
                     }
                 }
 
@@ -2236,7 +2240,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                 gameManager.game.dungeon.InsertChestRoom(indexRoom);
                 for (int i = 0; i < 2; i++)
                 {
-                    gameManager.gameManagerNetwork.SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                    gameManager.gameManagerNetwork.SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward, room.chestList[i].indexTrap);
                 }
                 break;
             case 4:
@@ -2285,15 +2289,15 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).evilIsLeft = evilIsLeft;
     }
 
-    public void SendNpcChooseLeft(int indexRoom, bool chooseLeft)
+    public void SendNpcChooseLeft(int indexRoom, int indexNpc)
     {
-        photonView.RPC("SetNpcChooseLeft", RpcTarget.All, indexRoom, chooseLeft);
+        photonView.RPC("SetNpcChooseLeft", RpcTarget.All, indexRoom, indexNpc);
     }
 
     [PunRPC]
-    public void SetNpcChooseLeft(int indexRoom, bool chooseLeft)
+    public void SetNpcChooseLeft(int indexRoom, int indexNpc)
     {
-        gameManager.game.dungeon.GetRoomByIndex(indexRoom).npcChooseIsLeft = chooseLeft;
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).npcChooseIndex = indexNpc;
     }
 
     public void SendNpcDoorShorterAndLonger(int indexRoom, string shorter, string longer)
@@ -2390,18 +2394,90 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendImpostorRoom()
     {
-        photonView.RPC("SetImpostorRoom", RpcTarget.All);
+        int counter = 0;
+        int distance = 4;
+        bool isNearOfInitial = false;
+        int scale = 1;
+        foreach (GameObject player in gameManager.GetAllImpostor())
+        {
+            if(gameManager.GetAllImpostor().Count == 1)
+            {
+                // permet faire en sorte que lorsque l'impostor room est au milieu lui mettre un random quand la distance/2 et impair ( ex : 5 => 2 ou 3) au lieu de 2 tjr
+
+                Debug.Log(gameManager.game.dungeon.initialRoom.DistancePathFinding / 2);
+                Debug.Log((gameManager.game.dungeon.initialRoom.DistancePathFinding / 2) % 2);
+                if (gameManager.game.dungeon.initialRoom.DistancePathFinding%2 != 0)
+                {
+                    int randomInt = Random.Range(0, 2);
+                    if(randomInt == 0)
+                    {
+                        distance = gameManager.game.dungeon.initialRoom.DistancePathFinding / 2;
+                    }
+                    else if ( randomInt == 1)
+                    {
+                        distance = (gameManager.game.dungeon.initialRoom.DistancePathFinding / 2) + 1;
+                    }
+                }
+                else
+                {
+                    distance = (gameManager.game.dungeon.initialRoom.DistancePathFinding / 2);
+                }
+                isNearOfInitial = false;
+            }
+            else
+            {
+                if(gameManager.GetAllImpostor().Count == 2)
+                {
+                    if (counter == 0)
+                    {
+                        distance = Random.Range(1, 3);
+                        isNearOfInitial = true;
+                        scale = -1;
+                    }
+                    else if (counter == 1)
+                    {
+                        distance = Random.Range(2, 4);
+                        isNearOfInitial = false;
+                    }
+                }
+                else
+                {
+                    if (counter == 0)
+                    {
+                        distance = Random.Range(1, 3);
+                        isNearOfInitial = true;
+                        scale = -1;
+                    }
+                    else if (counter == 1)
+                    {
+                        distance = Random.Range(2, 4);
+                        isNearOfInitial = false;
+                        scale = -1;
+                    }
+                    else
+                    {
+                        distance = (gameManager.game.dungeon.initialRoom.DistancePathFinding / 2);
+                        isNearOfInitial = true;
+                        scale = -2;
+                    }
+                }
+            }
+
+            photonView.RPC("SetImpostorRoom", RpcTarget.All, player.GetComponent<PhotonView>().ViewID, distance, isNearOfInitial, scale);
+            counter++;
+        }
     }
 
     [PunRPC]
-    public void SetImpostorRoom()
+    public void SetImpostorRoom(int indexPlayer, int distance, bool isNearOfInitial, int scale)
     {
-        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
-        {
-            int indexRoom = gameManager.game.dungeon.InsertImpostorRoom();
-            SendResetSpeciallyRoomToImpostor(indexRoom);
-            gameManager.GetHexagone(indexRoom).DiplayInformationSpeciallyRoom(false);
-        }
+        if (indexPlayer != gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID)
+            return;
+
+        int indexRoom = gameManager.game.dungeon.InsertImpostorRoom(distance, isNearOfInitial, scale);
+        SendResetSpeciallyRoomToImpostor(indexRoom);
+        gameManager.GetHexagone(indexRoom).DiplayInformationSpeciallyRoom(false);
+ 
     }
 
     public void SendResetSpeciallyRoomToImpostor(int indexRoom)

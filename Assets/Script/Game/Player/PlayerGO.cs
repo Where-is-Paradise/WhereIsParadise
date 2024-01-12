@@ -172,6 +172,7 @@ public class PlayerGO : MonoBehaviour
     public List<bool> listTrialObject;
 
     public bool isLeftNpc = false;
+    public int indexNpc = 0;
     public bool hasImpostorObject = false;
     public bool hasOneTrapPower = false;
 
@@ -1157,9 +1158,11 @@ public class PlayerGO : MonoBehaviour
 
 
         if (collision.gameObject.name.Equals("NPCLeft"))
-            isLeftNpc = true;
+            indexNpc = 0;
+        else if (collision.gameObject.name.Equals("NPCMiddle"))
+            indexNpc = 1;
         else
-            isLeftNpc = false;
+            indexNpc = 2;
 
         gameManager.ui_Manager.DisplayButtonNPCBigger(enter);
     }
@@ -2233,7 +2236,7 @@ public class PlayerGO : MonoBehaviour
         }
         if (!gameManager)
             return;
-        if (!gameManager.game.currentRoom.isTrial)
+        if (!gameManager.game.currentRoom.isTrial && !gameManager.game.currentRoom.isTeamTrial)
             return;
         if (!gameManager.speciallyIsLaunch)
             return;

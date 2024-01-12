@@ -491,7 +491,7 @@ public class UI_Managment : MonoBehaviourPun
         int distanceParadise = 0;
         if (value == 0)
         {
-            distanceParadise = UnityEngine.Random.Range(6, 9);
+            distanceParadise = UnityEngine.Random.Range(5, 8);
         }
         if (value == 1)
         {

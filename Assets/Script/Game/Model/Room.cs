@@ -104,7 +104,10 @@ public class Room : ScriptableObject
 
     public string doorInNpc = "Z";
     public bool evilIsLeft = false;
+    public int indexEvilNPC = 0;
+    public int indexEvilNPC_2 = 0;
     public bool npcChooseIsLeft = false;
+    public int npcChooseIndex = 0;
     public int randomIntEvil = 0;
     public string doorNameLongerNPC = "Z";
     public string doorNameShorterNPC = "Z";

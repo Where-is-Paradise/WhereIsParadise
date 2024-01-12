@@ -192,16 +192,10 @@ public class LabyrinthRoom : TrialsRoom
     {
         if (firsPathIsFind)
             return;
-/*        if (!canBreak)
-            return;*/
         UpdateListNeibourAllObstacl();
         ObstacleLabyrinth neigbour =  FirstRadnomObstacleBroke.GetRandomNeigbourNoneBroken();
-        ///Debug.Log(FirstRadnomObstacleBroke.X_position + " " + FirstRadnomObstacleBroke.Y_position);
         if (!neigbour)
         {
-            //StartCoroutine(CanBreakCoroutine());
-            //FirstRadnomObstacleBroke2 = GetObstaclebrokenInitialInFirstPath(listFirstPath);
-            //counterPath2 = 0;
             firsPathIsFind = true;
             if(counterPath1 > 45)
                 listPotentialAward.Add(FirstRadnomObstacleBroke);
@@ -211,13 +205,10 @@ public class LabyrinthRoom : TrialsRoom
             return;
         }
         counterPath1++;
-        //neigbour.BrokeObstacle();
         neigbour.isBrokable = true;
         listFirstPath.Add(neigbour);
         FirstRadnomObstacleBroke = neigbour;
         canBreak = false;
-        
-        //StartCoroutine(CanBreakCoroutine());
     }
 
     public void SecondeRandomPATH()
@@ -226,14 +217,10 @@ public class LabyrinthRoom : TrialsRoom
             return;
         if (secondePathIsFind)
             return;
-
         UpdateListNeibourAllObstacl();
         ObstacleLabyrinth neigbour = SecondeRadnomObstacleBroke.GetRandomNeigbourNoneBroken();
-        ///Debug.Log(FirstRadnomObstacleBroke.X_position + " " + FirstRadnomObstacleBroke.Y_position);
         if (!neigbour)
         {
-            //StartCoroutine(CanBreakCoroutine());
-
             FirstRadnomObstacleBroke2 = GetObstaclebrokenInitialInFirstPath(listFirstPath);
             counterPath2 = 0;
             secondePathIsFind = true;
@@ -244,13 +231,10 @@ public class LabyrinthRoom : TrialsRoom
             return;
         }
         counter2Path2++;
-        //neigbour.BrokeObstacle();
         neigbour.isBrokable = true;
         listFirstPath.Add(neigbour);
         SecondeRadnomObstacleBroke = neigbour;
         canBreak = false;
-
-        //StartCoroutine(CanBreakCoroutine());
     }
 
 
@@ -263,16 +247,12 @@ public class LabyrinthRoom : TrialsRoom
             return;
         if (!secondePathIsFind)
             return;
-/*        if (!canBreak)
-            return;*/
         UpdateListNeibourAllObstacl();
         ObstacleLabyrinth neigbour = FirstRadnomObstacleBroke2.GetRandomNeigbourNoneBroken();
         if (!neigbour)
         {
             if (listPath2.Count < 35 && counterPath2 < 70 && coutnerPathInside2 < 100)
             {
-
-                //ReverseBroke(listPath2);
                 ReverseBreakable(listPath2);
                 UpdateListNeibourAllObstacl();
                 listPath2.Clear();
@@ -297,14 +277,11 @@ public class LabyrinthRoom : TrialsRoom
         }
         coutnerPathInside++;
         coutnerPathInside2 = 0;
-        //neigbour.BrokeObstacle();
         neigbour.isBrokable = true;
         counterPath2++;
         listPath2.Add(neigbour);
         FirstRadnomObstacleBroke2 = neigbour;
         canBreak = false;
-      
-        //StartCoroutine(CanBreakCoroutine());
     }
 
 
@@ -486,7 +463,6 @@ public class LabyrinthRoom : TrialsRoom
     [PunRPC]
     public void SendListIndexAward(int indexPlayer, int indexAward)
     {
- 
         listIndexAwardByPlayer.Add(new KeyValuePair<int, int>(indexPlayer, indexAward));
     }
 
@@ -509,7 +485,7 @@ public class LabyrinthRoom : TrialsRoom
     {
         this.indexObject = indexObject;
         ActivateObjectPower(key);
-        
+        ActivateImpostorObject(key);
     }
 
     [PunRPC]

@@ -195,8 +195,8 @@ public class TrialsRoom : MonoBehaviourPun
     {
         if (!gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
             return;
-
-        Debug.LogError("sa passe " + indexPlayer);
+        if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasOneTrapPower)
+            return;
 
         float randomfloat = Random.Range(0, 100);
 
@@ -296,6 +296,7 @@ public class TrialsRoom : MonoBehaviourPun
     public void DisplayGloballyAward(int randomInt)
     {
         gameManagerParent.ui_Manager.DisplayKeyAndTorch(false);
+        randomInt = 3;
         switch (randomInt)
         {
             case 0:
@@ -325,6 +326,11 @@ public class TrialsRoom : MonoBehaviourPun
                 DisplayAwardObject(6);
                 indexObject = 2;
                 break;
+            case 3:
+                DisplayAwardObject(7);
+                indexObject = 3;
+                break;
+
         }
     }
     public void ApplyGlobalAward()
@@ -355,6 +361,9 @@ public class TrialsRoom : MonoBehaviourPun
                 gameManagerParent.game.nbTorch++;
                 gameManagerParent.ui_Manager.LaunchAnimationAddKey();
                 StartCoroutine(CouroutineActivateDoorLever(2));
+                break;
+            case 3:
+                gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.SetActive(true);
                 break;
         }
         gameManagerParent.teamHasWinTrialRoom = false;
@@ -392,6 +401,32 @@ public class TrialsRoom : MonoBehaviourPun
             this.transform.Find("Obstacles").GetChild(i).gameObject.SetActive(false);
         }
        
+    }
+
+
+    public void OnClickButtonChooseAwardTeamTriam(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                gameManagerParent.game.key_counter++;
+                gameManagerParent.ui_Manager.LaunchAnimationAddKey();
+                gameManagerParent.gameManagerNetwork.SendAnimationAddKey();
+                gameManagerParent.gameManagerNetwork.SendKey(gameManagerParent.game.key_counter);
+                break;
+            case 1:
+                gameManagerParent.game.nbTorch++;
+                gameManagerParent.gameManagerNetwork.SendTorchNumber(gameManagerParent.game.nbTorch);
+                gameManagerParent.ui_Manager.SetTorchNumber();
+                break;
+            case 2:
+                gameManagerParent.GetBoss().transform.Find("TrialObject").Find("MagicalKey").gameObject.SetActive(true);
+                gameManagerParent.ui_Manager.DisplayAllDoorLightOther(true);
+                gameManagerParent.ui_Manager.DisplayMagicalKeyButton();
+                gameManagerParent.CloseDoorWhenVote(true);
+                gameManagerParent.ActivateCollisionTPOfAllDoor(false);
+                break;
+        }
     }
 
 }

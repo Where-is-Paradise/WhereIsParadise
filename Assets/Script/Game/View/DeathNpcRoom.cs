@@ -64,6 +64,7 @@ public class DeathNpcRoom : TrialsRoom
         StartCoroutine(death_NPC_2.RandomScenario());
         float randomTimer = Random.Range(25, 80);
         //float randomTimer = Random.Range(5,15);
+        randomTimer = 10;
         photonView.RPC("SendSpeciallyIsLaucnh", RpcTarget.All, randomTimer);
     }
 

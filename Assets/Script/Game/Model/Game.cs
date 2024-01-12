@@ -71,8 +71,8 @@ public class Game : ScriptableObject
             dungeon.SetDistanceAllRoom();
             dungeon.SetPathFindingDistanceInitiateRoom();
             dungeon.SetDistanceReelInitialRoom();
-            int distanceExit = setting.DISTANCE_EXIT_DOOR_MAX;
-            //int distanceExit = 5;
+           // int distanceExit = Random.Range(5, 8);
+           int distanceExit = 6;
             correctExit = dungeon.AssignRandomExit(distanceExit);
             if (correctExit)
             {

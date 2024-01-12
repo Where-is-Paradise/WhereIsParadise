@@ -15827,6 +15827,7 @@ MonoBehaviour:
   hasBlackTorch: 0
   listTrialObject: 
   isLeftNpc: 0
+  indexNpc: 0
   hasImpostorObject: 0
   hasOneTrapPower: 0
   canCollisionToDoorExploration: 1

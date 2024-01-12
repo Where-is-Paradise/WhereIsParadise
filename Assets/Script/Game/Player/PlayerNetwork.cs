@@ -957,7 +957,7 @@ public class PlayerNetwork : MonoBehaviourPun
                     player.gameManager.game.dungeon.InsertChestRoom(room.Index);
                     for (int i = 0; i < 2; i++)
                     {
-                        player.gameManager.gameManagerNetwork.SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward);
+                        player.gameManager.gameManagerNetwork.SendChestData(indexRoom, room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward, room.chestList[i].indexTrap);
                     }
                    
                 }

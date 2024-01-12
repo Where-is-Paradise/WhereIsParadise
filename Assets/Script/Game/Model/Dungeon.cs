@@ -93,19 +93,19 @@ public class Dungeon : ScriptableObject
                 //room.isNPC = true;
                 continue;
             }
-            float randomIsTrial = Random.Range(0, 100);
-            if(randomIsTrial < 55) // 70
+            float randomIsTrial = Random.Range(0, 100);  // 100
+            if(randomIsTrial < 55) // 55
                 room.isTrial = true;
             else
             {
-                if(randomIsTrial < 70)
+                if(randomIsTrial < 70) // 70
                 {
                     room.isTeamTrial = true;
                 }
                 else
                 {
-                    float randomSpeciality = Random.Range(0, 100);
-                    if (randomSpeciality < 25 && setting.listSpeciallyRoom[0])
+                    float randomSpeciality = Random.Range(0, 100); // 100
+                    if (randomSpeciality < 25 && setting.listSpeciallyRoom[0]) // 25
                     {
                         room.chest = true;
                     }
@@ -117,12 +117,18 @@ public class Dungeon : ScriptableObject
                     {
                         room.isSacrifice = true;
                     }
-                    else if (randomSpeciality <= 100)
+                    else if (randomSpeciality >= 100) // 100
                     {
                         room.isNPC = true;
-                        int random = Random.Range(0, 2);
-                        if (random == 0)
-                            room.evilIsLeft = true;
+                        int random = Random.Range(0, 3);
+                        room.indexEvilNPC = random;
+                        int random2 = 0;
+                        do
+                        {
+                            random2 = Random.Range(0, 3);
+
+                        } while (random2 == room.indexEvilNPC);
+                        room.indexEvilNPC_2 = random2;
                     }
                 } 
             }
@@ -130,10 +136,15 @@ public class Dungeon : ScriptableObject
         }
     }
 
-    public int InsertImpostorRoom()
+    public int InsertImpostorRoom(int distance , bool isNearOfInitial, int scale)
     {
-        int randomDistance = Random.Range(2, 7);
-        List<Room> listroomInDistance = GetListRoomByDistance(initialRoom, randomDistance);
+        List<Room> listroomInDistance;
+
+        if (!isNearOfInitial)
+            listroomInDistance = GetRoomInDirectionOfParadise(distance, scale);
+        else
+            listroomInDistance = GetRoomInDirectionOfInitial(distance, scale);
+
         int randomIndex = Random.Range(0, listroomInDistance.Count);
         listroomInDistance[randomIndex].isImpostorRoom = true;
         listroomInDistance[randomIndex].isHide = false;
@@ -143,6 +154,41 @@ public class Dungeon : ScriptableObject
         return listroomInDistance[randomIndex].Index;
     }
 
+    public List<Room> GetRoomInDirectionOfParadise(int distance, int scale)
+    {
+
+        List<Room> listroomInDistance = GetListRoomByDistance(exit, distance);
+        List<Room> listroomInPath = new List<Room>();
+        Debug.Log(distance);
+        foreach (Room roomInDistance in listroomInDistance)
+        {
+            if ((GetPathFindingDistance(roomInDistance, initialRoom) + scale) > exit.distance_pathFinding_initialRoom)
+            {
+                continue;
+            }
+            listroomInPath.Add(roomInDistance);
+        }
+        return listroomInPath;
+
+    }
+
+    public List<Room> GetRoomInDirectionOfInitial(int distance, int scale)
+    {
+
+        List<Room> listroomInDistance = GetListRoomByDistance(initialRoom, distance);
+        List<Room> listroomInPath = new List<Room>();
+        Debug.Log(distance);
+        foreach (Room roomInDistance in listroomInDistance)
+        {
+            if ((GetPathFindingDistance(roomInDistance, exit) + scale) > initialRoom.DistancePathFinding)
+            {
+                continue;
+            }
+            listroomInPath.Add(roomInDistance);
+        }
+        return listroomInPath;
+
+    }
 
     public void ResetSpeciallyRoom(Room room)
     {
@@ -161,6 +207,7 @@ public class Dungeon : ScriptableObject
             room.isNPC = false;
             room.isLabyrintheHide = false;
             room.isTrial = false;
+            room.isTeamTrial = false;
     }
 
 
@@ -603,18 +650,17 @@ public class Dungeon : ScriptableObject
     {
         int randomAward = 0;
         int randomIndex = Random.Range(0, 2);
-
         //int randomAward = 2;
 
         if (randomIndex == 0)
         {
-            room.chestList.Add(Chest.CreateInstance(0, true, randomAward));
-            room.chestList.Add(Chest.CreateInstance(1, false, randomAward));
+            room.chestList.Add(Chest.CreateInstance(0, true, randomAward,1));
+            room.chestList.Add(Chest.CreateInstance(1, false, randomAward,2));
         }
         else
         {
-            room.chestList.Add(Chest.CreateInstance(0, false, randomAward));
-            room.chestList.Add(Chest.CreateInstance(1, true, randomAward));
+            room.chestList.Add(Chest.CreateInstance(0, false, randomAward,2));
+            room.chestList.Add(Chest.CreateInstance(1, true, randomAward,1));
         }
 
 
@@ -729,4 +775,6 @@ public class Dungeon : ScriptableObject
     {
         this.exit = room;
     }
+
+
 }
