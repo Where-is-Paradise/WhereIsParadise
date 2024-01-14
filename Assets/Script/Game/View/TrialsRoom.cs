@@ -363,6 +363,8 @@ public class TrialsRoom : MonoBehaviourPun
                 StartCoroutine(CouroutineActivateDoorLever(2));
                 break;
             case 3:
+                if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
+                    return;
                 gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.SetActive(true);
                 break;
         }
@@ -406,6 +408,10 @@ public class TrialsRoom : MonoBehaviourPun
 
     public void OnClickButtonChooseAwardTeamTriam(int index)
     {
+        Debug.Log(this.gameObject.activeSelf);
+        if (!this.gameObject.activeSelf)
+            return;
+
         switch (index)
         {
             case 0:
@@ -427,6 +433,14 @@ public class TrialsRoom : MonoBehaviourPun
                 gameManagerParent.ActivateCollisionTPOfAllDoor(false);
                 break;
         }
+        photonView.RPC("SendReactivateCurrentRoom", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SendReactivateCurrentRoom()
+    {
+        //ReactivateCurrentRoom();
+        StartCoroutine(CouroutineActivateDoorLever(2));
     }
 
 }

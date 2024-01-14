@@ -125,6 +125,9 @@ public class MonsterNPC : MonoBehaviourPun
         GameObject player = collision.transform.parent.gameObject;
         if (player.GetComponent<PlayerGO>().isInvincible)
             return;
+        if(player.GetComponent<PlayerGO>().lifeTrialRoom < 0)        
+            return;
+        
         player.GetComponent<PlayerGO>().lifeTrialRoom--;
         player.GetComponent<PlayerNetwork>()
             .SendLifeTrialRoom(player.GetComponent<PlayerGO>().lifeTrialRoom);
@@ -230,15 +233,25 @@ public class MonsterNPC : MonoBehaviourPun
     public void SendDestroy()
     {
         this.gameObject.SetActive(false);
+        StartCoroutine(CouroutineDestroy());
         photonView.RPC("SetDestroy", RpcTarget.All);
     }
 
     [PunRPC]
     public void SetDestroy()
     {
-        if(GetComponent<PhotonView>().IsMine)
+        if (GetComponent<PhotonView>().IsMine)
+            PhotonNetwork.Destroy(this.gameObject);
+       // StartCoroutine(CouroutineDestroy());
+    }
+
+    public IEnumerator CouroutineDestroy()
+    {
+        yield return new WaitForSeconds(1);
+        if (GetComponent<PhotonView>().IsMine)
             PhotonNetwork.Destroy(this.gameObject);
     }
+
     [PunRPC]
     public void SendDectivateRoom()
     {

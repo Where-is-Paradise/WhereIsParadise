@@ -152,16 +152,16 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendMap(int indexRoom, bool isExit, bool isObstacle, bool isTooFar, 
         bool isInitial, int distance_exit, int distance_pathFinding,int distance_pathFinding_IR,bool isLast, 
-        bool isFoggy , bool isVirus, bool hasKey, bool chest , bool isHide, bool isTrial, bool isSpecial)
+        bool isFoggy , bool isVirus, bool hasKey, bool chest , bool isHide, bool isTrial, bool isSpecial, bool isTeamTrial)
     {
         photonView.RPC("SetRooms", RpcTarget.Others, indexRoom,isExit,isObstacle, isTooFar, isInitial,
-            distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey, chest , isHide, isTrial, isSpecial);
+            distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey, chest , isHide, isTrial, isSpecial, isTeamTrial);
     }
 
     [PunRPC]
     public void SetRooms(int indexRoom, bool isExit, bool isObstacle, bool isTooFar,
         bool isInitial, int distance_exit, int distance_pathFinding,int  distance_pathFinding_IR, 
-        bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest, bool isHide, bool isTrial, bool isSpecial)
+        bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest, bool isHide, bool isTrial, bool isSpecial, bool isTeamTrial)
     {
         gameManager.game.dungeon.rooms[indexRoom].IsExit = isExit;
         gameManager.game.dungeon.rooms[indexRoom].IsObstacle = isObstacle;
@@ -178,6 +178,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.rooms[indexRoom].isHide = isHide;
         gameManager.game.dungeon.rooms[indexRoom].isTrial = isTrial;
         gameManager.game.dungeon.rooms[indexRoom].isSpecial = isSpecial;
+        gameManager.game.dungeon.rooms[indexRoom].isTeamTrial = isTeamTrial;
 
         if (isExit)
         {
@@ -2589,5 +2590,6 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(false);
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 3);
     }
+
 
 }

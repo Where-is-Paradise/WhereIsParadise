@@ -993,8 +993,10 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.lifeTrialRoom = nbLife;
         player.isInvincible = true;
+        player.transform.Find("HearBrokenAnimation").GetChild(0).gameObject.SetActive(true);
         player.DisplayHeartInSituation();
         StartCoroutine(player.ResetInvincibleCouroutine());
+        
     }
 
     public void SendDisplayWhiteLight(bool display)

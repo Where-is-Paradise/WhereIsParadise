@@ -950,7 +950,7 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendMap(room.Index, room.IsExit, room.IsObstacle, room.isTooFar,
                 room.IsInitiale, room.DistanceExit, room.DistancePathFinding,
                 room.distance_pathFinding_initialRoom, counter == game.dungeon.rooms.Count, room.IsFoggy, room.IsVirus,
-                room.HasKey, room.chest, room.isHide, room.isTrial, room.isSpecial);
+                room.HasKey, room.chest, room.isHide, room.isTrial, room.isSpecial, room.isTeamTrial);
 
             if (room.chest)
             {
@@ -3434,7 +3434,7 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 1);
         return;*/
         if (room.isTrial)
         {
@@ -3467,7 +3467,7 @@ public class GameManager : MonoBehaviourPun
             else if (randomInt < AdditionalProba(5))
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
-                CalculProbabiltySpeciality(7);
+                CalculProbabiltySpeciality(5);
             }
             room.speciallyIsInsert = true;
         }
@@ -3475,7 +3475,7 @@ public class GameManager : MonoBehaviourPun
         {
             float randomInt = Random.Range(0, 100);
 
-            if (randomInt < 50)
+            if (randomInt < 100) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }
@@ -3534,9 +3534,7 @@ public class GameManager : MonoBehaviourPun
     {
         if(room.fireBall || room.isAx || room.isSword)
             return true;
-        if (room.isSwordDamocles || room.isDeathNPC || room.isMonsters)
-            return true;
-        if (room.isLabyrintheHide || room.isLostTorch)
+        if (room.isLabyrintheHide || room.isLostTorch || room.isSwordDamocles)
             return true;
 
         return false;
@@ -4414,11 +4412,11 @@ public class GameManager : MonoBehaviourPun
     }
     public void SetDisplayHexagonePlayer(Hexagone hexagone , bool active)
     {
-        if(active)
+        if (active)
             hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
         else
         {
-            if(!GetHexagone(hexagone.GetComponent<HexagoneLostSoul>().indexRoom).Room.IsTraversed)
+            if (!GetHexagone(hexagone.GetComponent<HexagoneLostSoul>().indexRoom).Room.IsTraversed)
                 hexagone.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
         }
           

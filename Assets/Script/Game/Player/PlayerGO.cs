@@ -2236,18 +2236,18 @@ public class PlayerGO : MonoBehaviour
         }
         if (!gameManager)
             return;
-        if (!gameManager.game.currentRoom.isTrial && !gameManager.game.currentRoom.isTeamTrial)
-            return;
-        if (!gameManager.speciallyIsLaunch)
-            return;
-        if (gameManager.game.currentRoom.isLabyrintheHide)
-            return;
         if (!avaibleDash)
-        {
             return;
-        }
-        if (isTouchInTrial)
-            return;
+
+        /*        if (!gameManager.game.currentRoom.isTrial && !gameManager.game.currentRoom.isTeamTrial)
+                    return;
+                if (!gameManager.speciallyIsLaunch)
+                    return;
+                if (gameManager.game.currentRoom.isLabyrintheHide)
+                    return;
+
+                if (isTouchInTrial)
+                    return;*/
         float horizontal = InputManager.GetAxis("Horizontal");
         float vertical = InputManager.GetAxis("Vertical");
         if((horizontal > -0.1f && horizontal < 0.1f) && (vertical < 0.1f && vertical > -0.1f))
@@ -2288,6 +2288,7 @@ public class PlayerGO : MonoBehaviour
             this.transform.position = new Vector2(6.6f, this.transform.position.y);
         }
         //this.transform.position += new Vector3(Mathf.Sign(horizontal) * 1.5f, Mathf.Sign(vertical) * 1.5f);
+        this.transform.Find("DashAnimation").GetChild(0).gameObject.SetActive(true);
         StartCoroutine(CouroutineAvaibleDash());
 
     }

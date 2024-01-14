@@ -94,11 +94,11 @@ public class Dungeon : ScriptableObject
                 continue;
             }
             float randomIsTrial = Random.Range(0, 100);  // 100
-            if(randomIsTrial < 55) // 55
+            if (randomIsTrial < 47) // 47
                 room.isTrial = true;
             else
             {
-                if(randomIsTrial < 70) // 70
+                if (randomIsTrial < 100) // 70
                 {
                     room.isTeamTrial = true;
                 }
@@ -130,7 +130,7 @@ public class Dungeon : ScriptableObject
                         } while (random2 == room.indexEvilNPC);
                         room.indexEvilNPC_2 = random2;
                     }
-                } 
+                }
             }
             room.isSpecial = true;
         }
