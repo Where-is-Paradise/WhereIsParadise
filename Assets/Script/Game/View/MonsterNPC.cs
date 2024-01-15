@@ -232,9 +232,14 @@ public class MonsterNPC : MonoBehaviourPun
 
     public void SendDestroy()
     {
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
+        this.GetComponent<SpriteRenderer>().enabled = false;
+        this.GetComponent<CapsuleCollider2D>().enabled = false;
+        this.GetComponent<CircleCollider2D>().enabled = false;
+        this.transform.Find("AnimationDeath").GetChild(0).gameObject.SetActive(true);
         StartCoroutine(CouroutineDestroy());
-        photonView.RPC("SetDestroy", RpcTarget.All);
+        //photonView.RPC("SetDestroy", RpcTarget.All);
+        //PhotonNetwork.Destroy(this.gameObject);
     }
 
     [PunRPC]

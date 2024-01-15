@@ -49,6 +49,7 @@ public class Sword : MonoBehaviourPun
         swordRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>()
             .SendLifeTrialRoom(swordRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().lifeTrialRoom);
         swordRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isInvincible = true;
+        photonView.RPC("SendAnimationBlood", RpcTarget.All, indexPlayer);
 
         if (swordRoom.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().lifeTrialRoom == 0)
         {
@@ -181,6 +182,12 @@ public class Sword : MonoBehaviourPun
             player.GetComponent<PlayerGO>().isTouchInTrial = false;
             player.GetComponent<PlayerGO>().lifeTrialRoom = 2;
         }
+    }
+
+    [PunRPC]
+    public void SendAnimationBlood(int indexPlayer)
+    {
+        swordRoom.gameManager.GetPlayer(indexPlayer).transform.Find("AnimationBlood").GetChild(0).gameObject.SetActive(true);
     }
 
 }

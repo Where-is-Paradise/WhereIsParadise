@@ -123,26 +123,14 @@ public class AxRoom : TrialsRoom
     [PunRPC]
     public void ShotAxToDirection( float positionX, float positionY, float directionX, float directionY , int indexPlayer)
     {
-/*        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            return;*/
-
-        //GameObject newAx = PhotonNetwork.Instantiate("Ax", new Vector3(positionX,positionY), Quaternion.identity);
         GameObject newAx = GameObject.Instantiate(prefabAx, new Vector3(positionX, positionY), Quaternion.identity);
-
-/*        newAx.GetComponent<Ax>().SendLancher(indexPlayer);
-        newAx.GetComponent<Ax>().SendSpeedAndDirection(5, directionX, directionY);*/
-
-
         newAx.GetComponent<Ax>().SetLancher(indexPlayer);
         newAx.GetComponent<Ax>().SetSpeedAndDirection(5, directionX, directionY);
-
         newAx.GetComponent<Ax>().player = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
         if (newAx.GetComponent<Ax>().GetNumberLastPlayer() == 2)
         {
-            //newAx.GetComponent<Ax>().SendBounds(6);
             newAx.GetComponent<Ax>().SetBounds(6);
         }
-
     }
 
     public void SendShotAxToDirection()
@@ -161,8 +149,6 @@ public class AxRoom : TrialsRoom
         }
         photonView.RPC("SendDisplayAxForAllPlayer", RpcTarget.All, false);
         photonView.RPC("SetIsLaunch", RpcTarget.All, false);
-/*        photonView.RPC("SendSpeciallyPowerIsUsed", RpcTarget.All, true);
-        photonView.RPC("SendResetSpeciallyIsLauch", RpcTarget.All );*/
         DisplayLineToShot(false);
         
     }

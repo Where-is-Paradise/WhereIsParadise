@@ -20,6 +20,8 @@ public class Ax : MonoBehaviourPun
         axRoom = GameObject.Find("AxRoom").GetComponent<AxRoom>();
         this.GetComponent<CircleCollider2D>().enabled = false;
         StartCoroutine(ActiveColliderCoroutine());
+        StartCoroutine(CouroutineAnimationCircle());
+
     }
 
     // Update is called once per frame
@@ -366,5 +368,13 @@ public class Ax : MonoBehaviourPun
     public void SetBounds(int bounds)
     {
         maxBoudns = bounds;
+    }
+
+    public IEnumerator CouroutineAnimationCircle()
+    {
+        yield return new WaitForSeconds(0.6f);
+        this.transform.Find("Animation").GetChild(0).gameObject.SetActive(false);
+        this.transform.Find("Animation").GetChild(0).gameObject.SetActive(true);
+        StartCoroutine(CouroutineAnimationCircle());
     }
 }

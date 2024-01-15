@@ -1871,7 +1871,6 @@ public class GameManager : MonoBehaviourPun
         if (!canChangeBoss)
             return;
 
-        Debug.Log(indexBoss + " " +  listPlayerFinal.Count);
         if (indexBoss + 1 == listPlayerFinal.Count || listPlayerFinal.Count == 1)
         { 
             indexBoss = 0;
@@ -3475,7 +3474,7 @@ public class GameManager : MonoBehaviourPun
         {
             float randomInt = Random.Range(0, 100);
 
-            if (randomInt < 100) // 50
+            if (randomInt < 0) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }
@@ -4428,7 +4427,6 @@ public class GameManager : MonoBehaviourPun
     {
         if (!GetHexagone(hexagone.GetComponent<HexagoneLostSoul>().indexRoom).Room.IsTraversed)
             hexagone.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-        Debug.Log(hexagone.Room.GetIndex());
         hexagone.transform.Find("Information_Speciality").gameObject.SetActive(false);
         hexagone.transform.Find("Canvas").Find("Hell").gameObject.SetActive(false);
         hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(false);

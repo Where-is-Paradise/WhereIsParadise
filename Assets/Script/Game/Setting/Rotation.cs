@@ -26,8 +26,20 @@ public class Rotation : MonoBehaviour
             return;
 
         }
-
-        Vector3 newRotation = new Vector3(0, 0, speed * Time.deltaTime);
-        transform.eulerAngles -= newRotation;
+        if (this.gameObject.tag == "Ax")
+        {
+            Vector3 newRotation = new Vector3(0, 0, speed * Time.deltaTime);
+            if (GetComponent<Ax>().direction.x < 0)
+            {
+                transform.eulerAngles += newRotation;
+            }
+            else
+            {
+                transform.eulerAngles -= newRotation;
+            }
+            return;
+        }
+        Vector3 newRotation3 = new Vector3(0, 0, speed * Time.deltaTime);
+        transform.eulerAngles += newRotation3;
     }
 }

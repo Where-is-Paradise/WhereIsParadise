@@ -129,6 +129,7 @@ public class DamoclesSwordRoom : TrialsRoom
         
         if (this.currentPlayer)
         {
+            Debug.Log("sa passe");
             currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom--;
             currentPlayer.GetComponent<PlayerNetwork>()
                 .SendLifeTrialRoom(currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom);
@@ -183,6 +184,7 @@ public class DamoclesSwordRoom : TrialsRoom
     [PunRPC]
     public void KillCurrentPlayer(int nbLife)
     {
+        sword.transform.Find("Animation").GetChild(0).gameObject.SetActive(true);
         sword.transform.localPosition = new Vector3(0, 0);
         if(nbLife > 0)
             StartCoroutine(ReturnSwordPositionAfterAtack());

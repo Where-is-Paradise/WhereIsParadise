@@ -239,7 +239,7 @@ public class MonstersRoom : TrialsRoom
         gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle3").gameObject.SetActive(false);
         gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = true;
         gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = true;
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").Find("SwordAnimation").GetChild(0).gameObject.SetActive(true);
+        //gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").Find("SwordAnimation").GetChild(0).gameObject.SetActive(true);
         StartCoroutine(DisplayInitial(indexPlayer));
     }
     public void GiveAwardToPlayer(GameObject lastPlayer)

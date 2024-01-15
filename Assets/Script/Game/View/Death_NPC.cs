@@ -77,36 +77,31 @@ public class Death_NPC : MonoBehaviourPun
     {
         if (isInvisible)
         {
-            if (tranparency > 0)
+            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+            this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+            tranparency -= 10f;
+            if (tranparency <= 10)
             {
-                this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
-                this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
-                tranparency = (tranparency - 3f);
-                if (tranparency <= 0)
-                {
-                    tranparency = 0;
-                }
-                this.transform.Find("targetIMG").gameObject.SetActive(false);
+                tranparency = 0;
             }
+            this.transform.Find("targetIMG").gameObject.SetActive(false);
+          
+            speed = 1.1f;
         }
         if (!isInvisible)
         {
-            if (tranparency < 255)
+            this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+            this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
+            tranparency += 10f;
+            if (tranparency > 255)
             {
-                this.transform.Find("body_gfx").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
-                this.transform.Find("Faux").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, tranparency / 255);
-                tranparency = (tranparency + 3f);
-                if (tranparency > 255)
-                {
-                    tranparency = 255;
-                }
-                if (moveToTarget)
-                {
-                    this.transform.Find("targetIMG").gameObject.SetActive(true);
-                }
-                    
-
+                tranparency = 255;
             }
+            if (moveToTarget)
+            {
+                this.transform.Find("targetIMG").gameObject.SetActive(true);
+            }
+            speed = 1.5f;
         }
 
         if (IsNearOFOnePlayer())
@@ -575,7 +570,7 @@ public class Death_NPC : MonoBehaviourPun
     {
         old_x = this.transform.position.x;
         old_y = this.transform.position.y;
-        transform.Translate(direction.normalized * 7 * Time.deltaTime);
+        transform.Translate(direction.normalized * (speed * 4f) * Time.deltaTime);
     }
     public void DashDirectionTarget(Vector3 target)
     {
@@ -669,22 +664,30 @@ public class Death_NPC : MonoBehaviourPun
     {
         if (this.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            photonView.RPC("SendIsInvisible", RpcTarget.All, true);
-            float randomInt = Random.Range(2, 7);
-            yield return new WaitForSeconds(randomInt);
-            if (invisibilityScenario)
-                StartCoroutine(SetNotInvisibleCoroutine());
+            if (!isInvisible)
+            {
+                photonView.RPC("SendIsInvisible", RpcTarget.All, true);
+                float randomInt = Random.Range(4, 8);
+                yield return new WaitForSeconds(randomInt);
+                if (invisibilityScenario)
+                    SetNotInvisibleCoroutine();
+            }
+                
+           
         }
     }
-    public IEnumerator SetNotInvisibleCoroutine()
+    public void SetNotInvisibleCoroutine()
     {
         if (this.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            photonView.RPC("SendIsInvisible", RpcTarget.All, false);
-            float randomInt = Random.Range(2, 7);
-            yield return new WaitForSeconds(randomInt);
-            if(invisibilityScenario)
-                StartCoroutine(SetIsInvisibleCoroutine());
+            if (isInvisible)
+            {
+                photonView.RPC("SendIsInvisible", RpcTarget.All, false);
+/*                float randomInt = Random.Range(2, 7);
+                yield return new WaitForSeconds(randomInt);
+                if (invisibilityScenario)
+                    StartCoroutine(SetIsInvisibleCoroutine());*/
+            }
         }
     }
 
@@ -700,16 +703,13 @@ public class Death_NPC : MonoBehaviourPun
         this.moveToTarget = moveOnTarget;
     }
 
-    /*    public IEnumerator CoroutineEndInvisibility()
-        {
-            yield return new WaitForSeconds(7);
-            invisibilityScenario = false;
-        }*/
 
     [PunRPC]
     public void SendIsInvisible(bool isInvisible)
     {
         this.isInvisible = isInvisible;
+        this.transform.Find("AnimationDisparition").GetChild(0).gameObject.SetActive(true);
+
     }
     public void MoveOnTarget()
     {
