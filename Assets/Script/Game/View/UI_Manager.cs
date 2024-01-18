@@ -46,10 +46,16 @@ public class UI_Manager : MonoBehaviour
     public GameObject key_image;
     public GameObject Key_broken;
     public GameObject addKey;
+    public GameObject torch_broken;
     public Text torch_number;
 
     private bool key_broken_animation;
     private bool addKeyAnimation;
+
+    public bool torch_broken_animation;
+
+    public GameObject addTorch;
+    public bool addTorchAnimation;
 
     public GameObject x_zone_red;
     
@@ -111,6 +117,11 @@ public class UI_Manager : MonoBehaviour
 
     public GameObject panelChooseAwardTeamTrial;
 
+    public AudioSource impactSword;
+    public AudioSource musicFight;
+
+    public AudioSource BasesMusic;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -158,7 +169,10 @@ setting_button_echapMenu.SetActive(false);
                 t += (Time.deltaTime / durationTransitionBlackScreen);
             }
         }
-
+        if (torch_broken_animation)
+        {
+            AnimationBrokenTorch();
+        }
         if (key_broken_animation)
         {
             AnimationBrokenKey();
@@ -166,6 +180,10 @@ setting_button_echapMenu.SetActive(false);
         if (addKeyAnimation)
         {
             AniamtionAddKey();
+        }
+        if (addTorchAnimation)
+        {
+            AnimationAddTorch();
         }
 
         EchapButton_unblockPlayer.interactable = !gameManager.timer.timerLaunch;
@@ -861,6 +879,7 @@ setting_button_echapMenu.SetActive(false);
         StartCoroutine(CoroutineBrokenKey(1));
     }
 
+
     public void AnimationBrokenKey()
     {
         Key_broken.transform.Translate(Vector3.up * Time.deltaTime * 3);
@@ -873,6 +892,27 @@ setting_button_echapMenu.SetActive(false);
         key_broken_animation = false;
         Key_broken.SetActive(false);
         Key_broken.transform.position = new Vector2(-0.46f, -1.048f);
+    }
+
+    public void LaunchAnimationBrokenTorch()
+    {
+        torch_broken_animation = true;
+        torch_broken.SetActive(true);
+        StartCoroutine(CoroutineBrokenTorch(1));
+    }
+
+    public void AnimationBrokenTorch()
+    {
+        torch_broken.transform.Translate(Vector3.up * Time.deltaTime * 3);
+    }
+
+    private IEnumerator CoroutineBrokenTorch(int seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+
+        torch_broken_animation = false;
+        torch_broken.SetActive(false);
+        torch_broken.transform.position = new Vector2(-0.46f, -1.048f);
     }
 
 
@@ -893,12 +933,33 @@ setting_button_echapMenu.SetActive(false);
                 addKey.SetActive(false);
                 addKey.transform.position = new Vector2(-0.12f, 2.03f);
                 SetNBKey();
-                SetTorchNumber();
             }
         }
        
     }
-    
+
+    public void LaunchAnimationAddTorch()
+    {
+        addTorchAnimation = true;
+        addTorch.SetActive(true);
+    }
+
+    public void AnimationAddTorch()
+    {
+        if (!gameManager.paradiseIsFind && !gameManager.hellIsFind)
+        {
+            addTorch.transform.Translate(Vector3.down * Time.deltaTime * 3);
+            if (addTorch.transform.position.y < -1)
+            {
+                addTorchAnimation = false;
+                addTorch.SetActive(false);
+                addTorch.transform.position = new Vector2(-0.12f, 2.03f);
+                SetTorchNumber();
+            }
+        }
+
+    }
+
     public void ResetAllPlayerLightAround()
     {
         foreach(GameObject player  in GameObject.FindGameObjectsWithTag("Player"))
@@ -1548,6 +1609,11 @@ setting_button_echapMenu.SetActive(false);
     {
         GameObject.Find("Special").transform.Find("ImpostorRoom").gameObject.SetActive(display);
     }
+    public void DisplayInformationEndRoom(bool display)
+    {
+        GameObject.Find("Special").transform.Find("InformationEndRoom").gameObject.SetActive(display);
+    }
+
     public void DisplayIllustionRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("IllusionRoom").gameObject.SetActive(display);
@@ -2283,6 +2349,16 @@ setting_button_echapMenu.SetActive(false);
         GameObject.Find("NPCRoom").GetComponent<NPCRoom>().SendDisplayDistanceByNpc(indexNPC);
     }
 
+    public void DisplayButtonNPC_InformationEndBigger(bool display)
+    {
+        canvasInGame.transform.Find("Interaction").Find("NPCInformationEnd_interaction").gameObject.SetActive(display);
+    }
+    public void OnClickButtonNPCInformationEnd()
+    {
+        int indexNPC = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexNpc;
+        GameObject.Find("InformationEndRoom").GetComponent<informationEndRoom>().LaunchInformationEndRoom();
+    }
+
     public void DisplayPanelBossInformation(bool display)
     {
         panelBossInformation.SetActive(display); 
@@ -2348,6 +2424,23 @@ setting_button_echapMenu.SetActive(false);
     public void ActiveSlideMap()
     {
         map.GetComponent<Map_zoom>().enabled = true;
+    }
+
+    public void ImpactSword()
+    {
+        impactSword.Play();
+    }
+    
+    public void LaunchFightMusic()
+    {
+        musicFight.Play();
+        BasesMusic.volume = 0;
+    }
+
+    public void HideFightMusic()
+    {
+        musicFight.Stop();
+        BasesMusic.volume = 0.1f;
     }
 
 }

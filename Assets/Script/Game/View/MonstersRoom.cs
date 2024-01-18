@@ -74,6 +74,7 @@ public class MonstersRoom : TrialsRoom
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManagerParent.DisplayTorchBarre(false);
         yield return new WaitForSeconds(2);
+        gameManager.ui_Manager.LaunchFightMusic();
         isLoose = false;
         roomIsLaunch = true;
         DisplaySwordAllPlayer(true);
@@ -166,6 +167,7 @@ public class MonstersRoom : TrialsRoom
         int indexPlayer = gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID;
         photonView.RPC("DisplayMiddleOne", RpcTarget.Others, indexPlayer);
         DisplayMiddleOne(indexPlayer);
+        gameManager.ui_Manager.ImpactSword();
     }
 
     public void DesactivateRoomChild()
@@ -272,8 +274,9 @@ public class MonstersRoom : TrialsRoom
     public IEnumerator CouroutineEndGame(float seconde)
     {
         //yield return new WaitForSeconds(seconde);
-
+       
         yield return new WaitForSeconds(seconde);
+        gameManagerParent.ui_Manager.HideFightMusic();
         if (!isLoose)
         {
             GiveTeamAward();

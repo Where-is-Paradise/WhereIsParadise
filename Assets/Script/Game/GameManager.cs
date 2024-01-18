@@ -2035,6 +2035,10 @@ public class GameManager : MonoBehaviourPun
             {
                 StartCoroutine(SacrificeAllLostSoul());
             }
+            else
+            {
+                ui_Manager.DisplayInformationEndRoom(true);
+            }
             if (game.currentRoom.IsHell)
             {
                 Loose();
@@ -3272,6 +3276,8 @@ public class GameManager : MonoBehaviourPun
                         game.nbTorch++;
                         gameManagerNetwork.SendAnimationAddKey();
                         ui_Manager.LaunchAnimationAddKey();
+                        gameManagerNetwork.SendAnimationAddTorch();
+                        ui_Manager.LaunchAnimationAddTorch();
                         gameManagerNetwork.SendTorchNumber(game.nbTorch);
                         ui_Manager.SetTorchNumber();
                     }
@@ -3282,10 +3288,13 @@ public class GameManager : MonoBehaviourPun
                             game.key_counter--;
                             gameManagerNetwork.SendAnimationBrokenKey();
                             ui_Manager.LaunchAnimationBrokenKey();
+                            ui_Manager.SetNBKey();
                         }
                         else
                         {
                             game.nbTorch--;
+                            gameManagerNetwork.SendAnimationBrokenTorch();
+                            ui_Manager.LaunchAnimationBrokenTorch();
                             gameManagerNetwork.SendTorchNumber(game.nbTorch);
                             ui_Manager.SetTorchNumber();
                         }
@@ -3301,10 +3310,13 @@ public class GameManager : MonoBehaviourPun
                             game.key_counter--;
                             gameManagerNetwork.SendAnimationBrokenKey();
                             ui_Manager.LaunchAnimationBrokenKey();
+                            ui_Manager.SetNBKey();
                         }
                         else
                         {
                             game.nbTorch--;
+                            gameManagerNetwork.SendAnimationBrokenTorch();
+                            ui_Manager.LaunchAnimationBrokenTorch();
                             gameManagerNetwork.SendTorchNumber(game.nbTorch);
                             ui_Manager.SetTorchNumber();
                         }
@@ -3474,7 +3486,7 @@ public class GameManager : MonoBehaviourPun
         {
             float randomInt = Random.Range(0, 100);
 
-            if (randomInt < 0) // 50
+            if (randomInt < 100) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }

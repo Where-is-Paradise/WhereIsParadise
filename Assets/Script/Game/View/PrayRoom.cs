@@ -29,7 +29,7 @@ public class PrayRoom : MonoBehaviour
     public IEnumerator LaunchPrayRoomCouroutine()
     {
         yield return new WaitForSeconds(1);
-        ActiveZoneByNumberPlayer();
+        ActiveZoneByNumberPlayer(true);
         roomIsLaunched = true;
     }
 
@@ -44,7 +44,7 @@ public class PrayRoom : MonoBehaviour
         return true;
     }
 
-    public void ActiveZoneByNumberPlayer()
+    public void ActiveZoneByNumberPlayer(bool active)
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         int i = 0;
@@ -52,14 +52,27 @@ public class PrayRoom : MonoBehaviour
         {
             if (player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
                 continue;
-            this.transform.Find("ZonesPray").GetChild(i).gameObject.SetActive(true);
+            this.transform.Find("ZonesPray").GetChild(i).gameObject.SetActive(active);
             i++;
         }
 
 
     }
+
+    public void ActiveAnimationZone()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int i = 0;
+        foreach (GameObject player in players)
+        {
+            this.transform.Find("ZonesPray").GetChild(i).Find("Animation").gameObject.SetActive(true);
+            i++;
+        }
+    }
+
     public void DisplayResultOfPray()
     {
+        ActiveAnimationZone();
         if (gameManager.game.currentRoom.isTraped && !gameManager.game.currentRoom.IsFoggy && !gameManager.game.currentRoom.isIllustion && !gameManager.game.currentRoom.IsVirus)
         {
             DisplayChangeParadise();
@@ -69,6 +82,7 @@ public class PrayRoom : MonoBehaviour
         else
             DisplayDistance();
 
+        StartCoroutine(CouroutineHideZone());
         gameManager.CloseDoorWhenVote(false);
         roomIsLaunched = false;
         gameManager.PrayIsUsed = true;
@@ -100,6 +114,12 @@ public class PrayRoom : MonoBehaviour
         {
             this.transform.Find("Status").Find("ChangeParadiseImpostorView").gameObject.SetActive(true);
         }
+    }
+
+    public IEnumerator CouroutineHideZone()
+    {
+        yield return new WaitForSeconds(2f);
+        ActiveZoneByNumberPlayer(false);
     }
     
 }

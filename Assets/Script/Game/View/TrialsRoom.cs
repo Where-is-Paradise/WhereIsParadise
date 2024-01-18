@@ -137,6 +137,8 @@ public class TrialsRoom : MonoBehaviourPun
         GameObject playerWithBarre = gameManagerParent.GetPlayerWithTorchBarre();
         if(!playerWithBarre)
             playerWithBarre.transform.Find("TorchBarre").gameObject.SetActive(true);
+
+        gameManagerParent.ui_Manager.HideFightMusic();
     }
 
     public void ActivateObjectPower(int indexPlayer)
@@ -422,6 +424,8 @@ public class TrialsRoom : MonoBehaviourPun
                 break;
             case 1:
                 gameManagerParent.game.nbTorch++;
+                gameManagerParent.ui_Manager.LaunchAnimationAddTorch();
+                gameManagerParent.gameManagerNetwork.SendAnimationAddTorch();
                 gameManagerParent.gameManagerNetwork.SendTorchNumber(gameManagerParent.game.nbTorch);
                 gameManagerParent.ui_Manager.SetTorchNumber();
                 break;

@@ -387,6 +387,18 @@ public class GameManagerNetwork : MonoBehaviourPun
     }
 
 
+    public void SendAnimationAddTorch()
+    {
+        photonView.RPC("SetAnimationAddTorch", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetAnimationAddTorch()
+    {
+        gameManager.ui_Manager.LaunchAnimationAddTorch();
+        gameManager.ui_Manager.SetTorchNumber();
+    }
+
     public void SendAnimationAddKey()
     {
         photonView.RPC("SetAnimationAddKey", RpcTarget.Others);
@@ -409,6 +421,18 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.ui_Manager.LaunchAnimationBrokenKey();
         gameManager.ui_Manager.SetNBKey();
+    }
+
+    public void SendAnimationBrokenTorch()
+    {
+        photonView.RPC("SetAnimationBrokenTorch", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetAnimationBrokenTorch()
+    {
+        gameManager.ui_Manager.LaunchAnimationBrokenTorch();
+        gameManager.ui_Manager.SetTorchNumber();
     }
 
     public void SendBackToExpe(int indexPlayer)
@@ -1760,7 +1784,11 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetLaunchMonsterRoom()
     {
         if (GameObject.Find("MonstersRoom"))
+        {
             GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>().StartMonstersRoom();
+            //gameManager.ui_Manager.LaunchFightMusic();
+        }
+            
     }
 
 

@@ -29,6 +29,7 @@ TagManager:
   - Wall
   - TrialObject
   - NPC
+  - NPC_informationEnd
   layers:
   - Default
   - TransparentFX

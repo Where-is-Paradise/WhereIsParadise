@@ -83,18 +83,21 @@ public class SwordRoom : TrialsRoom
     public void LaunchAnimationAttack()
     {
         int indexPlayer = gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID;
+        gameManager.ui_Manager.ImpactSword();
         photonView.RPC("DisplayMiddleOne", RpcTarget.Others, indexPlayer);
         DisplayMiddleOne(indexPlayer);
     }
 
     public IEnumerator DisplayInitial(int indexPlayer)
     {
+
         yield return new WaitForSeconds(0.4f);
         gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("Initial").gameObject.SetActive(true);
         gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = false;
         gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = false;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().canMove = true;
         canAttack = true;
+       
     }
 
     [PunRPC]

@@ -732,6 +732,7 @@ public class PlayerGO : MonoBehaviour
         {
             this.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().sortingOrder = ((int)(this.transform.position.y * 10)) * -1;
             this.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).GetComponent<SpriteRenderer>().sortingOrder = ((int)((this.transform.position.y+1) * 10)) * -1;
+            this.transform.Find("Skins").GetChild(indexSkin).Find("Light_around").GetComponent<SpriteRenderer>().sortingOrder = (int)(((this.transform.position.y+1) * 10) * -1) - 2;
         }
     }
 
@@ -1166,6 +1167,16 @@ public class PlayerGO : MonoBehaviour
 
         gameManager.ui_Manager.DisplayButtonNPCBigger(enter);
     }
+    public void CollisionWithNPC_informationEnd(Collider2D collision, bool enter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+        if (!collision.gameObject.tag.Equals("NPC_informationEnd"))
+            return;
+        gameManager.ui_Manager.DisplayButtonNPC_InformationEndBigger(enter);
+    }
+
+    // COPIEZ LA FONCTION D4AU DESSSUS MON POTE
 
 
     public void IgnoreCollisionAllPlayer(bool ignore)
@@ -1266,6 +1277,7 @@ public class PlayerGO : MonoBehaviour
         CollisionWithDoorToMagicalKey(collision, true);
         CollisionWithDoorToBlackTorch(collision, true);
         CollisionWithNPC(collision, true);
+        CollisionWithNPC_informationEnd(collision, true);
 
 
         if (collision.gameObject.tag == "TrialObject")
@@ -1485,6 +1497,7 @@ public class PlayerGO : MonoBehaviour
         CollisionWithDoorToMagicalKey(collision, false);
         CollisionWithDoorToBlackTorch(collision, false);
         CollisionWithNPC(collision, false);
+        CollisionWithNPC_informationEnd(collision, false);
     }
 
 
