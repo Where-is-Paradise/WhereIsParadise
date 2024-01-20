@@ -2302,6 +2302,7 @@ public class PlayerGO : MonoBehaviour
         }
         //this.transform.position += new Vector3(Mathf.Sign(horizontal) * 1.5f, Mathf.Sign(vertical) * 1.5f);
         this.transform.Find("DashAnimation").GetChild(0).gameObject.SetActive(true);
+        gameManager.ui_Manager.LaunchDashSound();
         StartCoroutine(CouroutineAvaibleDash());
 
     }

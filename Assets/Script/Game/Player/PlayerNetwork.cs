@@ -995,6 +995,7 @@ public class PlayerNetwork : MonoBehaviourPun
         player.isInvincible = true;
         player.transform.Find("HearBrokenAnimation").GetChild(0).gameObject.SetActive(true);
         player.DisplayHeartInSituation();
+        player.gameManager.ui_Manager.heartBroken.Play();
         StartCoroutine(player.ResetInvincibleCouroutine());
         
     }

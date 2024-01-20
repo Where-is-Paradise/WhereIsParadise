@@ -237,6 +237,7 @@ public class MonsterNPC : MonoBehaviourPun
         this.GetComponent<CapsuleCollider2D>().enabled = false;
         this.GetComponent<CircleCollider2D>().enabled = false;
         this.transform.Find("AnimationDeath").GetChild(0).gameObject.SetActive(true);
+        monsterRoom.gameManager.ui_Manager.monsterExplosion.Play();
         StartCoroutine(CouroutineDestroy());
         //photonView.RPC("SetDestroy", RpcTarget.All);
         //PhotonNetwork.Destroy(this.gameObject);

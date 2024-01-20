@@ -193,7 +193,7 @@ public class Settin_management : MonoBehaviour
 
     public void SetMusicVolume()
     {
-        music.volume = (musicVolum_scrollbar.value /8 );
+        music.volume = (musicVolum_scrollbar.value /5.2f );
         int volume_int = (int) (music.volume * 800);
         textVolume.text = volume_int  + "";
         music.mute = mute.transform.GetChild(0).GetComponent<Image>().enabled;
@@ -206,7 +206,7 @@ public class Settin_management : MonoBehaviour
     {
         foreach (AudioSource sound in allSound)
         {
-            sound.volume = (globalVolum_scrollbar.value /8);
+            sound.volume = (globalVolum_scrollbar.value /7);
             sound.mute = mute.transform.GetChild(0).GetComponent<Image>().enabled;
         }
         int volume_int = (int)(globalVolum_scrollbar.value  * 100);

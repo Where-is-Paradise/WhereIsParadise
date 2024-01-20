@@ -18,6 +18,7 @@ public class FireBall : MonoBehaviourPun
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         //StartCoroutine(CoroutineActiveCollision(0.2f));
         fireballRoom = this.transform.parent.parent.GetComponent<FireBallRoom>();
+        
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         Physics2D.IgnoreCollision(this.GetComponent<CircleCollider2D>(), turretParent.GetComponent<BoxCollider2D>(), true);

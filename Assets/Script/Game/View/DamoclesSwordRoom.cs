@@ -186,6 +186,7 @@ public class DamoclesSwordRoom : TrialsRoom
     {
         sword.transform.Find("Animation").GetChild(0).gameObject.SetActive(true);
         sword.transform.localPosition = new Vector3(0, 0);
+        gameManager.ui_Manager.damoclesExplosion.Play();
         if(nbLife > 0)
             StartCoroutine(ReturnSwordPositionAfterAtack());
     }

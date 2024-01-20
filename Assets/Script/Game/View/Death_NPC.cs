@@ -709,7 +709,7 @@ public class Death_NPC : MonoBehaviourPun
     {
         this.isInvisible = isInvisible;
         this.transform.Find("AnimationDisparition").GetChild(0).gameObject.SetActive(true);
-
+        gameManager.ui_Manager.invisibility.Play();
     }
     public void MoveOnTarget()
     {

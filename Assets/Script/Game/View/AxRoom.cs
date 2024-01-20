@@ -127,6 +127,7 @@ public class AxRoom : TrialsRoom
         newAx.GetComponent<Ax>().SetLancher(indexPlayer);
         newAx.GetComponent<Ax>().SetSpeedAndDirection(5, directionX, directionY);
         newAx.GetComponent<Ax>().player = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
+        gameManager.ui_Manager.axeLaunch.Play();
         if (newAx.GetComponent<Ax>().GetNumberLastPlayer() == 2)
         {
             newAx.GetComponent<Ax>().SetBounds(6);

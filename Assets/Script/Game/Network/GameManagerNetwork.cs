@@ -2173,6 +2173,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetDisplayLightExplorationTransparency(int doorId)
     {
         gameManager.GetDoorGo(doorId).GetComponent<Door>().DisplayTransparencyLightExploration();
+        gameManager.ui_Manager.doorTorched_black.Play();
     }
 
     public void SendDisplayTrappedDoor(int indexDoor)
@@ -2296,6 +2297,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         Door door = gameManager.GetDoorGo(indexDoor).GetComponent<Door>();
         door.GetComponent<SpriteRenderer>().color = new Color(255, (195f/255f), 0);
+        gameManager.ui_Manager.magical_key.Play();
     }
 
     public void SendDoorInNPCRoom(int indexRoom, string doorName)

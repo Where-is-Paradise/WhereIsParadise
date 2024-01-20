@@ -122,6 +122,26 @@ public class UI_Manager : MonoBehaviour
 
     public AudioSource BasesMusic;
 
+    public AudioSource dashSound;
+    public AudioSource monsterExplosion;
+
+    public AudioSource damoclesExplosion;
+
+    public AudioSource axeLaunch;
+    public AudioSource axeEnd;
+
+    public AudioSource heartBroken;
+
+    public AudioSource doorTorched;
+    public AudioSource doorTorched_black;
+    
+    public AudioSource traped_door;
+    public AudioSource magical_key;
+
+    public AudioSource invisibility;
+
+    public AudioSource fireball;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -1861,6 +1881,7 @@ setting_button_echapMenu.SetActive(false);
         if (gameManager.GetDoorGo(indexDoor))
         {
             gameManager.GetDoorGo(indexDoor).GetComponent<Door>().DisplayColorLightToExploration();
+            gameManager.ui_Manager.doorTorched.Play();
             gameManager.gameManagerNetwork.SendDisplayLightExplorationTransparency(indexDoor);
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().explorationPowerIsAvailable = false;
             canvasInGame.transform.Find("Exploration").Find("Torch").Find("Bigger").gameObject.SetActive(false);
@@ -2271,6 +2292,7 @@ setting_button_echapMenu.SetActive(false);
         panelChooseRoomTrap.SetActive(true);        
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayMagicalKey(false);
         DisplayAllDoorLightExploration(false);
+        gameManager.ui_Manager.traped_door.Play();
     }
 
     public void UpdateRoomWithMagicalkey(int indexChoice)
@@ -2442,6 +2464,10 @@ setting_button_echapMenu.SetActive(false);
         musicFight.Stop();
         BasesMusic.volume = 0.1f;
     }
+    public void LaunchDashSound()
+    {
+        dashSound.Play();
+    } 
 
 }
 

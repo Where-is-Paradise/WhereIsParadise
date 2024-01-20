@@ -69,9 +69,9 @@ public class FireBallRoom : TrialsRoom
 
     public IEnumerator ReduceFrequencyCouroutine()
     {
-        yield return new WaitForSeconds(3);
-        if(frequency > 0.25f)
-            frequency -= 0.15f;
+        yield return new WaitForSeconds(4);
+        if(frequency > 0.5f)
+            frequency -= 0.10f;
 
         StartCoroutine(ReduceFrequencyCouroutine());
     }

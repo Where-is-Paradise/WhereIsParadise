@@ -1,0 +1,70 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="torchAudicityProject_data" version="1.3.0" audacityversion="2.4.2" sel0="0.0000000000" sel1="5.9020000000" vpos="0" h="0.0000000000" zoom="63.5362440160" rate="48000.0" snapto="on" selectionformat="hh:mm:ss + milliseconds" frequencyformat="Hz" bandwidthformat="octaves">
+	<tags>
+		<tag name="Encoded by" value="Sound Grinder 4.0"/>
+		<tag name="Copyright message" value="Copyright Alan McKinney"/>
+	</tags>
+	<wavetrack name="zapsplat_sound_design_whoosh_fire_flames_fast_001_89891" isSelected="0" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="48000" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="160132">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808fd5.au" len="160132" min="-0.509545" max="0.60234" rms="0.056734"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="4.64300000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="82368">
+				<waveblock start="0">
+					<simpleblockfile filename="e08084ce.au" len="82368" min="-0.509545" max="0.60234" rms="0.079102"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="zapsplat_sound_design_whoosh_fire_flames_fast_001_89891" isSelected="0" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="48000" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="160132">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808609.au" len="160132" min="-0.62053" max="0.7092" rms="0.056838"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="4.64300000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="82368">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808b83.au" len="82368" min="-0.62053" max="0.7092" rms="0.079246"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="zapsplat_nature_fire_flames_burst_large_wide_002_44319" isSelected="1" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="48000" gain="0.891251" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="283296">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808fb3.au" len="141648" min="-0.538605" max="0.578792" rms="0.153205"/>
+				</waveblock>
+				<waveblock start="141648">
+					<simpleblockfile filename="e080898e.au" len="141648" min="-0.542193" max="0.558255" rms="0.149321"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="zapsplat_nature_fire_flames_burst_large_wide_002_44319" isSelected="1" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="48000" gain="0.891251" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="283296">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808679.au" len="141648" min="-0.648838" max="0.587527" rms="0.172991"/>
+				</waveblock>
+				<waveblock start="141648">
+					<simpleblockfile filename="e0808085.au" len="141648" min="-0.596767" max="0.627564" rms="0.169245"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+</project>

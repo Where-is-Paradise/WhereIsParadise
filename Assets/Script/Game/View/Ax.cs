@@ -47,6 +47,7 @@ public class Ax : MonoBehaviourPun
         if(nbBounds == maxBoudns)
         {
             //PhotonNetwork.Destroy(this.gameObject);
+            axRoom.gameManager.ui_Manager.axeEnd.Play();
             Destroy(this.gameObject);
         }
         if(speed == 0)
@@ -76,6 +77,7 @@ public class Ax : MonoBehaviourPun
         if (nameWallColsion.gameObject.tag  == "Obstacle")
         {
             //PhotonNetwork.Destroy(this.gameObject);
+            axRoom.gameManager.ui_Manager.axeEnd.Play();
             Destroy(this.gameObject);
         }
 
@@ -375,6 +377,9 @@ public class Ax : MonoBehaviourPun
         yield return new WaitForSeconds(0.6f);
         this.transform.Find("Animation").GetChild(0).gameObject.SetActive(false);
         this.transform.Find("Animation").GetChild(0).gameObject.SetActive(true);
+        axRoom.gameManager.ui_Manager.axeLaunch.Play();
         StartCoroutine(CouroutineAnimationCircle());
     }
+
+
 }

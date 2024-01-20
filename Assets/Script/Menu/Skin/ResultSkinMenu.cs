@@ -37,6 +37,13 @@ public class ResultSkinMenu : MonoBehaviour
     {
         if (!canPress)
             return;
+
+        if(indexSkin == 17)
+        {
+            OnClickChangeSkin();
+            return;
+        }
+
         lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkinColor(indexSkinColor, false);
         this.transform.Find("ApplyButtonColor").GetComponent<Button>().interactable = false;
         lobby.setting.INDEX_SKIN_COLOR = indexSkinColor;

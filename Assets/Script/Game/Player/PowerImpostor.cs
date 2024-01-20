@@ -123,6 +123,7 @@ public class PowerImpostor : MonoBehaviourPun
         photonView.RPC("SetRedColorDoor", RpcTarget.All, collision.transform.parent.GetComponent<Door>().index, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
         DisplayButtonCanUsed(false);
         gameManager.ui_Manager.HidePowerButtonImpostor();
+        gameManager.ui_Manager.traped_door.Play();
         this.transform.parent.GetComponent<PlayerGO>().hasOneTrapPower = false;
     }
 
