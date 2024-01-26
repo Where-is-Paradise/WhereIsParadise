@@ -121,6 +121,12 @@ public class UI_Manager : MonoBehaviour
     public AudioSource musicFight;
 
     public AudioSource BasesMusic;
+    public AudioSource BasesMusic2;
+
+    public AudioSource currentMusic;
+
+    public float timerMusic;
+    public float timerMusic2;
 
     public AudioSource dashSound;
     public AudioSource monsterExplosion;
@@ -141,6 +147,9 @@ public class UI_Manager : MonoBehaviour
     public AudioSource invisibility;
 
     public AudioSource fireball;
+
+    public int currentMusic_index = 0;
+    public bool launchIncreaseVolumLittleToLittle = false;
 
     // Start is called before the first frame update
     void Start()
@@ -208,6 +217,13 @@ setting_button_echapMenu.SetActive(false);
 
         EchapButton_unblockPlayer.interactable = !gameManager.timer.timerLaunch;
 
+        if (launchIncreaseVolumLittleToLittle)
+        {
+            currentMusic.volume += (0.01f * Time.deltaTime);
+            if ((currentMusic.volume * 5) >= gameManager.setting.volume_music)
+                launchIncreaseVolumLittleToLittle = false;
+        }
+
     }
 
 
@@ -222,7 +238,7 @@ setting_button_echapMenu.SetActive(false);
             blueWallPaper.SetActive(!blueWallPaper.activeSelf);
 
         }
-        if(gameManager.gameIsReady)
+        if (gameManager.gameIsReady)
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = !map.activeSelf;
 
         if (map.activeSelf)
@@ -2456,18 +2472,40 @@ setting_button_echapMenu.SetActive(false);
     public void LaunchFightMusic()
     {
         musicFight.Play();
-        BasesMusic.volume = 0;
+        timerMusic = BasesMusic.time;
+        timerMusic2 = BasesMusic2.time;
+        BasesMusic.gameObject.SetActive(false);
+        BasesMusic2.gameObject.SetActive(false);
     }
 
     public void HideFightMusic()
     {
         musicFight.Stop();
-        BasesMusic.volume = 0.1f;
+        if(currentMusic_index == 0) {
+            BasesMusic.volume = 0;
+            IncreaseVolumeLittleToLittle(BasesMusic, timerMusic);
+        }
+        else
+        {
+            BasesMusic2.volume = 0;
+            IncreaseVolumeLittleToLittle(BasesMusic2, timerMusic2);
+        }
+       
     }
     public void LaunchDashSound()
     {
         dashSound.Play();
     } 
+
+
+    public void IncreaseVolumeLittleToLittle(AudioSource music, float timerMusic)
+    {
+        music.gameObject.SetActive(true);
+        music.time = timerMusic;
+        music.Play();
+        currentMusic = music;
+        launchIncreaseVolumLittleToLittle = true;
+    }
 
 }
 

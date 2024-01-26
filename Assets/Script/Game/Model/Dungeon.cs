@@ -94,7 +94,7 @@ public class Dungeon : ScriptableObject
                 continue;
             }
             float randomIsTrial = Random.Range(0, 100);  // 100
-            if (randomIsTrial < 0) // 47
+            if (randomIsTrial < 80) // 47
                 room.isTrial = true;
             else
             {
@@ -105,19 +105,19 @@ public class Dungeon : ScriptableObject
                 else
                 {
                     float randomSpeciality = Random.Range(0, 100); // 100
-                    if (randomSpeciality < 100 && setting.listSpeciallyRoom[0]) // 25
+                    if (randomSpeciality < 25 && setting.listSpeciallyRoom[0]) // 25
                     {
                         room.chest = true;
                     }
-                    else if (randomSpeciality < 0 && setting.listSpeciallyRoom[5]) // 50
+                    else if (randomSpeciality < 50 && setting.listSpeciallyRoom[5]) // 50
                     {
                         room.isPurification = true;
                     }
-                    else if (randomSpeciality < 0 && setting.listSpeciallyRoom[1]) // 75
+                    else if (randomSpeciality < 75 && setting.listSpeciallyRoom[1]) // 75
                     {
                         room.isSacrifice = true;
                     }
-                    else if (randomSpeciality < 0) // 90 à changé
+                    else if (randomSpeciality < 90) // 90 à changé
                     {
                         room.isPray = true;
                     }

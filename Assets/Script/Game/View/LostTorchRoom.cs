@@ -37,6 +37,7 @@ public class LostTorchRoom : TrialsRoom
         gameManagerParent.DisplayTorchBarre(false);
         yield return new WaitForSeconds(2);
         SpawnLostTorch();
+        LaunchTimer();
         gameManager.speciallyIsLaunch = true;
       
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
@@ -54,7 +55,7 @@ public class LostTorchRoom : TrialsRoom
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         int randomSpawnIndex = Random.Range(0, listPlayer.Length);
         photonView.RPC("SendSpawn", RpcTarget.All, listPlayer[randomSpawnIndex].GetComponent<PhotonView>().ViewID);
-        LaunchTimer();
+       
     }
 
     [PunRPC]
@@ -74,7 +75,8 @@ public class LostTorchRoom : TrialsRoom
     {
         yield return new WaitForSeconds(30);
         timerFinish = true;
-        photonView.RPC("SendEndGame", RpcTarget.All);
+        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            photonView.RPC("SendEndGame", RpcTarget.All);
     }
 
     [PunRPC]

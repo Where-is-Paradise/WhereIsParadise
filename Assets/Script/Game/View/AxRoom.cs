@@ -66,6 +66,7 @@ public class AxRoom : TrialsRoom
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManagerParent.DisplayTorchBarre(false);
         yield return new WaitForSeconds(2);
+        gameManager.ui_Manager.LaunchFightMusic();
         DiplayAxForAllPlayer(true);
         DisplayHeartsFoAllPlayer(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
@@ -199,5 +200,73 @@ public class AxRoom : TrialsRoom
     {
         yield return new WaitForSeconds(2);
         DesactivateRoomChild();
+    }
+
+    public void Victory()
+    {
+        if (LastPlayerDoesNotExist())
+        {
+            gameManager.RandomWinFireball("AxeRoom");
+        }
+        if (TestLastPlayer())
+        {
+            GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+            DesactivateRoom();
+            DesactivateRoomChild();
+            //axRoom.beforeLastDisconnect = true; // ???
+        }
+
+    }
+
+    public bool LastPlayerDoesNotExist()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+                    || player.GetComponent<PlayerGO>().isSacrifice)
+            {
+                counter++;
+            }
+        }
+        if (counter == listPlayer.Length)
+            return true;
+        return false;
+    }
+
+    public bool TestLastPlayer()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchInTrial || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+                    || player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
+            {
+                counter++;
+            }
+        }
+        if (counter == (listPlayer.Length - 1))
+            return true;
+        return false;
+    }
+
+    public GameObject GetLastPlayer()
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in listPlayer)
+        {
+            if (!gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
+                continue;
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
+            if (player.GetComponent<PlayerGO>().isInJail)
+                continue;
+            if (!player.GetComponent<PlayerGO>().isTouchInTrial)
+                return player;
+        }
+        Debug.Log("return null");
+        return null;
     }
 }

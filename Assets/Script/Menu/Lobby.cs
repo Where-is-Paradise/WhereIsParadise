@@ -177,10 +177,13 @@ public class Lobby : MonoBehaviourPunCallbacks
         base.OnDisconnected(cause);
         Debug.LogError("Disconnected : " + cause.ToString());
         isConnected = false;
-        if (cause.ToString().Equals("DnsExceptionOnConnect"))
+        Debug.LogError((cause.ToString() == "DnsExceptionOnConnect") + " " + cause.ToString() + "/" + "DnsExceptionOnConnect");
+        if (cause.ToString() == "DnsExceptionOnConnect")
         {
             //StartCoroutine(reconnect());
             ui_management.DisplayErrorPanel("Disconnection..");
+            Debug.LogError("sa passe mon frero");
+            // afficher un panel "ressayer"
         }
         else
         {
@@ -198,7 +201,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     {
         Debug.LogError("Reconnexion..");
         ConnectToMaster();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(4f);
         if (!PhotonNetwork.IsConnected)
             StartCoroutine(Reconnect());
     }

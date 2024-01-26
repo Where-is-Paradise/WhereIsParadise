@@ -34,6 +34,7 @@ public class SwordRoom : TrialsRoom
         gameManager.CloseDoorWhenVote(true);
         gameManagerParent.DisplayTorchBarre(false);
         yield return new WaitForSeconds(2);
+        gameManager.ui_Manager.LaunchFightMusic();
         DisplaySwordAllPlayer(true);
         DisplayHeartsFoAllPlayer(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);

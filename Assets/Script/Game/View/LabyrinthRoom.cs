@@ -107,6 +107,7 @@ public class LabyrinthRoom : TrialsRoom
         gameManagerParent.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
         gameManagerParent.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManagerParent.DisplayTorchBarre(false);
+        gameManagerParent.ui_Manager.LaunchFightMusic();
 
         if (gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
@@ -563,4 +564,5 @@ public class LabyrinthRoom : TrialsRoom
         ObstacleLabyrinth obstacleWithAward = GetObtacleByPosition(x, y);
         obstacleWithAward.BrokeObstacle();
     }
+
 }

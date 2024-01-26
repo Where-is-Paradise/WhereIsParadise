@@ -16,6 +16,7 @@ public class PlayerData : ScriptableObject
     public bool isInJail;
     public bool isInvisible;
     public int indexSkin;
+    public int indexSkinColor;
     public bool hasWinFireBallRoom;
     public string userId;
     public int Old_viewId;

@@ -196,14 +196,14 @@ public class Ax : MonoBehaviourPun
     {
         if (LastPlayerDoesNotExist())
         {
-            axRoom.gameManager.RandomWinFireball();
+            axRoom.gameManager.RandomWinFireball("AxeRoom");
         }
         if (TestLastPlayer())
         {
-            GiveAwardToPlayer(GetLastPlayer());
-            SendResetColor();
+            axRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+            axRoom.DesactivateRoom();
             DesactivateAxRoom();
-            axRoom.beforeLastDisconnect = true;
+            //axRoom.beforeLastDisconnect = true; // ???
         }
         
     }

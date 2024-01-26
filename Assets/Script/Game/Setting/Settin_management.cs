@@ -28,8 +28,9 @@ public class Settin_management : MonoBehaviour
     public Scrollbar globalVolum_scrollbar;
     public Scrollbar musicVolum_scrollbar;
     public GameObject mute;
-    public AudioSource music;
-    public List<AudioSource> allSound;
+/*    public List<AudioSource> allSound;*/
+    public GameObject allSoundParent;
+    public GameObject allMusicParent;
 
     public Text textVolume;
     public Text textGlobalVolume;
@@ -193,10 +194,13 @@ public class Settin_management : MonoBehaviour
 
     public void SetMusicVolume()
     {
-        music.volume = (musicVolum_scrollbar.value /5.2f );
-        int volume_int = (int) (music.volume * 800);
+        for (int i = 0; i < allMusicParent.transform.childCount; i++)
+        {
+            allMusicParent.transform.GetChild(i).GetComponent<AudioSource>().volume = (musicVolum_scrollbar.value /5.2f );
+            allMusicParent.transform.GetChild(i).GetComponent<AudioSource>().mute = mute.transform.GetChild(0).GetComponent<Image>().enabled;
+        }
+        int volume_int = (int) (musicVolum_scrollbar.value * 100);
         textVolume.text = volume_int  + "";
-        music.mute = mute.transform.GetChild(0).GetComponent<Image>().enabled;
         setting.volume_music = musicVolum_scrollbar.value;
         SaveAudio();
     }
@@ -204,11 +208,13 @@ public class Settin_management : MonoBehaviour
 
     public void SetGlobalVolume()
     {
-        foreach (AudioSource sound in allSound)
+
+        for(int i = 0; i < allSoundParent.transform.childCount; i++)
         {
-            sound.volume = (globalVolum_scrollbar.value /7);
-            sound.mute = mute.transform.GetChild(0).GetComponent<Image>().enabled;
+            allSoundParent.transform.GetChild(i).GetComponent<AudioSource>().volume = (globalVolum_scrollbar.value / 5.2f);
+            allSoundParent.transform.GetChild(i).GetComponent<AudioSource>().mute = mute.transform.GetChild(0).GetComponent<Image>().enabled;
         }
+
         int volume_int = (int)(globalVolum_scrollbar.value  * 100);
         textGlobalVolume.text = volume_int + "";
         setting.volume_global = globalVolum_scrollbar.value;
@@ -332,30 +338,31 @@ public class Settin_management : MonoBehaviour
                      .Read<bool>("Mute", (r) => { setting.mute = r; });
         }
         catch (Exception e)
-        {
-            
+        {   
             SaveAudio();
             setting.mute = false;
         }
-
-
-        music.volume = (setting.volume_music );
-        musicVolum_scrollbar.value = music.volume;
-        int volume_int = (int)(music.volume * 800 );
-        
-        textVolume.text = volume_int + "";
-
-        foreach(AudioSource sound in allSound)
+        for(int i = 0; i < allMusicParent.transform.childCount; i++)
         {
+            AudioSource music = allMusicParent.transform.GetChild(i).GetComponent<AudioSource>();
+            music.volume = (setting.volume_music);
+            musicVolum_scrollbar.value = music.volume;
+            int volume_int = (int)(music.volume * 100);
+            textVolume.text = volume_int + "";
+            music.mute = setting.mute;
+        }
+        for(int i =0; i< allSoundParent.transform.childCount; i++)
+        {
+            AudioSource sound = allSoundParent.transform.GetChild(i).GetComponent<AudioSource>();
             sound.volume = setting.volume_global;
             globalVolum_scrollbar.value = sound.volume;
             sound.mute = setting.mute;
         }
+  
         int volume_int2 = (int)(setting.volume_global * 100);
         textGlobalVolume.text = volume_int2 + "";
-
         mute.transform.GetChild(0).GetComponent<Image>().enabled = setting.mute;
-        music.mute = setting.mute;
+      
     }
 
 

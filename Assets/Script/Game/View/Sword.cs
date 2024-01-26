@@ -68,12 +68,12 @@ public class Sword : MonoBehaviourPun
     {
         if (LastPlayerDoesNotExist())
         {
-            swordRoom.gameManager.RandomWinFireball();
+            swordRoom.gameManager.RandomWinFireball("SwordRoom");
         }
         if (TestLastPlayer())
         {
-            GiveAwardToPlayer(GetLastPlayer());
-            SendResetColor();
+            swordRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+            swordRoom.DesactivateRoom();
             DesactivateSwordRoom();
         }
     }
@@ -126,11 +126,8 @@ public class Sword : MonoBehaviourPun
     [PunRPC]
     public void SetCanLunchExploration(int indexPlayer)
     {
-        //swordRoom.gameManager.game.nbTorch++;
         swordRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
         swordRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
-        //swordRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
-        //swordRoom.gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
     }
 
     public GameObject GetLastPlayer()

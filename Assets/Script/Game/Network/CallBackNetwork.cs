@@ -70,9 +70,6 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         player.SetActive(false);
         gameManager.UpdateListPlayerGO();
         gameManager.SetTABToList(gameManager.listPlayerTab, gameManager.listPlayer);
-        Door doorExplorate = gameManager.GetDoorExplorator(player.GetComponent<PhotonView>().ViewID);
-        if(doorExplorate)
-            gameManager.CancelDoorExplorationWhenDisconnection(doorExplorate.index);
         if (dataGame.GetPlayerByIndex(player.GetComponent<PhotonView>().ViewID).hasWinFireBallRoom)
             gameManager.ResetLeverDisconnect();
         if (gameManager.timer.timerLaunch)
@@ -81,10 +78,12 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         if(PhotonNetwork.IsMasterClient)
             gameManager.RemovePlayerOfList(player);
         if (player.GetComponent<PlayerGO>().isBoss)
-        {   
+        {
+            gameManager.canChangeBoss = true;
             gameManager.ChangeBossWithMasterClient();
         }
-        if (gameManager.speciallyIsLaunch || gameManager.fireBallIsLaunch)
+
+        if (PhotonNetwork.IsMasterClient && (gameManager.speciallyIsLaunch || gameManager.fireBallIsLaunch))
         {
             gameManager.TestLastPlayerSpeciallayRoom();
         }
@@ -224,11 +223,10 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         StartCoroutine(SendDataRoomCouroutine());
         StartCoroutine(SendGlobalDataCoroutine());
         gameManager.HidePlayerNotInSameRoom();
-        StartCoroutine(CouroutineHidePlayerNoteSameRoom());
-        StartCoroutine(CouroutineHidePlayerNoteSameRoomN2());
         StartCoroutine(AddPlayerInListCoroutine());
 
-        if (gameManager.game.currentRoom.isAx)
+        // ??? a enlenver tres probablement
+/*        if (gameManager.game.currentRoom.isAx)
         {
             if (GameObject.Find("AxRoom"))
             {
@@ -238,23 +236,25 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
                 }
             }
            
-        }
+        }*/
     }
 
     public IEnumerator AddPlayerInListCoroutine()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.25f);
         gameManager.SetTABToList(GameObject.FindGameObjectsWithTag("Player"), gameManager.listPlayer);
+        gameManager.SetTAB2ToList(GameObject.FindGameObjectsWithTag("Player"), gameManager.listPlayerFinal);
+        gameManager.TreePlayerList(gameManager.listPlayerFinal);
     }
 
     public IEnumerator CouroutineHidePlayerNoteSameRoom()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
         gameManager.HidePlayerNotInSameRoom();
     }
     public IEnumerator CouroutineHidePlayerNoteSameRoomN2()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(6);
         gameManager.HidePlayerNotInSameRoom();
     }
 
@@ -269,8 +269,6 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
                 continue;
             int id = player.GetComponent<PhotonView>().ViewID;
             PlayerGO playerGo = player.GetComponent<PlayerGO>();
-/*            PowerImpostor playerPowerImpostorTrap = player.transform.Find("PowerImpostor").GetComponent<PowerImpostor>();
-            ObjectImpostor playerObjectImpostor = player.transform.Find("ImpostorObject").GetComponent<ObjectImpostor>();*/
             dataGame.SendDataOtherPlayers(id, playerGo.transform.position.x,
                 playerGo.transform.position.y, playerGo.position_X, playerGo.position_Y,
                 playerGo.isImpostor, playerGo.isBoss, playerGo.isSacrifice, playerGo.isInJail,
@@ -282,7 +280,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
 
     public IEnumerator SendDataRoomCouroutine()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(0.25f);
         int counter = 1;
         foreach (Room room in gameManager.game.dungeon.rooms)
         {
@@ -290,17 +288,24 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
             dataGame.SendSpecialityRoom(room.Index, room.chest, room.isSacrifice, room.isJail, room.IsVirus, room.fireBall,
                 room.IsFoggy, room.isDeathNPC, room.isSwordDamocles, room.isAx, room.isSword, room.isLostTorch, room.isMonsters, 
                 room.isPurification, room.isResurection, room.isPray, room.isNPC, room.isLabyrintheHide, room.isCursedTrap, room.isTraped);
+            dataGame.SendGlobalSpecialityRoom(room.Index, room.isTrial, room.isTeamTrial, room.isSpecial);
+            // door open
+            for (int i = 0; i < 6; i++)
+            {
+                dataGame.SendDoorOpenAllRoom(room.Index, room.door_isOpen[i], i);
+            }
             counter++;
         }
     }
 
     public IEnumerator SendGlobalDataCoroutine()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(0.25f);
         dataGame.SendGlobalData(gameManager.labyrinthIsUsed,
             gameManager.NPCIsUsed, gameManager.PrayIsUsed,
-            gameManager.ResurectionIsUsed, gameManager.PurificationIsUsed, gameManager.game.key_counter, gameManager.game.nbTorch);
+            gameManager.ResurectionIsUsed, gameManager.PurificationIsUsed, gameManager.game.key_counter, gameManager.game.nbTorch, gameManager.speciallyIsLaunch);
     }
+
 
 
 }

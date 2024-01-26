@@ -38,6 +38,7 @@ public class DeathNpcRoom : TrialsRoom
         gameManagerParent.DisplayTorchBarre(false);
         
         yield return new WaitForSeconds(2);
+        gameManager.ui_Manager.LaunchFightMusic();
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManager.deathNPCIsLaunch = true;
         gameManager.ActivateCollisionTPOfAllDoor(false);

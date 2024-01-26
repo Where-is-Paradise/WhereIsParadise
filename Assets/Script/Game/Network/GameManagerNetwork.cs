@@ -2547,6 +2547,17 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.listPlayerFinal.Add(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>());
     }
+    public void SendResetPlayerList()
+    {
+        photonView.RPC("SetResetPlayerList", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetResetPlayerList()
+    {
+        gameManager.listPlayerFinal.Clear();
+    }
+
 
     public void SendClearPlayerList()
     {
@@ -2621,5 +2632,38 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 3);
     }
 
+    public void SendHidePlayerNotSameRoom()
+    {
+        photonView.RPC("SetHidePlayerNotSameRoom", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetHidePlayerNotSameRoom()
+    {
+        gameManager.HidePlayerNotInSameRoom();
+    }
+
+    public void SendActiveCollision(int idPlayer)
+    {
+        photonView.RPC("SetActiveCollision", RpcTarget.Others, idPlayer);
+    }
+    [PunRPC]
+    public void SetActiveCollision(int idPlayer)
+    {
+        gameManager.GetPlayer(idPlayer).GetComponent<CapsuleCollider2D>().enabled = true;
+    }
+
+    public void SendFireBallFinish(string specialityString, int randomPlayerId)
+    {
+        photonView.RPC("SetFireBallFinish", RpcTarget.Others, specialityString , randomPlayerId);
+    }
+
+    [PunRPC]
+    public void SetFireBallFinish(string specialityString, int randomPlayerId) {
+
+        GameObject.Find(specialityString).GetComponent<TrialsRoom>().GetAward(randomPlayerId);
+        GameObject.Find(specialityString).GetComponent<TrialsRoom>().DesactivateRoom();
+
+    }
 
 }

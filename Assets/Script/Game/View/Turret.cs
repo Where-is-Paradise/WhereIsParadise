@@ -71,29 +71,14 @@ public class Turret : MonoBehaviourPun
     {
         if (LastPlayerDoesNotExist())
         {
-            gameManager.RandomWinFireball();
+            gameManager.RandomWinFireball("FireBallRoom");
         }
         if (TestLastPlayer())
         {
             GameObject playerWin = GetPlayerRemaning();
-            photonView.RPC("ResetIsTouchFireBall", RpcTarget.All);
-            //playerWin.gameObject.GetComponent<PlayerGO>().DisplayCharacter(true);
-            playerWin.gameObject.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.SendDisplayFireBallRoom(false);
-            playerWin.gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedition();
-            playerWin.gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
-            playerWin.gameObject.GetComponent<PlayerNetwork>().SendCanLaunchExploration();
-            playerWin.gameObject.GetComponent<PlayerGO>().gameManager.ui_Manager.mobileCanvas.transform.Find("Exploration_button").gameObject.SetActive(true);
-            if (gameManager.setting.displayTutorial)
-            {
-                if (!gameManager.ui_Manager.listTutorialBool[23])
-                {
-                    gameManager.ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
-                    gameManager.ui_Manager.tutorial_parent.SetActive(true);
-                    gameManager.ui_Manager.tutorial[23].SetActive(true);
-                    gameManager.ui_Manager.listTutorialBool[23] = true;
-                }
-
-            }
+            FireballRoom.GetAward(playerWin.GetComponent<PhotonView>().ViewID);
+            FireballRoom.DesactivateRoom();
+            FireballRoom.DesactivateFireBallRoom();
             gameManager.fireBallIsLaunch = false;
             gameManager.speciallyIsLaunch = false;
             gameManager.ActivateCollisionTPOfAllDoor(true);

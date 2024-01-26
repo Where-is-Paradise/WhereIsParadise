@@ -189,8 +189,8 @@ public class PlayerGO : MonoBehaviour
         displayChatInput = false;
         playerNetwork = gameObject.GetComponent<PlayerNetwork>();
         currentlyMessageDisplay = new List<string>();
-
-        isMovingAutomaticaly = true;
+        if(!GameObject.Find("GameManager"))
+            isMovingAutomaticaly = true;
     }
 
     void Start()
@@ -263,10 +263,8 @@ public class PlayerGO : MonoBehaviour
         else
         {
             isMovingAutomaticaly = false;
-            if (!GameObject.Find("GameManager"))
-            {
-                this.GetComponent<CapsuleCollider2D>().enabled = true;
-            }
+            this.GetComponent<CapsuleCollider2D>().enabled = true;
+
         } 
             // prevent update if chat input is displayed
         if (displayChatInput)

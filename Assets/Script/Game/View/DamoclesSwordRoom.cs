@@ -35,6 +35,7 @@ public class DamoclesSwordRoom : TrialsRoom
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.CloseDoorWhenVote(true);
         yield return new WaitForSeconds(2);
+        gameManager.ui_Manager.LaunchFightMusic();
         gameManager.damoclesIsLaunch = true;
         gameManager.speciallyIsLaunch = true;
         gameManagerParent.DisplayTorchBarre(false);
@@ -129,7 +130,6 @@ public class DamoclesSwordRoom : TrialsRoom
         
         if (this.currentPlayer)
         {
-            Debug.Log("sa passe");
             currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom--;
             currentPlayer.GetComponent<PlayerNetwork>()
                 .SendLifeTrialRoom(currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom);
@@ -169,13 +169,14 @@ public class DamoclesSwordRoom : TrialsRoom
     {
         if (LastPlayerDoesNotExist())
         {
-            gameManager.RandomWinFireball();
+            gameManager.RandomWinFireball("DamoclesSwordRoom");
         }
         if (TestLastPlayer())
         {
-            GiveAwardToPlayer(GetLastPlayer());
-            SendResetColor();
+            DesactivateDamoclesSwordRoom();
             photonView.RPC("DesactivateDamoclesSwordRoom", RpcTarget.All);
+            GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+            DesactivateRoom(); 
         }
     }
 

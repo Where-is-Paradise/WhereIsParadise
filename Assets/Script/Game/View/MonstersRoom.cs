@@ -272,18 +272,13 @@ public class MonstersRoom : TrialsRoom
 
 
     public IEnumerator CouroutineEndGame(float seconde)
-    {
-        //yield return new WaitForSeconds(seconde);
-       
+    { 
         yield return new WaitForSeconds(seconde);
         gameManagerParent.ui_Manager.HideFightMusic();
         if (!isLoose)
         {
-            GiveTeamAward();
-          
+            GiveTeamAward();    
         }
-        
-        //photonView.RPC("SendTeamAward", RpcTarget.All);
     }
     
 
@@ -302,7 +297,6 @@ public class MonstersRoom : TrialsRoom
         DisplayGloballyAward(randomInt);
         DesactivateRoom();
         DesactivateRoomChild();
-        //gameManager.ui_Manager.DisplayKeyAndTorch(true);
         this.transform.Find("X_zone_animation").GetComponent<Animator>().speed = 1;
         this.transform.Find("X_zone_animation").Find("Timer").GetComponent<Timer>().ResetTimer();
     }

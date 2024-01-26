@@ -26,11 +26,18 @@ public class RoomData : ScriptableObject
     public bool isLabyrinthHide;
     public bool isCursedTrap;
     public bool isTrap;
+    public bool isTrial;
+    public bool isTrialTeam;
+    public bool isSpecial;
+    public List<bool> door_isOpen;
 
     public void Init(int indexRoom , bool speciallyPowerIsUsed )
     {
         this.indexRoom = indexRoom;
         this.speciallyPowerIsUsed = speciallyPowerIsUsed;
+        door_isOpen = new List<bool>();
+        for (int i = 0; i < 6; i++)
+            door_isOpen.Add(false);
     }
 
     public static RoomData CreateInstance(int indexRoom, bool speciallyPowerIsUsed)

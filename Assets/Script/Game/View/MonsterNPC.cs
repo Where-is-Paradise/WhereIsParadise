@@ -184,11 +184,11 @@ public class MonsterNPC : MonoBehaviourPun
     {
         if (LastPlayerDoesNotExist())
         {
-            monsterRoom.gameManager.RandomWinFireball();
+            monsterRoom.gameManager.RandomWinFireball("MonsterRoom");
         }
         if (TestLastPlayer())
         {
-            monsterRoom.GiveAwardToPlayer(GetLastPlayer());
+            monsterRoom.DesactivateRoom();
             photonView.RPC("SendDectivateRoom", RpcTarget.All);
         }
     }

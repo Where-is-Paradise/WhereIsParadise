@@ -84,6 +84,18 @@ public class PlayerNetwork : MonoBehaviourPun
             .GetChild(indexSkinColor).gameObject.SetActive(true);
     }
 
+    public void SendindexSkinColor2(int indexSkinColor)
+    {
+        photonView.RPC("SetIndexSkinColor2", RpcTarget.Others, indexSkinColor);
+    }
+
+    [PunRPC]
+    public void SetIndexSkinColor2(int indexSkinColor)
+    {
+        player.indexSkinColor = indexSkinColor;
+    }
+
+
     public void SendDisplayHorn(bool display)
     {
         photonView.RPC("SetDisplayHorn", RpcTarget.All, display);
@@ -181,7 +193,7 @@ public class PlayerNetwork : MonoBehaviourPun
             player.gameManager.dataGame.SetDataPlayerMine(player.GetComponent<PhotonView>().ViewID, player.transform.position.x, player.transform.position.y,
            player.position_X, player.position_Y, player.isImpostor, player.isBoss, player.isSacrifice, player.isInJail, player.isInvisible,
            player.indexSkin, player.playerName, player.hasWinFireBallRoom, userId, playerPowerImpostorTrap.indexPower, playerPowerImpostorTrap.powerIsUsed,
-           playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, player.isInExpedition);
+           playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, player.isInExpedition, player.indexSkinColor);
         }
         else
         {

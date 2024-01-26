@@ -30,8 +30,9 @@ public class PowerImpostor : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         indexPower = this.transform.parent.GetComponent<PlayerGO>().indexPower;
-        indexPower = 1;
+ /*       indexPower = 1;*/
         if (!powerIsStart)
             return;
         GetAllSituationToCanUsed();
@@ -222,6 +223,8 @@ public class PowerImpostor : MonoBehaviourPun
 
     public void DisplayButtonDesactivateTimer(bool display, float timer)
     {
+        if (!gameManager)
+            return;
         this.transform.parent.GetComponent<PlayerGO>().gameManager.ui_Manager.DisplayTrapPowerButtonDesactivateTime(display, timer);
     }
 }

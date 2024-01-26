@@ -39,6 +39,8 @@ public class ObjectImpostor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
         if (!player.GetComponent<PhotonView>().IsMine)
             return;
         if (indexPower == -1)
@@ -409,14 +411,15 @@ public class ObjectImpostor : MonoBehaviour
             gameManager.ui_Manager.DisplayObjectPowerBigger(false);
             return;
         }
-/*        if (cantTemporyUsed)
+        if (gameManager)
         {
-            gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
-            gameManager.ui_Manager.DisplayObjectPowerBigger(false);
-            return;
-        }*/
-        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(false);
-        gameManager.ui_Manager.DisplayObjectPowerBigger(display);
+            if (gameManager.ui_Manager)
+            {
+                gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(false);
+                gameManager.ui_Manager.DisplayObjectPowerBigger(display);
+            }
+        }
+       
     }
 
     public void DisplayInvisibleResetButton(bool display)

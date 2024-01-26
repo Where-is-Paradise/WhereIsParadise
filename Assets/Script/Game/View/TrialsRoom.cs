@@ -135,7 +135,7 @@ public class TrialsRoom : MonoBehaviourPun
         gameManagerParent.DisplayTorchBarre(true);
 
         GameObject playerWithBarre = gameManagerParent.GetPlayerWithTorchBarre();
-        if(!playerWithBarre)
+        if(playerWithBarre)
             playerWithBarre.transform.Find("TorchBarre").gameObject.SetActive(true);
 
         gameManagerParent.ui_Manager.HideFightMusic();
