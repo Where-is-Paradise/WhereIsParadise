@@ -69,6 +69,7 @@ public class Sword : MonoBehaviourPun
         if (LastPlayerDoesNotExist())
         {
             swordRoom.gameManager.RandomWinFireball("SwordRoom");
+            DesactivateSwordRoom();
         }
         if (TestLastPlayer())
         {

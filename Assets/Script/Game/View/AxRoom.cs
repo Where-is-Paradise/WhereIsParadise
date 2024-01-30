@@ -207,13 +207,13 @@ public class AxRoom : TrialsRoom
         if (LastPlayerDoesNotExist())
         {
             gameManager.RandomWinFireball("AxeRoom");
+            DesactivateRoomChild();
         }
         if (TestLastPlayer())
         {
             GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
             DesactivateRoom();
             DesactivateRoomChild();
-            //axRoom.beforeLastDisconnect = true; // ???
         }
 
     }

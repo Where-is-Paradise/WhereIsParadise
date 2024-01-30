@@ -28,7 +28,8 @@ public class PlayerData : ScriptableObject
     public int indexObject;
     public bool objectIsUsed;
 
-    
+    //damocles
+    public bool damoclesSwordIsAbose;
 
 
     public void Init (int viewId)

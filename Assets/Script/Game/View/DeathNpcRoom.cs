@@ -120,7 +120,6 @@ public class DeathNpcRoom : TrialsRoom
         yield return new WaitForSeconds(secondes);
         if (!loose && gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-           
             photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, true);
             photonView.RPC("SendVictoryTeam", RpcTarget.All, Random.Range(0, 2));
             SendDesactivateNPC();

@@ -85,7 +85,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient && (gameManager.speciallyIsLaunch || gameManager.fireBallIsLaunch))
         {
-            gameManager.TestLastPlayerSpeciallayRoom();
+            gameManager.TestLastPlayerSpeciallayRoom(player);
         }
     }
 
@@ -130,6 +130,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         Debug.Log(" join room");
         dataGame.InstantiatePlayerMine();
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
         if (gameManager.ui_Manager.blackWallPaper.activeSelf)
             gameManager.ui_Manager.blackWallPaper.SetActive(false);
     }
@@ -222,21 +223,9 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         SendDataAllPlayer();
         StartCoroutine(SendDataRoomCouroutine());
         StartCoroutine(SendGlobalDataCoroutine());
+        StartCoroutine(SendDataSpeciallyRoom());
         gameManager.HidePlayerNotInSameRoom();
         StartCoroutine(AddPlayerInListCoroutine());
-
-        // ??? a enlenver tres probablement
-/*        if (gameManager.game.currentRoom.isAx)
-        {
-            if (GameObject.Find("AxRoom"))
-            {
-                if (GameObject.Find("AxRoom").GetComponent<AxRoom>().beforeLastDisconnect)
-                {
-                    StartCoroutine(GameObject.Find("AxRoom").GetComponent<AxRoom>().DesactivateRoomCoroutine());
-                }
-            }
-           
-        }*/
     }
 
     public IEnumerator AddPlayerInListCoroutine()
@@ -289,6 +278,8 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
                 room.IsFoggy, room.isDeathNPC, room.isSwordDamocles, room.isAx, room.isSword, room.isLostTorch, room.isMonsters, 
                 room.isPurification, room.isResurection, room.isPray, room.isNPC, room.isLabyrintheHide, room.isCursedTrap, room.isTraped);
             dataGame.SendGlobalSpecialityRoom(room.Index, room.isTrial, room.isTeamTrial, room.isSpecial);
+            
+
             // door open
             for (int i = 0; i < 6; i++)
             {
@@ -303,9 +294,38 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(0.25f);
         dataGame.SendGlobalData(gameManager.labyrinthIsUsed,
             gameManager.NPCIsUsed, gameManager.PrayIsUsed,
-            gameManager.ResurectionIsUsed, gameManager.PurificationIsUsed, gameManager.game.key_counter, gameManager.game.nbTorch, gameManager.speciallyIsLaunch);
+            gameManager.ResurectionIsUsed, gameManager.PurificationIsUsed, gameManager.game.key_counter, gameManager.game.nbTorch, gameManager.speciallyIsLaunch, gameManager.indexPlayerPreviousExploration);
     }
 
+    public IEnumerator SendDataSpeciallyRoom()
+    {
+        yield return new WaitForSeconds(0.25f);
 
+        if(gameManager.game.currentRoom.isSwordDamocles && gameManager.speciallyIsLaunch)
+        {
+            DamoclesSwordRoom damoclesRoom = GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>();
+            if (damoclesRoom.currentPlayer)
+                dataGame.SendDataSpecialityRoom(damoclesRoom.currentPlayer.GetComponent<PhotonView>().ViewID, -1);
+            else
+                dataGame.SendDataSpecialityRoom(-1, -1);
+        }
+        else
+        {
+            if (gameManager.game.currentRoom.isLostTorch && gameManager.speciallyIsLaunch)
+            {
+                LostTorchRoom lostTorchRoom = GameObject.Find("LostTorchRoom").GetComponent<LostTorchRoom>();
+                if (lostTorchRoom.lostTorch.currentPlayer)
+                    dataGame.SendDataSpecialityRoom(-1, lostTorchRoom.lostTorch.currentPlayer.GetComponent<PhotonView>().ViewID);
+                else
+                    dataGame.SendDataSpecialityRoom(-1, -1);
+            }
+            else
+            {
+                dataGame.SendDataSpecialityRoom(-1, -1);
+            }
+        }
+        
+       
+    }
 
 }

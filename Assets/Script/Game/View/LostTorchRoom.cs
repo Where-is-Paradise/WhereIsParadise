@@ -35,17 +35,15 @@ public class LostTorchRoom : TrialsRoom
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.CloseDoorWhenVote(true);
         gameManagerParent.DisplayTorchBarre(false);
+        
         yield return new WaitForSeconds(2);
+        
         SpawnLostTorch();
         LaunchTimer();
         gameManager.speciallyIsLaunch = true;
-      
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
-       
-
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             SendObstalceGroup();
-            //gameManager.gameManagerNetwork.SendActivateAllObstacles(true, this.name);
 
     }
     public void SpawnLostTorch()
@@ -73,7 +71,7 @@ public class LostTorchRoom : TrialsRoom
     }
     public IEnumerator TimerCouroutine()
     {
-        yield return new WaitForSeconds(30);
+        yield return new WaitForSeconds(150);
         timerFinish = true;
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             photonView.RPC("SendEndGame", RpcTarget.All);
@@ -82,8 +80,6 @@ public class LostTorchRoom : TrialsRoom
     [PunRPC]
     public void SendEndGame()
     {
-        //this.GetAward();
-
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             if (!lostTorch.currentPlayer)

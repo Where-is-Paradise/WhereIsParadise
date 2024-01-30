@@ -22,12 +22,16 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
     public bool resurectionIsUsed;
     public bool purificationIsUsed;
     public bool specialityIsLaunch;
+    public int indexPreviousExploration;
 
     public bool isDisconnect = false;
     public bool hasRecuperateData = false;
     public bool hasRecuperateRoomData = false;
     public bool hasRecuperateRoomDataN2 = false;
     public bool hasRecuperateRoomDataN3 = false;
+    public bool hasRecuperateRoomDataN4 = false;
+
+    public SpeciallyRoomData speciallyRoomData;
 
     // Start is called before the first frame update
     void Start()
@@ -50,6 +54,9 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         }
 
         StartCoroutine(SetDataPlayerMineCouroutine());
+      
+
+        speciallyRoomData = SpeciallyRoomData.CreateInstance();
     }
 
 
@@ -114,8 +121,9 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        if ( gameManager.GetPlayerMineGO() && isDisconnect && hasRecuperateData && hasRecuperateRoomData && hasRecuperateRoomDataN2)
+        if ( gameManager.GetPlayerMineGO() && isDisconnect && hasRecuperateData && hasRecuperateRoomData && hasRecuperateRoomDataN2 && hasRecuperateRoomDataN3 && hasRecuperateRoomDataN4)
         {
+
             SetMine();
             RecuperateDataReconnexion();
             gameManager.SetTABToList(GameObject.FindGameObjectsWithTag("Player"), gameManager.listPlayer);
@@ -129,6 +137,8 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
             hasRecuperateData = false;
             hasRecuperateRoomData = false;
             hasRecuperateRoomDataN2 = false;
+            hasRecuperateRoomDataN3 = false;
+            hasRecuperateRoomDataN4 = false;
             gameManager.ui_Manager.DisplayReconnexionPanel(false);
             gameManager.gameManagerNetwork.SendHidePlayerNotSameRoom();
             StartCoroutine(SendPlayerMineGo());
@@ -193,6 +203,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
     {
         GameObject playerMineGO = PhotonNetwork.Instantiate("Player_GO", new Vector3(playerDataMine.positionMineX, playerDataMine.positionMineY, -1), Quaternion.identity);
         playerMine = playerMineGO.GetComponent<PlayerGO>();
+        InitiateDataSpeciality();
     }
 
     public void RecuperatePlayerMine()
@@ -228,7 +239,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
     }
     public IEnumerator SendPlayerMineGo()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.25f);
         playerMine.GetComponent<PlayerNetwork>().SendNamePlayer(playerDataMine.namePlayer);
         playerMine.GetComponent<PlayerNetwork>().SendindexSkin(playerDataMine.indexSkin);
         playerMine.GetComponent<PlayerNetwork>().SendindexSkinColor(playerDataMine.indexSkinColor, false);
@@ -301,6 +312,8 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         gameManager.ResurectionIsUsed = resurectionIsUsed;
         gameManager.PurificationIsUsed = purificationIsUsed;
         gameManager.speciallyIsLaunch = specialityIsLaunch;
+        gameManager.indexPlayerPreviousExploration = indexPreviousExploration;
+
     }
 
     public void RecuperationDoorOpenAllRoom()
@@ -431,15 +444,15 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
     }
 
     public void SendGlobalData(bool labyrinthIsUsed, bool npcIsUsed,
-         bool prayIsUsed, bool resurectionIsUsed, bool purificationUsed , int nbKey , int nbTorch, bool specialityIsLaunch)
+         bool prayIsUsed, bool resurectionIsUsed, bool purificationUsed , int nbKey , int nbTorch, bool specialityIsLaunch, int indexPreviousExploration)
     {
         photonView.RPC("SetGlobalData", RpcTarget.All, labyrinthIsUsed, npcIsUsed,
-           prayIsUsed, resurectionIsUsed, purificationUsed, nbKey , nbTorch, specialityIsLaunch);
+           prayIsUsed, resurectionIsUsed, purificationUsed, nbKey , nbTorch, specialityIsLaunch, indexPreviousExploration);
     }
 
     [PunRPC]
     public void SetGlobalData(bool labyrinthIsUsed, bool npcIsUsed,
-         bool prayIsUsed, bool resurectionIsUsed, bool purificationIsUsed, int nbKey , int nbTorch, bool specialityIsLaunch)
+         bool prayIsUsed, bool resurectionIsUsed, bool purificationIsUsed, int nbKey , int nbTorch, bool specialityIsLaunch, int indexPreviousExploration)
     {
         this.labyrinthIsUsed = labyrinthIsUsed;
         this.npcIsUsed = npcIsUsed;
@@ -449,6 +462,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         this.nbTorch = nbTorch;
         this.nbKey = nbKey;
         this.specialityIsLaunch = specialityIsLaunch;
+        this.indexPreviousExploration = indexPreviousExploration;
 
         hasRecuperateData = true;
     }
@@ -509,6 +523,21 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         hasRecuperateRoomDataN3 = true;
     }
 
+    public void SendDataSpecialityRoom(int currentPlayer_damolcesSword, int currentPlayer_lostTorch)
+    {
+        photonView.RPC("SetDataSpecialityRoom", RpcTarget.All, currentPlayer_damolcesSword, currentPlayer_lostTorch);
+    }
+
+    [PunRPC]
+    public void SetDataSpecialityRoom(int currentPlayer_damolcesSword, int currentPlayer_lostTorch)
+
+    {
+        speciallyRoomData.currentPlayer_damolcesSword = currentPlayer_damolcesSword;
+        speciallyRoomData.currentPlayer_lostTorch = currentPlayer_lostTorch;
+        hasRecuperateRoomDataN4 = true;
+
+    }
+
     public void SendDoorOpenAllRoom(int roomID, bool value, int indexDoor)
     {
         photonView.RPC("SetDoorOpenAllRoom", RpcTarget.All, roomID, value, indexDoor);
@@ -548,7 +577,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
 
     public IEnumerator VerificationSameRoomOfBoss()
     {
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.3f);
         if (gameManager.speciallyIsLaunch)
         {
             if (!gameManager.SamePositionAtBoss())
@@ -562,50 +591,100 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
 
     public IEnumerator DesactivateSpeciality()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.4f);
         if (!gameManager.speciallyIsLaunch)
         {
             if (GameObject.Find("FireBallRoom"))
+            {
+                GameObject.Find("FireBallRoom").GetComponent<FireBallRoom>().DesactivateFireBallRoom();
                 GameObject.Find("FireBallRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+            }    
             if (GameObject.Find("SwordRoom"))
+            {
+                GameObject.Find("SwordRoom").GetComponent<SwordRoom>().SetDesactivateRoom();
                 GameObject.Find("SwordRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+            }
+              
             if (GameObject.Find("DamoclesSwordRoom"))
+            {
+                GameObject.Find("DamolcesRoom").GetComponent<DamoclesSwordRoom>().DesactivateDamoclesSwordRoom();
                 GameObject.Find("DamoclesSwordRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+            }
+               
             if (GameObject.Find("DeathNPCRoom"))
             {
                 GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>().DesactivateRoom();
                 GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>().DesactivateNPC();
             }
             if (GameObject.Find("AxRoom"))
-                GameObject.Find("AxRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
-            if (GameObject.Find("MonsterInRoom"))
             {
-                GameObject.Find("MonsterInRoom").GetComponent<MonstersRoom>().DesactivateRoom();
-                GameObject.Find("MonsterInRoom").GetComponent<MonstersRoom>().DesactivateRoomChild();
+                GameObject.Find("AxRoom").GetComponent<AxRoom>().DesactivateRoomChild();
+                GameObject.Find("AxRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+            }
+            if (GameObject.Find("MonstersRoom"))
+            {
+                GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>().DesactivateRoom();
+                GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>().DesactivateRoomChild();
+                GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>().ReactivateCurrentRoom();
+                gameManager.ui_Manager.DisplayLeverVoteDoor(true);
             }
             if (GameObject.Find("LostTorchRoom"))
+            {
+                GameObject.Find("LostTorchRoom").GetComponent<LostTorchRoom>().DesactivateLostTorchRoom();
                 GameObject.Find("LostTorchRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+            }
             if (GameObject.Find("LabyrinthHideRoom"))
+            {
+                GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthRoom>().DesactivateRoomChild();
                 GameObject.Find("LabyrinthHideRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+            }
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIstouchInTrial(false);
+
         }
         else
         {
             if (GameObject.Find("LabyrinthHideRoom"))
             {
-                GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthRoom>().ChangeScalePlayer();
+                GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthRoom>().SendChangeScalePlayer();
             }
             else
             {
                 if (GameObject.Find("LostTorchRoom"))
                 {
-
+                    if (GameObject.Find("LostTorch"))
+                    {
+                        LostTorchRoom lostTorchRoom = GameObject.Find("LostTorchRoom").GetComponent<LostTorchRoom>();
+                        lostTorchRoom.lostTorch.currentPlayer = gameManager.GetPlayer(speciallyRoomData.currentPlayer_lostTorch).GetComponent<PlayerGO>();
+                        StartCoroutine(GameObject.Find("LostTorch").GetComponent<LostTorch>().CanChangePlayerCouroutineOnlyMine());
+                    }
                 }
                 else
                 {
+                    if (GameObject.Find("DamoclesSwordRoom"))
+                    {
+                        DamoclesSwordRoom damoclesSwordRoom = GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>();
+                        damoclesSwordRoom.currentPlayer = gameManager.GetPlayer(speciallyRoomData.currentPlayer_damolcesSword);
+                        GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().DesactivateDamoclesSwordRoom();
+                    }
+
                     gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
                     gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
                 }
             }
+        }
+    }
+
+    public void InitiateDataSpeciality()
+    {
+        if (GameObject.Find("DamoclesSwordRoom"))
+        {
+            DamoclesSwordRoom damoclesSwordRoom = GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>();
+            damoclesSwordRoom.canChangePlayer = false;
+        }
+        if (GameObject.Find("LostTorchRoom"))
+        {
+            LostTorchRoom lostTorchRoom = GameObject.Find("LostTorchRoom").GetComponent<LostTorchRoom>();
+            lostTorchRoom.lostTorch.canChangePlayer = false;
         }
     }
 

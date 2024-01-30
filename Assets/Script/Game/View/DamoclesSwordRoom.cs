@@ -42,7 +42,9 @@ public class DamoclesSwordRoom : TrialsRoom
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         speciallyLaunched = true;
         DisplayHeartsFoAllPlayer(true);
-        
+
+        CounterLaunch(15);
+
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             SendObstalceGroup();
@@ -53,7 +55,7 @@ public class DamoclesSwordRoom : TrialsRoom
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
             sword.GetComponent<DamoclesSword>().SendCanChangePlayer(false);
             StartCoroutine(sword.GetComponent<DamoclesSword>().CanChangePlayerCoroutine());
-            CounterLaunch(15);
+           
         }  
     }
 
@@ -127,36 +129,48 @@ public class DamoclesSwordRoom : TrialsRoom
     {
         canChangePlayer = false;
         yield return new WaitForSeconds(0.4f);
-        
-        if (this.currentPlayer)
+
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom--;
-            currentPlayer.GetComponent<PlayerNetwork>()
-                .SendLifeTrialRoom(currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom);
-            photonView.RPC("KillCurrentPlayer", RpcTarget.All, currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom);
-           
-            if (currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom == 0)
+            if (this.currentPlayer)
             {
-                currentPlayer.GetComponent<PlayerGO>().isTouchInTrial = true;
-                SetPlayerColor(this.currentPlayer);
-                GameObject player = ChoosePlayerRandomly();
-                SetCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
-                SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
-                photonView.RPC("SendCanChangePlayer", RpcTarget.All, true);
-               
+                Debug.LogError("sa passe  CouroutineAnimationDeath");
+                currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom--;
+                currentPlayer.GetComponent<PlayerNetwork>()
+                    .SendLifeTrialRoom(currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom);
+                photonView.RPC("KillCurrentPlayer", RpcTarget.All, currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom);
+
+                if (currentPlayer.GetComponent<PlayerGO>().lifeTrialRoom == 0)
+                {
+                    currentPlayer.GetComponent<PlayerGO>().isTouchInTrial = true;
+                    SetPlayerColor(this.currentPlayer);
+                    GameObject player = ChoosePlayerRandomly();
+                    SetCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
+                    SendCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
+                    photonView.RPC("SendCanChangePlayer", RpcTarget.All, true);
+
+                }
             }
+
         }
 
         if (TestLastPlayer())
         {
-            GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
-            DesactivateRoom();
-            photonView.RPC("DesactivateDamoclesSwordRoom", RpcTarget.All);
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            {
+                if (gameManager.damoclesIsLaunch)
+                {
+                    GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+                    DesactivateRoom();
+                    photonView.RPC("DesactivateDamoclesSwordRoom", RpcTarget.All);
+                }
+            }
         }
         else
         {
             StartCoroutine(TimerCouroutine(15f));
         }
+
     }
 
     [PunRPC]
@@ -165,19 +179,23 @@ public class DamoclesSwordRoom : TrialsRoom
         canChangePlayer = newCanChangePlayer;
     }
 
-    public void Victory()
+    public bool Victory()
     {
         if (LastPlayerDoesNotExist())
         {
             gameManager.RandomWinFireball("DamoclesSwordRoom");
+            DesactivateDamoclesSwordRoom();
+            return true;
         }
         if (TestLastPlayer())
         {
             DesactivateDamoclesSwordRoom();
             photonView.RPC("DesactivateDamoclesSwordRoom", RpcTarget.All);
             GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
-            DesactivateRoom(); 
+            DesactivateRoom();
+            return true;
         }
+        return false;
     }
 
 
@@ -185,6 +203,7 @@ public class DamoclesSwordRoom : TrialsRoom
     [PunRPC]
     public void KillCurrentPlayer(int nbLife)
     {
+        Debug.LogError("sa  passe KillCurrentPlayer ");
         sword.transform.Find("Animation").GetChild(0).gameObject.SetActive(true);
         sword.transform.localPosition = new Vector3(0, 0);
         gameManager.ui_Manager.damoclesExplosion.Play();

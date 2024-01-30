@@ -48,6 +48,7 @@ public class DamoclesSword : MonoBehaviourPun
             return;
         if (!canChangePlayer)
             return;
+        Debug.LogError(" sa passe sendChangeToBoss ");
         damoclesRoom.SendChangePositionAtPlayer(indexPlayer);
         damoclesRoom.SetCurrentPlayer(indexPlayer);
         damoclesRoom.SendCurrentPlayer(indexPlayer);

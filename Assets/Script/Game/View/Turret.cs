@@ -12,18 +12,18 @@ public class Turret : MonoBehaviourPun
     public bool canFire = false;
     public int categorie = 0;
     public bool therenotMasterClient = false;
-    public FireBallRoom FireballRoom;
+    public FireBallRoom fireballRoom;
 
     // Start is called before the first frame update
     void Start()
     {
-        FireballRoom = this.transform.parent.GetComponent<FireBallRoom>();
+        fireballRoom = this.transform.parent.parent.GetComponent<FireBallRoom>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
     }
     public void ShotFireBall()
     {
@@ -33,8 +33,8 @@ public class Turret : MonoBehaviourPun
         fireball.GetComponent<FireBall>().SendParent(fireball.transform.parent.GetComponent<Turret>().index);
         fireball.GetComponent<FireBall>().turretParent = this.gameObject;
         fireball.GetComponent<FireBall>().speed = 3f;
-        if (FireballRoom.frequency > 1.25f)
-            FireballRoom.gameManager.ui_Manager.fireball.Play();
+        if (fireballRoom.frequency > 1.25f)
+            fireballRoom.gameManager.ui_Manager.fireball.Play();
     }
     public void DestroyFireBalls()
     {
@@ -56,7 +56,7 @@ public class Turret : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
-            if (player.GetComponent<PlayerGO>().isTouchByFireBall || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
+            if (player.GetComponent<PlayerGO>().isTouchByFireBall || !fireballRoom.gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice)
             {
                 counter++;
@@ -71,17 +71,20 @@ public class Turret : MonoBehaviourPun
     {
         if (LastPlayerDoesNotExist())
         {
+            Debug.LogError("Victory 1");
             gameManager.RandomWinFireball("FireBallRoom");
+            fireballRoom.DesactivateFireBallRoom();
         }
         if (TestLastPlayer())
         {
+            Debug.LogError("Victory 2");
             GameObject playerWin = GetPlayerRemaning();
-            FireballRoom.GetAward(playerWin.GetComponent<PhotonView>().ViewID);
-            FireballRoom.DesactivateRoom();
-            FireballRoom.DesactivateFireBallRoom();
-            gameManager.fireBallIsLaunch = false;
-            gameManager.speciallyIsLaunch = false;
-            gameManager.ActivateCollisionTPOfAllDoor(true);
+            fireballRoom.GetAward(playerWin.GetComponent<PhotonView>().ViewID);
+            fireballRoom.DesactivateRoom();
+            fireballRoom.DesactivateFireBallRoom();
+            fireballRoom.gameManager.fireBallIsLaunch = false;
+            fireballRoom.gameManager.speciallyIsLaunch = false;
+            fireballRoom.gameManager.ActivateCollisionTPOfAllDoor(true);
         }
     }
 
@@ -91,13 +94,19 @@ public class Turret : MonoBehaviourPun
         int counter = 0;
         foreach (GameObject player in listPlayer)
         {
+            if (!player)
+            {
+                counter++;
+                continue;
+            }
+                
             if (player.GetComponent<PlayerGO>().isTouchInTrial || !gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID)
                     || player.GetComponent<PlayerGO>().isSacrifice)
             {
                 counter++;
             }
         }
-        if (counter == listPlayer.Length)
+        if (counter >= listPlayer.Length)
             return true;
         return false;
     }

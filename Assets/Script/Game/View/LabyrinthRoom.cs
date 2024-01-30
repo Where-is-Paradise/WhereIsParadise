@@ -164,6 +164,13 @@ public class LabyrinthRoom : TrialsRoom
         obstacle.HideObstacle();
     }
 
+    public void SendChangeScalePlayer()
+    {
+        photonView.RPC("ChangeScalePlayer", RpcTarget.All);
+
+    }
+
+    [PunRPC]
     public void ChangeScalePlayer()
     {
         foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player"))
@@ -174,6 +181,7 @@ public class LabyrinthRoom : TrialsRoom
         }
         
     }
+
     public void ResetScalePlayer()
     {
         foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
@@ -363,6 +371,7 @@ public class LabyrinthRoom : TrialsRoom
     public void AttributeObjectInObstacle()
     {
         objectIsInsert = true;
+        photonView.RPC("SendPathIsFind", RpcTarget.All, true);
         if (listPotentialAward.Count == 0)
         {
             ChooseRandomObject(listPotentialAwardSecondOption, Random.Range(0, listPotentialAwardSecondOption.Count), false,0);
@@ -438,6 +447,7 @@ public class LabyrinthRoom : TrialsRoom
             if (!firstObjectFind)
             {
                 photonView.RPC("SendListIndexAward", RpcTarget.All, indexPlayer, indexAward);
+                photonView.RPC("SendObjectFind", RpcTarget.All, 1);
                 firstObjectFind = true;
             }
             else
@@ -448,6 +458,7 @@ public class LabyrinthRoom : TrialsRoom
             if (!secondObjectFind)
             {
                 photonView.RPC("SendListIndexAward", RpcTarget.All, indexPlayer, indexAward);
+                photonView.RPC("SendObjectFind", RpcTarget.All, 2);
                 secondObjectFind = true;
             }
                
@@ -465,6 +476,15 @@ public class LabyrinthRoom : TrialsRoom
     public void SendListIndexAward(int indexPlayer, int indexAward)
     {
         listIndexAwardByPlayer.Add(new KeyValuePair<int, int>(indexPlayer, indexAward));
+    }
+
+    [PunRPC]
+    public void SendObjectFind(int indexObjectFind)
+    {
+        if(indexObjectFind == 1 )
+            firstObjectFind = true;
+        if (indexObjectFind == 2)
+            secondObjectFind = true;
     }
 
     public void DesactivateRoomChild()
@@ -563,6 +583,12 @@ public class LabyrinthRoom : TrialsRoom
     {
         ObstacleLabyrinth obstacleWithAward = GetObtacleByPosition(x, y);
         obstacleWithAward.BrokeObstacle();
+    }
+
+    [PunRPC]
+    public void SendPathIsFind(bool objectIsInsert)
+    {
+        this.objectIsInsert = objectIsInsert;
     }
 
 }

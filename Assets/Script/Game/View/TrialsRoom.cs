@@ -112,12 +112,13 @@ public class TrialsRoom : MonoBehaviourPun
 
     public void ReactivateCurrentRoom()
     {
-        if (!gameManagerParent.SamePositionAtBoss())
-            return;
+/*        if (!gameManagerParent.SamePositionAtBoss())
+            return;*/
 
         gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
         ResetColorAllPlayer();
-        gameManagerParent.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
+        if(gameManagerParent.GetBoss())
+            gameManagerParent.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
         gameManagerParent.speciallyIsLaunch = false;
         gameManagerParent.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         gameManagerParent.CloseDoorWhenVote(false);
@@ -143,6 +144,14 @@ public class TrialsRoom : MonoBehaviourPun
 
     public void ActivateObjectPower(int indexPlayer)
     {
+
+        if (!gameManagerParent.GetPlayer(indexPlayer)){
+            List<GameObject> listPlayerTree = gameManagerParent.TreePlayerByID();
+            GameObject lastPlayer = listPlayerTree[listPlayerTree.Count - 1];
+            indexPlayer = lastPlayer.GetComponent<PhotonView>().ViewID;
+        }
+
+
         switch (indexObject)
         {
             case 0:

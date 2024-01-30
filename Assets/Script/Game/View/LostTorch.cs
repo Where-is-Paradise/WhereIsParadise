@@ -30,7 +30,6 @@ public class LostTorch : MonoBehaviourPun
             {
                 this.transform.localPosition = new Vector3(0.4f, 0);
             }
-            //this.transform.position = new Vector2(currentPlayer.gameObject.transform.position.x, currentPlayer.gameObject.transform.position.y);
         }
         if (!this.transform.parent)
         {
@@ -46,10 +45,6 @@ public class LostTorch : MonoBehaviourPun
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-/*        if (!currentPlayer)
-            return;
-        if (gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID != currentPlayer.GetComponent<PhotonView>().ViewID)
-            return;*/
         if (!canChangePlayer)
             return;
         if (collision.tag == "CollisionTrigerPlayer")
@@ -70,11 +65,6 @@ public class LostTorch : MonoBehaviourPun
     [PunRPC]
     public void ChangeCurrentPlayer(int indexPlayer)
     {
-/*        if (!currentPlayer)
-        {
-            if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-                GameObject.Find("LostTorchRoom").GetComponent<LostTorchRoom>().LaunchTimer();
-        }*/
         this.currentPlayer = gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>();
         this.transform.parent = this.currentPlayer.transform;
         canChangePlayer = false;
@@ -86,6 +76,13 @@ public class LostTorch : MonoBehaviourPun
     {
         yield return new WaitForSeconds(0.75f);
         photonView.RPC("SetCanChangePlayer", RpcTarget.All, true);
+    }
+
+    public IEnumerator CanChangePlayerCouroutineOnlyMine()
+    {
+        this.canChangePlayer = false;
+        yield return new WaitForSeconds(2f);
+        this.canChangePlayer = true;
     }
 
     [PunRPC]

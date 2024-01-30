@@ -3487,7 +3487,7 @@ public class GameManager : MonoBehaviourPun
         {
             float randomInt = Random.Range(0, 100);
 
-            if (randomInt < 50) // 50
+            if (randomInt < 0) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }
@@ -3499,14 +3499,14 @@ public class GameManager : MonoBehaviourPun
     }
     public void InitateProbabilityTab()
     {
-        listProbabilitySpecialityRoom.Add(15f); // fireball  0
-        listProbabilitySpecialityRoom.Add(15); // sword     1
-        listProbabilitySpecialityRoom.Add(15); // ax        2
-        listProbabilitySpecialityRoom.Add(15); // damocles  3
-        listProbabilitySpecialityRoom.Add(15); // torch     4
+        listProbabilitySpecialityRoom.Add(16.6f); // fireball  0
+        listProbabilitySpecialityRoom.Add(16.6f); // sword     1
+        listProbabilitySpecialityRoom.Add(16.6f); // ax        2
+        listProbabilitySpecialityRoom.Add(16.6f); // damocles  3
+        listProbabilitySpecialityRoom.Add(16.6f); // torch     4
     /*    listProbabilitySpecialityRoom.Add(12.5f); // deathNPC  5*/
         /*listProbabilitySpecialityRoom.Add(12.5f); // monster   6*/
-        listProbabilitySpecialityRoom.Add(15f); // labyrinth 7
+        listProbabilitySpecialityRoom.Add(16.6f); // labyrinth 7
 
         listBoolapparitionSpecialityRoom.Add(false); // fireball
         listBoolapparitionSpecialityRoom.Add(false); // sword
@@ -3865,7 +3865,7 @@ public class GameManager : MonoBehaviourPun
         dataGame.SetDataPlayerById(indexPlayer);
     }
 
-    public void TestLastPlayerSpeciallayRoom()
+    public void TestLastPlayerSpeciallayRoom(GameObject player)
     {
         if (game.currentRoom.fireBall)
         {
@@ -3879,14 +3879,18 @@ public class GameManager : MonoBehaviourPun
         }
         if (game.currentRoom.isSwordDamocles)
         {
-            GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().Victory();
+            bool isOnePlayer = GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().Victory();
+/*            if (!isOnePlayer)
+            {
+                GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().
+            }*/
         }
         if (game.currentRoom.isDeathNPC)
         {
-            GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>().DisplayLeverToRelauch();
-            if(GameObject.Find("DeathNpc(Clone)"))
-                GameObject.Find("DeathNpc(Clone)").GetComponent<Death_NPC>().Victory();
-            
+            if (player.GetComponent<PlayerGO>().isBoss)
+            {
+                gameManagerNetwork.SendLaunchDeathNPC();
+            }
         }
         if (game.currentRoom.isAx)
         {
@@ -3896,8 +3900,10 @@ public class GameManager : MonoBehaviourPun
 
         if (game.currentRoom.isMonsters)
         {
-            GameObject.Find("MonsterInRoom").GetComponent<MonsterNPC>().Victory();
-            GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>().DisplayLeverToRelauch();
+            if (player.GetComponent<PlayerGO>().isBoss)
+            {
+                gameManagerNetwork.SendLaunchMonsterRoom();
+            }
         }
         if (game.currentRoom.isLostTorch)
         {
@@ -4525,6 +4531,25 @@ public class GameManager : MonoBehaviourPun
             StartCoroutine(RandomStartMusic(15));
         }
 
+    }
+
+    public List<GameObject> TreePlayerByID()
+    {
+        List<int> listIndex = new List<int>();
+
+        foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            listIndex.Add(player.GetComponent<PhotonView>().ViewID);
+        }
+
+        listIndex.Sort();
+        List<GameObject> listTree = new List<GameObject>();
+
+        foreach(int index in listIndex)
+        {
+            listTree.Add(GetPlayer(index));
+        }
+        return listTree;
     }
 
 }

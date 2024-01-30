@@ -51,7 +51,7 @@ public class FireBallRoom : TrialsRoom
     public void ChooseRandomTurret()
     {
         int randomInt = Random.Range(0, 4);
-        GameObject turret = this.transform.GetChild(randomInt).gameObject;
+        GameObject turret = this.transform.Find("Turrets").GetChild(randomInt).gameObject;
         turret.GetComponent<Turret>().ShotFireBall();
     }
 
@@ -95,9 +95,9 @@ public class FireBallRoom : TrialsRoom
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
-        for(int i=0; i < transform.childCount;i++)
+        for(int i=0; i < transform.transform.Find("Turrets").childCount;i++)
         {
-            transform.GetChild(i).GetComponent<Turret>().DestroyFireBalls();
+            transform.Find("Turrets").GetChild(i).GetComponent<Turret>().DestroyFireBalls();
         }
     }
 
