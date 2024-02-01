@@ -44,7 +44,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
             playerMineN2.position_X, playerMineN2.position_Y, playerMineN2.isImpostor, playerMineN2.isBoss, playerMineN2.isSacrifice,
             playerMineN2.isInJail, playerMineN2.isInvisible, playerMineN2.indexSkin, playerMineN2.playerName, playerMineN2.hasWinFireBallRoom,
             playerMineN2.GetComponent<PlayerNetwork>().userId, playerPowerImpostorTrap.indexPower, playerPowerImpostorTrap.powerIsUsed,
-            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, playerMineN2.isInExpedition, playerMineN2.indexSkinColor);
+            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, playerMineN2.isInExpedition, playerMineN2.indexSkinColor, playerMineN2.explorationPowerIsAvailable);
 
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
@@ -74,7 +74,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
                     playerMineN2.position_X, playerMineN2.position_Y, playerMineN2.isImpostor, playerMineN2.isBoss, playerMineN2.isSacrifice,
                     playerMineN2.isInJail, playerMineN2.isInvisible, playerMineN2.indexSkin, playerMineN2.playerName, playerMineN2.hasWinFireBallRoom,
                     playerMineN2.GetComponent<PlayerNetwork>().userId, playerPowerImpostorTrap.indexPower, playerPowerImpostorTrap.powerIsUsed,
-                playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, playerMineN2.isInExpedition, playerMineN2.indexSkinColor);
+                playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, playerMineN2.isInExpedition, playerMineN2.indexSkinColor, playerMineN2.explorationPowerIsAvailable)  ;
             }
             GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in listPlayer)
@@ -86,7 +86,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
                     SetDataOtherPlayers(otherplayer.GetComponent<PhotonView>().ViewID, otherplayer.transform.position.x, otherplayer.transform.position.y,
                    otherplayer.position_X, otherplayer.position_Y, otherplayer.isImpostor, otherplayer.isBoss, otherplayer.isSacrifice,
                    otherplayer.isInJail, otherplayer.isInvisible, otherplayer.indexSkin, otherplayer.playerName, otherplayer.hasWinFireBallRoom,
-                   otherplayer.GetComponent<PlayerNetwork>().userId);
+                   otherplayer.GetComponent<PlayerNetwork>().userId, otherplayer.explorationPowerIsAvailable);
                 }
             }
         }
@@ -106,7 +106,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
                 playerMineN2.position_X, playerMineN2.position_Y, playerMineN2.isImpostor, playerMineN2.isBoss, playerMineN2.isSacrifice,
                 playerMineN2.isInJail, playerMineN2.isInvisible, playerMineN2.indexSkin, playerMineN2.playerName, playerMineN2.hasWinFireBallRoom,
                 playerMineN2.GetComponent<PlayerNetwork>().userId, playerPowerImpostorTrap.indexPower, playerPowerImpostorTrap.powerIsUsed,
-            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, playerMineN2.isInExpedition, playerMineN2.indexSkinColor);
+            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, playerMineN2.isInExpedition, playerMineN2.indexSkinColor, playerMineN2.explorationPowerIsAvailable );
         }
         else
         {
@@ -114,7 +114,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
             SetDataOtherPlayers(otherplayer.GetComponent<PhotonView>().ViewID, otherplayer.transform.position.x, otherplayer.transform.position.y,
              otherplayer.position_X, otherplayer.position_Y, otherplayer.isImpostor, otherplayer.isBoss, otherplayer.isSacrifice,
              otherplayer.isInJail, otherplayer.isInvisible, otherplayer.indexSkin, otherplayer.playerName, otherplayer.hasWinFireBallRoom,
-             otherplayer.GetComponent<PlayerNetwork>().userId);
+             otherplayer.GetComponent<PlayerNetwork>().userId, otherplayer.explorationPowerIsAvailable);
         }
     }
 
@@ -220,6 +220,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         playerMine.indexSkinColor = playerDataMine.indexSkinColor;
         playerMine.playerName = playerDataMine.namePlayer;
         playerMine.hasWinFireBallRoom = false;
+        playerMine.explorationPowerIsAvailable = playerDataMine.explorationPowerIsAvailble;
 
         if (playerMine.isImpostor)
         {
@@ -243,7 +244,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         playerMine.GetComponent<PlayerNetwork>().SendNamePlayer(playerDataMine.namePlayer);
         playerMine.GetComponent<PlayerNetwork>().SendindexSkin(playerDataMine.indexSkin);
         playerMine.GetComponent<PlayerNetwork>().SendindexSkinColor(playerDataMine.indexSkinColor, false);
-        playerMine.GetComponent<PlayerNetwork>().SendGlobalVariabel(playerDataMine.isImpostor, playerDataMine.isSacrifice, playerDataMine.isInJail, playerDataMine.isInvisible);
+        playerMine.GetComponent<PlayerNetwork>().SendGlobalVariabel(playerDataMine.isImpostor, playerDataMine.isSacrifice, playerDataMine.isInJail, playerDataMine.isInvisible, playerDataMine.explorationPowerIsAvailble);
         playerMine.GetComponent<PlayerNetwork>().SendDungeonPosition(playerDataMine.positionMineX_dungeon, playerDataMine.positionMineY_dungeon);
         playerMine.GetComponent<PlayerNetwork>().SendUserId(PhotonNetwork.LocalPlayer.UserId);
     }
@@ -271,6 +272,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
             otherPlayer.playerName = otherPlayerData.namePlayer;
             otherPlayer.hasWinFireBallRoom = false;
             otherPlayer.GetComponent<PlayerNetwork>().userId = otherPlayerData.userId;
+            otherPlayer.explorationPowerIsAvailable = otherPlayerData.explorationPowerIsAvailble;
             DontDestroyOnLoad(otherPlayer);
         }
 
@@ -368,7 +370,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
     public void SetDataPlayerMine(int viewId, float positionX, float positionY, int positionDungeonX,
         int positionDungeonY, bool isImpostor, bool isBoss, bool isSacrifice, bool isInJail,
         bool isInvisible, int indexSkin, string namePlayer, bool hasWinFireBallRoom, string userId, int indexPowerTrap, bool powerIsUsed,
-        int indexObject, bool objectIsUsed, bool isInExpedition, int indexSkinColor)
+        int indexObject, bool objectIsUsed, bool isInExpedition, int indexSkinColor, bool explorationPowerIsAvailable)
     {
         playerDataMine.positionMineX = positionX;
         playerDataMine.positionMineY = positionY;
@@ -389,6 +391,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         playerDataMine.indexObject = indexObject;
         playerDataMine.objectIsUsed = objectIsUsed;
         playerDataMine.isInExpedition = isInExpedition;
+        playerDataMine.explorationPowerIsAvailble = explorationPowerIsAvailable;
 
     }
 
@@ -396,16 +399,16 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
 
     public void SendDataOtherPlayers(int viewId, float positionX, float positionY, int positionDungeonX,
     int positionDungeonY, bool isImpostor, bool isBoss, bool isSacrifice, bool isInJail, bool isInvisible, int indexSkin, 
-    string namePlayer, bool hasWinFireBallRoom, string userId)
+    string namePlayer, bool hasWinFireBallRoom, string userId, bool explorationIsAvalaible)
     {
         photonView.RPC("SetDataOtherPlayers", RpcTarget.All, viewId, positionX, positionY, positionDungeonX,
-            positionDungeonY, isImpostor, isBoss, isSacrifice, isInJail, isInvisible, indexSkin, namePlayer, hasWinFireBallRoom, userId) ;
+            positionDungeonY, isImpostor, isBoss, isSacrifice, isInJail, isInvisible, indexSkin, namePlayer, hasWinFireBallRoom, userId, explorationIsAvalaible) ;
     }
 
     [PunRPC]
     public void SetDataOtherPlayers(int viewId, float positionX, float positionY, int positionDungeonX,
         int positionDungeonY, bool isImpostor, bool isBoss, bool isSacrifice, bool isInJail, bool isInvisible, int indexSkin, 
-        string namePlayer, bool hasWinFireBallRoom, string userId)
+        string namePlayer, bool hasWinFireBallRoom, string userId, bool explorationIsAvalaible)
     {
         PlayerData otherPlayer = GetPlayerByIndex(viewId);
         if (!otherPlayer)
@@ -423,6 +426,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         otherPlayer.namePlayer = namePlayer;
         otherPlayer.hasWinFireBallRoom = hasWinFireBallRoom;
         otherPlayer.userId = userId;
+        otherPlayer.explorationPowerIsAvailble = explorationIsAvalaible;
     }
 
     public void SendRoomData(int indexRoom, bool speciallyPowerIsUsed, bool isEnd)
@@ -639,7 +643,9 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
                 GameObject.Find("LabyrinthHideRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
             }
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIstouchInTrial(false);
-
+            gameManager.ui_Manager.HideAllLever();
+            gameManager.game.currentRoom.speciallyPowerIsUsed = true;
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canDisplayMap = true;
         }
         else
         {
@@ -655,6 +661,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
                     {
                         LostTorchRoom lostTorchRoom = GameObject.Find("LostTorchRoom").GetComponent<LostTorchRoom>();
                         lostTorchRoom.lostTorch.currentPlayer = gameManager.GetPlayer(speciallyRoomData.currentPlayer_lostTorch).GetComponent<PlayerGO>();
+                        GameObject.Find("LostTorch").transform.parent = lostTorchRoom.lostTorch.currentPlayer.transform;
                         StartCoroutine(GameObject.Find("LostTorch").GetComponent<LostTorch>().CanChangePlayerCouroutineOnlyMine());
                     }
                 }
@@ -669,8 +676,12 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
 
                     gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
                     gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
+                    
                 }
             }
+            gameManager.game.currentRoom.speciallyPowerIsUsed = true;
+            gameManager.ui_Manager.HideAllLever();
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canDisplayMap = true;
         }
     }
 
@@ -687,6 +698,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
             lostTorchRoom.lostTorch.canChangePlayer = false;
         }
     }
+
 
 
 

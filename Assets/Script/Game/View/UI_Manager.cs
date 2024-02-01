@@ -151,6 +151,9 @@ public class UI_Manager : MonoBehaviour
     public int currentMusic_index = 0;
     public bool launchIncreaseVolumLittleToLittle = false;
 
+    public GameObject map_interaction;
+    public GameObject changeBoss_interaction;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -1946,6 +1949,8 @@ setting_button_echapMenu.SetActive(false);
     }
     public void HideSpeciallyDisplay()
     {
+        if (!GameObject.Find("Special"))
+            return;
         GameObject.Find("Special").gameObject.SetActive(false);
         HideAllLever();
         //DisplayLightLeverSpeciallyRoom(false);
@@ -2060,7 +2065,7 @@ setting_button_echapMenu.SetActive(false);
         if (room.isSword)
             lever.transform.Find("Sword").Find("Light").gameObject.SetActive(display);
         if (room.isLostTorch)
-            lever.transform.Find("LostTorch").Find("Light").gameObject.SetActive(display);
+            lever.transform.Find("LostTorchLever").Find("Light").gameObject.SetActive(display);
         if (room.isMonsters)
             lever.transform.Find("MonsterRoom").Find("Light").gameObject.SetActive(display);
         if (room.isPurification)
@@ -2399,6 +2404,8 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayPanelBossInformation(bool display)
     {
+        if (gameManager.speciallyIsLaunch)
+            return;
         panelBossInformation.SetActive(display); 
     }
 
@@ -2505,6 +2512,12 @@ setting_button_echapMenu.SetActive(false);
         music.Play();
         currentMusic = music;
         launchIncreaseVolumLittleToLittle = true;
+    }
+
+    public void DisplayInteractionObject(bool display)
+    {
+        map_interaction.SetActive(display);
+        changeBoss_interaction.SetActive(display);
     }
 
 }

@@ -2406,7 +2406,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         if (gameManager.indexPlayerPreviousExploration != -1)
         {
-            gameManager.GetPlayer(gameManager.indexPlayerPreviousExploration).transform.Find("TorchBarre").gameObject.SetActive(false);
+            if(gameManager.GetPlayer(gameManager.indexPlayerPreviousExploration))
+                gameManager.GetPlayer(gameManager.indexPlayerPreviousExploration).transform.Find("TorchBarre").gameObject.SetActive(false);
         }
         gameManager.indexPlayerPreviousExploration = indexPlayer;
         gameManager.GetPlayer(indexPlayer).transform.Find("TorchBarre").gameObject.SetActive(true);

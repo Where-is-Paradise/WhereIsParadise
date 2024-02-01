@@ -1863,8 +1863,12 @@ public class GameManager : MonoBehaviourPun
         {
             Debug.LogError(listPlayerFinal[i].GetComponent<PhotonView>().ViewID);
         }
-        if (!GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            return;
+        if (!isLoading)
+        {
+            if (!GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                return;
+        }
+
         if (!canChangeBoss)
             return;
 
@@ -2568,7 +2572,8 @@ public class GameManager : MonoBehaviourPun
                 return player;
             }
         }
-        return null;
+        return players[0];
+        //return null;
     }
 
     public bool SamePositionAtBoss()
@@ -2674,7 +2679,7 @@ public class GameManager : MonoBehaviourPun
             playerMineN2.position_X, playerMineN2.position_Y, playerMineN2.isImpostor, playerMineN2.isBoss, playerMineN2.isSacrifice,
             playerMineN2.isInJail, playerMineN2.isInvisible, playerMineN2.indexSkin, playerMineN2.playerName, playerMineN2.hasWinFireBallRoom,
             playerMineN2.GetComponent<PlayerNetwork>().userId, playerPowerImpostorTrap.indexPower, playerPowerImpostorTrap.powerIsUsed,
-            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, playerMineN2.isInExpedition, playerMineN2.indexSkinColor);
+            playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, playerMineN2.isInExpedition, playerMineN2.indexSkinColor, playerMineN2.explorationPowerIsAvailable);
     }
 
     public void UpdateSpecialsRooms(Room room)
@@ -3446,7 +3451,7 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 4);
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
         return;*/
         if (room.isTrial)
         {
@@ -3487,7 +3492,7 @@ public class GameManager : MonoBehaviourPun
         {
             float randomInt = Random.Range(0, 100);
 
-            if (randomInt < 0) // 50
+            if (randomInt < 50) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }
@@ -4550,6 +4555,14 @@ public class GameManager : MonoBehaviourPun
             listTree.Add(GetPlayer(index));
         }
         return listTree;
+    }
+
+    public void UpdateOnePlayerHasTorch()
+    {
+        if (GameObject.Find("BlueTorchImg"))
+            onePlayerHasTorch = true;
+        else
+            onePlayerHasTorch = false;
     }
 
 }

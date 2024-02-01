@@ -688,12 +688,13 @@ public class PlayerGO : MonoBehaviour
 
             }
         }
-
-        if (!explorationPowerIsAvailable && isTouchInTrial)
+        if (gameManager)
         {
-            this.transform.Find("TorchBarre").gameObject.SetActive(false);
+            if (!explorationPowerIsAvailable && (isTouchInTrial || gameManager.timer.timerLaunch))
+            {
+                this.transform.Find("TorchBarre").gameObject.SetActive(false);
+            }
         }
-
 
     }
 
@@ -1893,7 +1894,10 @@ public class PlayerGO : MonoBehaviour
         canDisplayMap = isEnter;
         //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Map_panel").gameObject.SetActive(isEnter);
-
+        if(isEnter)
+            gameManager.ui_Manager.map_interaction.transform.Find("map_img").localScale = new Vector3(0.144f, 0.140f);
+        else
+            gameManager.ui_Manager.map_interaction.transform.Find("map_img").localScale = new Vector3(0.110f, 0.100f);
         if (isEnter)
         {
             DisplayTutorial(12);
@@ -2098,8 +2102,10 @@ public class PlayerGO : MonoBehaviour
         }
 
         DisplayTutorial(22);
-  
-
+        if(isEnter)
+            gameManager.ui_Manager.changeBoss_interaction.transform.Find("imageCercle").localScale = new Vector3(0.24f, 0.20f);
+        else
+            gameManager.ui_Manager.changeBoss_interaction.transform.Find("imageCercle").localScale = new Vector3(0.16f, 0.14f);
         canLaunchChangeBoss = isEnter;
         //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Change_Boss").gameObject.SetActive(isEnter);

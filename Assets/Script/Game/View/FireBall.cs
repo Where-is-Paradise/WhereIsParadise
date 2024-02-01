@@ -29,6 +29,8 @@ public class FireBall : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        fireballRoom = this.transform.parent.parent.GetComponent<FireBallRoom>();
         if (!GameObject.Find("GameManager").GetComponent<GameManager>().SamePositionAtBoss())
         {
             GetComponent<SpriteRenderer>().enabled = false;
@@ -172,7 +174,7 @@ public class FireBall : MonoBehaviourPun
 
     public void SendDestroy()
     {
-        if(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().IsMine)
+        if(GetComponent<PhotonView>().IsMine)
             PhotonNetwork.Destroy(this.gameObject);
     }
 

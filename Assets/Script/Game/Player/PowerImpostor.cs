@@ -32,7 +32,8 @@ public class PowerImpostor : MonoBehaviourPun
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         indexPower = this.transform.parent.GetComponent<PlayerGO>().indexPower;
- /*       indexPower = 1;*/
+        player = this.transform.parent.GetComponent<PlayerGO>();
+        /*       indexPower = 1;*/
         if (!powerIsStart)
             return;
         GetAllSituationToCanUsed();

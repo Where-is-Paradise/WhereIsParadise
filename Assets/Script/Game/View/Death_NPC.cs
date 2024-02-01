@@ -42,6 +42,9 @@ public class Death_NPC : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        deathNPC_Room = GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>();
+
         ChangeScaleForSituation();
 
         ChangeTransparencyToInvisibilty();

@@ -24,6 +24,8 @@ public class Turret : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
+        fireballRoom = this.transform.parent.parent.GetComponent<FireBallRoom>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
     public void ShotFireBall()
     {

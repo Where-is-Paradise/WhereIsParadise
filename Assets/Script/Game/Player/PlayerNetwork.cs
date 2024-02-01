@@ -193,13 +193,13 @@ public class PlayerNetwork : MonoBehaviourPun
             player.gameManager.dataGame.SetDataPlayerMine(player.GetComponent<PhotonView>().ViewID, player.transform.position.x, player.transform.position.y,
            player.position_X, player.position_Y, player.isImpostor, player.isBoss, player.isSacrifice, player.isInJail, player.isInvisible,
            player.indexSkin, player.playerName, player.hasWinFireBallRoom, userId, playerPowerImpostorTrap.indexPower, playerPowerImpostorTrap.powerIsUsed,
-           playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, player.isInExpedition, player.indexSkinColor);
+           playerObjectImpostor.indexPower, playerObjectImpostor.powerIsUsed, player.isInExpedition, player.indexSkinColor, player.explorationPowerIsAvailable);
         }
         else
         {
             player.gameManager.dataGame.SetDataOtherPlayers(player.GetComponent<PhotonView>().ViewID, player.transform.position.x, player.transform.position.y,
           player.position_X, player.position_Y, player.isImpostor, player.isBoss, player.isSacrifice, player.isInJail, player.isInvisible,
-          player.indexSkin, player.playerName, player.hasWinFireBallRoom, userId);
+          player.indexSkin, player.playerName, player.hasWinFireBallRoom, userId, player.explorationPowerIsAvailable);
         }
 
     }
@@ -1049,18 +1049,19 @@ public class PlayerNetwork : MonoBehaviourPun
     }
 
 
-    public void SendGlobalVariabel(bool isImpostor, bool isSacrifice, bool isInJail, bool isInvisible)
+    public void SendGlobalVariabel(bool isImpostor, bool isSacrifice, bool isInJail, bool isInvisible, bool explorationIsAvaible)
     {
-        photonView.RPC("SetGlobalVariabel", RpcTarget.All, isImpostor, isSacrifice, isInJail, isInvisible);
+        photonView.RPC("SetGlobalVariabel", RpcTarget.All, isImpostor, isSacrifice, isInJail, isInvisible, explorationIsAvaible);
     }
 
     [PunRPC]
-    public void SetGlobalVariabel(bool isImpostor, bool isSacrifice, bool isInJail, bool isInvisible)
+    public void SetGlobalVariabel(bool isImpostor, bool isSacrifice, bool isInJail, bool isInvisible, bool explorationIsAvaible)
     {
         player.isImpostor = isImpostor;
         player.isSacrifice = isSacrifice;
         player.isInJail = isInJail;
         player.isInvisible = isInvisible;
+        player.explorationPowerIsAvailable = explorationIsAvaible;
     }
     public void SendDungeonPosition(int positionX, int positionY)
     {

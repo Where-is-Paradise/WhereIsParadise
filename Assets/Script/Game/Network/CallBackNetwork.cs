@@ -75,7 +75,8 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
         if (gameManager.timer.timerLaunch)
             StartCoroutine(HideZoneCouroutine());
 
-        if(PhotonNetwork.IsMasterClient)
+        gameManager.UpdateOnePlayerHasTorch();
+        if (PhotonNetwork.IsMasterClient)
             gameManager.RemovePlayerOfList(player);
         if (player.GetComponent<PlayerGO>().isBoss)
         {
@@ -262,7 +263,7 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
                 playerGo.transform.position.y, playerGo.position_X, playerGo.position_Y,
                 playerGo.isImpostor, playerGo.isBoss, playerGo.isSacrifice, playerGo.isInJail,
                 playerGo.isInvisible, playerGo.indexSkin, playerGo.playerName, playerGo.hasWinFireBallRoom, 
-                playerGo.GetComponent<PlayerNetwork>().userId);
+                playerGo.GetComponent<PlayerNetwork>().userId, playerGo.explorationPowerIsAvailable);
         }
        
     }

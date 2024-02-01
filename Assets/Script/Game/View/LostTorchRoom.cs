@@ -35,7 +35,7 @@ public class LostTorchRoom : TrialsRoom
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.CloseDoorWhenVote(true);
         gameManagerParent.DisplayTorchBarre(false);
-        
+        gameManagerParent.ui_Manager.DisplayInteractionObject(false);
         yield return new WaitForSeconds(2);
         
         SpawnLostTorch();

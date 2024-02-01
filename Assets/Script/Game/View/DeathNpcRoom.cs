@@ -36,7 +36,8 @@ public class DeathNpcRoom : TrialsRoom
         gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManagerParent.DisplayTorchBarre(false);
-        
+        gameManagerParent.ui_Manager.DisplayInteractionObject(false);
+
         yield return new WaitForSeconds(2);
         gameManager.ui_Manager.LaunchFightMusic();
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);

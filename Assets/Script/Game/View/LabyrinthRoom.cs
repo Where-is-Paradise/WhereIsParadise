@@ -87,6 +87,9 @@ public class LabyrinthRoom : TrialsRoom
         ChangeScalePlayer();
         ChangeColliderSize(true);          
         AddNeighboursToEachObstacle();
+        ActiveInvisibleWallInMiddle(true);
+        DisplayListSeparation(true);
+        gameManagerParent.ui_Manager.DisplayInteractionObject(false);
 
         listInitalObstacleRight.Add(GetObtacleByPosition(30, 9));
         listInitalObstacleRight.Add(GetObtacleByPosition(30, 10));
@@ -557,6 +560,8 @@ public class LabyrinthRoom : TrialsRoom
         gameManagerParent.speciallyIsLaunch = false;
         gameManagerParent.game.currentRoom.speciallyPowerIsUsed = true;
         ChangeColliderSize(false);
+        DisplayListSeparation(false);
+
     }
 
 
@@ -589,6 +594,16 @@ public class LabyrinthRoom : TrialsRoom
     public void SendPathIsFind(bool objectIsInsert)
     {
         this.objectIsInsert = objectIsInsert;
+        ActiveInvisibleWallInMiddle(false);
+    }
+
+    public void ActiveInvisibleWallInMiddle(bool active)
+    {
+        this.transform.Find("MiddleSeparation").gameObject.SetActive(active);
+    }
+    public void DisplayListSeparation(bool  display)
+    {
+        this.transform.Find("ListSeparation").gameObject.SetActive(display);
     }
 
 }

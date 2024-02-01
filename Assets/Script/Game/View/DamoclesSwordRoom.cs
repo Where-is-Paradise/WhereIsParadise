@@ -34,6 +34,7 @@ public class DamoclesSwordRoom : TrialsRoom
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.CloseDoorWhenVote(true);
+        gameManagerParent.ui_Manager.DisplayInteractionObject(false);
         yield return new WaitForSeconds(2);
         gameManager.ui_Manager.LaunchFightMusic();
         gameManager.damoclesIsLaunch = true;

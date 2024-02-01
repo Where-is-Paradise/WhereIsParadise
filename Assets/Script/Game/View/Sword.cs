@@ -16,7 +16,7 @@ public class Sword : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        
+        swordRoom = GameObject.Find("SwordRoom").GetComponent<SwordRoom>();
     }
 
     public void OnTriggerEnter2D(Collider2D collision)

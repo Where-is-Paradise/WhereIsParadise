@@ -21,6 +21,7 @@ public class PlayerData : ScriptableObject
     public string userId;
     public int Old_viewId;
     public bool isInExpedition;
+    public bool explorationPowerIsAvailble;
 
     // impostor
     public int indexPowerTrap;

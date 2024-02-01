@@ -112,9 +112,6 @@ public class TrialsRoom : MonoBehaviourPun
 
     public void ReactivateCurrentRoom()
     {
-/*        if (!gameManagerParent.SamePositionAtBoss())
-            return;*/
-
         gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
         ResetColorAllPlayer();
         if(gameManagerParent.GetBoss())
@@ -139,6 +136,7 @@ public class TrialsRoom : MonoBehaviourPun
         if(playerWithBarre)
             playerWithBarre.transform.Find("TorchBarre").gameObject.SetActive(true);
 
+        gameManagerParent.ui_Manager.DisplayInteractionObject(true);
         gameManagerParent.ui_Manager.HideFightMusic();
     }
 
