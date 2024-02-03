@@ -74,18 +74,17 @@ public class MonstersRoom : TrialsRoom
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManagerParent.DisplayTorchBarre(false);
         gameManagerParent.ui_Manager.DisplayInteractionObject(false);
+        SetLifeTrialRoomAllPlayer();
         yield return new WaitForSeconds(2);
         gameManager.ui_Manager.LaunchFightMusic();
         isLoose = false;
         roomIsLaunch = true;
         DisplaySwordAllPlayer(true);
-        DisplayHeartsFoAllPlayer(true);
+        //DisplayHeartsFoAllPlayer(true);
         gameManager.speciallyIsLaunch = true;
         canSpawn = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
-       
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
-        
         float randomTimer = Random.Range(25, 80);
         //randomTimer = 10;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
@@ -300,5 +299,13 @@ public class MonstersRoom : TrialsRoom
         DesactivateRoomChild();
         this.transform.Find("X_zone_animation").GetComponent<Animator>().speed = 1;
         this.transform.Find("X_zone_animation").Find("Timer").GetComponent<Timer>().ResetTimer();
+    }
+
+    public void SetLifeTrialRoomAllPlayer()
+    {
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            player.GetComponent<PlayerGO>().lifeTrialRoom = 1;
+        }
     }
 }

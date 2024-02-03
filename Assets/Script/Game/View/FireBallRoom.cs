@@ -39,6 +39,8 @@ public class FireBallRoom : TrialsRoom
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManagerParent.DisplayTorchBarre(false);
         gameManager.ui_Manager.LaunchFightMusic();
+        DisplayHeartsFoAllPlayer(true);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         roomIsLaunch = true;
@@ -98,6 +100,18 @@ public class FireBallRoom : TrialsRoom
         for(int i=0; i < transform.transform.Find("Turrets").childCount;i++)
         {
             transform.Find("Turrets").GetChild(i).GetComponent<Turret>().DestroyFireBalls();
+        }
+    }
+
+    public void DisplayHeartsFoAllPlayer(bool display)
+    {
+        GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in listPlayer)
+        {
+            if (player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
+                continue;
+
+            player.GetComponent<PlayerGO>().DisiplayHeartInitial(display);
         }
     }
 

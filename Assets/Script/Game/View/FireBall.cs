@@ -121,10 +121,10 @@ public class FireBall : MonoBehaviourPun
             {
                 return;
             }
+            if (collision.gameObject.GetComponent<PlayerGO>().isInvincible)
+                return;
            
             photonView.RPC("SendMineIsTouch", RpcTarget.All, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
-            //collision.gameObject.GetComponent<PlayerGO>().rankTouchBall = gameManager.GetPlayerSameRoom(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID) .Count -  GetAllPlayerTouchByFireBall();
-            //collision.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
             SendDestroy();
         }
 
@@ -144,16 +144,25 @@ public class FireBall : MonoBehaviourPun
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
-        photonView.RPC("SendIgnoreCollisionOnePlayer", RpcTarget.All, indexPlayer, true);
-        gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial = true;
-        SetPlayerColor(gameManager.GetPlayer(indexPlayer));
-        if (TestLastPlayer())
-        {
-            fireballRoom.roomIsLaunch = false;
-            fireballRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
-            fireballRoom.DesactivateRoom();
-            fireballRoom.DesactivateFireBallRoom();
-        }  
+        GameObject player = gameManager.GetPlayer(indexPlayer);
+
+        player.GetComponent<PlayerGO>().lifeTrialRoom--;
+        player.GetComponent<PlayerNetwork>()
+            .SendLifeTrialRoom(player.GetComponent<PlayerGO>().lifeTrialRoom);
+
+        if (player.GetComponent<PlayerGO>().lifeTrialRoom <= 0)
+        { 
+            photonView.RPC("SendIgnoreCollisionOnePlayer", RpcTarget.All, indexPlayer, true);
+            gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial = true;
+            SetPlayerColor(gameManager.GetPlayer(indexPlayer));
+            if (TestLastPlayer())
+            {
+                fireballRoom.roomIsLaunch = false;
+                fireballRoom.GetAward(GetLastPlayer().GetComponent<PhotonView>().ViewID);
+                fireballRoom.DesactivateRoom();
+                fireballRoom.DesactivateFireBallRoom();
+            }  
+        }
     }
 
     public GameObject GetLastPlayer()
