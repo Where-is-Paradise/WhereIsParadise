@@ -70,6 +70,7 @@ public class UI_Manager : MonoBehaviour
     public Text textChatMessage;
 
     public AudioSource soundChrono;
+    public AudioSource soundChrono2;
     public AudioSource soundDemonicLaugh;
     public AudioSource soundAmbianceHell;
     public AudioSource soundAmbianceParadise;

@@ -3451,8 +3451,8 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
-        return;*/
+        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 2);
+        return;
         if (room.isTrial)
         {
             float randomInt = Random.Range(0, 100);

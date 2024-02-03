@@ -71,7 +71,7 @@ public class LostTorchRoom : TrialsRoom
     }
     public IEnumerator TimerCouroutine()
     {
-        yield return new WaitForSeconds(150);
+        yield return new WaitForSeconds(30); // 30
         timerFinish = true;
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             photonView.RPC("SendEndGame", RpcTarget.All);

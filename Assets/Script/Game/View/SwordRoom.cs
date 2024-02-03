@@ -35,6 +35,7 @@ public class SwordRoom : TrialsRoom
         gameManagerParent.DisplayTorchBarre(false);
         gameManagerParent.ui_Manager.DisplayInteractionObject(false);
         yield return new WaitForSeconds(2);
+        StartCoroutine(TimerEndNotWinner(75));
         gameManager.ui_Manager.LaunchFightMusic();
         DisplaySwordAllPlayer(true);
         DisplayHeartsFoAllPlayer(true);
@@ -144,7 +145,8 @@ public class SwordRoom : TrialsRoom
     {
         DisplaySwordAllPlayer(false);
         roomIsLaunched = false;
-        
+        DisplayTimerAllPlayer(false);
+        gameManager.ui_Manager.soundChrono2.Stop();
     }
 
     public void ResetIsTouchBySwordAllPlayer()
@@ -158,4 +160,43 @@ public class SwordRoom : TrialsRoom
         }
     }
 
+    public IEnumerator TimerEndNotWinner(int secondes)
+    {
+        StartCoroutine(DisplayTimerEnd(secondes - 15));
+        yield return new WaitForSeconds(secondes);
+        gameManager.ui_Manager.soundChrono2.Stop();
+        if (roomIsLaunched)
+        {
+            SetDesactivateRoom();
+            DesactivateRoom();
+            ReactivateCurrentRoom();
+            gameManager.ui_Manager.DisplayLeverVoteDoor(true);
+            gameManager.speciallyIsLaunch = false;
+        }
+    }
+
+    public IEnumerator DisplayTimerEnd(int seconde)
+    {
+        yield return new WaitForSeconds(seconde);
+        if (roomIsLaunched)
+        {
+            DisplayTimerAllPlayer(true);
+            gameManager.ui_Manager.soundChrono2.Play();
+            gameManager.ui_Manager.musicFight.Stop();
+        }
+        
+    }
+
+    public void DisplayTimerAllPlayer(bool display)
+    {
+        foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            if ((player.GetComponent<PlayerGO>().isTouchInTrial || player.GetComponent<PlayerGO>().isSacrifice) && display)
+                continue;
+            player.transform.Find("Timer").gameObject.SetActive(display);
+            if(display)
+                player.transform.Find("Timer").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay>().timeLeft = 15;
+            player.transform.Find("Timer").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay>().timerLaunch = display;
+        }
+    }
 }
