@@ -25,7 +25,7 @@ public class ButtonSkin : MonoBehaviour
     public void OnClickButton(bool eye)
     {
         result.transform.Find("Image").GetComponent<Image>().sprite = this.transform.Find("Image").GetComponent<Image>().sprite;
-        result.transform.Find("Image").Find("eye").gameObject.SetActive(eye);
+        //result.transform.Find("Image").Find("eye").gameObject.SetActive(eye);
         if (indexSkin == result.GetComponent<ResultSkinMenu>().lobby.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin)
         {
             result.GetComponent<ResultSkinMenu>().ChangeCanPress(false);
@@ -37,7 +37,7 @@ public class ButtonSkin : MonoBehaviour
     public void OnClickButtonColors(bool eye)
     {
         result.transform.Find("Image").GetComponent<Image>().sprite = this.transform.Find("Image").GetComponent<Image>().sprite;
-        result.transform.Find("Image").Find("eye").gameObject.SetActive(eye);
+        //result.transform.Find("Image").Find("eye").gameObject.SetActive(eye);
         if (indexSkin == result.GetComponent<ResultSkinMenu>().lobby.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkinColor)
         {
             result.GetComponent<ResultSkinMenu>().ChangeCanPressColor(false);

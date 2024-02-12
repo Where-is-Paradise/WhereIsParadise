@@ -87,18 +87,18 @@ public class Dungeon : ScriptableObject
                 continue;
 
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 37) //37
+            if (randomIsHide <= 1) //37
             {
                 room.isHide = true;
                 //room.isNPC = true;
                 continue;
             }
             float randomIsTrial = Random.Range(0, 100);  // 100
-            if (randomIsTrial < 70) // 47
+            if (randomIsTrial < 100) // 47
                 room.isTrial = true;
             else
             {
-                if (randomIsTrial < 100) // 70
+                if (randomIsTrial < 70) // 70
                 {
                     room.isTeamTrial = true;
                 }

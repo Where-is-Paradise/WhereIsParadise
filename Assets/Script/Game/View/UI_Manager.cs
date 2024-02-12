@@ -27,7 +27,7 @@ public class UI_Manager : MonoBehaviour
     public GameObject roleInformation;
 
     private float durationTransitionBlackScreen = 0.7f;
-    private float t = 0;
+    private float transition_timer = 0;
     private bool verifTransi = false;
 
     public GameObject zoneX_startAnmation;
@@ -187,19 +187,19 @@ setting_button_echapMenu.SetActive(false);
        
         if (blackWallPaper.activeSelf)
         {
-            TransitionToBlack(t, blackWallPaper);
-            if (t < 1 )
+            TransitionToBlack(transition_timer, blackWallPaper);
+            if (transition_timer < 1 )
             {
-                t += (Time.deltaTime / durationTransitionBlackScreen);
+                transition_timer += (Time.deltaTime / durationTransitionBlackScreen);
             }
         }
 
         if (whiteWallPaper.activeSelf)
         {
-            TransitionToBlack(t, whiteWallPaper);
-            if (t < 1)
+            TransitionToBlack(transition_timer, whiteWallPaper);
+            if (transition_timer < 1)
             {
-                t += (Time.deltaTime / durationTransitionBlackScreen);
+                transition_timer += (Time.deltaTime / durationTransitionBlackScreen);
             }
         }
         if (torch_broken_animation)
@@ -503,7 +503,7 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayBlackScreen(bool display , bool isBlack)
     {
-        t = 0;
+        transition_timer = 0;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = !display;
 
         if (isBlack)
@@ -523,7 +523,7 @@ setting_button_echapMenu.SetActive(false);
 
     public IEnumerator HideBlackSreenCoroutine()
     {
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(1.1f);
         if (blackWallPaper.activeSelf)
             DisplayBlackScreen(false, true);
     }
@@ -1745,9 +1745,9 @@ setting_button_echapMenu.SetActive(false);
 
     public void HideAllTutorial()
     {
-        foreach(GameObject tutorial_index in tutorial)
+        for(int i =0; i < tutorial_parent.transform.childCount; i++)
         {
-            tutorial_index.SetActive(false);
+            tutorial_parent.transform.GetChild(i).gameObject.SetActive(false);
         }
     }
 
@@ -1759,7 +1759,6 @@ setting_button_echapMenu.SetActive(false);
             return;
         canvasInGame.transform.Find("Power").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexPower).gameObject.SetActive(true);
         DisplayTrapPowerButtonDesactivateTime(true, 30);
-        //StartCoroutine(gameManager.GetPlayerMineGO().transform.Find("PowerImpostor").GetComponent<PowerImpostor>().CanUsedTimerCoroutine());
     }
     public void DisplayObjectPowerImpostorInGame()
     {

@@ -58,9 +58,9 @@ public class Game : ScriptableObject
         setting.NB_IMPOSTOR = CalculNbImpostor();
 
         bool correctExit;
-        int randomPercentageRatioObatacle = Random.Range(40, 50);
-        int randomPercentagePropagation = Random.Range(10, 15);
-        int randomPercentageInitialPropagation = Random.Range(5, 10);
+        int randomPercentageRatioObatacle = Random.Range(50, 55);
+        int randomPercentagePropagation = Random.Range(2, 5);
+        int randomPercentageInitialPropagation = Random.Range(2, 5);
         int limit = 0; 
         do
         {

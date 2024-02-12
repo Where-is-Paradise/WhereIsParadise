@@ -1974,10 +1974,11 @@ public class GameManager : MonoBehaviourPun
         }
 
         ui_Manager.DisplayAllDoorLightExploration(false);
-        UpdateSpecialsRooms(game.currentRoom);
+      
         ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
         SetDoorNoneObstacle(game.currentRoom);
         SetDoorObstacle(game.currentRoom);
+        UpdateSpecialsRooms(game.currentRoom);
         SetCurrentRoomColor();
         ui_Manager.HideDistanceRoom();
         SetPositionPlayer(player);
@@ -2739,6 +2740,7 @@ public class GameManager : MonoBehaviourPun
         if (room.fireBall)
         {
             ui_Manager.DisplayFireBallRoom(true);
+            DisplayDoorForEachSituationInSpeciality("FireBallRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
@@ -2800,6 +2802,7 @@ public class GameManager : MonoBehaviourPun
         if (room.isSwordDamocles)
         {
             ui_Manager.DisplayDamoclesSwordRoom(true);
+            DisplayDoorForEachSituationInSpeciality("DamoclesSwordRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
              isActuallySpecialityTime = true;
@@ -2815,6 +2818,7 @@ public class GameManager : MonoBehaviourPun
         if (room.isAx)
         {
             ui_Manager.DisplayAxRoom(true);
+            DisplayDoorForEachSituationInSpeciality("AxRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
@@ -2831,6 +2835,7 @@ public class GameManager : MonoBehaviourPun
         if (room.isSword)
         {
             ui_Manager.DisplaySwordRoom(true);
+            DisplayDoorForEachSituationInSpeciality("SwordRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
@@ -2847,6 +2852,7 @@ public class GameManager : MonoBehaviourPun
         if (room.isLostTorch)
         {
             ui_Manager.DisplayLostTorchRoom(true);
+            DisplayDoorForEachSituationInSpeciality("LostTorchRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
@@ -2923,6 +2929,7 @@ public class GameManager : MonoBehaviourPun
         if (room.isNPC)
         {
             ui_Manager.DisplayNPCRoom(true);
+            DisplayDoorForEachSituationInSpeciality("NPCRoom");
             GameObject.Find("NPCRoom").GetComponent<NPCRoom>().ActivateRoom();
             UpdateColorDoor(room);
             return;
@@ -3451,12 +3458,13 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 0);
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
         return;*/
         if (room.isTrial)
         {
             float randomInt = Random.Range(0, 100);
             if(randomInt < AdditionalProba(0))
+
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index,0);
                 CalculProbabiltySpeciality(0);
@@ -4055,6 +4063,18 @@ public class GameManager : MonoBehaviourPun
             doorsParent.transform.Find(doorName).transform.Find("Zones").GetChild(i).gameObject.SetActive(false);
         }
     }
+    public void ResetZoneDoorSpeciality(GameObject doorsParent)
+    {
+        for (int i = 1; i < doorsParent.transform.Find("Left").transform.childCount; i++)
+        {
+            doorsParent.transform.Find("Left").transform.GetChild(i).gameObject.SetActive(false);
+        }
+        for (int i = 1; i < doorsParent.transform.Find("Right").transform.childCount; i++)
+        {
+            doorsParent.transform.Find("Right").transform.GetChild(i).gameObject.SetActive(false);
+        }
+    }
+
     public void DisplayZoneDoorForEachSituation()
     {
         ResetZoneDoor("A");
@@ -4118,6 +4138,72 @@ public class GameManager : MonoBehaviourPun
         else if (HasDoor(4))
         {
             doorsParent.transform.Find("E").transform.Find("Zones").Find("OnlyZone").gameObject.SetActive(true);
+        }
+    }
+
+    public void DisplayDoorForEachSituationInSpeciality(string specialityRoom)
+    {
+
+        GameObject parentSpeciality = GameObject.Find(specialityRoom);
+
+        ResetZoneDoorSpeciality(parentSpeciality.transform.Find("DoorZone").gameObject);
+
+        if (HasDoor(0) && HasDoor(1) && HasDoor(5))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Left").Find("AllZone").gameObject.SetActive(true);
+        }
+        else if (HasDoor(0) && HasDoor(1))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Left").Find("AB").gameObject.SetActive(true);
+        }
+        else if (HasDoor(0) && HasDoor(5))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Left").Find("AF").gameObject.SetActive(true);
+        }
+        else if (HasDoor(1) && HasDoor(5))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Left").Find("BF").gameObject.SetActive(true);
+        }
+        else if (HasDoor(0))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Left").Find("A").gameObject.SetActive(true);
+        }
+        else if (HasDoor(1))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Left").Find("B").gameObject.SetActive(true);
+        }
+        else if (HasDoor(5))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Left").Find("F").gameObject.SetActive(true);
+        }
+
+        if (HasDoor(3) && HasDoor(2) && HasDoor(4))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Right").Find("AllZone").gameObject.SetActive(true);
+        }
+        else if (HasDoor(3) && HasDoor(2))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Right").Find("CD").gameObject.SetActive(true);
+        }
+        else if (HasDoor(3) && HasDoor(4))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Right").Find("DE").gameObject.SetActive(true);
+        }
+        else if (HasDoor(2) && HasDoor(4))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Right").Find("CE").gameObject.SetActive(true);
+        }
+        else if (HasDoor(3))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Right").Find("D").gameObject.SetActive(true);
+        }
+        else if (HasDoor(2))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Right").Find("C").gameObject.SetActive(true);
+        }
+        else if (HasDoor(4))
+        {
+            parentSpeciality.transform.Find("DoorZone").transform.Find("Right").Find("E").gameObject.SetActive(true);
         }
     }
 

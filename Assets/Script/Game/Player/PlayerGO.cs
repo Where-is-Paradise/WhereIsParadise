@@ -2256,15 +2256,15 @@ public class PlayerGO : MonoBehaviour
         if (!avaibleDash)
             return;
 
-        /*        if (!gameManager.game.currentRoom.isTrial && !gameManager.game.currentRoom.isTeamTrial)
-                    return;
-                if (!gameManager.speciallyIsLaunch)
-                    return;
-                if (gameManager.game.currentRoom.isLabyrintheHide)
-                    return;
+        if (!gameManager.game.currentRoom.isTrial && !gameManager.game.currentRoom.isTeamTrial)
+            return;
+        if (!gameManager.speciallyIsLaunch)
+            return;
+        if (gameManager.game.currentRoom.isLabyrintheHide)
+            return;
 
-                if (isTouchInTrial)
-                    return;*/
+        if (isTouchInTrial)
+            return;
         float horizontal = InputManager.GetAxis("Horizontal");
         float vertical = InputManager.GetAxis("Vertical");
         if((horizontal > -0.1f && horizontal < 0.1f) && (vertical < 0.1f && vertical > -0.1f))
