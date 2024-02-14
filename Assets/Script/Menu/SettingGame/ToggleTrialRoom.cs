@@ -21,7 +21,7 @@ public class ToggleTrialRoom : MonoBehaviour
     void Update()
     {
 
-        UpdateToggle();
+        //UpdateToggle();
 
     }
     public void OnClickToogle()

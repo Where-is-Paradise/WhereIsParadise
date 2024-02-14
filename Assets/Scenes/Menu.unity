@@ -2179,7 +2179,7 @@ GameObject:
   - component: {fileID: 62997163}
   - component: {fileID: 62997162}
   m_Layer: 5
-  m_Name: Blind potion
+  m_Name: Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2216,7 +2216,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 62997160}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ddd6dda0dd50974fb334bd568af6b2c, type: 3}
+  m_Script: {fileID: 11500000, guid: 58ffaec90e110674f868c3966b78ea56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
@@ -2268,7 +2268,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 62997162}
-        m_TargetAssemblyTypeName: ToggleObjectImpostor, Assembly-CSharp
+        m_TargetAssemblyTypeName: ToogleObject, Assembly-CSharp
         m_MethodName: OnClickToogle
         m_Mode: 1
         m_Arguments:
@@ -13514,7 +13514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65406981bfecc774b9cf3563a908b56f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 4
+  index: 3
 --- !u!114 &324482064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15230,7 +15230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e3ce26a0c7f9b148ae18829d395f51a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 5
+  index: 3
 --- !u!114 &354673276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15535,7 +15535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ddd6dda0dd50974fb334bd568af6b2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 2
+  index: 1
 --- !u!114 &358362634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19150,7 +19150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65406981bfecc774b9cf3563a908b56f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 6
+  index: 4
 --- !u!114 &450852089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21708,8 +21708,8 @@ RectTransform:
   - {fileID: 450852087}
   - {fileID: 1463893251}
   - {fileID: 1060214061}
-  - {fileID: 1739268124}
   - {fileID: 842047889}
+  - {fileID: 1739268124}
   m_Father: {fileID: 819828544}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -22212,6 +22212,8 @@ MonoBehaviour:
   globalSetting: 
   listSpeciallyRoom: 
   listTrialRoom: 
+  listTeamTrialRoom: 
+  listObject: 
   listTrapRoom: 
   listObjectImpostor: 
   DISTANCE_WITHOUT_OBSTACLE: 1
@@ -23111,7 +23113,6 @@ GameObject:
   - component: {fileID: 522304984}
   - component: {fileID: 522304987}
   - component: {fileID: 522304986}
-  - component: {fileID: 522304985}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -23138,20 +23139,6 @@ RectTransform:
   m_AnchoredPosition: {x: -967, y: 22.864998}
   m_SizeDelta: {x: -280.23, y: -41.7}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &522304985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 522304983}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90df3d5838275a64fb0eeba06b4e1d52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  indexStringInFileLanguage: menu_settingGame_impostorObject_0
-  isUpdated: 0
 --- !u!114 &522304986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23185,7 +23172,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: invisibility potion
+  m_Text: Blind potion
 --- !u!222 &522304987
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -24550,7 +24537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65406981bfecc774b9cf3563a908b56f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 2
+  index: 1
 --- !u!114 &567661284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28557,7 +28544,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.044541303, y: 0.060700633}
   m_AnchorMax: {x: 0.5658167, y: 0.7271996}
-  m_AnchoredPosition: {x: -11.910034, y: 10.126465}
+  m_AnchoredPosition: {x: -11.910156, y: 10.126465}
   m_SizeDelta: {x: 23.82, y: 45.0868}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &662199311
@@ -30897,10 +30884,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 728667283}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ddd6dda0dd50974fb334bd568af6b2c, type: 3}
+  m_Script: {fileID: 11500000, guid: 58ffaec90e110674f868c3966b78ea56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 2
+  index: 1
 --- !u!114 &728667286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30949,7 +30936,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 728667285}
-        m_TargetAssemblyTypeName: ToggleObjectImpostor, Assembly-CSharp
+        m_TargetAssemblyTypeName: ToogleObject, Assembly-CSharp
         m_MethodName: OnClickToogle
         m_Mode: 1
         m_Arguments:
@@ -32388,7 +32375,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -693, y: 24.077}
+  m_AnchoredPosition: {x: -687, y: 24.077}
   m_SizeDelta: {x: 129.447, y: 103.561}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &758950479
@@ -36754,11 +36741,11 @@ RectTransform:
   - {fileID: 2033236294}
   - {fileID: 769903801}
   m_Father: {fileID: 494952084}
-  m_RootOrder: 26
+  m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1195, y: -968}
+  m_AnchoredPosition: {x: 752.90015, y: -983.9}
   m_SizeDelta: {x: 889.7807, y: 151.71521}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &842047890
@@ -36770,10 +36757,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 842047888}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65406981bfecc774b9cf3563a908b56f, type: 3}
+  m_Script: {fileID: 11500000, guid: b9d1dc49d802bef49bae37d6f7ec307d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 1
+  index: 0
 --- !u!114 &842047891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36822,7 +36809,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 842047890}
-        m_TargetAssemblyTypeName: ToggleTrialRoom, Assembly-CSharp
+        m_TargetAssemblyTypeName: ToggleTeamTrial, Assembly-CSharp
         m_MethodName: OnClickToogle
         m_Mode: 1
         m_Arguments:
@@ -37247,7 +37234,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &851433304
 Transform:
   m_ObjectHideFlags: 0
@@ -40446,7 +40433,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -229, y: 24.077}
+  m_AnchoredPosition: {x: -212, y: 24.077}
   m_SizeDelta: {x: 129.447, y: 103.561}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &916293831
@@ -44482,7 +44469,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Blind potion
+  m_Text: Complete Map
 --- !u!222 &1033398182
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -46058,7 +46045,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -166, y: -53}
+  m_AnchoredPosition: {x: -197, y: -53}
   m_SizeDelta: {x: 130, y: 110}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1063334003
@@ -50065,9 +50052,9 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1187344007}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ddd6dda0dd50974fb334bd568af6b2c, type: 3}
+  m_Script: {fileID: 11500000, guid: 58ffaec90e110674f868c3966b78ea56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   index: 2
@@ -50118,9 +50105,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToggleObjectImpostor, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 1187344009}
+        m_TargetAssemblyTypeName: ToogleObject, Assembly-CSharp
+        m_MethodName: OnClickToogle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -50911,7 +50898,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -166, y: -53}
+  m_AnchoredPosition: {x: -150, y: -53}
   m_SizeDelta: {x: 130, y: 110}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1215967394
@@ -53831,7 +53818,6 @@ GameObject:
   - component: {fileID: 1279453204}
   - component: {fileID: 1279453207}
   - component: {fileID: 1279453206}
-  - component: {fileID: 1279453205}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -53858,20 +53844,6 @@ RectTransform:
   m_AnchoredPosition: {x: -967, y: 22.864998}
   m_SizeDelta: {x: -280.23, y: -41.7}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1279453205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1279453203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90df3d5838275a64fb0eeba06b4e1d52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  indexStringInFileLanguage: menu_settingGame_impostorObject_1
-  isUpdated: 0
 --- !u!114 &1279453206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57349,7 +57321,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -166, y: -53}
+  m_AnchoredPosition: {x: -168, y: -53}
   m_SizeDelta: {x: 130, y: 110}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1358386772
@@ -58273,7 +58245,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1389218196
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -60564,7 +60536,6 @@ GameObject:
   - component: {fileID: 1441019159}
   - component: {fileID: 1441019162}
   - component: {fileID: 1441019161}
-  - component: {fileID: 1441019160}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -60592,20 +60563,6 @@ RectTransform:
   m_AnchoredPosition: {x: -1111.2041, y: 20.849998}
   m_SizeDelta: {x: -222.638, y: -41.7}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1441019160
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1441019158}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90df3d5838275a64fb0eeba06b4e1d52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  indexStringInFileLanguage: menu_settingGame_main_0
-  isUpdated: 0
 --- !u!114 &1441019161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60639,7 +60596,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Nb Corrupted Soul
+  m_Text: Corrupted Soul
 --- !u!222 &1441019162
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -61869,7 +61826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65406981bfecc774b9cf3563a908b56f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 7
+  index: 5
 --- !u!114 &1463893253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64919,7 +64876,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1021.4, y: 22.864998}
+  m_AnchoredPosition: {x: -1049, y: 22.864998}
   m_SizeDelta: {x: -302.61, y: -41.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1539258112
@@ -65177,7 +65134,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1542391462
 Transform:
   m_ObjectHideFlags: 0
@@ -69513,7 +69470,7 @@ GameObject:
   - component: {fileID: 1628026646}
   - component: {fileID: 1628026645}
   m_Layer: 5
-  m_Name: InvisibilityPotion
+  m_Name: Blind Potion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73885,11 +73842,11 @@ RectTransform:
   - {fileID: 1063334002}
   - {fileID: 1539258111}
   m_Father: {fileID: 494952084}
-  m_RootOrder: 25
+  m_RootOrder: 26
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 741, y: -963}
+  m_AnchoredPosition: {x: 1212, y: -983}
   m_SizeDelta: {x: 889.7807, y: 151.71521}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1739268125
@@ -73901,10 +73858,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1739268123}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65406981bfecc774b9cf3563a908b56f, type: 3}
+  m_Script: {fileID: 11500000, guid: b9d1dc49d802bef49bae37d6f7ec307d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 5
+  index: 1
 --- !u!114 &1739268126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73953,7 +73910,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1739268125}
-        m_TargetAssemblyTypeName: ToggleTrialRoom, Assembly-CSharp
+        m_TargetAssemblyTypeName: ToggleTeamTrial, Assembly-CSharp
         m_MethodName: OnClickToogle
         m_Mode: 1
         m_Arguments:
@@ -83823,7 +83780,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65406981bfecc774b9cf3563a908b56f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 3
+  index: 2
 --- !u!114 &1955767834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89098,7 +89055,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -166, y: -53}
+  m_AnchoredPosition: {x: -210, y: -53}
   m_SizeDelta: {x: 130, y: 110}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2033236295
@@ -93416,7 +93373,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e3ce26a0c7f9b148ae18829d395f51a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 3
+  index: 2
 --- !u!114 &2140377443
 MonoBehaviour:
   m_ObjectHideFlags: 0

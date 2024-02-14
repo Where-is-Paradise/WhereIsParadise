@@ -123,6 +123,10 @@ public class GameManager : MonoBehaviourPun
 
     public List<float> listProbabilitySpecialityRoom = new List<float>();
     public List<bool> listBoolapparitionSpecialityRoom = new List<bool>();
+    public int sizeListProbabilitySpecialityRoom = 0;
+
+    public List<float> listProbabilityTeamTrialRoom = new List<float>();
+    public int sizeListProbabilityTeamTrialRoom = 0;
 
     public int indexPlayerPreviousExploration = -1;
 
@@ -141,8 +145,6 @@ public class GameManager : MonoBehaviourPun
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
-        //PhotonNetwork.SendRate = 50;
-        //PhotonNetwork.SerializationRate = 30;
     }
     void Start()
     {
@@ -160,15 +162,8 @@ public class GameManager : MonoBehaviourPun
         game.setting = setting;
         game.Launch(25, 25);
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
-        //Debug.Log("dsjfnsdkjlfs")
         InitiatiateListIndexPower();
         StartCoroutine(MasterClientCreateMap());
-        /*        if (PhotonNetwork.IsMasterClient)
-                {
-                    int randomWidth = Random.Range(15, 16);
-                    int randomHeight = Random.Range(15, 16);
-                    gameManagerNetwork.SendWidthHeightMap(randomWidth, randomHeight);
-                }*/
         roomTeam = game.currentRoom;
         numberPlayer = listPlayerTab.Length;
         SetNamePlayerInList();
@@ -179,13 +174,11 @@ public class GameManager : MonoBehaviourPun
 
         viewIdIsMine = GetPlayerMineGO().GetComponent<PhotonView>().ViewID;
         InitiatiateListIndexObject();
-     
-        InitateProbabilityTab();
+        
         StartCoroutine(CouroutineTimerStart());
         parentMapCurrent = parentMap.transform.parent.gameObject;
         lostSoulMapCurrent = lostSoulMap.transform.parent.gameObject;
         StartCoroutine(SetMapOFLostSoul(4f));
-
         StartCoroutine(RandomStartMusic(Random.Range(10, 25)));
     }
     public IEnumerator MasterClientCreateMap()
@@ -193,9 +186,6 @@ public class GameManager : MonoBehaviourPun
         yield return new WaitForSeconds(3);
         if (PhotonNetwork.IsMasterClient)
         {
-            /*            gameManagerNetwork.SendSetting(setting.NUMBER_EXPEDTION_MAX, setting.DISPLAY_MINI_MAP,
-                       setting.DISPLAY_OBSTACLE_MAP, setting.DISPLAY_KEY_MAP, setting.RANDOM_ROOM_ADDKEYS,
-                       setting.LIMITED_TORCH, setting.TORCH_ADDITIONAL);*/
             game.CreationMap();
             InitatePlayerList();
             ChangeBoss();
@@ -204,14 +194,13 @@ public class GameManager : MonoBehaviourPun
             SendMap();
             ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
             game.nbTorch = Mathf.CeilToInt(game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) / 2) + setting.TORCH_ADDITIONAL;
-            //game.nbTorch = listPlayerTab.Length;
-
             game.nbTorch = game.nbTorch + 1;
-
             //game.nbTorch = 50;
-            //sgame.nbTorch = 25;
+            //game.nbTorch = 25;
             gameManagerNetwork.SendTorchNumber(game.nbTorch);
             ui_Manager.SetTorchNumber();
+            InitiateProbalityListSpecialityWithSetting();
+            ResetTeamTrialRoomSetting();
             GenerateHexagone(-7, 3.5f);
             Hexagone InitialHexa = GenerateObstacle();
             SetDoorObstacle(game.currentRoom);
@@ -220,23 +209,18 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendBoss(GetBoss().GetComponent<PhotonView>().ViewID);
             game.SetKeyCounter();
             game.key_counter = game.key_counter + setting.KEY_ADDITIONAL + 3;
-            //game.key_counter = 1;
             gameManagerNetwork.SendKey(game.key_counter);
             ui_Manager.SetNBKey();
             SetInitialPositionPlayers();
-            //AssignPowerOfImposter();
-            //AssignObjectPowerOfImposter();
             gameManagerNetwork.SendDisplayLightAllAvailableDoor(true);
             gameManagerNetwork.SendDisplayPowerImpostorInGame();
-            //gameManagerNetwork.SendDisplayObjectPowerImpostor();
             gameManagerNetwork.SendImpostorRoom();
             GetPlayerMineGO().GetComponent<PlayerGO>().SetRoomCursed();
             GetPlayerMineGO().GetComponent<PlayerNetwork>().
                SendDistanceCursed(GetPlayerMineGO().GetComponent<PlayerGO>().distanceCursed,
                GetPlayerMineGO().GetComponent<PlayerGO>().roomUsedWhenCursed.Index);
-
             counterRoom = Random.Range(0, 2);
-           
+
         }
     }
 
@@ -272,13 +256,7 @@ public class GameManager : MonoBehaviourPun
         if (GetPlayerMineGO() && GetPlayerMineGO().GetComponent<PlayerGO>().isInExpedition)
         {
             ui_Manager.MixDistanceForExploration();
-        }
-
-/*        if (test)
-        {
-            Debug.Log(ui_Manager.BasesMusic2.time);
-        }*/
-       
+        }       
     }
 
     public void InitatePlayerList()
@@ -478,7 +456,7 @@ public class GameManager : MonoBehaviourPun
         if (setting.listTrapRoom[3])
             listIndexImpostorPower.Add(3);
 
-        listIndexImpostorPower.Add(4);
+        //listIndexImpostorPower.Add(4);
     }
 
     public void ResetVoteExploration()
@@ -2929,7 +2907,7 @@ public class GameManager : MonoBehaviourPun
         if (room.isNPC)
         {
             ui_Manager.DisplayNPCRoom(true);
-            DisplayDoorForEachSituationInSpeciality("NPCRoom");
+            //DisplayDoorForEachSituationInSpeciality("NPCRoom");
             GameObject.Find("NPCRoom").GetComponent<NPCRoom>().ActivateRoom();
             UpdateColorDoor(room);
             return;
@@ -3460,36 +3438,37 @@ public class GameManager : MonoBehaviourPun
 
 /*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
         return;*/
+        
         if (room.isTrial)
         {
             float randomInt = Random.Range(0, 100);
-            if(randomInt < AdditionalProba(0))
+            if(randomInt < AdditionalProba(0) && setting.listTrialRoom[0])
 
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index,0);
                 CalculProbabiltySpeciality(0);
             }
-            else if(randomInt < AdditionalProba(1))
+            else if(randomInt < AdditionalProba(1) && setting.listTrialRoom[3])
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 1);
                 CalculProbabiltySpeciality(1);
             }
-            else if (randomInt < AdditionalProba(2))
+            else if (randomInt < AdditionalProba(2) && setting.listTrialRoom[2] )
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 2);
                 CalculProbabiltySpeciality(2);
             }
-            else if (randomInt < AdditionalProba(3))
+            else if (randomInt < AdditionalProba(3) && setting.listTrialRoom[1])
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 3);
                 CalculProbabiltySpeciality(3);
             }
-            else if (randomInt < AdditionalProba(4))
+            else if (randomInt < AdditionalProba(4) && setting.listTrialRoom[4])
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 4);
                 CalculProbabiltySpeciality(4);
             }
-            else if (randomInt < AdditionalProba(5))
+            else if (randomInt < AdditionalProba(5) && setting.listTrialRoom[5])
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
                 CalculProbabiltySpeciality(5);
@@ -3498,9 +3477,19 @@ public class GameManager : MonoBehaviourPun
         }
         if (room.isTeamTrial)
         {
-            float randomInt = Random.Range(0, 100);
+            float randomMonsters = 50;
+            float randomGodDeath = 50;
+            if (setting.listTeamTrialRoom[0])
+                randomGodDeath += 50;
+            if (setting.listTeamTrialRoom[1])
+                randomMonsters -= 50;
 
-            if (randomInt < 100) // 50
+            if (randomMonsters == 50 && randomGodDeath == 50)
+                return;
+
+            float randomInt = Random.Range(randomMonsters, randomGodDeath);
+
+            if (randomInt < 50) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }
@@ -3530,30 +3519,87 @@ public class GameManager : MonoBehaviourPun
         listBoolapparitionSpecialityRoom.Add(false); // monster*/
         listBoolapparitionSpecialityRoom.Add(false); // labyrinth
     }
+
+    public void InitiateProbalityListSpecialityWithSetting()
+    {
+   
+        if (setting.listTrialRoom[0])
+            sizeListProbabilitySpecialityRoom++;
+        if(setting.listTrialRoom[1])
+            sizeListProbabilitySpecialityRoom++;
+        if (setting.listTrialRoom[2])
+            sizeListProbabilitySpecialityRoom++;
+        if (setting.listTrialRoom[3])
+            sizeListProbabilitySpecialityRoom++;
+        if (setting.listTrialRoom[4])
+            sizeListProbabilitySpecialityRoom++;
+        if (setting.listTrialRoom[5])
+            sizeListProbabilitySpecialityRoom++;
+
+        listProbabilitySpecialityRoom.Add(0);
+        listProbabilitySpecialityRoom.Add(0);
+        listProbabilitySpecialityRoom.Add(0);
+        listProbabilitySpecialityRoom.Add(0);
+        listProbabilitySpecialityRoom.Add(0);
+        listProbabilitySpecialityRoom.Add(0);
+        gameManagerNetwork.SendInitiateListProbaTrialRoom();
+        UpdateProvaListSpecailityWithSetting();
+
+    }
+
+    public void UpdateProvaListSpecailityWithSetting()
+    {
+        if (sizeListProbabilitySpecialityRoom == 0)
+        {
+            StartCoroutine(ResetAllTrialRoom());
+            return;
+        }
+          
+
+        for (int i =0; i < listProbabilitySpecialityRoom.Count; i++)
+        {
+            listProbabilitySpecialityRoom[i] = (float) (100f / sizeListProbabilitySpecialityRoom);
+            gameManagerNetwork.SendUpdateListSpecialityProbality(listProbabilitySpecialityRoom[i], i);
+        }
+    }
+
+    public void ResetTeamTrialRoomSetting()
+    {
+        if (!setting.listTeamTrialRoom[0] && !setting.listTeamTrialRoom[1])
+        {
+            ResetAllTeamTrialRoom();
+        }
+    }
+
     public void CalculProbabiltySpeciality(int indexSpeciality)
     {
-        listBoolapparitionSpecialityRoom[indexSpeciality] = true;
-        listProbabilitySpecialityRoom[indexSpeciality]  -= 10.5f;
+        //listBoolapparitionSpecialityRoom[indexSpeciality] = true;
+        float devaluation = (listProbabilitySpecialityRoom[indexSpeciality] * 0.7f);
+        listProbabilitySpecialityRoom[indexSpeciality]  -= devaluation;
         gameManagerNetwork.SendUpdateListSpecialityProbality(listProbabilitySpecialityRoom[indexSpeciality], indexSpeciality);
 
         for (int i =0; i < listProbabilitySpecialityRoom.Count; i++)
         {
             if ( i == indexSpeciality)
                 continue;
-            listProbabilitySpecialityRoom[i] += 1.5f;
+            listProbabilitySpecialityRoom[i] += (float)(devaluation / (sizeListProbabilitySpecialityRoom - 1));
             gameManagerNetwork.SendUpdateListSpecialityProbality(listProbabilitySpecialityRoom[i], i);
         }
     }
 
     public float AdditionalProba(int index)
     {
+        if (sizeListProbabilitySpecialityRoom == 1)
+            return 100;
         float returnValue = 0;
         for(int i = index;  i >= 0 ; i--)
         {
             returnValue += listProbabilitySpecialityRoom[index];
         }
+
         return returnValue;
     }
+
 
     public bool ISTrailsRoom(Room room)
     {
@@ -4289,6 +4335,28 @@ public class GameManager : MonoBehaviourPun
         room.isTeamTrial = false;
         game.dungeon.ResetChest(room);
     }
+    public IEnumerator ResetAllTrialRoom()
+    {
+        yield return new WaitForSeconds(0.1f);
+        foreach(Room room  in game.dungeon.rooms)
+        {
+            if (room.isTrial)
+            {
+                ResetSpeciallyRoomState(room);
+            }
+        }
+    }
+
+    public void ResetAllTeamTrialRoom()
+    {
+        foreach (Room room in game.dungeon.rooms)
+        {
+            if (room.isTeamTrial)
+            {
+                ResetSpeciallyRoomState(room);
+            }
+        }
+    }
 
     public void ResetIndexDoor()
     {
@@ -4457,7 +4525,7 @@ public class GameManager : MonoBehaviourPun
         PlayerGO playerMine = GetPlayerMineGO().GetComponent<PlayerGO>();
         Hexagone hexagoneWithPlayer = GetHexagoneByPosition(playerMine.position_X, playerMine.position_Y);
         if (!hexagoneWithPlayer)
-            StartCoroutine(SetMapOFLostSoul(4));
+            StartCoroutine(SetMapOFLostSoul(4f));
         else
         {
             if (HexagoneExistInGameObject(lostSoulMap, hexagoneWithPlayer))
@@ -4567,32 +4635,24 @@ public class GameManager : MonoBehaviourPun
 
     public void GiveImpostorObject()
     {
+
         float randomfloat = Random.Range(0, 100);
-        if (randomfloat < 20)
+        if (randomfloat < 25 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[0]);
-            //ui_Manager.DisplayInformationObjectWon(9);
         }
-        else if (randomfloat < 40)
+        else if (randomfloat < 50 && setting.listTrapRoom[1])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[1]);
-            //ui_Manager.DisplayInformationObjectWon(10);
         }
-        else if (randomfloat < 60)
+        else if (randomfloat < 75 && setting.listTrapRoom[2])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[2]);
-            //ui_Manager.DisplayInformationObjectWon(11);
 
         }
-        else if (randomfloat < 60)
+        else if (randomfloat < 100 && setting.listTrapRoom[3])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[3]);
-            //ui_Manager.DisplayInformationObjectWon(12);
-        }
-        else
-        {
-            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[4]);
-            //ui_Manager.DisplayInformationObjectWon(13);
         }
 
         ui_Manager.DisplayPowerImpostorInGame();

@@ -87,7 +87,7 @@ public class Dungeon : ScriptableObject
                 continue;
 
             int randomIsHide = Random.Range(0, 100);
-            if (randomIsHide <= 1) //37
+            if (randomIsHide <= 5) //37
             {
                 room.isHide = true;
                 //room.isNPC = true;
@@ -98,7 +98,7 @@ public class Dungeon : ScriptableObject
                 room.isTrial = true;
             else
             {
-                if (randomIsTrial < 70) // 70
+                if (randomIsTrial < 0) // 70
                 {
                     room.isTeamTrial = true;
                 }
@@ -117,11 +117,11 @@ public class Dungeon : ScriptableObject
                     {
                         room.isSacrifice = true;
                     }
-                    else if (randomSpeciality < 90) // 90 à changé
+                    else if (randomSpeciality < 90 && setting.listSpeciallyRoom[6] ) // 90 à changé
                     {
                         room.isPray = true;
                     }
-                    else if (randomSpeciality <= 100) // 100
+                    else if (randomSpeciality <= 100 && setting.listSpeciallyRoom[3]) // 100
                     {
                         room.isNPC = true;
                         int random = Random.Range(0, 3);
@@ -133,6 +133,10 @@ public class Dungeon : ScriptableObject
 
                         } while (random2 == room.indexEvilNPC);
                         room.indexEvilNPC_2 = random2;
+                    }
+                    else
+                    {
+                        continue;
                     }
                 }
             }
@@ -163,7 +167,6 @@ public class Dungeon : ScriptableObject
 
         List<Room> listroomInDistance = GetListRoomByDistance(exit, distance);
         List<Room> listroomInPath = new List<Room>();
-        Debug.Log(distance);
         foreach (Room roomInDistance in listroomInDistance)
         {
             if ((GetPathFindingDistance(roomInDistance, initialRoom) + scale) > exit.distance_pathFinding_initialRoom)

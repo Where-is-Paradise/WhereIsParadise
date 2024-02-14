@@ -21,7 +21,7 @@ public class ToogleSpeciallyRoom : MonoBehaviour
     void Update()
     {
 
-        UpdateToggle();
+        //UpdateToggle();
 
     }
 

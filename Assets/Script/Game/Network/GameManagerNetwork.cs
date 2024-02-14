@@ -2436,8 +2436,6 @@ public class GameManagerNetwork : MonoBehaviourPun
             {
                 // permet faire en sorte que lorsque l'impostor room est au milieu lui mettre un random quand la distance/2 et impair ( ex : 5 => 2 ou 3) au lieu de 2 tjr
 
-                Debug.Log(gameManager.game.dungeon.initialRoom.DistancePathFinding / 2);
-                Debug.Log((gameManager.game.dungeon.initialRoom.DistancePathFinding / 2) % 2);
                 if (gameManager.game.dungeon.initialRoom.DistancePathFinding%2 != 0)
                 {
                     int randomInt = Random.Range(0, 2);
@@ -2667,4 +2665,19 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     }
 
+    public void SendInitiateListProbaTrialRoom()
+    {
+        photonView.RPC("SetInitiateListProbaTrialRoom", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetInitiateListProbaTrialRoom()
+    {
+        gameManager.listProbabilitySpecialityRoom.Add(0);
+        gameManager.listProbabilitySpecialityRoom.Add(0);
+        gameManager.listProbabilitySpecialityRoom.Add(0);
+        gameManager.listProbabilitySpecialityRoom.Add(0);
+        gameManager.listProbabilitySpecialityRoom.Add(0);
+        gameManager.listProbabilitySpecialityRoom.Add(0);
+    }
 }

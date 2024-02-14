@@ -51,7 +51,7 @@ public class TrialsRoom : MonoBehaviourPun
             DisplayAwardObject(0);
             indexObject = 0; 
         }
-        else if (randomFloat < 70)
+        else if (randomFloat < 70 && gameManagerParent.setting.listObject[0])
         {
             if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasMap)
             {
@@ -65,7 +65,7 @@ public class TrialsRoom : MonoBehaviourPun
             DisplayAwardObject(1);
             indexObject = 1;
         }
-        else if(randomFloat < 90)
+        else if(randomFloat < 90 && gameManagerParent.setting.listObject[1])
         {
             if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasProtection)
             {
@@ -78,10 +78,15 @@ public class TrialsRoom : MonoBehaviourPun
             DisplayAwardObject(2);
             indexObject = 2;
         }
-        else
+        else if(randomFloat < 100 && gameManagerParent.setting.listObject[2])
         {
             DisplayAwardObject(5);
             indexObject = 3;
+        }
+        else
+        {
+            DisplayAwardObject(0);
+            indexObject = 0;
         }
         gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasWinFireBallRoom = true;
         playerwinner = gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>();
@@ -209,31 +214,26 @@ public class TrialsRoom : MonoBehaviourPun
 
         float randomfloat = Random.Range(0, 100);
 
-        if(randomfloat < 20)
+        if(randomfloat < 25 &&  gameManagerParent.setting.listTrapRoom[0])
         {
             gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(gameManagerParent.listIndexImpostorPower[0]);
             gameManagerParent.ui_Manager.DisplayInformationObjectWon(9);
         }
-        else if ( randomfloat < 40)
+        else if ( randomfloat < 50 && gameManagerParent.setting.listTrapRoom[1])
         {
             gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(gameManagerParent.listIndexImpostorPower[1]);
             gameManagerParent.ui_Manager.DisplayInformationObjectWon(10);
         }
-        else if (randomfloat < 60)
+        else if (randomfloat < 75 && gameManagerParent.setting.listTrapRoom[2])
         {
             gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(gameManagerParent.listIndexImpostorPower[2]);
             gameManagerParent.ui_Manager.DisplayInformationObjectWon(11);
 
         }
-        else if(randomfloat < 60)
+        else if(randomfloat < 100 && gameManagerParent.setting.listTrapRoom[3])
         {
             gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(gameManagerParent.listIndexImpostorPower[3]);
             gameManagerParent.ui_Manager.DisplayInformationObjectWon(12);
-        }
-        else
-        {
-            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(gameManagerParent.listIndexImpostorPower[4]);
-            gameManagerParent.ui_Manager.DisplayInformationObjectWon(13);
         }
 
 

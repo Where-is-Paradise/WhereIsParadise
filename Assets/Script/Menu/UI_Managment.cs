@@ -391,9 +391,19 @@ public class UI_Managment : MonoBehaviourPun
         photonView.RPC("SendGameSettingTrialsRoom",
         RpcTarget.Others, active, index);
     }
+    public void SendOnChangeGameSettingTeamTrialsRoom(bool active, int index)
+    {
+        photonView.RPC("SendGameSettingTeamTrialsRoom",
+        RpcTarget.Others, active, index);
+    }
     public void SendOnChangeGameSettingTrapRoom(bool active, int index)
     {
         photonView.RPC("SendGameSettingTrapRoom",
+        RpcTarget.Others, active, index);
+    }
+    public void SendOnChangeGameSettingObject(bool active, int index)
+    {
+        photonView.RPC("SendGameSettingObject",
         RpcTarget.Others, active, index);
     }
     public void SendOnChangeGameSettingObjectImpostor(bool active, int index)
@@ -443,7 +453,14 @@ public class UI_Managment : MonoBehaviourPun
     public void SendGameSettingTrialsRoom(bool isActive, int index)
     {
         canChange = false;
+        Debug.Log("sa passe " + isActive);
         setting.listTrialRoom[index] = isActive;
+    }
+    [PunRPC]
+    public void SendGameSettingTeamTrialsRoom(bool isActive, int index)
+    {
+        canChange = false;
+        setting.listTeamTrialRoom[index] = isActive;
     }
 
     [PunRPC]
@@ -451,6 +468,12 @@ public class UI_Managment : MonoBehaviourPun
     {
         canChange = false;
         setting.listTrapRoom[index] = isActive;
+    }
+    [PunRPC]
+    public void SendGameSettingObject(bool isActive, int index)
+    {
+        canChange = false;
+        setting.listObject[index] = isActive;
     }
     [PunRPC]
     public void SendGameSettingObjectImpostor(bool isActive, int index)

@@ -79,19 +79,20 @@ public class Inventory : MonoBehaviour
         int counterElement = 0;
         foreach (int index in lobby.GetPlayerMineGO().GetComponent<PlayerGO>().Inventory)
         {
-            for (int i = 0; i < parentAllSkin.transform.childCount; i++)
+            for (int i = 0; i < parentAllSkin.transform.childCount -2; i++)
             {
-                if (i == index)
+                if (parentAllSkin.transform.GetChild(i).GetComponent<ProductSkin>().id == index)
                 {
                     if (counterElement < maxElementInPanel)
                     {
-                        GameObject newPanel = Instantiate(parentAllSkin.transform.Find("panelSkinReturn" + index).gameObject);
+                        Debug.Log(index);
+                        GameObject newPanel = Instantiate(parentAllSkin.transform.Find("panelSkinReturn" + i).gameObject);
                         newPanel.transform.parent = dynamicPanelInventory.transform;
                         newPanel.transform.localScale = new Vector2(0.4f, 0.4f);
                     }
                     else
                     {
-                        GameObject newPanel = Instantiate(parentAllSkin.transform.Find("panelSkinReturn" + index).gameObject);
+                        GameObject newPanel = Instantiate(parentAllSkin.transform.Find("panelSkinReturn" + i).gameObject);
                         newPanel.transform.parent = dynamicPanelInventory2.transform;
                         newPanel.transform.localScale = new Vector2(0.4f, 0.4f);
                     }

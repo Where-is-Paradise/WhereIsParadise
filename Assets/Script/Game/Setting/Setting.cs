@@ -24,6 +24,8 @@ public class Setting : MonoBehaviour
     public List<bool> globalSetting;
     public List<bool> listSpeciallyRoom;
     public List<bool> listTrialRoom;
+    public List<bool> listTeamTrialRoom;
+    public List<bool> listObject;
     public List<bool> listTrapRoom;
     public List<bool> listObjectImpostor;
 
@@ -121,20 +123,23 @@ public class Setting : MonoBehaviour
         listSpeciallyRoom.Add(true); // Pray
 
         listTrialRoom.Add(true); // FireBall room
-        listTrialRoom.Add(true); // GodDeath room
         listTrialRoom.Add(true); // Damocles room
         listTrialRoom.Add(true); // Ax room
         listTrialRoom.Add(true); // Sword room
-        listTrialRoom.Add(true); // Monsters room
         listTrialRoom.Add(true); // Lost torch room
         listTrialRoom.Add(true); // Labyrinth room
 
+        listTeamTrialRoom.Add(true); // GodDeath room
+        listTeamTrialRoom.Add(true); // Monsters room
+
         listTrapRoom.Add(true); // Foggy room
         listTrapRoom.Add(true); // Cursed room
-        listTrapRoom.Add(true); // Jail room
         listTrapRoom.Add(true); // ChestTraped room
-        listTrapRoom.Add(true); // Poised room
         listTrapRoom.Add(true); // Pray trap room
+
+        listObject.Add(true); // Map
+        listObject.Add(true); // Field protection
+        listObject.Add(true); // Black torch
 
         listObjectImpostor.Add(true); // Invisible potion
         listObjectImpostor.Add(true); // Satanic knife
