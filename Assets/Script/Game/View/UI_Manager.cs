@@ -1486,13 +1486,11 @@ setting_button_echapMenu.SetActive(false);
             panelTutoriel.transform.parent.gameObject.SetActive(true);
             if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             {
-                panelTutoriel.transform.GetChild(1).gameObject.SetActive(true);
-                panelTutoriel.transform.parent.gameObject.SetActive(true);
+                tutorial[1].gameObject.SetActive(true);
             }
             else
             {
-                panelTutoriel.transform.GetChild(0).gameObject.SetActive(true);
-                panelTutoriel.transform.parent.gameObject.SetActive(true);
+                tutorial[0].gameObject.SetActive(true);
             }
             
         }
@@ -2518,6 +2516,26 @@ setting_button_echapMenu.SetActive(false);
     {
         map_interaction.SetActive(display);
         changeBoss_interaction.SetActive(display);
+    }
+
+    public void OnClickDisplayTutorialExplorationAfterBossPanel()
+    {
+        StartCoroutine(CouroutineDisplayTutorialExplorationAfterBossPanel());
+    }
+    public IEnumerator CouroutineDisplayTutorialExplorationAfterBossPanel()
+    {
+        yield return new WaitForSeconds(1.25f);
+        if (gameManager.setting.displayTutorial)
+        {
+            if (!gameManager.ui_Manager.listTutorialBool[4])
+            {
+                gameManager.ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
+                gameManager.ui_Manager.tutorial_parent.SetActive(true);
+                gameManager.ui_Manager.tutorial[4].SetActive(true);
+                gameManager.ui_Manager.listTutorialBool[4] = true;
+            }
+
+        }
     }
 
 }

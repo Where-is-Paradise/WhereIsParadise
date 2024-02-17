@@ -457,6 +457,40 @@ public class Lobby : MonoBehaviourPunCallbacks
         }
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsReady(GetPlayerMineGO().GetComponent<PlayerGO>().isReady);
 
+        if (PhotonNetwork.IsMasterClient)
+        {
+            for(int i = 0; i < setting.listSpeciallyRoom.Count; i++)
+            {
+                //SendSettingList(i, setting.listSpeciallyRoom[i], 0);
+                photonView.RPC("SendSettingList", RpcTarget.All, i, setting.listSpeciallyRoom[i], 0);
+            }
+            for (int i = 0; i < setting.listTrialRoom.Count; i++)
+            {
+                //SendSettingList(i, setting.listTrialRoom[i], 1);
+                photonView.RPC("SendSettingList", RpcTarget.All, i, setting.listTrialRoom[i], 1);
+            }
+            for (int i = 0; i < setting.listTeamTrialRoom.Count; i++)
+            {
+                //SendSettingList(i, setting.listTeamTrialRoom[i], 2);
+                photonView.RPC("SendSettingList", RpcTarget.All, i, setting.listTeamTrialRoom[i], 2);
+            }
+            for (int i = 0; i < setting.listTrapRoom.Count; i++)
+            {
+               // SendSettingList(i, setting.listTrapRoom[i], 3);
+                photonView.RPC("SendSettingList", RpcTarget.All, i, setting.listTrapRoom[i], 3);
+            }
+            for (int i = 0; i < setting.listObject.Count; i++)
+            {
+                //SendSettingList(i, setting.listObject[i], 4);
+                photonView.RPC("SendSettingList", RpcTarget.All, i, setting.listObject[i], 4);
+            }
+            for (int i = 0; i < setting.listObjectImpostor.Count; i++)
+            {
+                //SendSettingList(i, setting.listObjectImpostor[i], 5);
+                photonView.RPC("SendSettingList", RpcTarget.All, i, setting.listObjectImpostor[i], 5);
+            }
+
+        }
     }
 
 
@@ -680,5 +714,31 @@ public class Lobby : MonoBehaviourPunCallbacks
         }
     }
 
+    [PunRPC]
+    public void SendSettingList(int index, bool value, int indexTab)
+    {
+        switch (indexTab)
+        {
+            case 0:
+                setting.listSpeciallyRoom[index] = value;
+                break;
+            case 1:
+                setting.listTrialRoom[index] = value;
+                break;
+            case 2:
+                setting.listTeamTrialRoom[index] = value;
+                break;
+            case 3:
+                setting.listTrapRoom[index] = value;
+                break;
+            case 4:
+                setting.listObject[index] = value;
+                break;
+            case 5:
+                setting.listObjectImpostor[index] = value;
+                break;
+        }
+
+    }
 
 }

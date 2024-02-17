@@ -400,13 +400,14 @@ public class GameManager : MonoBehaviourPun
     }
     public void AssignObjectPowerOfImposter()
     {
-        if (setting.listObjectImpostor[0])
+        if (setting.listTrapRoom[0])
             listIndexImpostorObject.Add(0);
-        if (setting.listObjectImpostor[1])
+        if (setting.listTrapRoom[1])
             listIndexImpostorObject.Add(1);
-        if (setting.listObjectImpostor[2])
+        if (setting.listTrapRoom[2])
             listIndexImpostorObject.Add(2);
-        listIndexImpostorObject.Add(3);
+        if(setting.listTrapRoom[3])
+            listIndexImpostorObject.Add(3);
 
         if (listIndexImpostorObject.Count == 1)
         {
@@ -435,14 +436,10 @@ public class GameManager : MonoBehaviourPun
 
     public void InitiatiateListIndexObject()
     {
-        if (setting.listObjectImpostor[0])
-            listIndexImpostorObject.Add(0);
-        if (setting.listObjectImpostor[1])
-            listIndexImpostorObject.Add(1);
-        if (setting.listObjectImpostor[2])
-            listIndexImpostorObject.Add(2);
-
-            listIndexImpostorObject.Add(3);
+        listIndexImpostorObject.Add(0);
+        listIndexImpostorObject.Add(1);
+        listIndexImpostorObject.Add(2);
+        listIndexImpostorObject.Add(3);
     }
 
     public void InitiatiateListIndexPower()
@@ -1837,10 +1834,10 @@ public class GameManager : MonoBehaviourPun
 
     public void ChangeBoss()
     {
-        for(int i =0; i < listPlayerFinal.Count; i++)
+/*        for(int i =0; i < listPlayerFinal.Count; i++)
         {
             Debug.LogError(listPlayerFinal[i].GetComponent<PhotonView>().ViewID);
-        }
+        }*/
         if (!isLoading)
         {
             if (!GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)

@@ -27,26 +27,48 @@ public class ImpostorRoom : TrialsRoom
 
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasImpostorObject)
             return;
+
+
+        int numberObject = GetNumberOfObjectInSetting();
+        float randomLeft = 0;
+        float randomRight = 100;
+        if (!gameManager.setting.listObjectImpostor[0])
+        {
+            randomLeft += (float) (100 / 3f);
+        }
+        if (!gameManager.setting.listObjectImpostor[1])
+        {
+            randomRight -= (float)(100 / 3f);
+        }
+        if (!gameManager.setting.listObjectImpostor[2])
+        {
+            randomRight -= (float)(100 / 3f);
+        }
+
+
+        float randomfloat = Random.Range(randomLeft, randomRight);
+
         
-        float randomfloat = Random.Range(0, 100);
-        //randomfloat = 90;
-        if (randomfloat < 35)
+        if (randomfloat < 33f && gameManager.setting.listObjectImpostor[0])
         {
             this.transform.Find("potion").gameObject.SetActive(true);
         }
-        else if (randomfloat < 75)
+        else if (randomfloat < 66f  && gameManager.setting.listObjectImpostor[1])
         {
             this.transform.Find("book").gameObject.SetActive(true);
         }
-        else if (randomfloat < 100)
+        else if (randomfloat < 100 && gameManager.setting.listObjectImpostor[2])
         {
             this.transform.Find("key").gameObject.SetActive(true);
         }
         else
         {
+            //if(gameManager.setting.listObjectImpostor[3])
             this.transform.Find("knife").gameObject.SetActive(true);
         }
     }
+
+
 
     public void CollisionObject(string nameObject)
     {
@@ -77,5 +99,17 @@ public class ImpostorRoom : TrialsRoom
         }
         gameManager.ui_Manager.DisplayObjectPowerImpostorInGame();
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasImpostorObject = true;
+    }
+
+    public int GetNumberOfObjectInSetting()
+    {
+        int counter = 0;
+        for(int i = 0; i< gameManager.setting.listObjectImpostor.Count; i++)
+        {
+            if (gameManager.setting.listObjectImpostor[i])
+                counter++;
+        }
+        return counter;
+        
     }
 }

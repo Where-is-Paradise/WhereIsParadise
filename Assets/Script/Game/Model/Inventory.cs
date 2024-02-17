@@ -45,7 +45,11 @@ public class Inventory : MonoBehaviour
     public void AddSkinInventory()
     {
         if (!lobby.GetPlayerMineGO())
+        {
             StartCoroutine(AddSkinInventoryCouroutine());
+            return;
+        }
+           
         int counterElement = 0;
         foreach(int index in lobby.GetPlayerMineGO().GetComponent<PlayerGO>().Inventory)
         {
@@ -77,31 +81,35 @@ public class Inventory : MonoBehaviour
     {
         yield return new WaitForSeconds(3);
         int counterElement = 0;
-        foreach (int index in lobby.GetPlayerMineGO().GetComponent<PlayerGO>().Inventory)
+        if (!lobby.GetPlayerMineGO())
+            StartCoroutine(AddSkinInventoryCouroutine());
+        else
         {
-            for (int i = 0; i < parentAllSkin.transform.childCount -2; i++)
+            foreach (int index in lobby.GetPlayerMineGO().GetComponent<PlayerGO>().Inventory)
             {
-                if (parentAllSkin.transform.GetChild(i).GetComponent<ProductSkin>().id == index)
+                for (int i = 0; i < parentAllSkin.transform.childCount - 2; i++)
                 {
-                    if (counterElement < maxElementInPanel)
+                    if (parentAllSkin.transform.GetChild(i).GetComponent<ProductSkin>().id == index)
                     {
-                        Debug.Log(index);
-                        GameObject newPanel = Instantiate(parentAllSkin.transform.Find("panelSkinReturn" + i).gameObject);
-                        newPanel.transform.parent = dynamicPanelInventory.transform;
-                        newPanel.transform.localScale = new Vector2(0.4f, 0.4f);
+                        if (counterElement < maxElementInPanel)
+                        {
+                            Debug.Log(index);
+                            GameObject newPanel = Instantiate(parentAllSkin.transform.Find("panelSkinReturn" + i).gameObject);
+                            newPanel.transform.parent = dynamicPanelInventory.transform;
+                            newPanel.transform.localScale = new Vector2(0.4f, 0.4f);
+                        }
+                        else
+                        {
+                            GameObject newPanel = Instantiate(parentAllSkin.transform.Find("panelSkinReturn" + i).gameObject);
+                            newPanel.transform.parent = dynamicPanelInventory2.transform;
+                            newPanel.transform.localScale = new Vector2(0.4f, 0.4f);
+                        }
+                        counterElement++;
                     }
-                    else
-                    {
-                        GameObject newPanel = Instantiate(parentAllSkin.transform.Find("panelSkinReturn" + i).gameObject);
-                        newPanel.transform.parent = dynamicPanelInventory2.transform;
-                        newPanel.transform.localScale = new Vector2(0.4f, 0.4f);
-                    }
-                    counterElement++;
-                }
 
+                }
             }
         }
-
     }
 
     public void AddOneSkinInventory(int indexSkin)

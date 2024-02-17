@@ -142,8 +142,9 @@ public class Setting : MonoBehaviour
         listObject.Add(true); // Black torch
 
         listObjectImpostor.Add(true); // Invisible potion
-        listObjectImpostor.Add(true); // Satanic knife
         listObjectImpostor.Add(true); // Satanic book
+        listObjectImpostor.Add(true); // Traped Key
+        listObjectImpostor.Add(false); // Satanic knife
 
         if (PROD)
             linkServerAws = "https://ec2-35-180-178-202.eu-west-3.compute.amazonaws.com";

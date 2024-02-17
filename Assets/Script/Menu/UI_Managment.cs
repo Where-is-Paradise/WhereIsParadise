@@ -127,6 +127,14 @@ public class UI_Managment : MonoBehaviourPun
     public GameObject panelTestSKIN_IP;
 
     public Version_http version;
+
+    public List<ToogleSpeciallyRoom> list_toogle_speciallyRoom;
+    public List<ToggleTrialRoom> list_toogle_trialRoom;
+    public List<ToggleTeamTrial> list_toogle_teamTrialRoom;
+    public List<ToggleTrapRoom> list_toogle_trapRoom;
+    public List<ToogleObject> list_toogle_object;
+    public List<ToggleObjectImpostor> list_toogle_objectImpostor;
+
     float k = -1;
     // Start is called before the first frame update
     void Start()
@@ -210,6 +218,9 @@ public class UI_Managment : MonoBehaviourPun
 
         CheckIndexSkinOutOfBounds();
         HideButtonForNoMobile();
+
+        if (GameObject.Find("Setting"))
+            setting = GameObject.Find("Setting").GetComponent<Setting>();
     }
 
 
@@ -467,6 +478,7 @@ public class UI_Managment : MonoBehaviourPun
     public void SendGameSettingTrapRoom(bool isActive, int index)
     {
         canChange = false;
+        Debug.Log("sa passe " + index + " " + isActive);
         setting.listTrapRoom[index] = isActive;
     }
     [PunRPC]
@@ -1075,5 +1087,32 @@ public class UI_Managment : MonoBehaviourPun
         button.interactable = !button.interactable;
     }
 
+    public void OnClickSettingGame()
+    {
+        foreach(ToogleSpeciallyRoom toogle in list_toogle_speciallyRoom)
+        {
+            toogle.GetComponent<ToogleSpeciallyRoom>().UpdateToggle();
+        }
+        foreach (ToggleTrialRoom toogle in list_toogle_trialRoom)
+        {
+            toogle.GetComponent<ToggleTrialRoom>().UpdateToggle();
+        }
+        foreach (ToggleTeamTrial toogle in list_toogle_teamTrialRoom)
+        {
+            toogle.GetComponent<ToggleTeamTrial>().UpdateToggle();
+        }
+        foreach (ToggleTrapRoom toogle in list_toogle_trapRoom)
+        {
+            toogle.GetComponent<ToggleTrapRoom>().UpdateToggle();
+        }
+        foreach (ToogleObject toogle in list_toogle_object)
+        {
+            toogle.GetComponent<ToogleObject>().UpdateToggle();
+        }
+        foreach (ToggleObjectImpostor toogle in list_toogle_objectImpostor)
+        {
+            toogle.GetComponent<ToggleObjectImpostor>().UpdateToggle();
+        }
+    }
 
 }

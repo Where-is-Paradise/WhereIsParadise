@@ -2426,6 +2426,9 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendImpostorRoom()
     {
+        if (!gameManager.setting.listObjectImpostor[0] && !gameManager.setting.listObjectImpostor[1] && !gameManager.setting.listObjectImpostor[2])
+            return;
+
         int counter = 0;
         int distance = 4;
         bool isNearOfInitial = false;
