@@ -84,9 +84,18 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
             gameManager.ChangeBossWithMasterClient();
         }
 
-        if (PhotonNetwork.IsMasterClient && (gameManager.speciallyIsLaunch || gameManager.fireBallIsLaunch))
+        if (PhotonNetwork.IsMasterClient && (gameManager.speciallyIsLaunch))
         {
             gameManager.TestLastPlayerSpeciallayRoom(player);
+            if (gameManager.damoclesIsLaunch)
+            {
+                DamoclesRoomManagementPlayerExit(player.GetComponent<PlayerGO>());
+            }
+            if (gameManager.deathNPCIsLaunch)
+            {
+                DeathRoomManagementPlayerExit();
+            }
+               
         }
     }
 
@@ -325,8 +334,25 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
                 dataGame.SendDataSpecialityRoom(-1, -1);
             }
         }
-        
-       
+         
+    }
+
+    public void DamoclesRoomManagementPlayerExit(PlayerGO player)
+    {
+        if (player.damoclesSwordIsAbove)
+        {
+            GameObject playerChosen = GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().ChoosePlayerRandomly();
+            Debug.LogError(playerChosen.GetComponent<PhotonView>().ViewID);
+            GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().SetCurrentPlayer(playerChosen.GetComponent<PhotonView>().ViewID);
+            GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().SendCurrentPlayer(playerChosen.GetComponent<PhotonView>().ViewID);
+        }
+    }
+
+    public void DeathRoomManagementPlayerExit()
+    {
+        DeathNpcRoom deathNPCRoom = GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>();
+        Debug.LogError( "sa passe : "  + deathNPCRoom.timer);
+        dataGame.SendLaunchTimerDeathNPC(deathNPCRoom.randomTimer - deathNPCRoom.timer);
     }
 
 }

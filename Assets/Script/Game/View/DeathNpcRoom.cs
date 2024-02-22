@@ -9,6 +9,12 @@ public class DeathNpcRoom : TrialsRoom
     public Death_NPC death_NPC;
     public Death_NPC death_NPC_2;
     public bool loose = false;
+
+    public bool oneIsDisconnect = false;
+
+    public float randomTimer = 0;
+    public float timer = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,7 +23,14 @@ public class DeathNpcRoom : TrialsRoom
     // Update is called once per frame
     void Update()
     {
-        
+        if (gameManager.deathNPCIsLaunch)
+        {
+            timer += Time.deltaTime;
+        }
+        else
+        {
+            timer = 0;
+        }
     }
 
     public void DisplayLeverToRelauch()
@@ -76,6 +89,7 @@ public class DeathNpcRoom : TrialsRoom
         gameManager.speciallyIsLaunch = true;
         gameManager.deathNPCIsLaunch = true;
         gameManager.ActivateCollisionTPOfAllDoor(false);
+        this.randomTimer = randomTimer;
         StartCoroutine(CouroutineEndGame(randomTimer));
         DisplayTimer(randomTimer);
     }
@@ -119,7 +133,7 @@ public class DeathNpcRoom : TrialsRoom
     public IEnumerator CouroutineEndGame(float secondes)
     {
         yield return new WaitForSeconds(secondes);
-        if (!loose && gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        if (!loose && gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss && gameManager.deathNPCIsLaunch && !oneIsDisconnect)
         {
             photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, true);
             photonView.RPC("SendVictoryTeam", RpcTarget.All, Random.Range(0, 2));
@@ -128,6 +142,19 @@ public class DeathNpcRoom : TrialsRoom
         }
       
     }
+    public IEnumerator CouroutineEndGameWithDeconnexion(float secondes)
+    {
+        yield return new WaitForSeconds(secondes);
+        if (!loose && gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss && gameManager.deathNPCIsLaunch)
+        {
+            photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, true);
+            photonView.RPC("SendVictoryTeam", RpcTarget.All, Random.Range(0, 2));
+            SendDesactivateNPC();
+            gameManager.deathNPCIsLaunch = false;
+        }
+
+    }
+
     [PunRPC]
     public void SendVictoryTeam(int randomInt)
     {

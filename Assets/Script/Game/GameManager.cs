@@ -1869,7 +1869,7 @@ public class GameManager : MonoBehaviourPun
             return;
 
         Debug.LogError(indexBoss + " " + listPlayerFinal.Count);
-        if (indexBoss + 1 == listPlayerFinal.Count || listPlayerFinal.Count == 1)
+        if (indexBoss + 1 >= listPlayerFinal.Count || listPlayerFinal.Count == 1)
         {
             indexBoss = 0;
             gameManagerNetwork.SendBoss(listPlayerFinal[indexBoss].GetComponent<PhotonView>().ViewID);
@@ -3433,9 +3433,9 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 3);
         return;*/
-        
+
         if (room.isTrial)
         {
             float randomInt = Random.Range(0, 100);
@@ -3486,7 +3486,7 @@ public class GameManager : MonoBehaviourPun
 
             float randomInt = Random.Range(randomMonsters, randomGodDeath);
 
-            if (randomInt < 50) // 50
+            if (randomInt < 100) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }
@@ -3923,7 +3923,7 @@ public class GameManager : MonoBehaviourPun
 
     public void TestLastPlayerSpeciallayRoom(GameObject player)
     {
-        if (game.currentRoom.fireBall)
+        if (game.currentRoom.fireBall && fireBallIsLaunch)
         {
             GameObject.Find("Turret").GetComponent<Turret>().Victory();
             GameObject.Find("FireBallRoom").GetComponent<FireBallRoom>().DisplayLeverToRelauch();

@@ -17,7 +17,7 @@ public class FireBall : MonoBehaviourPun
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         //StartCoroutine(CoroutineActiveCollision(0.2f));
-        fireballRoom = this.transform.parent.parent.GetComponent<FireBallRoom>();
+        fireballRoom = this.transform.parent.parent.parent.GetComponent<FireBallRoom>();
         
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
@@ -30,7 +30,7 @@ public class FireBall : MonoBehaviourPun
     void Update()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        fireballRoom = this.transform.parent.parent.GetComponent<FireBallRoom>();
+        fireballRoom = this.transform.parent.parent.parent.GetComponent<FireBallRoom>();
         if (!GameObject.Find("GameManager").GetComponent<GameManager>().SamePositionAtBoss())
         {
             GetComponent<SpriteRenderer>().enabled = false;
@@ -123,9 +123,10 @@ public class FireBall : MonoBehaviourPun
             }
             if (collision.gameObject.GetComponent<PlayerGO>().isInvincible)
                 return;
-           
+
+            collision.gameObject.GetComponent<PlayerGO>().isInvincible = true;
+            StartCoroutine(collision.gameObject.GetComponent<PlayerGO>().SetInvincibility());
             photonView.RPC("SendMineIsTouch", RpcTarget.All, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
-            SendDestroy();
         }
 
     }
@@ -163,6 +164,7 @@ public class FireBall : MonoBehaviourPun
                 fireballRoom.DesactivateFireBallRoom();
             }  
         }
+        SendDestroy();
     }
 
     public GameObject GetLastPlayer()
@@ -234,7 +236,7 @@ public class FireBall : MonoBehaviourPun
             }
         }
         Debug.LogError(counter + " " + (listPlayer.Length - 1));
-        if (counter == (listPlayer.Length - 1))
+        if (counter >= (listPlayer.Length - 1))
             return true;
         return false;
     }
@@ -339,5 +341,6 @@ public class FireBall : MonoBehaviourPun
         Physics2D.IgnoreCollision(this.GetComponent<CircleCollider2D>(), turretParent.GetComponent<BoxCollider2D>(), false) ;
     }
 
+   
 
 }

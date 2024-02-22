@@ -78,6 +78,10 @@ public class DamoclesSwordRoom : TrialsRoom
             {
                 continue;
             }
+            if (player.GetComponent<PlayerGO>().damoclesSwordIsAbove)
+            {
+                continue;
+            }
             listPlayerPossible.Add(player);
         }
         int randomInt = Random.Range(0, listPlayerPossible.Count);
@@ -95,6 +99,7 @@ public class DamoclesSwordRoom : TrialsRoom
         if (currentPlayer)
             currentPlayer.GetComponent<PlayerGO>().damoclesSwordIsAbove = false;
 
+        Debug.LogError("sa apsse 4");
         this.currentPlayer = gameManager.GetPlayer(indexPlayer);
         currentPlayer.GetComponent<PlayerGO>().damoclesSwordIsAbove = true;
         ChangePositionAtPlayer(indexPlayer);

@@ -84,7 +84,8 @@ public class Door : MonoBehaviour
                 }
                 else
                 {
-                    Physics2D.IgnoreCollision(gameManager.GetPlayerMineGO().GetComponent<CapsuleCollider2D>(), GetComponent<BoxCollider2D>(), false);
+                    if(gameManager.GetPlayerMineGO())
+                        Physics2D.IgnoreCollision(gameManager.GetPlayerMineGO().GetComponent<CapsuleCollider2D>(), GetComponent<BoxCollider2D>(), false);
                 }
             }
             else

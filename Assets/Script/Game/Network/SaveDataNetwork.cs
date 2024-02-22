@@ -91,7 +91,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
             }
         }
        
-        StartCoroutine(SetDataPlayerMineCouroutine());
+        //StartCoroutine(SetDataPlayerMineCouroutine());
     }
 
     public void SetDataPlayerById(int indexPlayer)
@@ -596,6 +596,12 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
     public IEnumerator DesactivateSpeciality()
     {
         yield return new WaitForSeconds(0.4f);
+        photonView.RPC("AskSpecialityIsLaunch", RpcTarget.MasterClient , gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+    }
+
+    public void DesactivateSpecialityAfterTestSpecialityIsLaunch()
+    {
+        Debug.LogError("SpeciallyIsLaunch " + gameManager.speciallyIsLaunch);
         if (!gameManager.speciallyIsLaunch)
         {
             if (GameObject.Find("FireBallRoom"))
@@ -611,7 +617,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
               
             if (GameObject.Find("DamoclesSwordRoom"))
             {
-                GameObject.Find("DamolcesRoom").GetComponent<DamoclesSwordRoom>().DesactivateDamoclesSwordRoom();
+                GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().DesactivateDamoclesSwordRoom();
                 GameObject.Find("DamoclesSwordRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
             }
                
@@ -673,6 +679,13 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
                         damoclesSwordRoom.currentPlayer = gameManager.GetPlayer(speciallyRoomData.currentPlayer_damolcesSword);
                         GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().DesactivateDamoclesSwordRoom();
                     }
+/*                    else
+                    {
+                        if (GameObject.Find("DeathNPCRoom"))
+                        {
+                            GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>().HideTimer();
+                        }
+                    }*/
 
                     gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
                     gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
@@ -699,8 +712,36 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         }
     }
 
+    public void SendLaunchTimerDeathNPC(float timer)
+    {
+        photonView.RPC("LaunchTimerDeathNPC", RpcTarget.All, timer);
+    }
+
+    [PunRPC]
+    public void LaunchTimerDeathNPC(float timer)
+    {
+        if (!GameObject.Find("DeathNPCRoom"))
+            return;
+
+        GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>().HideTimer();
+        GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>().DisplayTimer(timer);
+        GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>().oneIsDisconnect = true;
+        StartCoroutine(GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>().CouroutineEndGameWithDeconnexion(timer));
+    }
 
 
+    [PunRPC]
+    public void AskSpecialityIsLaunch(int playerIndex)
+    {
+        photonView.RPC("SendSpecialityIsLaunch", RpcTarget.All, gameManager.speciallyIsLaunch, playerIndex);
+    }
 
-
+    [PunRPC]
+    public void SendSpecialityIsLaunch(bool specialityIsLaunch, int playerIndex)
+    {
+        if (gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID != playerIndex)
+            return;
+        gameManager.speciallyIsLaunch = specialityIsLaunch;
+        DesactivateSpecialityAfterTestSpecialityIsLaunch();
+    }
 }

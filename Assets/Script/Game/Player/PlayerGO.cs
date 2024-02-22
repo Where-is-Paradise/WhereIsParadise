@@ -2086,6 +2086,8 @@ public class PlayerGO : MonoBehaviour
 
     public void CanChangeBoss(GameObject collision, bool isEnter)
     {
+        if (!gameManager)
+            return;
         if (!GetComponent<PhotonView>().IsMine)
         {
             return;
@@ -2525,6 +2527,12 @@ public class PlayerGO : MonoBehaviour
                 blackSoul_money = skinreturn.response.money;
             }
         }
+    }
+
+    public IEnumerator SetInvincibility()
+    {
+        yield return new WaitForSeconds(2);
+        isInvincible = false;
     }
 
 
