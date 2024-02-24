@@ -3433,8 +3433,8 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 3);
-        return;*/
+        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
+        return;
 
         if (room.isTrial)
         {
@@ -3923,10 +3923,14 @@ public class GameManager : MonoBehaviourPun
 
     public void TestLastPlayerSpeciallayRoom(GameObject player)
     {
-        if (game.currentRoom.fireBall && fireBallIsLaunch)
+        if (game.currentRoom.fireBall)
         {
-            GameObject.Find("Turret").GetComponent<Turret>().Victory();
-            GameObject.Find("FireBallRoom").GetComponent<FireBallRoom>().DisplayLeverToRelauch();
+            bool isFinish = GameObject.Find("Turret").GetComponent<Turret>().Victory();
+            if (!isFinish)
+            {
+                gameManagerNetwork.SendLaunchFireBallRoom();
+            }
+            
         }
         if (game.currentRoom.isSword)
         {
@@ -3960,14 +3964,6 @@ public class GameManager : MonoBehaviourPun
             {
                 gameManagerNetwork.SendLaunchMonsterRoom();
             }
-        }
-        if (game.currentRoom.isLostTorch)
-        {
-            // victory
-/*            if (!GameObject.Find("LostTorch"))
-            {
-                RandomWinFireball("LostTorchRoom");
-            }*/
         }
 
     }
@@ -4108,11 +4104,11 @@ public class GameManager : MonoBehaviourPun
     }
     public void ResetZoneDoorSpeciality(GameObject doorsParent)
     {
-        for (int i = 1; i < doorsParent.transform.Find("Left").transform.childCount; i++)
+        for (int i = 0; i < doorsParent.transform.Find("Left").transform.childCount; i++)
         {
             doorsParent.transform.Find("Left").transform.GetChild(i).gameObject.SetActive(false);
         }
-        for (int i = 1; i < doorsParent.transform.Find("Right").transform.childCount; i++)
+        for (int i = 0; i < doorsParent.transform.Find("Right").transform.childCount; i++)
         {
             doorsParent.transform.Find("Right").transform.GetChild(i).gameObject.SetActive(false);
         }

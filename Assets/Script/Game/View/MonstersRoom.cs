@@ -62,7 +62,7 @@ public class MonstersRoom : TrialsRoom
     {
         yield return new WaitForSeconds(1);
         if (timerSpawnMonster > 0.2f)
-            timerSpawnMonster = timerSpawnMonster - 0.01f;
+            timerSpawnMonster -= 0.01f;
         StartCoroutine(AddDifficulty());
     }
 
@@ -75,6 +75,7 @@ public class MonstersRoom : TrialsRoom
         gameManagerParent.DisplayTorchBarre(false);
         gameManagerParent.ui_Manager.DisplayInteractionObject(false);
         SetLifeTrialRoomAllPlayer();
+        timerSpawnMonster = 1;
         yield return new WaitForSeconds(2);
         gameManager.ui_Manager.LaunchFightMusic();
         isLoose = false;
@@ -121,6 +122,9 @@ public class MonstersRoom : TrialsRoom
 
     public void SpawnMonster()
     {
+        if (GameObject.FindGameObjectsWithTag("Monster").Length >= 20)
+            return;
+
         int indexSpawn = Random.Range(0, listSpawn.transform.childCount);
         GameObject Spawn = listSpawn.transform.GetChild(indexSpawn).gameObject;
         GameObject monster = PhotonNetwork.Instantiate("Monster", Spawn.transform.position, Quaternion.identity);

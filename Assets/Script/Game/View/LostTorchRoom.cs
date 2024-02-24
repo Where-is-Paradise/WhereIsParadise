@@ -68,6 +68,7 @@ public class LostTorchRoom : TrialsRoom
     public void LaunchTimer()
     {
         StartCoroutine(TimerCouroutine());
+        StartCoroutine(TimerCouroutineTestNotEnd());
     }
     public IEnumerator TimerCouroutine()
     {
@@ -75,6 +76,13 @@ public class LostTorchRoom : TrialsRoom
         timerFinish = true;
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             photonView.RPC("SendEndGame", RpcTarget.All);
+    }
+
+    public IEnumerator TimerCouroutineTestNotEnd()
+    {
+        yield return new WaitForSeconds(34);
+        if (gameManager.speciallyIsLaunch)
+            SendEndGame();
     }
 
     [PunRPC]
@@ -101,5 +109,6 @@ public class LostTorchRoom : TrialsRoom
         lostTorch.gameObject.SetActive(false);
         lostTorch.transform.localPosition = new Vector3(0, 0);
         timerFinish = false;
+        gameManager.speciallyIsLaunch = false;
     }
 }

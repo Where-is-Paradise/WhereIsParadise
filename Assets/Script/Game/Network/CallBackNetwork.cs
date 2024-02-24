@@ -351,7 +351,6 @@ public class CallBackNetwork : MonoBehaviourPunCallbacks
     public void DeathRoomManagementPlayerExit()
     {
         DeathNpcRoom deathNPCRoom = GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>();
-        Debug.LogError( "sa passe : "  + deathNPCRoom.timer);
         dataGame.SendLaunchTimerDeathNPC(deathNPCRoom.randomTimer - deathNPCRoom.timer);
     }
 

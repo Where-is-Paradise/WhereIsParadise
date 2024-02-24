@@ -68,7 +68,7 @@ public class MonsterNPC : MonoBehaviourPun
         {
             if (!collision.transform.parent.GetComponent<PhotonView>().IsMine)
                 return;
-            //IsTouchPlayer(collision);
+            IsTouchPlayer(collision);
           
         }
     }
@@ -81,7 +81,7 @@ public class MonsterNPC : MonoBehaviourPun
         {
             if (!collision.transform.parent.GetComponent<PhotonView>().IsMine)
                 return;
-            //IsTouchPlayer(collision);
+            IsTouchPlayer(collision);
 
         }
     }

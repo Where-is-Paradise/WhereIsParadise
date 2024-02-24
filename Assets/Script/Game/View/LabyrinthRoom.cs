@@ -46,16 +46,20 @@ public class LabyrinthRoom : TrialsRoom
     //public Dictionary<int,int> listIndexAwardByPlayer = new Dictionary<int, int>();
     public List<KeyValuePair<int, int>> listIndexAwardByPlayer = new List<KeyValuePair<int, int>>();
 
+    public SaveDataNetwork dataGame;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        dataGame = GameObject.Find("DataReconnexion").GetComponent<SaveDataNetwork>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        gameManagerParent = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+
         if (activeModeTest)
             ActiveModeTestAllObtacle(true);
         else
@@ -66,20 +70,28 @@ public class LabyrinthRoom : TrialsRoom
         gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().ActivateCollisionLabyrinth();
         if (!gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
+        if (objectIsInsert)
+            return;
 
         FirstRandomPATH();
         SecondeRandomPATH();
         AddPathInside();
         if (pathInsideIsFind && !objectIsInsert)
         {
-            AttributeObjectInObstacle();
-            SendAllObstacleData();
+            if (!dataGame.isDisconnect)
+            {
+                AttributeObjectInObstacle();
+                SendAllObstacleData();
+            }
+            else
+            {
+                 // on impose objctIsInsert = true, alors que c faux  ( cela evite que le perso qui deco peut avoir des objets aussi ) 
+                objectIsInsert = true;
+            }
         }
             
-
-        
-
     }
+
     public void StartRoom()
     {
         
@@ -374,7 +386,7 @@ public class LabyrinthRoom : TrialsRoom
     public void AttributeObjectInObstacle()
     {
         objectIsInsert = true;
-        photonView.RPC("SendPathIsFind", RpcTarget.All, true);
+       
         if (listPotentialAward.Count == 0)
         {
             ChooseRandomObject(listPotentialAwardSecondOption, Random.Range(0, listPotentialAwardSecondOption.Count), false,0);
@@ -419,6 +431,7 @@ public class LabyrinthRoom : TrialsRoom
         {
             photonView.RPC("SendDataObstacle", RpcTarget.Others,obstacle.X_position, obstacle.Y_position, obstacle.isBrokable, obstacle.isBroke, obstacle.hasAward, obstacle.indexObject, obstacle.indexObjectInList);
         }
+        photonView.RPC("SendPathIsFind", RpcTarget.All, true);
     }
     [PunRPC]
     public void SendDataObstacle(int x, int y, bool isBrokable, bool isBroke, bool isAward , int indexAward, int indexAwardList)
@@ -604,6 +617,19 @@ public class LabyrinthRoom : TrialsRoom
     public void DisplayListSeparation(bool  display)
     {
         this.transform.Find("ListSeparation").gameObject.SetActive(display);
+    }
+
+    public void DesactivateAllAwardDeconnexion()
+    {
+        foreach(ObstacleLabyrinth obstacle in listObstacles)
+        {
+            if (obstacle.hasAward)
+            {
+                obstacle.hasAward = false;
+                for (int i = 0; i < 7; i++)
+                    obstacle.transform.GetChild(i).gameObject.SetActive(false);
+            }
+        }
     }
 
 }

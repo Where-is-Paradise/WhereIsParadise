@@ -140,12 +140,19 @@ public class FireBall : MonoBehaviourPun
         }
     }
 
+    public void SendMineIsTouchForDeconnexion()
+    {
+        photonView.RPC("SendMineIsTouch", RpcTarget.All, gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+    }
+
     [PunRPC]
     public void SendMineIsTouch(int indexPlayer)
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         GameObject player = gameManager.GetPlayer(indexPlayer);
+
+        Debug.LogError(indexPlayer + " " + player.GetComponent<PlayerGO>().lifeTrialRoom);
 
         player.GetComponent<PlayerGO>().lifeTrialRoom--;
         player.GetComponent<PlayerNetwork>()

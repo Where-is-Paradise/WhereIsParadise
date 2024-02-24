@@ -69,13 +69,14 @@ public class Turret : MonoBehaviourPun
         return false;
     }
 
-    public void Victory()
+    public bool Victory()
     {
         if (LastPlayerDoesNotExist())
         {
             Debug.LogError("Victory 1");
             gameManager.RandomWinFireball("FireBallRoom");
             fireballRoom.DesactivateFireBallRoom();
+            return true;
         }
         if (TestLastPlayer())
         {
@@ -87,7 +88,9 @@ public class Turret : MonoBehaviourPun
             fireballRoom.gameManager.fireBallIsLaunch = false;
             fireballRoom.gameManager.speciallyIsLaunch = false;
             fireballRoom.gameManager.ActivateCollisionTPOfAllDoor(true);
+            return true;
         }
+        return false;
     }
 
     public bool LastPlayerDoesNotExist()

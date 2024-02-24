@@ -657,7 +657,9 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
         {
             if (GameObject.Find("LabyrinthHideRoom"))
             {
+                GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthRoom>().DesactivateAllAwardDeconnexion();
                 GameObject.Find("LabyrinthHideRoom").GetComponent<LabyrinthRoom>().SendChangeScalePlayer();
+                gameManager.GetPlayerMineGO().transform.position = new Vector3(0, 0);
             }
             else
             {
@@ -679,16 +681,15 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
                         damoclesSwordRoom.currentPlayer = gameManager.GetPlayer(speciallyRoomData.currentPlayer_damolcesSword);
                         GameObject.Find("DamoclesSwordRoom").GetComponent<DamoclesSwordRoom>().DesactivateDamoclesSwordRoom();
                     }
-/*                    else
-                    {
-                        if (GameObject.Find("DeathNPCRoom"))
-                        {
-                            GameObject.Find("DeathNPCRoom").GetComponent<DeathNpcRoom>().HideTimer();
-                        }
-                    }*/
 
+                    gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendLifeTrialRoom(0);
                     gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
                     gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
+
+                    if (GameObject.Find("FireBallRoom"))
+                    {
+                        GameObject.Find("FireBall").GetComponent<FireBall>().SendMineIsTouchForDeconnexion();
+                    }
                     
                 }
             }
@@ -696,6 +697,8 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
             gameManager.ui_Manager.HideAllLever();
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canDisplayMap = true;
         }
+
+        StartCoroutine(TestReactivateRoom());
     }
 
     public void InitiateDataSpeciality()
@@ -743,5 +746,38 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
             return;
         gameManager.speciallyIsLaunch = specialityIsLaunch;
         DesactivateSpecialityAfterTestSpecialityIsLaunch();
+    }
+
+
+    public IEnumerator TestReactivateRoom()
+    {
+        yield return new WaitForSeconds(1.5f);
+        if (!gameManager.speciallyIsLaunch && !GameObject.Find("interactionUI").transform.Find("Map").gameObject.activeSelf)
+        {
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
+            if (gameManager.GetBoss())
+                gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
+            gameManager.speciallyIsLaunch = false;
+            gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
+            gameManager.CloseDoorWhenVote(false);
+            gameManager.ActivateCollisionTPOfAllDoor(true);
+            gameManager.gameManagerNetwork.SendActivateAllObstacles(false, this.gameObject.name);
+
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            {
+                gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(true);
+            }
+            gameManager.ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
+            gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);
+
+            gameManager.DisplayTorchBarre(true);
+
+            GameObject playerWithBarre = gameManager.GetPlayerWithTorchBarre();
+            if (playerWithBarre)
+                playerWithBarre.transform.Find("TorchBarre").gameObject.SetActive(true);
+
+            gameManager.ui_Manager.DisplayInteractionObject(true);
+            gameManager.ui_Manager.HideFightMusic();
+        }
     }
 }
