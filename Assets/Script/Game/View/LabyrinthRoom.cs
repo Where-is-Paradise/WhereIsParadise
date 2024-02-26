@@ -529,7 +529,7 @@ public class LabyrinthRoom : TrialsRoom
     public void SendClearKeyValuePair()
     {
         listIndexAwardByPlayer.Clear();
-        gameManagerParent.ActivateCollisionTPOfAllDoor(true);
+        //gameManagerParent.ActivateCollisionTPOfAllDoor(true);
         gameManagerParent.CloseDoorWhenVote(false);
         gameManagerParent.ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 6);
         gameManagerParent.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 6);

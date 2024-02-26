@@ -116,7 +116,7 @@ public class PlayerGO : MonoBehaviour
     public bool canDisplayTutorial = false;
     public bool displayTutorial = false;
 
-    public bool explorationPowerIsAvailable = false;
+    public bool explorationPowerIsAvailable = true;
 
     public bool isInJail = false;
 
@@ -180,6 +180,8 @@ public class PlayerGO : MonoBehaviour
 
 
     public List<int> Inventory = new List<int>();
+
+    public bool hasCurrentTorch = false;
 
     [HideInInspector]
     public int blackSoul_money = 900; 
@@ -356,6 +358,28 @@ public class PlayerGO : MonoBehaviour
 
             }
         }
+
+
+        if (gameManager)
+        {
+            if (!explorationPowerIsAvailable && (gameManager.speciallyIsLaunch || gameManager.timer.timerLaunch))
+            {
+                this.transform.Find("TorchBarre").gameObject.SetActive(false);
+            }
+            else
+            {
+                if (!explorationPowerIsAvailable && gameManager.SamePositionAtMine(this.GetComponent<PhotonView>().ViewID))
+                {
+                    this.transform.Find("TorchBarre").gameObject.SetActive(true);
+                }
+                else
+                {
+                    this.transform.Find("TorchBarre").gameObject.SetActive(false);
+
+                }
+            }
+        }
+
         if (GetComponent<PhotonView>().IsMine && (isBoss || hasWinFireBallRoom) && gameManager)
         {
             if (!gameManager.expeditionHasproposed && !gameManager.voteDoorHasProposed)
@@ -688,13 +712,7 @@ public class PlayerGO : MonoBehaviour
 
             }
         }
-        if (gameManager)
-        {
-            if (!explorationPowerIsAvailable && (isTouchInTrial || gameManager.timer.timerLaunch))
-            {
-                this.transform.Find("TorchBarre").gameObject.SetActive(false);
-            }
-        }
+
 
     }
 
@@ -797,6 +815,9 @@ public class PlayerGO : MonoBehaviour
 
     public void OnTriggerStay2D(Collider2D collision)
     {
+        if (!gameManager)
+            return;
+
         if (!GetComponent<PhotonView>().IsMine)
         {
             return;
@@ -1073,8 +1094,9 @@ public class PlayerGO : MonoBehaviour
     {
         if (!GetComponent<PhotonView>().IsMine)
             return;
-        
-        if (!explorationPowerIsAvailable)
+        if (!hasCurrentTorch)
+            return;
+        if (!gameManager || !gameManager.game || !gameManager.game.currentRoom)
             return;
         if (gameManager.game.currentRoom.explorationIsUsed)
             return;
@@ -1128,7 +1150,7 @@ public class PlayerGO : MonoBehaviour
     {
         if (!GetComponent<PhotonView>().IsMine)
             return;
-        if (!explorationPowerIsAvailable)
+        if (!hasCurrentTorch)
             return;
         if (gameManager.game.currentRoom.explorationIsUsed)
             return;
@@ -1203,6 +1225,9 @@ public class PlayerGO : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!gameManager)
+            return;
+
         if (!GetComponent<PhotonView>().IsMine)
             return;
 
@@ -1457,10 +1482,14 @@ public class PlayerGO : MonoBehaviour
 
     public void OnTriggerExit2D(Collider2D collision)
     {
+        if (!gameManager)
+            return;
+
         if (!GetComponent<PhotonView>().IsMine)
         {
             return;
         }
+       
 
         if (collision.CompareTag("Zone_vote"))
         {

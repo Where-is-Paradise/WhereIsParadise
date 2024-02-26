@@ -44,7 +44,7 @@ public class TrialsRoom : MonoBehaviourPun
                     randomInt = 2;
                 else
                     randomInt = 3;*/
-        //randomInt = 4;
+        randomFloat = 95;
         if(randomFloat < 50)
         {
             // bluetorch
@@ -137,9 +137,9 @@ public class TrialsRoom : MonoBehaviourPun
 
         gameManagerParent.DisplayTorchBarre(true);
 
-        GameObject playerWithBarre = gameManagerParent.GetPlayerWithTorchBarre();
+/*        GameObject playerWithBarre = gameManagerParent.GetPlayerWithTorchBarre();
         if(playerWithBarre)
-            playerWithBarre.transform.Find("TorchBarre").gameObject.SetActive(true);
+            playerWithBarre.transform.Find("TorchBarre").gameObject.SetActive(true);*/
 
         gameManagerParent.ui_Manager.DisplayInteractionObject(true);
         gameManagerParent.ui_Manager.HideFightMusic();

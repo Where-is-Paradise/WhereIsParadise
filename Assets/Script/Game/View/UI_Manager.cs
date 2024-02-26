@@ -1900,7 +1900,11 @@ setting_button_echapMenu.SetActive(false);
             gameManager.GetDoorGo(indexDoor).GetComponent<Door>().DisplayColorLightToExploration();
             gameManager.ui_Manager.doorTorched.Play();
             gameManager.gameManagerNetwork.SendDisplayLightExplorationTransparency(indexDoor);
+            if (gameManager.GetPlayerWithTorchBarre())
+                gameManager.GetPlayerWithTorchBarre().GetComponent<PlayerNetwork>().SendExplorationPowerIsAvailable(true);
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().explorationPowerIsAvailable = false;
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendExplorationPowerIsAvailable(false);
+
             canvasInGame.transform.Find("Exploration").Find("Torch").Find("Bigger").gameObject.SetActive(false);
             canvasInGame.transform.Find("Exploration").Find("Torch").Find("Disabled").gameObject.SetActive(true);
 
@@ -2365,7 +2369,12 @@ setting_button_echapMenu.SetActive(false);
             gameManager.gameManagerNetwork.SendTorchNumber(gameManager.game.nbTorch);
         }
         gameManager.gameManagerNetwork.SendExplorationIsUsed(gameManager.game.currentRoom.Index, true);
-        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlackTorch(false);
+        //gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlackTorch(false);
+
+        if (gameManager.GetPlayerWithTorchBarre())
+            gameManager.GetPlayerWithTorchBarre().GetComponent<PlayerNetwork>().SendExplorationPowerIsAvailable(true);
+
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendExplorationPowerIsAvailable(false);
     }
 
     public void DisplayInformationObjectWon(int index)

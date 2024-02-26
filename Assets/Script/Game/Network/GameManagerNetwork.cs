@@ -315,6 +315,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).explorationIsUsed = isUsed;
         gameManager.CloseDoorWhenVote(false);
+        gameManager.ActivateCollisionTPOfAllDoor(true);
     }
 
     [PunRPC]
@@ -2632,6 +2633,9 @@ public class GameManagerNetwork : MonoBehaviourPun
 
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(false);
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 3);
+
+        if (gameManager.indexPlayerPreviousExploration == gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID)
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayTorchBarre(true);
     }
 
     public void SendHidePlayerNotSameRoom()

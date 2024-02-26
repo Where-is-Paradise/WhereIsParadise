@@ -166,7 +166,7 @@ public class PlayerNetwork : MonoBehaviourPun
 
         if (player.GetComponent<PhotonView>().IsMine)
         {
-            player.explorationPowerIsAvailable = true;
+            player.hasCurrentTorch = true;
             player.gameManager.ui_Manager.DisabledButtonPowerExploration(false);
         }
 
@@ -1203,7 +1203,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetDisplayBlueTorch(bool dislay)
     {
         this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.SetActive(dislay);
-        player.explorationPowerIsAvailable = dislay;
+        player.hasCurrentTorch = dislay;
         if (player.GetComponent<PhotonView>().IsMine)
         {
             player.gameManager.ui_Manager.DisabledButtonPowerExploration(!dislay);
@@ -1223,7 +1223,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetDisplayBlackTorch(bool dislay)
     {
         this.transform.Find("TrialObject").Find("BlackTorch").gameObject.SetActive(dislay);
-        player.explorationPowerIsAvailable = dislay;
+        //player.explorationPowerIsAvailable = dislay;
         if (player.GetComponent<PhotonView>().IsMine)
         {
 
@@ -1280,5 +1280,26 @@ public class PlayerNetwork : MonoBehaviourPun
     public void DisplayMagicalKey(bool display)
     {
         player.transform.Find("TrialObject").Find("MagicalKey").gameObject.SetActive(display);
+    }
+
+
+    public void SendDisplayTorchBarre(bool display)
+    {
+        photonView.RPC("SetDisplayTorchBarre", RpcTarget.All, display);
+    }
+    [PunRPC]
+    public void SetDisplayTorchBarre(bool display)
+    {
+        player.transform.Find("TorchBarre").gameObject.SetActive(display);
+    }
+
+    public void SendExplorationPowerIsAvailable(bool isAvailble)
+    {
+        photonView.RPC("SetExplorationPowerIsAvailable", RpcTarget.All, isAvailble);
+    }
+    [PunRPC]
+    public void SetExplorationPowerIsAvailable(bool isAvailble)
+    {
+        player.explorationPowerIsAvailable = isAvailble;
     }
 }

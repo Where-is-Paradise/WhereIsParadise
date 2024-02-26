@@ -23404,7 +23404,7 @@ MonoBehaviour:
   displayMap: 0
   canDisplayTutorial: 0
   displayTutorial: 0
-  explorationPowerIsAvailable: 0
+  explorationPowerIsAvailable: 1
   isInJail: 0
   indexPower: -1
   indexObjectPower: -1
@@ -23444,6 +23444,7 @@ MonoBehaviour:
   hasOneTrapPower: 0
   canCollisionToDoorExploration: 1
   Inventory: 
+  hasCurrentTorch: 0
   blackSoul_money: 4000
 --- !u!114 &7384524027293410437
 MonoBehaviour:

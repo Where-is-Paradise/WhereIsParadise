@@ -3433,8 +3433,8 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
-        return;
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
+        return;*/
 
         if (room.isTrial)
         {
