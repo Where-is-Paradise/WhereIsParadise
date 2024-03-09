@@ -40,7 +40,7 @@ public class NPCRoom : MonoBehaviourPun
         int random = Random.Range(0, 3);
         indexEvilNPC = random;
  
-        gameManager.gameManagerNetwork.SendEvilInNPCRoom(gameManager.game.currentRoom.Index, evilIsleft);
+        gameManager.gameManagerNetwork.SendEvilInNPCRoom(gameManager.game.currentRoom.Index, indexEvilNPC, 2);
     }
 
 
@@ -49,7 +49,7 @@ public class NPCRoom : MonoBehaviourPun
         if (!gameManager.game.currentRoom.speciallyPowerIsUsed)
         {
             //SendRandomNpc();
-            int randomInt = Random.Range(0, 2);
+            float randomInt = Random.Range(0, 100);
             gameManager.game.currentRoom.randomIntEvil = randomInt;
             string doorNameLonger = gameManager.GetRandomDoorLonger().doorName;
             gameManager.game.currentRoom.doorNameLongerNPC = doorNameLonger;
@@ -68,14 +68,14 @@ public class NPCRoom : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void DisplayDistanceByNpc(int indexNPC, int indexEvilNpc, int indexEvilNpc2, string doorNameShorter, string doorNameLonger, int randomInt)
+    public void DisplayDistanceByNpc(int indexNPC, int indexEvilNpc, int indexEvilNpc2, string doorNameShorter, string doorNameLonger, float randomInt)
     {
         if (indexNPC == 0)
         {
             if (indexEvilNpc == 0)
             {
                 this.transform.Find("NPCLeft").Find("Evil").gameObject.SetActive(true);
-                if (randomInt == 0){
+                if (randomInt < 60){
                     this.transform.Find("NPCLeft").Find("SquareMessage").Find("Canvas").Find("Text").GetComponent<Text>().text =
                         baseText + doorNameLonger;
                     door = doorNameLonger;
@@ -118,7 +118,7 @@ public class NPCRoom : MonoBehaviourPun
                 if (indexEvilNpc == 1)
                 {
                     this.transform.Find("NPCMiddle").Find("Evil").gameObject.SetActive(true);
-                    if (randomInt == 0)
+                    if (randomInt < 60)
                     {
                         this.transform.Find("NPCMiddle").Find("SquareMessage").Find("Canvas").Find("Text").GetComponent<Text>().text =
                             baseText + doorNameLonger;
@@ -159,7 +159,7 @@ public class NPCRoom : MonoBehaviourPun
                 if (indexEvilNpc == 2)
                 {
                     this.transform.Find("NPCRight").Find("Evil").gameObject.SetActive(true);
-                    if (randomInt == 0)
+                    if (randomInt < 60)
                     {
                         this.transform.Find("NPCRight").Find("SquareMessage").Find("Canvas").Find("Text").GetComponent<Text>().text =
                             baseText + doorNameLonger;
@@ -200,12 +200,12 @@ public class NPCRoom : MonoBehaviourPun
         }
         //photonView.RPC("SendDisplayResult", RpcTarget.Others, indexNPC, evilIsleft, door);
         StartCoroutine(CoroutineHideMessage());
-        gameManager.gameManagerNetwork.SendDoorInNPCRoom(gameManager.game.currentRoom.Index, door);
-        gameManager.gameManagerNetwork.SendNpcChooseLeft(gameManager.game.currentRoom.Index, indexNPC);
-        gameManager.gameManagerNetwork.SendNpcDoorShorterAndLonger(gameManager.game.currentRoom.Index, doorNameShorter, doorNameLonger);
+        gameManager.gameManagerNetwork.SendDoorInNPCRoom(gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.Index, door);
+        gameManager.gameManagerNetwork.SendNpcChooseLeft(gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.Index, indexNPC);
+        gameManager.gameManagerNetwork.SendNpcDoorShorterAndLonger(gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.Index, doorNameShorter, doorNameLonger);
         powerIsUsed = true;
 
-        gameManager.gameManagerNetwork.SendPowerIsUsed(gameManager.game.currentRoom.Index, true);
+        gameManager.gameManagerNetwork.SendPowerIsUsed(gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.Index, true);
     }
 
     [PunRPC]
@@ -304,11 +304,11 @@ public class NPCRoom : MonoBehaviourPun
                     this.transform.Find("NPCRight").gameObject.SetActive(true);
                     if (gameManager.game.currentRoom.indexEvilNPC == 2 || gameManager.game.currentRoom.indexEvilNPC_2 == 2)
                     {
-                        this.transform.Find("NPCRight").Find("Angel").gameObject.SetActive(true);
+                        this.transform.Find("NPCRight").Find("Evil").gameObject.SetActive(true);
                     }
                     else
                     {
-                        this.transform.Find("NPCRight").Find("Evil").gameObject.SetActive(true);
+                        this.transform.Find("NPCRight").Find("Angel").gameObject.SetActive(true);
                     }
                 }
 
@@ -359,12 +359,14 @@ public class NPCRoom : MonoBehaviourPun
     {
         this.transform.Find("NPCRight").Find("SquareMessage").gameObject.SetActive(false);
         this.transform.Find("NPCLeft").Find("SquareMessage").gameObject.SetActive(false);
+        this.transform.Find("NPCMiddle").Find("SquareMessage").gameObject.SetActive(false);
     }
     public IEnumerator CoroutineHideMessage()
     {
         yield return new WaitForSeconds(5);
         this.transform.Find("NPCRight").Find("SquareMessage").gameObject.SetActive(false);
         this.transform.Find("NPCLeft").Find("SquareMessage").gameObject.SetActive(false);
+        this.transform.Find("NPCMiddle").Find("SquareMessage").gameObject.SetActive(false);
     }
 
 

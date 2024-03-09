@@ -90,6 +90,7 @@ public class Room : ScriptableObject
     public bool isTrial = false;
     public bool speciallyIsInsert = false;
     public bool isTeamTrial = false;
+    public bool isVerySpecial = false;
 
     public bool isImpostorRoom = false;
 
@@ -108,7 +109,7 @@ public class Room : ScriptableObject
     public int indexEvilNPC_2 = 0;
     public bool npcChooseIsLeft = false;
     public int npcChooseIndex = 0;
-    public int randomIntEvil = 0;
+    public float randomIntEvil = 0;
     public string doorNameLongerNPC = "Z";
     public string doorNameShorterNPC = "Z";
 

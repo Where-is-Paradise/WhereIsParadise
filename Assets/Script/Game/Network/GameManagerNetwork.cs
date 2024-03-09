@@ -498,8 +498,13 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.CloseDoorWhenVote(true);
         if (gameManager.ui_Manager.map.activeSelf || gameManager.ui_Manager.mapLostSoul.activeSelf)
         {
-            gameManager.ui_Manager.map.SetActive(false);
-            gameManager.ui_Manager.mapLostSoul.SetActive(false);
+            /*            gameManager.ui_Manager.map.SetActive(false);
+                        gameManager.ui_Manager.mapLostSoul.SetActive(false);*/
+
+            if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+                gameManager.ui_Manager.HideLostSoulMap();
+            else
+                gameManager.ui_Manager.DisplayMap();
         }
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canDisplayMap = false;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
@@ -1586,6 +1591,38 @@ public class GameManagerNetwork : MonoBehaviourPun
         room.speciallyIsInsert = true;
     }
 
+
+    public void SendUpdateNeighbourVerySpeciality(int indexRoom, int indexSpeciality)
+    {
+        photonView.RPC("SetUpdateNeighbourVerySpeciality", RpcTarget.All, indexRoom, indexSpeciality);
+    }
+
+
+    [PunRPC]
+    public void SetUpdateNeighbourVerySpeciality(int indexRoom, int indexSpeciality)
+    {
+        Room room = gameManager.game.dungeon.GetRoomByIndex(indexRoom);
+        switch (indexSpeciality)
+        {
+            case 0:
+                room.chest = true;
+                break;
+            case 1:
+                room.isPurification = true;
+                break;
+            case 2:
+                room.isSacrifice = true;
+                break;
+            case 3:
+                room.isPray = true;
+                break;
+            case 4:
+                room.isNPC = true;
+                break;
+        }
+        room.speciallyIsInsert = true;
+    }
+
     public void SendUpdateListSpecialityProbality(float newValue, int indexSpeciality)
     {
         photonView.RPC("SetUpdateListSpecialityProbality", RpcTarget.All, newValue, indexSpeciality);
@@ -1595,6 +1632,17 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetUpdateListSpecialityProbality(float newValue, int indexSpeciality)
     {
         gameManager.listProbabilitySpecialityRoom[indexSpeciality] = newValue;
+    }
+
+    public void SendUpdateListVerySpecialityProbality(float newValue, int indexSpeciality)
+    {
+        photonView.RPC("SetUpdateListVerySpecialityProbality", RpcTarget.All, newValue, indexSpeciality);
+    }
+
+    [PunRPC]
+    public void SetUpdateListVerySpecialityProbality(float newValue, int indexSpeciality)
+    {
+        gameManager.listProbabilityVerySpecialityRoom[indexSpeciality] = newValue;
     }
 
     public void SendCatchInJailRoom(int indexDoorExpedition)
@@ -2311,14 +2359,15 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).doorInNpc = doorName;
     }
 
-    public void SendEvilInNPCRoom(int indexRoom, bool evilIsLeft)
+    public void SendEvilInNPCRoom(int indexRoom, int indexEvil1, int indexEvil2)
     {
-        photonView.RPC("SetEvilInNPCRoom", RpcTarget.All, indexRoom, evilIsLeft);
+        photonView.RPC("SetEvilInNPCRoom", RpcTarget.All, indexRoom, indexEvil1, indexEvil2);
     }
     [PunRPC]
-    public void SetEvilInNPCRoom(int indexRoom, bool evilIsLeft)
+    public void SetEvilInNPCRoom(int indexRoom, int indexEvil1, int indexEvil2)
     {
-        gameManager.game.dungeon.GetRoomByIndex(indexRoom).evilIsLeft = evilIsLeft;
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).indexEvilNPC = indexEvil1;
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).indexEvilNPC_2 = indexEvil2;
     }
 
     public void SendNpcChooseLeft(int indexRoom, int indexNpc)
@@ -2440,22 +2489,26 @@ public class GameManagerNetwork : MonoBehaviourPun
             {
                 // permet faire en sorte que lorsque l'impostor room est au milieu lui mettre un random quand la distance/2 et impair ( ex : 5 => 2 ou 3) au lieu de 2 tjr
 
-                if (gameManager.game.dungeon.initialRoom.DistancePathFinding%2 != 0)
+
+                int random = Random.Range(0, 3);
+                //random = 2;
+                Debug.LogError(random);
+                switch (random)
                 {
-                    int randomInt = Random.Range(0, 2);
-                    if(randomInt == 0)
-                    {
-                        distance = gameManager.game.dungeon.initialRoom.DistancePathFinding / 2;
-                    }
-                    else if ( randomInt == 1)
-                    {
-                        distance = (gameManager.game.dungeon.initialRoom.DistancePathFinding / 2) + 1;
-                    }
+                    case 0:
+                        distance = (gameManager.game.dungeon.initialRoom.DistancePathFinding / 2);
+                        break;
+                    case 1 :
+                        distance = (gameManager.game.dungeon.initialRoom.DistancePathFinding / 3) ;
+                        break;
+                    case 2:
+                        distance = (int) (gameManager.game.dungeon.initialRoom.DistancePathFinding / 1.5f);
+                        Debug.LogError(distance);
+                        distance++;
+                        //Debug.LogError(gameManager.game.dungeon.initialRoom.DistancePathFinding);
+                        break;
                 }
-                else
-                {
-                    distance = (gameManager.game.dungeon.initialRoom.DistancePathFinding / 2);
-                }
+
                 isNearOfInitial = false;
             }
             else
@@ -2686,5 +2739,16 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.listProbabilitySpecialityRoom.Add(0);
         gameManager.listProbabilitySpecialityRoom.Add(0);
         gameManager.listProbabilitySpecialityRoom.Add(0);
+    }
+
+    public void SendDisplaySupportTorch(bool display)
+    {
+        photonView.RPC("SetDisplaySupportTorch", RpcTarget.All, display);
+    }
+
+    [PunRPC]
+    public void SetDisplaySupportTorch(bool display)
+    {
+        gameManager.ui_Manager.DisplaySupportTorch(display);
     }
 }

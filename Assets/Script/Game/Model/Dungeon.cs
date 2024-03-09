@@ -86,7 +86,7 @@ public class Dungeon : ScriptableObject
             if (room.IsObstacle)
                 continue;
 
-            int randomIsHide = Random.Range(0, 100);
+            int randomIsHide = Random.Range(0, 100); // 100
             if (randomIsHide <= 37) //37
             {
                 room.isHide = true;
@@ -94,50 +94,17 @@ public class Dungeon : ScriptableObject
                 continue;
             }
             float randomIsTrial = Random.Range(0, 100);  // 100
-            if (randomIsTrial < 55) // 55
+            if (randomIsTrial < 0) // 55
                 room.isTrial = true;
             else
             {
-                if (randomIsTrial < 70) // 70
+                if (randomIsTrial < 0) // 70
                 {
                     room.isTeamTrial = true;
                 }
                 else
                 {
-                    float randomSpeciality = Random.Range(0, 100); // 100
-                    if (randomSpeciality < 25 && setting.listSpeciallyRoom[0]) // 25
-                    {
-                        room.chest = true;
-                    }
-                    else if (randomSpeciality < 50 && setting.listSpeciallyRoom[5]) // 50
-                    {
-                        room.isPurification = true;
-                    }
-                    else if (randomSpeciality < 75 && setting.listSpeciallyRoom[1]) // 75
-                    {
-                        room.isSacrifice = true;
-                    }
-                    else if (randomSpeciality < 90 && setting.listSpeciallyRoom[6] ) // 90 à changé
-                    {
-                        room.isPray = true;
-                    }
-                    else if (randomSpeciality <= 100 && setting.listSpeciallyRoom[3]) // 100
-                    {
-                        room.isNPC = true;
-                        int random = Random.Range(0, 3);
-                        room.indexEvilNPC = random;
-                        int random2 = 0;
-                        do
-                        {
-                            random2 = Random.Range(0, 3);
-
-                        } while (random2 == room.indexEvilNPC);
-                        room.indexEvilNPC_2 = random2;
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    room.isVerySpecial = true;
                 }
             }
             room.isSpecial = true;

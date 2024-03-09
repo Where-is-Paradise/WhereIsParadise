@@ -47,16 +47,13 @@ public class PrayRoom : MonoBehaviour
     public void ActiveZoneByNumberPlayer(bool active)
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        int i = 0;
-        foreach(GameObject player in players)
+        int numberZone = (players.Length / 2);
+        numberZone = numberZone % 2 != 0 ? numberZone : (numberZone + 1);
+        for(int i = 0; i < numberZone; i++)
         {
-            if (player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
-                continue;
             this.transform.Find("ZonesPray").GetChild(i).gameObject.SetActive(active);
             i++;
         }
-
-
     }
 
     public void ActiveAnimationZone()

@@ -752,7 +752,7 @@ public class SaveDataNetwork : MonoBehaviourPunCallbacks
     public IEnumerator TestReactivateRoom()
     {
         yield return new WaitForSeconds(1.5f);
-        if (!gameManager.speciallyIsLaunch && !GameObject.Find("interactionUI").transform.Find("Map").gameObject.activeSelf)
+        if (!gameManager.speciallyIsLaunch && !GameObject.Find("intercationUI").transform.Find("Map").gameObject.activeSelf)
         {
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(true);
             if (gameManager.GetBoss())

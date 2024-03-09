@@ -368,7 +368,7 @@ public class PlayerGO : MonoBehaviour
             }
             else
             {
-                if (!explorationPowerIsAvailable && gameManager.SamePositionAtMine(this.GetComponent<PhotonView>().ViewID))
+                if (!explorationPowerIsAvailable && gameManager.SamePositionAtMine(this.GetComponent<PhotonView>().ViewID) && !this.isSacrifice)
                 {
                     this.transform.Find("TorchBarre").gameObject.SetActive(true);
                 }
@@ -1683,10 +1683,6 @@ public class PlayerGO : MonoBehaviour
             return;
         }
 
-        if (gameManager.ui_Manager.map.activeSelf)
-        {
-            return;
-        }
         if (!gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
         {
             return;
@@ -1707,7 +1703,7 @@ public class PlayerGO : MonoBehaviour
             return;
         if (gameManager.onePlayerHasTorch && !this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf)
             return;
-
+        gameManager.gameManagerNetwork.SendDisplaySupportTorch(this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);
         GetComponent<PlayerNetwork>().SendDisplayBlueTorch(!this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);
     }
     public void ClickToVoteSacrifice()
@@ -2131,6 +2127,8 @@ public class PlayerGO : MonoBehaviour
             gameManager.ui_Manager.mobileCanvas.transform.Find("Change_Boss").gameObject.SetActive(false);
             return;
         }
+        if (isSacrifice)
+            return;
 
         DisplayTutorial(22);
         if(isEnter)

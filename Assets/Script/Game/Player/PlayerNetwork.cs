@@ -1211,6 +1211,7 @@ public class PlayerNetwork : MonoBehaviourPun
         }
         player.gameManager.onePlayerHasTorch = dislay;
 
+       
 
     }
 
@@ -1223,7 +1224,7 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetDisplayBlackTorch(bool dislay)
     {
         this.transform.Find("TrialObject").Find("BlackTorch").gameObject.SetActive(dislay);
-        //player.explorationPowerIsAvailable = dislay;
+        player.hasBlackTorch = dislay;
         if (player.GetComponent<PhotonView>().IsMine)
         {
 
@@ -1301,5 +1302,6 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetExplorationPowerIsAvailable(bool isAvailble)
     {
         player.explorationPowerIsAvailable = isAvailble;
+        player.gameManager.indexPlayerPreviousExploration = player.GetComponent<PhotonView>().ViewID;
     }
 }

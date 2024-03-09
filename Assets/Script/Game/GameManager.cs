@@ -123,7 +123,12 @@ public class GameManager : MonoBehaviourPun
 
     public List<float> listProbabilitySpecialityRoom = new List<float>();
     public List<bool> listBoolapparitionSpecialityRoom = new List<bool>();
+
+    public List<float> listProbabilityVerySpecialityRoom = new List<float>();
+    public List<bool> listBoolapparitionVerySpecialityRoom = new List<bool>();
+
     public int sizeListProbabilitySpecialityRoom = 0;
+    public int sizeListProbabilityVerySpecialityRoom = 0;
 
     public List<float> listProbabilityTeamTrialRoom = new List<float>();
     public int sizeListProbabilityTeamTrialRoom = 0;
@@ -200,6 +205,7 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendTorchNumber(game.nbTorch);
             ui_Manager.SetTorchNumber();
             InitiateProbalityListSpecialityWithSetting();
+            InitiateProbabilityListVerySpecialityWithSetting();
             ResetTeamTrialRoomSetting();
             GenerateHexagone(-7, 3.5f);
             Hexagone InitialHexa = GenerateObstacle();
@@ -1850,12 +1856,16 @@ public class GameManager : MonoBehaviourPun
         if (indexBoss + 1 == listPlayerFinal.Count || listPlayerFinal.Count == 1)
         { 
             indexBoss = 0;
+            if (listPlayerFinal[indexBoss].GetComponent<PlayerGO>().isSacrifice)
+                ChangeBoss();
             gameManagerNetwork.SendBoss(listPlayerFinal[indexBoss].GetComponent<PhotonView>().ViewID);
             gameManagerNetwork.SendIndexBoss(indexBoss);
         }
         else
         {
             indexBoss++;
+            if (listPlayerFinal[indexBoss].GetComponent<PlayerGO>().isSacrifice)
+                ChangeBoss();
             gameManagerNetwork.SendBoss(listPlayerFinal[indexBoss].GetComponent<PhotonView>().ViewID);
             gameManagerNetwork.SendIndexBoss(indexBoss);
         }
@@ -2377,7 +2387,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.ShowAllDataInMap();
         ui_Manager.ShowImpostor();
         ui_Manager.DisplayKeyAndTorch(false);
-
+        ui_Manager.DisplayMapForEnd();
 
 
     }
@@ -2397,6 +2407,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.HideSpeciallyDisplay();
         ui_Manager.DisplayAutelTutorialSpeciallyRoom(false);
         ui_Manager.ActiveSlideMap();
+        ui_Manager.DisplayMapForEnd();
 
     }
 
@@ -2667,8 +2678,10 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplayAutelTutorialSpeciallyRoom(false);
         ui_Manager.ChangeColorAllPlayerSkinToFoggy(false);
         ui_Manager.DisplayLetterInSkull(false);
+        ui_Manager.DisplaySupportTorch(!game.currentRoom.explorationIsUsed);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
-       
+
+        
 
         UpdateColorDoor(room);
         if (room.explorationIsUsed)
@@ -2700,9 +2713,11 @@ public class GameManager : MonoBehaviourPun
         }
         if (room.chest)
         {
+            ui_Manager.HideAllZoneDoor();
             ui_Manager.DisplayChestRoom(true);
             ui_Manager.DisplayMainLevers(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            ui_Manager.DisplayZoneChest();
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
@@ -3433,14 +3448,61 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
+        /*gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
         return;*/
 
+        if (room.isVerySpecial)
+        {
+            float randomInt = Random.Range(0, 100);
+            Debug.Log(randomInt);
+            randomInt = 60;
+            if (randomInt < AdditionalProbaVerySpeciality(0)  && setting.listSpeciallyRoom[0])
+            {
+                gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
+                room.chest = true;
+                game.dungeon.InsertChestRoom(room.Index);
+                for (int i = 0; i < 2; i++)
+                {
+                    gameManagerNetwork.SendChestData(room.GetIndex(), room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward, room.chestList[i].indexTrap);
+                }    
+            }else if (randomInt < AdditionalProbaVerySpeciality(1) && setting.listSpeciallyRoom[5])
+            {
+                gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 1);
+                CalculProbabiltyVerySpeciality(1);
+            } 
+            else if(randomInt < AdditionalProbaVerySpeciality(2) && setting.listSpeciallyRoom[1])
+            {
+                gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 2);
+                CalculProbabiltyVerySpeciality(2);
+            } 
+            else if(randomInt < AdditionalProbaVerySpeciality(3) && setting.listSpeciallyRoom[3])
+            {
+                gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 3);
+                CalculProbabiltyVerySpeciality(3);
+            }
+            else if(randomInt < AdditionalProbaVerySpeciality(4) && setting.listSpeciallyRoom[3])
+            {
+                room.isNPC = true;
+                int random = Random.Range(0, 3);
+                room.indexEvilNPC = random;
+                int random2 = 0;
+                do
+                {
+                    random2 = Random.Range(0, 3);
+
+                } while (random2 == room.indexEvilNPC);
+                room.indexEvilNPC_2 = random2;
+
+                gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 4);
+                gameManagerNetwork.SendNPCData(room.Index,true,random, random2);
+                CalculProbabiltyVerySpeciality(4);
+            }
+            
+        }
         if (room.isTrial)
         {
             float randomInt = Random.Range(0, 100);
             if(randomInt < AdditionalProba(0) && setting.listTrialRoom[0])
-
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index,0);
                 CalculProbabiltySpeciality(0);
@@ -3544,6 +3606,8 @@ public class GameManager : MonoBehaviourPun
 
     }
 
+    
+
     public void UpdateProvaListSpecailityWithSetting()
     {
         if (sizeListProbabilitySpecialityRoom == 0)
@@ -3592,6 +3656,91 @@ public class GameManager : MonoBehaviourPun
         for(int i = index;  i >= 0 ; i--)
         {
             returnValue += listProbabilitySpecialityRoom[index];
+        }
+
+        return returnValue;
+    }
+    public void InitiateProbabilityListVerySpecialityWithSetting()
+    {
+
+        if (setting.listSpeciallyRoom[0])
+            sizeListProbabilityVerySpecialityRoom++;
+        if (setting.listSpeciallyRoom[1])
+            sizeListProbabilityVerySpecialityRoom++;
+        if (setting.listSpeciallyRoom[2])
+            sizeListProbabilityVerySpecialityRoom++;
+        if (setting.listSpeciallyRoom[3])
+            sizeListProbabilityVerySpecialityRoom++;
+        if (setting.listSpeciallyRoom[4])
+            sizeListProbabilityVerySpecialityRoom++;
+
+        listProbabilityVerySpecialityRoom.Add(0);
+        listProbabilityVerySpecialityRoom.Add(0);
+        listProbabilityVerySpecialityRoom.Add(0);
+        listProbabilityVerySpecialityRoom.Add(0);
+        listProbabilityVerySpecialityRoom.Add(0);
+        UpdateProvaListVerySpecailityWithSetting();
+
+    }
+
+    public void UpdateProvaListVerySpecailityWithSetting()
+    {
+        if (sizeListProbabilityVerySpecialityRoom == 0)
+        {
+            StartCoroutine(ResetAllTrialRoom());
+            return;
+        }
+
+
+        for (int i = 0; i < listProbabilityVerySpecialityRoom.Count; i++)
+        {
+            if(i == 0)
+            {
+                listProbabilityVerySpecialityRoom[i] = 30;
+            }
+            else
+            {
+                listProbabilityVerySpecialityRoom[i] = (float)(70f / (sizeListProbabilityVerySpecialityRoom - 1));
+                gameManagerNetwork.SendUpdateListSpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
+            }
+            
+        }
+    }
+
+    public void CalculProbabiltyVerySpeciality(int indexSpeciality)
+    {
+        //listBoolapparitionSpecialityRoom[indexSpeciality] = true;
+        float devaluation = (listProbabilityVerySpecialityRoom[indexSpeciality] * 1f);
+        listProbabilityVerySpecialityRoom[indexSpeciality] -= (devaluation + 100);
+        gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[indexSpeciality], indexSpeciality);
+
+        int coutnerNegativRoomProba = 0;
+        for (int i = 0; i < listProbabilityVerySpecialityRoom.Count; i++)
+        {
+            if (listProbabilityVerySpecialityRoom[i] <= 0)
+                coutnerNegativRoomProba++;
+        }
+
+        for (int i = 0; i < listProbabilityVerySpecialityRoom.Count; i++)
+        {
+            if (i == indexSpeciality || listProbabilityVerySpecialityRoom[i] <= 0)
+                continue;
+            listProbabilityVerySpecialityRoom[i] += (float)(devaluation / (sizeListProbabilityVerySpecialityRoom - (coutnerNegativRoomProba)));
+            gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
+        }
+
+        //listProbabilityVerySpecialityRoom.RemoveAt(indexSpeciality);
+    }
+
+
+    public float AdditionalProbaVerySpeciality(int index)
+    {
+        if (sizeListProbabilityVerySpecialityRoom == 1)
+            return 100;
+        float returnValue = 0;
+        for (int i = index; i >= 0; i--)
+        {
+            returnValue += listProbabilityVerySpecialityRoom[index];
         }
 
         return returnValue;
@@ -4058,6 +4207,7 @@ public class GameManager : MonoBehaviourPun
         alreadySacrifice = true;
         StartCoroutine(CouroutineDisplayEndPanel());
         StartCoroutine(SacrificeAFKplayer());
+        ui_Manager.DisplayMapForEnd();
     }
 
     public void UpdateDataInformationInEndGame()
