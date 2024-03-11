@@ -1923,10 +1923,10 @@ setting_button_echapMenu.SetActive(false);
             // set player when win trial game
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayWhiteLight(false);
             gameManager.gameManagerNetwork.SendDisplayMainLevers(true);
-            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(false);
+           
 
             // set gameManager
-            if (!gameManager.ISTrailsRoom(gameManager.game.currentRoom))
+            if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
             {
                 gameManager.game.nbTorch--;
                 gameManager.gameManagerNetwork.SendTorchNumber(gameManager.game.nbTorch);
@@ -1934,6 +1934,8 @@ setting_button_echapMenu.SetActive(false);
             if (gameManager.game.nbTorch == 0)
                 DisabledButtonPowerExploration(true);
             gameManager.gameManagerNetwork.SendExplorationIsUsed(gameManager.game.currentRoom.Index, true);
+
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(false);
 
             //gameManager.ui_Manager.DisplayAllDoorLightExploration(false);
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
@@ -2631,6 +2633,16 @@ setting_button_echapMenu.SetActive(false);
         if (display && gameManager.game.currentRoom.explorationIsUsed)
             return;
         supportTorch.SetActive(display);
+    }
+
+    public void DisplayAllDoorLight(bool display)
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+
+        foreach(GameObject door in doors)
+        {
+            door.transform.Find("Light").gameObject.SetActive(display);
+        }
     }
 
 

@@ -322,6 +322,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         yield return new WaitForSeconds(5.3f);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
+        ui_Manager.DisplayAllDoorLight(false);
         //StartCoroutine(ui_Manager.DesactivateLightAroundPlayers());
         if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
@@ -2700,7 +2701,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayVirusRoom(true);
             ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-            UpdateColorDoor(room);
+            //UpdateColorDoor(room);
         }
         if (room.isImpostorRoom)
         {
@@ -4780,6 +4781,7 @@ public class GameManager : MonoBehaviourPun
     {
 
         float randomfloat = Random.Range(0, 100);
+        randomfloat = 55;
         if (randomfloat < 25 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[0]);

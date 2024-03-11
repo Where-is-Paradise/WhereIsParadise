@@ -48,11 +48,12 @@ public class PrayRoom : MonoBehaviour
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         int numberZone = (players.Length / 2);
-        numberZone = numberZone % 2 != 0 ? numberZone : (numberZone + 1);
-        for(int i = 0; i < numberZone; i++)
+        Debug.Log(numberZone);
+        numberZone = players.Length % 2 != 0 ? (numberZone + 1) : numberZone;
+        Debug.Log(numberZone);
+        for (int i = 0; i < numberZone; i++)
         {
             this.transform.Find("ZonesPray").GetChild(i).gameObject.SetActive(active);
-            i++;
         }
     }
 

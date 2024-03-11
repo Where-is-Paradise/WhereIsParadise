@@ -2350,27 +2350,27 @@ public class PlayerGO : MonoBehaviour
             return;
         if (!gameManager.game || !gameManager.game.currentRoom || !gameManager.game.currentRoom.isTrial)
         {
-            GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
+            //GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
             return;
         }
            
         if (!gameManager.speciallyIsLaunch)
         {
-            GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
+            //GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
             return;
         }
         if (gameManager.game.currentRoom.isLabyrintheHide)
         {
-            GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
+            //GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
             return;
         }
             
         if (!avaibleDash)
         {
-            GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
+            //GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(96f / 255f, 96f / 255f, 96f / 255f);
             return; 
         }
-        GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(255f, 255f, 255f);
+        //GameObject.Find("DashInformation").GetComponent<Image>().color = new Color(255f, 255f, 255f);
 
     }
 

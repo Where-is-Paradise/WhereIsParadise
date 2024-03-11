@@ -94,11 +94,11 @@ public class Dungeon : ScriptableObject
                 continue;
             }
             float randomIsTrial = Random.Range(0, 100);  // 100
-            if (randomIsTrial < 0) // 55
+            if (randomIsTrial < 55) // 55
                 room.isTrial = true;
             else
             {
-                if (randomIsTrial < 0) // 70
+                if (randomIsTrial < 70) // 70
                 {
                     room.isTeamTrial = true;
                 }

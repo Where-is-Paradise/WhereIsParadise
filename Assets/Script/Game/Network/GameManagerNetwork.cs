@@ -805,6 +805,7 @@ public class GameManagerNetwork : MonoBehaviourPun
             }
         }
         player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(enter);
+        gameManager.GetDoorGo(indexDoor).transform.Find("Light").gameObject.SetActive(enter);
         player.GetComponent<PlayerGO>().hasVoteVD = enter;
 
     }

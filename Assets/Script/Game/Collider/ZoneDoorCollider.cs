@@ -93,12 +93,10 @@ public class ZoneDoorCollider : MonoBehaviour
 
         if (canSend)
         {
-           
             int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
             gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, false, true);
             canSend = false;
         }
-       
     }
 
 
