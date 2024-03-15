@@ -329,6 +329,20 @@ public class PlayerNetwork : MonoBehaviourPun
             }
         }
     }
+
+    public void SendWantToChangeBossFalse()
+    {
+        photonView.RPC("SetWantToChangeBossFalse", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetWantToChangeBossFalse()
+    {
+        player.wantToChangeBoss = false;
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("ChangeBoss").gameObject.SetActive(false);
+    }
+
+
     public IEnumerator CouroutineResetWantToChangeBoss()
     {
         yield return new WaitForSeconds(0.25f);
@@ -448,6 +462,7 @@ public class PlayerNetwork : MonoBehaviourPun
         {
             player.GetComponent<PlayerGO>().gameManager.game.key_counter++;
             player.gameManager.ui_Manager.LaunchAnimationAddKey();
+            StartCoroutine(player.gameManager.ui_Manager.LaunchAnimationAddKeyCouroutine());
         }
         player.GetComponent<PlayerGO>().isSacrifice = true;
         player.gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
@@ -933,13 +948,13 @@ public class PlayerNetwork : MonoBehaviourPun
         if (!player.GetComponent<PhotonView>().IsMine)
             return;
         player.gameManager.game.currentRoom = player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room;
-        player.gameManager.UpdateSpecialsRooms(player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
         player.gameManager.ResetDoorsActive();
         player.gameManager.SetDoorNoneObstacle(player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
         player.gameManager.SetDoorObstacle(player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
         player.gameManager.SetCurrentRoomColor();
         player.gameManager.HidePlayerNotInSameRoom();
         player.gameManager.CloseAllDoor(player.gameManager.game.currentRoom, false);
+        player.gameManager.UpdateSpecialsRooms(player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
         player.gameManager.gameManagerNetwork.SendUpdateHidePlayer();
         player.gameManager.ui_Manager.HideDistanceRoom();
         StartCoroutine(player.gameManager.SetMapOFLostSoul(0.1f));

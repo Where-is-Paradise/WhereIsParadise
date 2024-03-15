@@ -33,7 +33,7 @@ public class AxRoom : TrialsRoom
             
         if (!isLaunch)
             return;
-        if (Input.GetMouseButton(0) && !isPreparedToLauch && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchByAx)
+        if (Input.GetMouseButton(0) && !isPreparedToLauch && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchInTrial)
         {
             isPreparedToLauch = true;
             DisplayLineToShot(true);
@@ -50,9 +50,18 @@ public class AxRoom : TrialsRoom
                 SendShotAxToDirection();
                
                 canShoot = false;
-                StartCoroutine(CanShootCoroutine());
             }
         }
+
+        if(gameManager.GetPlayerMineGO().transform.Find("LineForAx").localPosition.x > 0)
+        {
+            gameManager.GetPlayerMineGO().transform.Find("LineForAx").localScale = new Vector3(-0.9f, 0.77f);
+        }
+        else
+        {
+            gameManager.GetPlayerMineGO().transform.Find("LineForAx").localScale = new Vector3(0.9f, 0.77f);
+        }
+       
     }
     public void LaunchAxRoom()
     {
@@ -66,6 +75,7 @@ public class AxRoom : TrialsRoom
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManagerParent.DisplayTorchBarre(false);
         gameManagerParent.ui_Manager.DisplayInteractionObject(false);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
         yield return new WaitForSeconds(2);
         StartCoroutine(TimerEndNotWinner(75));
         gameManager.ui_Manager.LaunchFightMusic();
@@ -83,11 +93,13 @@ public class AxRoom : TrialsRoom
         
     }
 
-    public IEnumerator CanShootCoroutine()
-    {
-        yield return new WaitForSeconds(2);
-        canShoot = true;
-    }
+    /*    public IEnumerator CanShootCoroutine()
+        {
+            yield return new WaitForSeconds(2);
+            canShoot = true;
+        }*/
+
+
 
     public void DiplayAxForAllPlayer(bool display)
     {
@@ -109,7 +121,7 @@ public class AxRoom : TrialsRoom
 
     public void DisplayLineToShot(bool display)
     {
-        gameManager.GetPlayerMineGO().transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("LineForAx").gameObject.SetActive(display);
+        gameManager.GetPlayerMineGO().transform.Find("LineForAx").gameObject.SetActive(display);
     }
     public void UpdatePositionAndRotationOfLineByMouse()
     {
@@ -119,7 +131,7 @@ public class AxRoom : TrialsRoom
         Vector3 direction = wPos - gameManager.GetPlayerMineGO().transform.position;
         float radius = 1;
         direction = Vector3.ClampMagnitude(direction, radius);
-        gameManager.GetPlayerMineGO().transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("LineForAx").position = (gameManager.GetPlayerMineGO().transform.position + direction) ;
+        gameManager.GetPlayerMineGO().transform.Find("LineForAx").position = (gameManager.GetPlayerMineGO().transform.position + direction) ;
         currentDirection = direction;
     }
 
@@ -130,6 +142,7 @@ public class AxRoom : TrialsRoom
         newAx.GetComponent<Ax>().SetLancher(indexPlayer);
         newAx.GetComponent<Ax>().SetSpeedAndDirection(5, directionX, directionY);
         newAx.GetComponent<Ax>().player = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
+        newAx.transform.localScale = new Vector3(Mathf.Sign(gameManager.GetPlayerMineGO().transform.Find("LineForAx").position.x ) * newAx.transform.localScale.x, newAx.transform.localScale.y);
         gameManager.ui_Manager.axeLaunch.Play();
         if (newAx.GetComponent<Ax>().GetNumberLastPlayer() == 2)
         {
@@ -211,7 +224,7 @@ public class AxRoom : TrialsRoom
     public IEnumerator ResetLineToShotCoroutine()
     {
         yield return new WaitForSeconds(0.5f);
-        gameManager.GetPlayerMineGO().transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).Find("LineForAx").gameObject.SetActive(false);
+        gameManager.GetPlayerMineGO().transform.Find("LineForAx").gameObject.SetActive(false);
     }
 
     public IEnumerator DesactivateRoomCoroutine()

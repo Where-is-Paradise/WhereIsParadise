@@ -973,6 +973,13 @@ setting_button_echapMenu.SetActive(false);
         addKeyAnimation = true;
         addKey.SetActive(true);
     }
+    public IEnumerator LaunchAnimationAddKeyCouroutine()
+    {
+        yield return new WaitForSeconds(1);
+        addKeyAnimation = true;
+        addKey.SetActive(true);
+        gameManager.game.key_counter++;
+    }
 
     public void AniamtionAddKey()
     {
@@ -2560,7 +2567,7 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayMapForEnd()
     {
-        GameObject.Find("BlueSquare").GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 255f);
+        SetColorWallPaper();
         CanMapMoveAtEnd();
     }
 
@@ -2645,6 +2652,23 @@ setting_button_echapMenu.SetActive(false);
         }
     }
 
+    public void DisplayAllZoneDoorInNormalRoom(bool display)
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        foreach (GameObject door in doors)
+        {
+            for(int i = 1; i < door.transform.Find("Zones").childCount; i++)
+            {
+                door.transform.Find("Zones").GetChild(i).gameObject.SetActive(display);
+            }
+        }
+    }
+
+
+    public void SetColorWallPaper()
+    {
+        blueWallPaper.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 255f);
+    }
 
 }
 

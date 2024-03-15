@@ -102,6 +102,7 @@ public class LabyrinthRoom : TrialsRoom
         ActiveInvisibleWallInMiddle(true);
         DisplayListSeparation(true);
         gameManagerParent.ui_Manager.DisplayInteractionObject(false);
+        gameManagerParent.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
 
         listInitalObstacleRight.Add(GetObtacleByPosition(30, 9));
         listInitalObstacleRight.Add(GetObtacleByPosition(30, 10));

@@ -44,7 +44,7 @@ public class TrialsRoom : MonoBehaviourPun
                     randomInt = 2;
                 else
                     randomInt = 3;*/
-        randomFloat = 95;
+        //randomFloat = 95;
         if(randomFloat < 50)
         {
             // bluetorch
@@ -62,7 +62,7 @@ public class TrialsRoom : MonoBehaviourPun
                 return;
             }
 
-            DisplayAwardObject(1);
+            DisplayAwardObject(0);
             indexObject = 1;
         }
         else if(randomFloat < 90 && gameManagerParent.setting.listObject[1])
@@ -75,12 +75,12 @@ public class TrialsRoom : MonoBehaviourPun
                 GetAward(indexPlayer);
                 return;
             }
-            DisplayAwardObject(2);
+            DisplayAwardObject(0);
             indexObject = 2;
         }
         else if(randomFloat < 100 && gameManagerParent.setting.listObject[2])
         {
-            DisplayAwardObject(5);
+            DisplayAwardObject(0);
             indexObject = 3;
         }
         else
@@ -90,6 +90,7 @@ public class TrialsRoom : MonoBehaviourPun
         }
         gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasWinFireBallRoom = true;
         playerwinner = gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>();
+        StartCoroutine(ActiveCollisionChestCoroutine());
     }
 
     public void DisplayAwardObject(int index)
@@ -203,6 +204,9 @@ public class TrialsRoom : MonoBehaviourPun
                 }
                 break;
         }
+
+        this.transform.parent.transform.Find("AwardObject").Find("Chest").Find("collisionChest").gameObject.SetActive(true);
+
     }
 
     public void ActivateImpostorObject(int indexPlayer)
@@ -341,6 +345,7 @@ public class TrialsRoom : MonoBehaviourPun
                 break;
 
         }
+        
     }
     public void ApplyGlobalAward()
     {
@@ -452,6 +457,12 @@ public class TrialsRoom : MonoBehaviourPun
     {
         //ReactivateCurrentRoom();
         StartCoroutine(CouroutineActivateDoorLever(2));
+    }
+    public IEnumerator ActiveCollisionChestCoroutine()
+    {
+        yield return new WaitForSeconds(1.5f);
+        this.transform.parent.transform.Find("AwardObject").Find("Chest").Find("collisionChest").gameObject.SetActive(false);
+        this.transform.parent.transform.Find("AwardObject").Find("Chest").GetComponent<BoxCollider2D>().enabled = true;
     }
 
 }

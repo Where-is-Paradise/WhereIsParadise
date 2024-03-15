@@ -34,6 +34,10 @@ public class Sword : MonoBehaviourPun
                 return;
             if (collision.transform.parent.gameObject.GetComponent<PlayerGO>().isInvincible)
                 return;
+            if (collision.transform.parent.gameObject.GetComponent<PlayerGO>().isTouchInTrial)
+                return;
+            if (collision.transform.parent.gameObject.GetComponent<PlayerGO>().isSacrifice)
+                return;
 
             photonView.RPC("SendIsTouchPlayer", RpcTarget.All, collision.transform.parent.GetComponent<PhotonView>().ViewID);
         }

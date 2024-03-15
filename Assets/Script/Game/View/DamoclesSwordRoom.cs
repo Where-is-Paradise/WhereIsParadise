@@ -35,6 +35,7 @@ public class DamoclesSwordRoom : TrialsRoom
         gameManager.ActivateCollisionTPOfAllDoor(false);
         gameManager.CloseDoorWhenVote(true);
         gameManagerParent.ui_Manager.DisplayInteractionObject(false);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
         yield return new WaitForSeconds(2);
         gameManager.ui_Manager.LaunchFightMusic();
         gameManager.damoclesIsLaunch = true;

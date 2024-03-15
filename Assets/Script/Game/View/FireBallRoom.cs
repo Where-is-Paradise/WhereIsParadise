@@ -39,6 +39,7 @@ public class FireBallRoom : TrialsRoom
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManagerParent.DisplayTorchBarre(false);
         gameManager.ui_Manager.LaunchFightMusic();
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
         DisplayHeartsFoAllPlayer(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)

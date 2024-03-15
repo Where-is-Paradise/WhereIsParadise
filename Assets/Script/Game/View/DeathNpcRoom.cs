@@ -50,6 +50,7 @@ public class DeathNpcRoom : TrialsRoom
         gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManagerParent.DisplayTorchBarre(false);
         gameManagerParent.ui_Manager.DisplayInteractionObject(false);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
 
         yield return new WaitForSeconds(2);
         gameManager.ui_Manager.LaunchFightMusic();

@@ -215,6 +215,7 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendBoss(GetBoss().GetComponent<PhotonView>().ViewID);
             game.SetKeyCounter();
             game.key_counter = game.key_counter + setting.KEY_ADDITIONAL + 3;
+            game.key_counter = 6;
             gameManagerNetwork.SendKey(game.key_counter);
             ui_Manager.SetNBKey();
             SetInitialPositionPlayers();
@@ -320,6 +321,7 @@ public class GameManager : MonoBehaviourPun
     {
         ui_Manager.DisplayTrapPowerButtonDesactivate(true);
         ui_Manager.DisplayObjectPowerButtonDesactivate(true);
+        GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
         yield return new WaitForSeconds(5.3f);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         ui_Manager.DisplayAllDoorLight(false);
@@ -654,7 +656,7 @@ public class GameManager : MonoBehaviourPun
             }
             if (hexagone.GetComponent<Hexagone>().Room.IsExit && GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && !GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation)
             {
-                hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
+                hexagone.GetComponent<SpriteRenderer>().color = new Color(62 /255f, 62 / 255f, 255);
                 hexagone.transform.Find("Canvas").Find("Paradise_door").gameObject.SetActive(true);
             }
             if (hexagone.GetComponent<Hexagone>().Room.IsObstacle)
@@ -2019,19 +2021,15 @@ public class GameManager : MonoBehaviourPun
         if (!OnePlayerFindParadise && ((game.key_counter == 0 && !game.currentRoom.IsExit && !game.currentRoom.chest && (!game.currentRoom.isSacrifice || SacrificeIsUsedOneTimes))
             || game.currentRoom.IsHell || isAlreadyLoose))
         {
-            if (!HaveMoreKeyInTraversedRoom() && !game.currentRoom.IsHell)
-            {
-                StartCoroutine(SacrificeAllLostSoul());
-            }
-            else
-            {
-                ui_Manager.DisplayInformationEndRoom(true);
-            }
             if (game.currentRoom.IsHell)
             {
                 Loose();
-                
+
             }
+            else
+            {
+                StartCoroutine(SacrificeAllLostSoul());
+            } 
         }
         if (game.currentRoom.IsExit)
         {
@@ -2071,7 +2069,7 @@ public class GameManager : MonoBehaviourPun
 
 
         StartCoroutine(SetMapOFLostSoul(0.1f));
-
+        GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
 
     }
 
@@ -2081,7 +2079,7 @@ public class GameManager : MonoBehaviourPun
         game.dungeon.SetListRoomTraversed();
         foreach (Room room in game.dungeon.GetListRoomDiscoverd())
         {
-            if (((room.isSacrifice && !SacrificeIsUsedOneTimes )|| room.chest) && !room.speciallyPowerIsUsed)
+            if (((room.isSacrifice && !SacrificeIsUsedOneTimes ) || room.chest) && !room.speciallyPowerIsUsed)
             {
                 return true;
             }
@@ -2701,6 +2699,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayVirusRoom(true);
             ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
             //UpdateColorDoor(room);
         }
         if (room.isImpostorRoom)
@@ -2734,6 +2733,7 @@ public class GameManager : MonoBehaviourPun
             DisplayDoorForEachSituationInSpeciality("FireBallRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
@@ -2796,7 +2796,8 @@ public class GameManager : MonoBehaviourPun
             DisplayDoorForEachSituationInSpeciality("DamoclesSwordRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-             isActuallySpecialityTime = true;
+            ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
+            isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0);
@@ -2812,6 +2813,7 @@ public class GameManager : MonoBehaviourPun
             DisplayDoorForEachSituationInSpeciality("AxRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
@@ -2829,6 +2831,7 @@ public class GameManager : MonoBehaviourPun
             DisplayDoorForEachSituationInSpeciality("SwordRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
@@ -2846,6 +2849,7 @@ public class GameManager : MonoBehaviourPun
             DisplayDoorForEachSituationInSpeciality("LostTorchRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
+            ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
@@ -2922,6 +2926,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayNPCRoom(true);
             //DisplayDoorForEachSituationInSpeciality("NPCRoom");
             GameObject.Find("NPCRoom").GetComponent<NPCRoom>().ActivateRoom();
+            ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
             UpdateColorDoor(room);
             return;
         }
@@ -3456,7 +3461,7 @@ public class GameManager : MonoBehaviourPun
         {
             float randomInt = Random.Range(0, 100);
             Debug.Log(randomInt);
-            randomInt = 60;
+            //randomInt = 80;
             if (randomInt < AdditionalProbaVerySpeciality(0)  && setting.listSpeciallyRoom[0])
             {
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);

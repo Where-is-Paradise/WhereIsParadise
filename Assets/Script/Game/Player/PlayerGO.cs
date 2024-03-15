@@ -2208,7 +2208,7 @@ public class PlayerGO : MonoBehaviour
 
     public IEnumerator ResetInvincibleCouroutine()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.65f);
         this.isInvincible = false;
     }
 

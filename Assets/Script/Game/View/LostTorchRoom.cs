@@ -36,6 +36,7 @@ public class LostTorchRoom : TrialsRoom
         gameManager.CloseDoorWhenVote(true);
         gameManagerParent.DisplayTorchBarre(false);
         gameManagerParent.ui_Manager.DisplayInteractionObject(false);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
         yield return new WaitForSeconds(2);
         
         SpawnLostTorch();
@@ -88,6 +89,7 @@ public class LostTorchRoom : TrialsRoom
     [PunRPC]
     public void SendEndGame()
     {
+        HideAllPlayer();
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             if (!lostTorch.currentPlayer)
@@ -110,5 +112,19 @@ public class LostTorchRoom : TrialsRoom
         lostTorch.transform.localPosition = new Vector3(0, 0);
         timerFinish = false;
         gameManager.speciallyIsLaunch = false;
+    }
+
+    public void HideAllPlayer()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach(GameObject player in players)
+        {
+            if(lostTorch.currentPlayer.GetComponent<PhotonView>().ViewID != player.GetComponent<PhotonView>().ViewID)
+            {
+                player.gameObject.GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
+                player.transform.Find("TorchBarre").gameObject.SetActive(false);
+            }
+                
+        }
     }
 }

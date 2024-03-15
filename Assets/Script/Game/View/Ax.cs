@@ -48,11 +48,14 @@ public class Ax : MonoBehaviourPun
         {
             //PhotonNetwork.Destroy(this.gameObject);
             axRoom.gameManager.ui_Manager.axeEnd.Play();
+            SetCanShoot();
             Destroy(this.gameObject);
         }
         if(speed == 0)
         {
             //PhotonNetwork.Destroy(this.gameObject);
+            axRoom.gameManager.ui_Manager.axeEnd.Pause();
+            SetCanShoot();
             Destroy(this.gameObject);
         }
     }
@@ -78,6 +81,7 @@ public class Ax : MonoBehaviourPun
         {
             //PhotonNetwork.Destroy(this.gameObject);
             axRoom.gameManager.ui_Manager.axeEnd.Play();
+            SetCanShoot();
             Destroy(this.gameObject);
         }
 
@@ -156,6 +160,8 @@ public class Ax : MonoBehaviourPun
             if (collision.gameObject.GetComponent<PlayerGO>().isInvincible)
                 return;
             if (collision.gameObject.GetComponent<PlayerGO>().isTouchInTrial)
+                return;
+            if (collision.gameObject.GetComponent<PlayerGO>().isSacrifice)
                 return;
 
             SendIsTouchPlayer(collision.gameObject.GetComponent<PhotonView>().ViewID);
@@ -381,5 +387,13 @@ public class Ax : MonoBehaviourPun
         StartCoroutine(CouroutineAnimationCircle());
     }
 
+    public void SetCanShoot()
+    {
+        Debug.Log(launcher.GetComponent<PhotonView>().ViewID + "  " + axRoom.gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+        if (launcher.GetComponent<PhotonView>().ViewID == axRoom.gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID)
+        {
+            axRoom.canShoot = true;
+        }
+    }
 
 }
