@@ -2696,11 +2696,14 @@ public class GameManager : MonoBehaviourPun
         }
         if (room.IsVirus)
         {
-            ui_Manager.DisplayVirusRoom(true);
+            GameObject virusRoomObject = ui_Manager.DisplayVirusRoom(true);
+            DisplayDoorForEachSituationInSpeciality("VirusRoom");
             ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
-            //UpdateColorDoor(room);
+            ui_Manager.DisplaySpecificDoorInSpeciallyRoom(virusRoomObject);
+            
+            UpdateColorDoor(room);
         }
         if (room.isImpostorRoom)
         {
@@ -2978,124 +2981,10 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(door.GetComponent<Door>().index, true);
             }
         }
-        
 
-        //GameObject[] doors = TreeDoorById();
+/*        if (room.IsVirus)
+        {
 
-        //doors[0].GetComponent<Door>().GetRoomBehind().istr;
-        /*if (!room.left_neighbour.isTraped)
-        {
-            if (doors[0])
-            {
-                doors[0].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                doors[0].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[0].GetComponent<Door>().index, false);
-            }  
-        }
-        else
-        {
-            if (doors[0])
-            {
-                doors[0].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                doors[0].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[0].GetComponent<Door>().index, true);
-
-            }
-        }
-
-        if (!room.up_Left_neighbour.isTraped)
-        {
-            if (doors[1])
-            {
-                doors[1].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                doors[1].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[1].GetComponent<Door>().index, false);
-            }
-        }
-        else
-        {
-            if (doors[1])
-            {
-                doors[1].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                doors[1].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[1].GetComponent<Door>().index, true);
-            } 
-        }
-
-        if (!room.up_Right_neighbour.isTraped)
-        {
-            if (doors[2])
-            {
-                doors[2].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                doors[2].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[2].GetComponent<Door>().index, false);
-            }
-        }
-        else
-        {
-            if (doors[2])
-            {
-                doors[2].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                doors[2].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[2].GetComponent<Door>().index, true);
-            }
-        }
-
-        if (!room.right_neighbour.isTraped)
-        {
-            if (doors[3])
-            {
-                doors[3].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                doors[3].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[3].GetComponent<Door>().index, false);
-            }
-        }
-        else
-        {
-            if (doors[3])
-            {
-                doors[3].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                doors[3].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[3].GetComponent<Door>().index, true);
-            }
-        }
-
-        if (!room.down_Right_neighbour.isTraped)
-        {
-            if (doors[4])
-            {
-                doors[4].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                doors[4].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[4].GetComponent<Door>().index, false);
-            }
-        }
-        else
-        {
-            if (doors[4])
-            {
-                doors[4].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                doors[4].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[4].GetComponent<Door>().index, true);
-            }   
-        }
-
-        if (!room.down_Left_neighbour.isTraped)
-        {
-            if (doors[5])
-            {
-                doors[5].GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                doors[5].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[5].GetComponent<Door>().index, false);
-            }
-        }
-        else
-        {
-            if (doors[5])
-            {
-                doors[5].GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                doors[5].transform.Find("couliss").GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                ui_Manager.SetRedColorDoorTrapedSpeciallyRoom(doors[5].GetComponent<Door>().index, true);
-            }
         }*/
 
     }

@@ -259,10 +259,11 @@ setting_button_echapMenu.SetActive(false);
         {
             Camera.main.orthographicSize = 5.1f;
         }
+        Debug.Log("on est la frero tkt " + map.activeSelf);
         if (!map.activeSelf)
             DesactivateInformationSpecallyRoomAllHexagone();
 
-        gameManager.SetCurrentRoomColor();
+        //gameManager.SetCurrentRoomColor();
     }
 
     public void HideLostSoulMap()
@@ -1602,9 +1603,11 @@ setting_button_echapMenu.SetActive(false);
     {
         GameObject.Find("Special").transform.Find("FoggyRoom").gameObject.SetActive(display);
     }
-    public void DisplayVirusRoom(bool display)
+    public GameObject DisplayVirusRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("VirusRoom").gameObject.SetActive(display);
+
+        return GameObject.Find("Special").transform.Find("VirusRoom").gameObject;
     }
     public void DisplayDeathNPCRoom(bool display)
     {
@@ -2030,15 +2033,17 @@ setting_button_echapMenu.SetActive(false);
 
     public void DesactivateInformationSpecallyRoomAllHexagone()
     {
-        foreach(Hexagone hexagone in gameManager.dungeon)
+        Debug.Log("sa passe " + gameManager.dungeon.Count);
+        foreach (Hexagone hexagone in gameManager.dungeon)
         {
-            DiplayInformationHexagoneSpeciallyRoom(false, hexagone.GetComponent<Hexagone>());
+            DiplayInformationHexagoneSpeciallyRoom(true, hexagone.GetComponent<Hexagone>());
         }
     }
 
     public void DiplayInformationHexagoneSpeciallyRoom(bool display , Hexagone hexagone)
     {
         Room room = hexagone.Room;
+        Debug.Log(room.Index);
         if (!room)
             return;
         if (room.IsObstacle || room.IsInitiale || room.IsTraversed )
@@ -2046,7 +2051,7 @@ setting_button_echapMenu.SetActive(false);
         if (room.isHide)
         {
             GameObject interogationPoint = hexagone.transform.Find("Integoration_point").gameObject;
-            interogationPoint.SetActive(display);
+            interogationPoint.SetActive(false);
             return;
         }
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
@@ -2110,7 +2115,7 @@ setting_button_echapMenu.SetActive(false);
         Room room = gameManager.game.currentRoom;
         
        
-        if (room.IsVirus)
+/*        if (room.IsVirus)
         {
             if (!GameObject.Find("VirusRoom"))
                 return;
@@ -2120,7 +2125,7 @@ setting_button_echapMenu.SetActive(false);
             {
                 doors.transform.GetChild(indexDoor).GetComponent<SpriteRenderer>().color = new Color(123f/255, 35f/255, 35f/255);
             }
-        }
+        }*/
             
         if (room.isSwordDamocles)
         {
@@ -2468,6 +2473,7 @@ setting_button_echapMenu.SetActive(false);
             HidePanel(map);
             HidePanel(blueWallPaper);
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
+            DesactivateInformationSpecallyRoomAllHexagone();
         }
         else
         {
@@ -2669,7 +2675,22 @@ setting_button_echapMenu.SetActive(false);
     {
         blueWallPaper.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 255f);
     }
+    
+    public void DisplaySpecificDoorInSpeciallyRoom(GameObject speciality)
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        foreach (GameObject door in doors)
+        {
+            for(int i =0; i < speciality.transform.Find("Doors").childCount; i++)
+            {
+                if(speciality.transform.Find("Doors").GetChild(i).name == door.GetComponent<Door>().doorName)
+                {
+                    speciality.transform.Find("Doors").GetChild(i).gameObject.SetActive(true);
+                }
+            }
 
+        }
+    }
 }
 
 

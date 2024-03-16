@@ -95,10 +95,28 @@ public class Hexagone : MonoBehaviourPun
                     if (this.room.IsHell)
                         this.transform.Find("Canvas").Find("Hell").gameObject.SetActive(false);
                     if (this.room.isImpostorRoom)
+                    {
                         this.transform.Find("Information_Speciality").gameObject.SetActive(false);
+                        this.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
+                    }
                 }
-                if (this.room.isSpecial)
+                if (this.room.isTrial)
+                {
                     this.transform.Find("Information_Speciality").gameObject.SetActive(false);
+                    this.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
+
+                }
+                else if (this.room.isTeamTrial)
+                {
+                    this.transform.Find("Information_Speciality").gameObject.SetActive(false);
+                    this.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 135 / 255f, 0 / 255f);
+                }
+                else if(this.room.isSpecial && !this.room.isImpostorRoom)
+                {
+                    this.transform.Find("Information_Speciality").gameObject.SetActive(false);
+                    this.GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
+                }
+              
 
                 if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
                 {
