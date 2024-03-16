@@ -142,7 +142,8 @@ public class AxRoom : TrialsRoom
         newAx.GetComponent<Ax>().SetLancher(indexPlayer);
         newAx.GetComponent<Ax>().SetSpeedAndDirection(5, directionX, directionY);
         newAx.GetComponent<Ax>().player = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>();
-        newAx.transform.localScale = new Vector3(Mathf.Sign(gameManager.GetPlayerMineGO().transform.Find("LineForAx").position.x ) * newAx.transform.localScale.x, newAx.transform.localScale.y);
+        if(gameManager.GetPlayerMineGO().transform.Find("LineForAx").position.x > 0)
+            newAx.transform.localScale = new Vector3(Mathf.Sign(gameManager.GetPlayerMineGO().transform.Find("LineForAx").position.x ) * newAx.transform.localScale.x, newAx.transform.localScale.y);
         gameManager.ui_Manager.axeLaunch.Play();
         if (newAx.GetComponent<Ax>().GetNumberLastPlayer() == 2)
         {

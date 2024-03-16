@@ -52,7 +52,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         PhotonNetwork.NetworkingClient.LoadBalancingPeer.MaximumTransferUnit = 400;
         //ConnectToMaster();
         //index_skin = Random.Range(0, 7);
-        index_skin = 0;
+        index_skin = 17;
         setting = GameObject.Find("Setting").GetComponent<Setting>();
         setting.INDEX_SKIN = index_skin;
         versionIsCorrect = true;

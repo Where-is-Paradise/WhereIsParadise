@@ -747,7 +747,7 @@ public class PlayerGO : MonoBehaviour
         }
         if (this.transform.Find("Skins").GetChild(indexSkin).gameObject.activeSelf)
         {
-            this.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().sortingOrder = ((int)(this.transform.position.y * 10)) * -1;
+            /*this.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().sortingOrder = ((int)(this.transform.position.y * 10)) * -1;*/
             this.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).GetComponent<SpriteRenderer>().sortingOrder = ((int)((this.transform.position.y+1) * 10)) * -1;
             this.transform.Find("Skins").GetChild(indexSkin).Find("Light_around").GetComponent<SpriteRenderer>().sortingOrder = (int)(((this.transform.position.y+1) * 10) * -1) - 2;
         }

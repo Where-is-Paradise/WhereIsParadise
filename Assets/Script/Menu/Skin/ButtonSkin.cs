@@ -33,6 +33,8 @@ public class ButtonSkin : MonoBehaviour
         }            
         result.GetComponent<ResultSkinMenu>().ChangeCanPress(true);
         result.GetComponent<ResultSkinMenu>().indexSkin = indexSkin;
+
+
     }
     public void OnClickButtonColors(bool eye)
     {
@@ -45,6 +47,11 @@ public class ButtonSkin : MonoBehaviour
         }
         result.GetComponent<ResultSkinMenu>().ChangeCanPressColor(true);
         result.GetComponent<ResultSkinMenu>().indexSkinColor = indexSkin;
+
+/*        Lobby lobby = GameObject.Find("Lobby_Manager").GetComponent<Lobby>();
+
+        if (indexSkin == 6 && lobby.GetPlayerMineGO().GetComponent<PlayerGO>().playerName == "Homertimes")
+            indexSkin = 9;*/
     }
 
 

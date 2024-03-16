@@ -38,16 +38,26 @@ public class ResultSkinMenu : MonoBehaviour
         if (!canPress)
             return;
 
-        if(indexSkin == 17)
+/*        if(indexSkin == 17)
         {
             OnClickChangeSkin();
             return;
-        }
+        }*/
+
+
 
         lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkinColor(indexSkinColor, false);
         this.transform.Find("ApplyButtonColor").GetComponent<Button>().interactable = false;
         lobby.setting.INDEX_SKIN_COLOR = indexSkinColor;
-        lobby.setting.INDEX_SKIN = 0;
+        lobby.setting.INDEX_SKIN = 17;
+
+        if (indexSkinColor == 6 && lobby.GetPlayerMineGO().GetComponent<PlayerGO>().playerName == "Homertimes")
+        {
+            indexSkinColor = 9;
+            lobby.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendindexSkinColor(indexSkinColor, false);
+            lobby.setting.INDEX_SKIN_COLOR = indexSkinColor;
+        }
+
     }
 
     public void ChangeCanPress(bool canPress)

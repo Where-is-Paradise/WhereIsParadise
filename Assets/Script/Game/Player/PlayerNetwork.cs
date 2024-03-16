@@ -76,7 +76,7 @@ public class PlayerNetwork : MonoBehaviourPun
 
         // a changé, quand il aura chaque couleur par skin
         if (!sendBeginning)
-            SetIndexSkin(0);
+            SetIndexSkin(17);
 
         player.indexSkinColor = indexSkinColor;
         player.DesactivateAllSkinColor();

@@ -460,7 +460,7 @@ public class TrialsRoom : MonoBehaviourPun
     }
     public IEnumerator ActiveCollisionChestCoroutine()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         this.transform.parent.transform.Find("AwardObject").Find("Chest").Find("collisionChest").gameObject.SetActive(false);
         this.transform.parent.transform.Find("AwardObject").Find("Chest").GetComponent<BoxCollider2D>().enabled = true;
     }

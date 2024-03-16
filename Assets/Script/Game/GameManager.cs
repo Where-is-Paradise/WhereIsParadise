@@ -3554,7 +3554,7 @@ public class GameManager : MonoBehaviourPun
 
             float randomInt = Random.Range(randomMonsters, randomGodDeath);
 
-            if (randomInt < 100) // 50
+            if (randomInt < 50) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }
