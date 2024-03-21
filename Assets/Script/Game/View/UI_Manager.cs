@@ -259,7 +259,7 @@ setting_button_echapMenu.SetActive(false);
         {
             Camera.main.orthographicSize = 5.1f;
         }
-        Debug.Log("on est la frero tkt " + map.activeSelf);
+
         if (!map.activeSelf)
             DesactivateInformationSpecallyRoomAllHexagone();
 
@@ -693,20 +693,6 @@ setting_button_echapMenu.SetActive(false);
 
         int random = Random.Range(0, 10);
         
-/*        string letter = random switch
-        {
-            0 => "0",
-            1 => "1",
-            2 => "2",
-            3 => "3",
-            4 => "4",
-            5 => "5",
-            6 => "6",
-            7 => "7",
-            8 => "8",
-            9 => "9",
-            _ => "X"
-        };*/
 
         text_distance_room.GetComponent<Text>().text = "";
 
@@ -729,19 +715,7 @@ setting_button_echapMenu.SetActive(false);
                     gameManager.game.dungeon.GetPathFindingDistance(gameManager.GetExpeditionOfPlayerMine().room, gameManager.game.dungeon.exit).ToString();
             }
 
-/*            int randomInt = Random.Range(0, 2);
-            if(randomInt == 0)
-            {
-                letterOne.GetComponent<Text>().text = trueLetter;
-                letterTwo.GetComponent<Text>().text = falseLetter;
-            }
-            else
-            {
-                letterOne.GetComponent<Text>().text = falseLetter;
-                letterTwo.GetComponent<Text>().text = trueLetter;
-            }
-            letterOne.SetActive(true);
-            letterTwo.SetActive(true);*/
+
         }
         timerMixExploration = false;
         gameManager.CloseDoorExplorationWhenVote(false);
@@ -1941,6 +1915,10 @@ setting_button_echapMenu.SetActive(false);
                 gameManager.game.nbTorch--;
                 gameManager.gameManagerNetwork.SendTorchNumber(gameManager.game.nbTorch);
             }
+            else
+            {
+                gameManager.gameManagerNetwork.SendTimerForcePause(false);
+            }
             if (gameManager.game.nbTorch == 0)
                 DisabledButtonPowerExploration(true);
             gameManager.gameManagerNetwork.SendExplorationIsUsed(gameManager.game.currentRoom.Index, true);
@@ -2033,7 +2011,6 @@ setting_button_echapMenu.SetActive(false);
 
     public void DesactivateInformationSpecallyRoomAllHexagone()
     {
-        Debug.Log("sa passe " + gameManager.dungeon.Count);
         foreach (Hexagone hexagone in gameManager.dungeon)
         {
             DiplayInformationHexagoneSpeciallyRoom(true, hexagone.GetComponent<Hexagone>());
@@ -2043,7 +2020,7 @@ setting_button_echapMenu.SetActive(false);
     public void DiplayInformationHexagoneSpeciallyRoom(bool display , Hexagone hexagone)
     {
         Room room = hexagone.Room;
-        Debug.Log(room.Index);
+        //Debug.Log(room.Index);
         if (!room)
             return;
         if (room.IsObstacle || room.IsInitiale || room.IsTraversed )
@@ -2416,6 +2393,18 @@ setting_button_echapMenu.SetActive(false);
     {
         canvasInGame.transform.Find("Interaction").Find("NPC_interaction").gameObject.SetActive(display);
     }
+
+    public void DisplayButtonMainKeyBigger(bool display)
+    {
+        canvasInGame.transform.Find("Interaction").Find("Key_intercation").gameObject.SetActive(display);
+    }
+    public void OnClickButtonMainKey()
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchVoteDoorMobile = true;
+        canvasInGame.transform.Find("Interaction").Find("Key_intercation").gameObject.SetActive(false);
+
+    }
+
     public void OnClickButtonNPC()
     {
         int indexNPC = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexNpc;
@@ -2642,7 +2631,6 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplaySupportTorch(bool display)
     {
-        Debug.Log(display + " " + gameManager.game.currentRoom.explorationIsUsed);
         if (display && gameManager.game.currentRoom.explorationIsUsed)
             return;
         supportTorch.SetActive(display);

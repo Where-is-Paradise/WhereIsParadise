@@ -75,6 +75,7 @@ public class MonstersRoom : TrialsRoom
         gameManagerParent.DisplayTorchBarre(false);
         gameManagerParent.ui_Manager.DisplayInteractionObject(false);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
+        gameManager.PauseTimerFroce(true);
         SetLifeTrialRoomAllPlayer();
         timerSpawnMonster = 1;
         yield return new WaitForSeconds(2);

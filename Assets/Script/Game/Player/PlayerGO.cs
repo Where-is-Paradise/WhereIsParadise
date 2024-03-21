@@ -711,6 +711,17 @@ public class PlayerGO : MonoBehaviour
                 }
 
             }
+            if(!gameManager.SamePositionAtBoss() && this.isBoss)
+            {
+                this.transform.Find("TimerForceVote").Find("CanvasTimer").Find("Timer").GetComponent<Text>().enabled = false;
+            }
+            else
+            {
+                if (this.isBoss)
+                {
+                    this.transform.Find("TimerForceVote").Find("CanvasTimer").Find("Timer").GetComponent<Text>().enabled = true;
+                }
+            }
         }
 
 
@@ -1197,6 +1208,28 @@ public class PlayerGO : MonoBehaviour
         gameManager.ui_Manager.DisplayButtonNPC_InformationEndBigger(enter);
     }
 
+    public void CollisionWithMainKey(Collider2D collision, bool enter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+        if (!isBoss)
+            return;
+        if (!collision.gameObject.tag.Equals("Lever"))
+            return;
+        if (!collision.gameObject.name.Equals("OpenDoor_lever"))
+            return;
+        if (gameManager.timer.timerLaunch)
+        {
+            gameManager.ui_Manager.DisplayButtonMainKeyBigger(false);
+            return;
+        }
+            
+        
+
+        gameManager.ui_Manager.DisplayButtonMainKeyBigger(enter);
+    }
+
+
     // COPIEZ LA FONCTION D4AU DESSSUS MON POTE
 
 
@@ -1302,6 +1335,7 @@ public class PlayerGO : MonoBehaviour
         CollisionWithDoorToBlackTorch(collision, true);
         CollisionWithNPC(collision, true);
         CollisionWithNPC_informationEnd(collision, true);
+        CollisionWithMainKey(collision, true);
 
 
         if (collision.gameObject.tag == "TrialObject")
@@ -1526,6 +1560,7 @@ public class PlayerGO : MonoBehaviour
         CollisionWithDoorToBlackTorch(collision, false);
         CollisionWithNPC(collision, false);
         CollisionWithNPC_informationEnd(collision, false);
+        CollisionWithMainKey(collision, false);
     }
 
 
@@ -1605,8 +1640,8 @@ public class PlayerGO : MonoBehaviour
         {
             foreach(GameObject impostor in GameObject.FindGameObjectsWithTag("Player"))
             {
-                if(impostor.GetComponent<PlayerGO>().isImpostor)
-                    impostor.transform.Find("Skins").GetChild(impostor.GetComponent<PlayerGO>().indexSkin).Find("Horns").gameObject.SetActive(isImpostor);
+                if (impostor.GetComponent<PlayerGO>().isImpostor)
+                    impostor.transform.Find("InfoCanvas").Find("PlayerName").GetComponent<Text>().color = new Color(255, 0, 0);
             }
            
         }

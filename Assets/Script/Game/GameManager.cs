@@ -215,7 +215,7 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendBoss(GetBoss().GetComponent<PhotonView>().ViewID);
             game.SetKeyCounter();
             game.key_counter = game.key_counter + setting.KEY_ADDITIONAL + 3;
-            game.key_counter = 6;
+            //game.key_counter = 6;
             gameManagerNetwork.SendKey(game.key_counter);
             ui_Manager.SetNBKey();
             SetInitialPositionPlayers();
@@ -322,6 +322,8 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplayTrapPowerButtonDesactivate(true);
         ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
+        PauseTimerFroce(true);
+        DisplayTimerForce(false);
         yield return new WaitForSeconds(5.3f);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         ui_Manager.DisplayAllDoorLight(false);
@@ -1861,6 +1863,7 @@ public class GameManager : MonoBehaviourPun
             indexBoss = 0;
             if (listPlayerFinal[indexBoss].GetComponent<PlayerGO>().isSacrifice)
                 ChangeBoss();
+            gameManagerNetwork.SetBoss(listPlayerFinal[indexBoss].GetComponent<PhotonView>().ViewID);
             gameManagerNetwork.SendBoss(listPlayerFinal[indexBoss].GetComponent<PhotonView>().ViewID);
             gameManagerNetwork.SendIndexBoss(indexBoss);
         }
@@ -1869,6 +1872,7 @@ public class GameManager : MonoBehaviourPun
             indexBoss++;
             if (listPlayerFinal[indexBoss].GetComponent<PlayerGO>().isSacrifice)
                 ChangeBoss();
+            gameManagerNetwork.SetBoss(listPlayerFinal[indexBoss].GetComponent<PhotonView>().ViewID);
             gameManagerNetwork.SendBoss(listPlayerFinal[indexBoss].GetComponent<PhotonView>().ViewID);
             gameManagerNetwork.SendIndexBoss(indexBoss);
         }
@@ -3055,6 +3059,7 @@ public class GameManager : MonoBehaviourPun
     {
         speciallyIsLaunch = true;
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
+        GameObject.Find("GameManager").GetComponent<GameManager>().PauseTimerFroce(true);
         yield return new WaitForSeconds(10);
         voteChestHasProposed = false;
         isActuallySpecialityTime = false;
@@ -3077,6 +3082,7 @@ public class GameManager : MonoBehaviourPun
         {
             SendLoose();
         }
+        GameObject.Find("GameManager").GetComponent<GameManager>().PauseTimerFroce(false);
     }
     public IEnumerator ResetAllPlayerLightAroundCoroutine()
     {
@@ -3855,7 +3861,7 @@ public class GameManager : MonoBehaviourPun
         {
             if (!SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID))
             {
-                if (player.GetComponent<PlayerGO>().isSacrifice || player.GetComponent<PlayerGO>().isInJail)
+                if ( player.GetComponent<PlayerGO>().isInJail)
                     continue;
                 player.GetComponent<PlayerNetwork>().SendTeleportPlayerToSameRoomOfBoss();
             }
@@ -4675,7 +4681,7 @@ public class GameManager : MonoBehaviourPun
     {
 
         float randomfloat = Random.Range(0, 100);
-        randomfloat = 55;
+        randomfloat = 76;
         if (randomfloat < 25 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[0]);
@@ -4748,6 +4754,88 @@ public class GameManager : MonoBehaviourPun
             onePlayerHasTorch = true;
         else
             onePlayerHasTorch = false;
+    }
+
+    public IEnumerator LaunchTimerForceOpen()
+    {
+        yield return new WaitForSeconds(0.3f);
+
+        TimerDisplay2 timer = GetBoss().transform.Find("TimerForceVote").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay2>();
+        DisplayTimerForce(true);
+        PauseTimerFroce(false);
+        timer.timeLeft = 200;
+
+        
+        StartCoroutine(TimerForceCouroutine(timer.timeLeft + 1) );
+        timer.timerLaunch = true;
+    }
+
+    public IEnumerator TimerForceCouroutine(float seconde)
+    {
+
+        yield return new WaitForSeconds(seconde);
+        TimerDisplay2 timer = GetBoss().transform.Find("TimerForceVote").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay2>();
+        if (timer.timeLeft <= 0 && !voteDoorHasProposed)
+        {
+            if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            {
+                List<GameObject> listDoorAvailable = GetDoorAvailable();
+                if (listDoorAvailable.Count == 0)
+                    listDoorAvailable.Add(GetDoorAvailabeInRoomTraversed());
+                int indexDoorCurrent = Random.Range(0, listDoorAvailable.Count);
+                gameManagerNetwork.SendOpenDoorForceByTimer(listDoorAvailable[indexDoorCurrent].GetComponent<Door>().index);
+                timer.timeLeft = 200;
+            }
+        }
+
+    } 
+
+    public void PauseTimerFroce(bool pause)
+    {
+
+        TimerDisplay2 timer = GetBoss().transform.Find("TimerForceVote").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay2>();
+        timer.pause = pause;
+        if (pause)
+        {
+            DisplayTimerForce(false);
+        }
+        if(pause == false)
+        {
+            DisplayTimerForce(true);
+
+            if (timer.timeLeft <= 0)
+            {
+                timer.timeLeft = 200;
+                timer.timerLaunch = true;
+            }
+                
+            StartCoroutine(TimerForceCouroutine(timer.timeLeft + 1));
+
+        }
+            
+    }
+
+    public void DisplayTimerForce(bool display)
+    {
+        GetBoss().transform.Find("TimerForceVote").gameObject.SetActive(display);
+        GetBoss().transform.Find("TimerForceVote").Find("CanvasTimer").gameObject.SetActive(display);
+    }
+
+    public GameObject GetDoorAvailabeInRoomTraversed()
+    {
+        foreach (Room room in game.dungeon.GetListRoomDiscoverd())
+        {
+            for(int i =0; i < 5; i++)
+            {
+                if (!room.door_isOpen[i])
+                {
+                    gameManagerNetwork.SendOpenDoorInListBoolean(room.Index, i, true);
+                    return GetDoorGo(i);
+                }
+            }
+           
+        }
+        return null;
     }
 
 }

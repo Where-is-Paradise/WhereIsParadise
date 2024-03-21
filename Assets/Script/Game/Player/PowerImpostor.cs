@@ -87,6 +87,8 @@ public class PowerImpostor : MonoBehaviourPun
                 return;
             if (player.isSacrifice)
                 return;
+            if (indexPower == 3 && (collision.transform.parent.GetComponent<Door>().GetRoomBehind().IsExit || collision.transform.parent.GetComponent<Door>().GetRoomBehind().IsHell))
+                return;
 
             SetRedLightColorPlayer(true, collision.transform.parent.GetComponent<Door>().index);
             isNearOfDoor = true;

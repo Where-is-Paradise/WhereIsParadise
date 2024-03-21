@@ -114,6 +114,7 @@ public class TrialsRoom : MonoBehaviourPun
         ResetHeartForAllPlayer();
        
 
+
     }
 
     public void ReactivateCurrentRoom()
@@ -138,12 +139,13 @@ public class TrialsRoom : MonoBehaviourPun
 
         gameManagerParent.DisplayTorchBarre(true);
 
-/*        GameObject playerWithBarre = gameManagerParent.GetPlayerWithTorchBarre();
-        if(playerWithBarre)
-            playerWithBarre.transform.Find("TorchBarre").gameObject.SetActive(true);*/
 
         gameManagerParent.ui_Manager.DisplayInteractionObject(true);
         gameManagerParent.ui_Manager.HideFightMusic();
+
+        Debug.Log(indexObject);
+        if(indexObject != 0)
+            gameManagerParent.PauseTimerFroce(false);
     }
 
     public void ActivateObjectPower(int indexPlayer)

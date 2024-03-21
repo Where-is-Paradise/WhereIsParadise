@@ -2661,7 +2661,57 @@ public class GameManagerNetwork : MonoBehaviourPun
 
             }
             StartCoroutine(gameManager.ChangeBossCoroutine(0.1f));
+
+            if(gameManager.game.key_counter > 0)
+                StartCoroutine(gameManager.LaunchTimerForceOpen());
         }
+        else
+        {
+            gameManager.PauseTimerFroce(false);
+        }
+
+        gameManager.ui_Manager.ResetNbVote();
+        gameManager.ui_Manager.DesactiveZoneDoor();
+        gameManager.voteDoorHasProposed = false;
+        gameManager.timer.ResetTimer();
+        gameManager.ClearDoor();
+        gameManager.ClearExpedition();
+        gameManager.ui_Manager.DisplayKeyAndTorch(true);
+        gameManager.alreadyPass = false;
+        gameManager.SetAlreadyHideForAllPlayers();
+        gameManager.UpdateSpecialsRooms(gameManager.game.currentRoom);
+        if (gameManager.game.currentRoom.IsVirus)
+            gameManager.ui_Manager.ResetLetterDoor();
+        if (gameManager.game.dungeon.initialRoom.HasSameLocation(gameManager.game.currentRoom))
+        {
+            gameManager.ui_Manager.SetDistanceRoom(gameManager.game.dungeon.initialRoom.DistancePathFinding, null);
+
+        }
+        gameManager.CloseDoorWhenVote(false);
+        gameManager.ui_Manager.zones_X.GetComponent<x_zone_colider>().nbVote = 0;
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivate(false);
+        gameManager.ui_Manager.DisplayTrapPowerButtonDesactivateTime(true, 3);
+
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivate(false);
+        gameManager.ui_Manager.DisplayObjectPowerButtonDesactivateTime(true, 3);
+
+        if (gameManager.indexPlayerPreviousExploration == gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID)
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayTorchBarre(true);
+    }
+
+
+    public void SendOpenDoorForceByTimer(int indexDoor)
+    {
+        photonView.RPC("SetOpenDoorForceByTimer", RpcTarget.All, indexDoor);
+    }
+
+    [PunRPC]
+    public void SetOpenDoorForceByTimer(int indexDoor)
+    {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            SendRandomIndexDoor(indexDoor);
+        StartCoroutine(gameManager.ChangeBossCoroutine(0.1f));
+        StartCoroutine(gameManager.LaunchTimerForceOpen());
 
         gameManager.ui_Manager.ResetNbVote();
         gameManager.ui_Manager.DesactiveZoneDoor();
@@ -2751,5 +2801,27 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetDisplaySupportTorch(bool display)
     {
         gameManager.ui_Manager.DisplaySupportTorch(display);
+    }
+
+    public void SendTimerForcePause(bool pause)
+    {
+        photonView.RPC("SetTimerForcePause", RpcTarget.All, pause);
+    }
+
+    [PunRPC]
+    public void SetTimerForcePause(bool pause)
+    {
+        gameManager.PauseTimerFroce(pause);
+    }
+
+    public void SendOpenDoorInListBoolean(int indexRoom , int indexBoolen, bool isOpen)
+    {
+        photonView.RPC("SetOpenDoorInListBoolean", RpcTarget.All, indexRoom , indexBoolen, isOpen) ;
+    }
+
+    [PunRPC]
+    public void SetOpenDoorInListBoolean(int indexRoom, int indexBoolen, bool isOpen)
+    {
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).door_isOpen[indexBoolen] = isOpen;
     }
 }

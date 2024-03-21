@@ -8,10 +8,13 @@ public class PrayRoom : MonoBehaviour
     public bool roomIsLaunched = false;
     public bool powerIsUsed = false;
     public GameManager gameManager;
+    public Room roomUsedWhenCursed;
+    public int distanceImpostor = 0;
+
     // Start is called before the first frame update
     void Start()
     {
-       
+        SetRoomCursed();
     }
 
     // Update is called once per frame
@@ -48,9 +51,7 @@ public class PrayRoom : MonoBehaviour
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         int numberZone = (players.Length / 2);
-        Debug.Log(numberZone);
         numberZone = players.Length % 2 != 0 ? (numberZone + 1) : numberZone;
-        Debug.Log(numberZone);
         for (int i = 0; i < numberZone; i++)
         {
             this.transform.Find("ZonesPray").GetChild(i).gameObject.SetActive(active);
@@ -73,9 +74,8 @@ public class PrayRoom : MonoBehaviour
         ActiveAnimationZone();
         if (gameManager.game.currentRoom.isTraped && !gameManager.game.currentRoom.IsFoggy && !gameManager.game.currentRoom.isIllustion && !gameManager.game.currentRoom.IsVirus)
         {
-            DisplayChangeParadise();
-            gameManager.ChangePositionParadise();
-            powerIsUsed = true;
+            SetRoomCursed();
+            DisplayFalseDistance();
         }    
         else
             DisplayDistance();
@@ -89,6 +89,11 @@ public class PrayRoom : MonoBehaviour
     {
         int distance = gameManager.game.currentRoom.DistancePathFinding;
         this.transform.Find("Status").Find("DistanceParadise").Find("Canvas").Find("Text").GetComponent<Text>().text = distance.ToString();
+        this.transform.Find("Status").Find("DistanceParadise").gameObject.SetActive(true);
+    }
+    public void DisplayFalseDistance()
+    {
+        this.transform.Find("Status").Find("DistanceParadise").Find("Canvas").Find("Text").GetComponent<Text>().text = this.distanceImpostor.ToString();
         this.transform.Find("Status").Find("DistanceParadise").gameObject.SetActive(true);
     }
 
@@ -110,7 +115,10 @@ public class PrayRoom : MonoBehaviour
         }
         else
         {
-            this.transform.Find("Status").Find("ChangeParadiseImpostorView").gameObject.SetActive(true);
+          
+            this.distanceImpostor = gameManager.game.dungeon.GetPathFindingDistance(gameManager.game.currentRoom, gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().roomUsedWhenCursed);
+            this.transform.Find("Status").Find("DistanceParadiseImpostorView").Find("Canvas").Find("Text").GetComponent<Text>().text = this.distanceImpostor.ToString();
+            this.transform.Find("Status").Find("DistanceParadiseImpostorView").gameObject.SetActive(true);
         }
     }
 
@@ -119,5 +127,42 @@ public class PrayRoom : MonoBehaviour
         yield return new WaitForSeconds(2f);
         ActiveZoneByNumberPlayer(false);
     }
-    
+
+    public void SetRoomCursed()
+    {
+        List<Room> listPossiblityRoom = new List<Room>();
+        List<Room> listPossiblityRoomWithMoreDistance = new List<Room>();
+        foreach (Room room in gameManager.game.dungeon.rooms)
+        {
+            if (room.distance_pathFinding_initialRoom == gameManager.game.dungeon.exit.distance_pathFinding_initialRoom)
+            {
+                if (room.IsObstacle || room.IsExit)
+                    continue;
+                /*if (gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.dungeon.exit) > 3)
+                {
+                    listPossiblityRoomWithMoreDistance.Add(room);
+                }*/
+                Debug.Log(gameManager.game.currentRoom.DistancePathFinding + " " + gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.currentRoom));
+                if (gameManager.game.currentRoom.DistancePathFinding == gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.currentRoom))
+                    continue;
+                listPossiblityRoom.Add(room);
+            }
+        }
+        /*        if (listPossiblityRoomWithMoreDistance.Count == 0)
+                {
+                    //this.distanceCursed = listPossiblityRoom[Random.Range(0, listPossiblityRoom.Count)].distance_pathFinding_initialRoom;
+                    this.roomUsedWhenCursed = listPossiblityRoom[Random.Range(0, listPossiblityRoom.Count)];
+                    return;
+                }*/
+        Debug.Log(listPossiblityRoomWithMoreDistance.Count);
+        if (listPossiblityRoom.Count == 0)
+        {
+            distanceImpostor = 5;
+            return;
+        }
+      
+        this.roomUsedWhenCursed = listPossiblityRoom[Random.Range(0, listPossiblityRoom.Count)];
+        Debug.Log(this.roomUsedWhenCursed);
+    }
+
 }
