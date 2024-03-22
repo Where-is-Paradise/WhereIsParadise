@@ -1229,6 +1229,84 @@ public class PlayerGO : MonoBehaviour
         gameManager.ui_Manager.DisplayButtonMainKeyBigger(enter);
     }
 
+    public void CollisionWithMap(Collider2D collision, bool enter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+        if (!collision.gameObject.tag.Equals("InteractionObject"))
+            return;
+        if (!collision.gameObject.name.Equals("Map"))
+            return;
+        if (gameManager.timer.timerLaunch)
+        {
+            gameManager.ui_Manager.DisplayButtonMainKeyBigger(false);
+            return;
+        }
+
+
+
+        gameManager.ui_Manager.DisplayButtonMapBigger(enter);
+    }
+
+    public void CollisionWithChangeBoss(Collider2D collision, bool enter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+        if (!collision.gameObject.tag.Equals("InteractionObject"))
+            return;
+        if (!collision.gameObject.name.Equals("Boss"))
+            return;
+        if (isBoss)
+            return;
+        if (gameManager.timer.timerLaunch)
+        {
+            gameManager.ui_Manager.DisplayButtonMainKeyBigger(false);
+            return;
+        }
+
+
+
+        gameManager.ui_Manager.DisplayButtonChnageBossBigger(enter);
+    }
+
+    public void CollisionWithTutorial(Collider2D collision, bool enter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+        if (!collision.gameObject.tag.Equals("InteractionObject"))
+            return;
+        if (!collision.gameObject.name.Equals("Tutorial"))
+            return;
+        if (gameManager.timer.timerLaunch)
+        {
+            gameManager.ui_Manager.DisplayButtonMainKeyBigger(false);
+            return;
+        }
+
+
+
+        gameManager.ui_Manager.DisplayButtonTutorialBigger(enter);
+    }
+
+    public void CollisionWithTutorialSpeciality(Collider2D collision, bool enter)
+    {
+        if (!GetComponent<PhotonView>().IsMine)
+            return;
+        if (!collision.gameObject.tag.Equals("InteractionObject"))
+            return;
+        if (!collision.gameObject.name.Equals("TutorialSpeciallyRoom"))
+            return;
+        if (gameManager.timer.timerLaunch)
+        {
+            gameManager.ui_Manager.DisplayButtonMainKeyBigger(false);
+            return;
+        }
+
+
+
+        gameManager.ui_Manager.DisplayButtonTutorialBigger(enter);
+    }
+
 
     // COPIEZ LA FONCTION D4AU DESSSUS MON POTE
 
@@ -1336,6 +1414,10 @@ public class PlayerGO : MonoBehaviour
         CollisionWithNPC(collision, true);
         CollisionWithNPC_informationEnd(collision, true);
         CollisionWithMainKey(collision, true);
+        CollisionWithMap(collision, true);
+        CollisionWithChangeBoss(collision, true);
+        CollisionWithTutorial(collision, true);
+        CollisionWithTutorialSpeciality(collision, true);
 
 
         if (collision.gameObject.tag == "TrialObject")
@@ -1395,7 +1477,13 @@ public class PlayerGO : MonoBehaviour
             return;
         }
         changeBoss = !changeBoss;
-        
+
+        if (gameManager.usedChangeBossPower)
+        {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayOpenDoorBeforeChangeBoss();
+        }
+
+
     }
 
     public void InputDisplayTutorial()
@@ -1561,6 +1649,10 @@ public class PlayerGO : MonoBehaviour
         CollisionWithNPC(collision, false);
         CollisionWithNPC_informationEnd(collision, false);
         CollisionWithMainKey(collision, false);
+        CollisionWithMap(collision, false);
+        CollisionWithChangeBoss(collision, false);
+        CollisionWithTutorial(collision, false);
+        CollisionWithTutorialSpeciality(collision, false);
     }
 
 
@@ -1703,6 +1795,8 @@ public class PlayerGO : MonoBehaviour
         }
         if (gameManager.game.currentRoom.explorationIsUsed)
         {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayErrorBlueTorchNotAvaible();
+            DispayRedLight();
             return;
         }
         if(gameManager.game.nbTorch <= 0)
@@ -1728,6 +1822,8 @@ public class PlayerGO : MonoBehaviour
         }
         if (gameManager.game.currentRoom.isTrial && !gameManager.game.currentRoom.speciallyPowerIsUsed)
         {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayDoTrialBeforeUsedBlueTorch();
+            DispayRedLight();
             return;
         }
         if (gameManager.speciallyIsLaunch)
@@ -1735,7 +1831,12 @@ public class PlayerGO : MonoBehaviour
         if (OnePlayerHasWinFireball())
             return;
         if (gameManager.indexPlayerPreviousExploration == this.transform.GetComponent<PhotonView>().ViewID)
+        {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayHeHasAlreadyTorch();
+            DispayRedLight();
             return;
+        }
+            
         if (gameManager.onePlayerHasTorch && !this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf)
             return;
         gameManager.gameManagerNetwork.SendDisplaySupportTorch(this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);
@@ -1899,6 +2000,12 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (gameManager.usedChangeBossPower)
+        {
+            //gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayOpenDoorBeforeChangeBoss();
+            return;
+        }
+
 
 
         //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
@@ -2595,6 +2702,21 @@ public class PlayerGO : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         isInvincible = false;
+    }
+
+    public void DispayRedLight()
+    {
+        if (!this.transform.Find("Skins").GetChild(indexSkin).Find("Light_red").gameObject.activeSelf)
+            StartCoroutine(DispayRedLightCouroutine());
+
+    }
+
+    public IEnumerator DispayRedLightCouroutine()
+    {
+        this.transform.Find("Skins").GetChild(indexSkin).Find("Light_red").gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        this.transform.Find("Skins").GetChild(indexSkin).Find("Light_red").gameObject.SetActive(false);
+
     }
 
 

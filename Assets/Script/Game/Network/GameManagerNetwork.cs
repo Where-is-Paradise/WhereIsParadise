@@ -2824,4 +2824,16 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).door_isOpen[indexBoolen] = isOpen;
     }
+
+    public void SendUsedBossPower(bool isUsed)
+    {
+        photonView.RPC("SetUsedBossPower", RpcTarget.All, isUsed);
+    }
+
+    [PunRPC]
+    public void SetUsedBossPower(bool isUsed)
+    {
+        gameManager.usedChangeBossPower = isUsed;
+    }
+
 }

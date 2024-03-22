@@ -197,7 +197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterRoom: {fileID: 0}
   target: {fileID: 0}
-  speed: 3
+  speed: 2
 --- !u!58 &7760622197890568526
 CircleCollider2D:
   m_ObjectHideFlags: 0

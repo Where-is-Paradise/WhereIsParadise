@@ -130,6 +130,10 @@ public class Death_NPC : MonoBehaviourPun
     {
         foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
         {
+            if (player.GetComponent<PlayerGO>().isTouchInTrial)
+                continue;
+            if (!player.GetComponent<PhotonView>().IsMine)
+                continue;
             if (Mathf.Abs((this.transform.position.x - player.transform.position.x)) < 2f && Mathf.Abs((this.transform.position.y - player.transform.position.y)) < 2f)
                 return true;       
         }

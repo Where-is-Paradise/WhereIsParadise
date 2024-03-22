@@ -315,6 +315,7 @@ public class PlayerNetwork : MonoBehaviourPun
                 {
                     StartCoroutine(player.GetComponent<PlayerNetwork>().CouroutineResetWantToChangeBoss());
                 }
+                player.gameManager.gameManagerNetwork.SendUsedBossPower(true);
             }
         }
         else
@@ -326,6 +327,7 @@ public class PlayerNetwork : MonoBehaviourPun
                 {
                     StartCoroutine(player.GetComponent<PlayerNetwork>().CouroutineResetWantToChangeBoss());
                 }
+                player.gameManager.gameManagerNetwork.SendUsedBossPower(true);
             }
         }
     }

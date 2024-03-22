@@ -7,7 +7,7 @@ public class MonsterNPC : MonoBehaviourPun
 {
     public MonstersRoom monsterRoom;
     public PlayerGO target;
-    public float speed = 3;
+    public float speed = 2;
     // Start is called before the first frame update
     void Start()
     {

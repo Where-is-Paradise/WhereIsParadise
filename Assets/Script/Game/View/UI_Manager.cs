@@ -1054,10 +1054,10 @@ setting_button_echapMenu.SetActive(false);
             resumePanel.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
             resumePanel.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
             resumePanel.transform.GetChild(0).GetChild(3).GetChild(1).GetComponent<Text>().text = listImpostorsName[0].GetComponent<PlayerGO>().playerName;
+            Debug.Log(listImpostorsName[0].GetComponent<PlayerGO>().indexSkin);
             resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("Image").GetComponent<Image>().sprite = 
-                listImpostorsName[0].transform.Find("Skins").GetChild(listImpostorsName[0].GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().sprite;
-            resumePanel.transform.Find("Impostors").Find("Impostor_solo").Find("eye").gameObject.SetActive(listImpostorsName[0].transform.Find("Skins")
-                .GetChild(listImpostorsName[0].GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.activeSelf);
+                listImpostorsName[0].transform.Find("Skins").GetChild(listImpostorsName[0].GetComponent<PlayerGO>().indexSkin)
+                .Find("Colors").GetChild(listImpostorsName[0].GetComponent<PlayerGO>().indexSkinColor).GetComponent<SpriteRenderer>().sprite;
         }
         else
         {
@@ -1068,9 +1068,8 @@ setting_button_echapMenu.SetActive(false);
                 {
                     resumePanel.transform.Find("Impostors").Find("Impostor" + i).Find("Text").GetComponent<Text>().text = listImpostorsName[i].GetComponent<PlayerGO>().playerName;
                     resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("Image").GetComponent<Image>().sprite =
-                        listImpostorsName[i].transform.Find("Skins").GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().sprite;
-                    resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("eye").gameObject.SetActive(listImpostorsName[i].transform.Find("Skins")
-                        .GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.activeSelf);
+                        listImpostorsName[i].transform.Find("Skins").GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin)
+                        .Find("Colors").GetChild(listImpostorsName[0].GetComponent<PlayerGO>().indexSkinColor).GetComponent<SpriteRenderer>().sprite;
                 }
             }
             else
@@ -1079,9 +1078,8 @@ setting_button_echapMenu.SetActive(false);
                 {
                     resumePanel.transform.Find("Impostors").Find("Impostor" + i).Find("Text").GetComponent<Text>().text = listImpostorsName[i].GetComponent<PlayerGO>().playerName;
                     resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("Image").GetComponent<Image>().sprite =
-                        listImpostorsName[i].transform.Find("Skins").GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).GetComponent<SpriteRenderer>().sprite;
-                    resumePanel.transform.Find("Impostors").Find("Impostor"+i).Find("eye").gameObject.SetActive(listImpostorsName[i].transform.Find("Skins")
-                        .GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin).Find("Eyes1").gameObject.activeSelf);
+                        listImpostorsName[i].transform.Find("Skins").GetChild(listImpostorsName[i].GetComponent<PlayerGO>().indexSkin)
+                        .Find("Colors").GetChild(listImpostorsName[0].GetComponent<PlayerGO>().indexSkinColor).GetComponent<SpriteRenderer>().sprite;
                 }
             }
         }
@@ -2403,6 +2401,37 @@ setting_button_echapMenu.SetActive(false);
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchVoteDoorMobile = true;
         canvasInGame.transform.Find("Interaction").Find("Key_intercation").gameObject.SetActive(false);
 
+    }
+    public void DisplayButtonMapBigger(bool display)
+    {
+        canvasInGame.transform.Find("Interaction").Find("Map_interaction").gameObject.SetActive(display);
+    }
+    public void OnClickMapBigger()
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().displayMap = true;
+    }
+    public void DisplayButtonChnageBossBigger(bool display)
+    {
+        canvasInGame.transform.Find("Interaction").Find("Boss_interaction").gameObject.SetActive(display);
+    }
+    public void OnClickChangeBossBigger()
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().changeBoss = true;
+
+        if (gameManager.usedChangeBossPower)
+        {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayOpenDoorBeforeChangeBoss();
+        }
+    }
+
+    public void DisplayButtonTutorialBigger(bool display)
+    {
+        canvasInGame.transform.Find("Interaction").Find("Tutorial_interaction").gameObject.SetActive(display);
+    }
+
+    public void OnClickTutorialBigger()
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().displayTutorial = true;
     }
 
     public void OnClickButtonNPC()

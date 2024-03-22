@@ -147,6 +147,12 @@ public class GameManager : MonoBehaviourPun
 
     public GameObject lostSoulMap;
     public GameObject lostSoulMapCurrent;
+
+
+    public bool usedChangeBossPower = false;
+
+    public GameObject errorMessage;
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -215,7 +221,7 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendBoss(GetBoss().GetComponent<PhotonView>().ViewID);
             game.SetKeyCounter();
             game.key_counter = game.key_counter + setting.KEY_ADDITIONAL + 3;
-            //game.key_counter = 6;
+            //game.key_counter = 3;
             gameManagerNetwork.SendKey(game.key_counter);
             ui_Manager.SetNBKey();
             SetInitialPositionPlayers();
@@ -332,6 +338,7 @@ public class GameManager : MonoBehaviourPun
         {
             GameObject door = GetDoorWithMajority();
             gameManagerNetwork.SendEndVoteDoorCoroutine(door.GetComponent<Door>().index);
+            gameManagerNetwork.SendUsedBossPower(false);
         }
         
     }
@@ -4763,7 +4770,7 @@ public class GameManager : MonoBehaviourPun
         TimerDisplay2 timer = GetBoss().transform.Find("TimerForceVote").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay2>();
         DisplayTimerForce(true);
         PauseTimerFroce(false);
-        timer.timeLeft = 200;
+        timer.timeLeft = 150;
 
         
         StartCoroutine(TimerForceCouroutine(timer.timeLeft + 1) );
@@ -4775,7 +4782,7 @@ public class GameManager : MonoBehaviourPun
 
         yield return new WaitForSeconds(seconde);
         TimerDisplay2 timer = GetBoss().transform.Find("TimerForceVote").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay2>();
-        if (timer.timeLeft <= 0 && !voteDoorHasProposed)
+        if (timer.timeLeft <= 0 && !voteDoorHasProposed && !speciallyIsLaunch)
         {
             if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             {
@@ -4784,7 +4791,7 @@ public class GameManager : MonoBehaviourPun
                     listDoorAvailable.Add(GetDoorAvailabeInRoomTraversed());
                 int indexDoorCurrent = Random.Range(0, listDoorAvailable.Count);
                 gameManagerNetwork.SendOpenDoorForceByTimer(listDoorAvailable[indexDoorCurrent].GetComponent<Door>().index);
-                timer.timeLeft = 200;
+                timer.timeLeft = 150;
             }
         }
 
@@ -4805,7 +4812,7 @@ public class GameManager : MonoBehaviourPun
 
             if (timer.timeLeft <= 0)
             {
-                timer.timeLeft = 200;
+                timer.timeLeft = 150;
                 timer.timerLaunch = true;
             }
                 
