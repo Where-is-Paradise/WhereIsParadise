@@ -2662,12 +2662,13 @@ public class GameManagerNetwork : MonoBehaviourPun
             }
             StartCoroutine(gameManager.ChangeBossCoroutine(0.1f));
 
-            if(gameManager.game.key_counter > 0)
-                StartCoroutine(gameManager.LaunchTimerForceOpen());
+            if (gameManager.game.key_counter > 0)
+                StartCoroutine(SetLaunchTimerForceOpenCoroutine());
         }
         else
         {
-            gameManager.PauseTimerFroce(false);
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                SendPauseTimerForce(false);
         }
 
         gameManager.ui_Manager.ResetNbVote();
@@ -2836,4 +2837,42 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.usedChangeBossPower = isUsed;
     }
 
+    public void SendDistancePrayRoom(int distance)
+    {
+        photonView.RPC("SetDistancePrayRoom", RpcTarget.All, distance);
+    }
+
+    [PunRPC]
+    public void SetDistancePrayRoom(int distance)
+    {
+        gameManager.distancePrayRoom = distance;
+    }
+
+    public void SendLaunchTimerForceOpen()
+    {
+        photonView.RPC("SetLaunchTimerForceOpen", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetLaunchTimerForceOpen()
+    {
+        StartCoroutine(gameManager.LaunchTimerForceOpen());
+    }
+
+    public IEnumerator SetLaunchTimerForceOpenCoroutine()
+    {
+        yield return new WaitForSeconds(0.3f);
+        SendLaunchTimerForceOpen();
+    }
+
+    public void SendPauseTimerForce(bool pause)
+    {
+        photonView.RPC("SetPauseTimerForce", RpcTarget.All, pause);
+    }
+
+    [PunRPC]
+    public void SetPauseTimerForce(bool pause)
+    {
+        gameManager.PauseTimerFroce(pause);
+    }
 }

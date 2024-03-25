@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using Luminosity.IO;
 
 public class PlayerNetwork : MonoBehaviourPun
 {
@@ -1320,5 +1321,63 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.explorationPowerIsAvailable = isAvailble;
         player.gameManager.indexPlayerPreviousExploration = player.GetComponent<PhotonView>().ViewID;
+    }
+
+    public void SendDash()
+    {
+        photonView.RPC("SetDash", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetDash()
+    {
+        if (!player.GetComponent<PhotonView>().IsMine)
+            return;
+
+        float horizontal = InputManager.GetAxis("Horizontal");
+        float vertical = InputManager.GetAxis("Vertical");
+        if ((horizontal > -0.1f && horizontal < 0.1f) && (vertical < 0.1f && vertical > -0.1f))
+        {
+            if (Mathf.Sign(this.transform.Find("Skins").GetChild(player.indexSkin).localScale.x) == 1)
+            {
+                this.transform.position += new Vector3(-1.5f, 0);
+            }
+            else
+            {
+                this.transform.position += new Vector3(1.5f, 0);
+            }
+        }
+        else if (horizontal < 0.1f && horizontal > -0.1f)
+        {
+            this.transform.position += new Vector3(0, Mathf.Sign(vertical) * 1.5f);
+        }
+        if ((vertical < 0.1f && vertical > -0.1f) && (horizontal > 0.1f || horizontal < -0.1f))
+        {
+            this.transform.position += new Vector3(Mathf.Sign(horizontal) * 1.5f, 0);
+        }
+        if ((horizontal > 0.1f || horizontal < -0.1f) && (vertical > 0.1f || vertical < -0.1f))
+        {
+            this.transform.position += new Vector3(Mathf.Sign(horizontal) * 1.2f, Mathf.Sign(vertical) * 1.2f);
+        }
+        if (this.transform.position.y > 3.25f)
+        {
+            this.transform.position = new Vector2(this.transform.position.x, 3.25f);
+        }
+        if (this.transform.position.y < -3.1f)
+        {
+            this.transform.position = new Vector2(this.transform.position.x, -3.1f);
+        }
+        if (this.transform.position.x < -6.4)
+        {
+            this.transform.position = new Vector2(-6.4f, this.transform.position.y);
+        }
+        if (this.transform.position.x > 6.6)
+        {
+            this.transform.position = new Vector2(6.6f, this.transform.position.y);
+        }
+
+        this.transform.Find("DashAnimation").GetChild(0).gameObject.SetActive(true);
+        player.gameManager.ui_Manager.LaunchDashSound();
+        StartCoroutine(player.CouroutineAvaibleDash());
     }
 }

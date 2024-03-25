@@ -123,10 +123,10 @@ MonoBehaviour:
     TeleportEnabled: 1
     TeleportIfDistanceGreaterThan: 3
     InterpolateOption: 1
-    InterpolateMoveTowardsSpeed: 5
+    InterpolateMoveTowardsSpeed: 2.5
     InterpolateLerpSpeed: 1
-    ExtrapolateOption: 0
-    ExtrapolateSpeed: 1
+    ExtrapolateOption: 3
+    ExtrapolateSpeed: 2.5
     ExtrapolateIncludingRoundTripTime: 1
     ExtrapolateNumberOfStoredPositions: 1
   m_RotationModel:
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterRoom: {fileID: 0}
   target: {fileID: 0}
-  speed: 2
+  speed: 2.5
 --- !u!58 &7760622197890568526
 CircleCollider2D:
   m_ObjectHideFlags: 0

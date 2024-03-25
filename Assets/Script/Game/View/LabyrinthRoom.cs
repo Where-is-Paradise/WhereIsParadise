@@ -391,12 +391,12 @@ public class LabyrinthRoom : TrialsRoom
        
         if (listPotentialAward.Count == 0)
         {
-            ChooseRandomObject(listPotentialAwardSecondOption, Random.Range(0, listPotentialAwardSecondOption.Count), false,0);
+            ChooseRandomObject(listPotentialAwardSecondOption, 0, false,0);
             ChooseRandomObject(listPotentialAwardSecondOption, Random.Range(0, listPotentialAwardSecondOption.Count), true,1);
             return;
         }
         int indexObstacle = Random.Range(0, listPotentialAward.Count);
-        int indexAward = ChooseRandomObject(listPotentialAward,indexObstacle, false,0);
+        int indexAward = ChooseRandomObject(listPotentialAward,0, false,0);
         int indexObstacle2 = Random.Range(0, listPotentialAward.Count);
         if (indexAward == 0 || indexAward == 3)
         {

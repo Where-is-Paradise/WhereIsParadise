@@ -14,7 +14,9 @@ public class PrayRoom : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SetRoomCursed();
+        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            SetRoomCursed();
+       
     }
 
     // Update is called once per frame
@@ -74,7 +76,7 @@ public class PrayRoom : MonoBehaviour
         ActiveAnimationZone();
         if (gameManager.game.currentRoom.isTraped && !gameManager.game.currentRoom.IsFoggy && !gameManager.game.currentRoom.isIllustion && !gameManager.game.currentRoom.IsVirus)
         {
-            SetRoomCursed();
+            //SetRoomCursed();
             DisplayFalseDistance();
         }    
         else
@@ -93,7 +95,7 @@ public class PrayRoom : MonoBehaviour
     }
     public void DisplayFalseDistance()
     {
-        this.transform.Find("Status").Find("DistanceParadise").Find("Canvas").Find("Text").GetComponent<Text>().text = this.distanceImpostor.ToString();
+        this.transform.Find("Status").Find("DistanceParadise").Find("Canvas").Find("Text").GetComponent<Text>().text = gameManager.distancePrayRoom.ToString();
         this.transform.Find("Status").Find("DistanceParadise").gameObject.SetActive(true);
     }
 
@@ -114,10 +116,8 @@ public class PrayRoom : MonoBehaviour
             this.transform.Find("Status").Find("DistanceParadiseImpostorView").gameObject.SetActive(true);
         }
         else
-        {
-          
-            this.distanceImpostor = gameManager.game.dungeon.GetPathFindingDistance(gameManager.game.currentRoom, gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().roomUsedWhenCursed);
-            this.transform.Find("Status").Find("DistanceParadiseImpostorView").Find("Canvas").Find("Text").GetComponent<Text>().text = this.distanceImpostor.ToString();
+        {           
+            this.transform.Find("Status").Find("DistanceParadiseImpostorView").Find("Canvas").Find("Text").GetComponent<Text>().text = gameManager.distancePrayRoom.ToString();
             this.transform.Find("Status").Find("DistanceParadiseImpostorView").gameObject.SetActive(true);
         }
     }
@@ -138,22 +138,12 @@ public class PrayRoom : MonoBehaviour
             {
                 if (room.IsObstacle || room.IsExit)
                     continue;
-                /*if (gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.dungeon.exit) > 3)
-                {
-                    listPossiblityRoomWithMoreDistance.Add(room);
-                }*/
                 Debug.Log(gameManager.game.currentRoom.DistancePathFinding + " " + gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.currentRoom));
                 if (gameManager.game.currentRoom.DistancePathFinding == gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.currentRoom))
                     continue;
                 listPossiblityRoom.Add(room);
             }
         }
-        /*        if (listPossiblityRoomWithMoreDistance.Count == 0)
-                {
-                    //this.distanceCursed = listPossiblityRoom[Random.Range(0, listPossiblityRoom.Count)].distance_pathFinding_initialRoom;
-                    this.roomUsedWhenCursed = listPossiblityRoom[Random.Range(0, listPossiblityRoom.Count)];
-                    return;
-                }*/
         Debug.Log(listPossiblityRoomWithMoreDistance.Count);
         if (listPossiblityRoom.Count == 0)
         {
@@ -162,7 +152,10 @@ public class PrayRoom : MonoBehaviour
         }
       
         this.roomUsedWhenCursed = listPossiblityRoom[Random.Range(0, listPossiblityRoom.Count)];
-        Debug.Log(this.roomUsedWhenCursed);
+        gameManager.distancePrayRoom = gameManager.game.dungeon.GetPathFindingDistance(gameManager.game.currentRoom, gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().roomUsedWhenCursed);
+        gameManager.gameManagerNetwork.SendDistancePrayRoom(gameManager.distancePrayRoom);
+
+        
     }
 
 }

@@ -721,7 +721,13 @@ public class PlayerGO : MonoBehaviour
                 {
                     this.transform.Find("TimerForceVote").Find("CanvasTimer").Find("Timer").GetComponent<Text>().enabled = true;
                 }
+                else
+                {
+                    this.transform.Find("TimerForceVote").Find("CanvasTimer").Find("Timer").GetComponent<Text>().enabled = false;
+                }
             }
+            if (this.transform.Find("TimerForceVote").Find("CanvasTimer").Find("Timer").GetComponent<Text>().text == "-1")
+                this.transform.Find("TimerForceVote").Find("CanvasTimer").Find("Timer").GetComponent<Text>().enabled = false;
         }
 
 
@@ -821,6 +827,7 @@ public class PlayerGO : MonoBehaviour
         }
         return result;
     }
+
 
 
 
@@ -2436,49 +2443,9 @@ public class PlayerGO : MonoBehaviour
 
         if (isTouchInTrial)
             return;
-        float horizontal = InputManager.GetAxis("Horizontal");
-        float vertical = InputManager.GetAxis("Vertical");
-        if((horizontal > -0.1f && horizontal < 0.1f) && (vertical < 0.1f && vertical > -0.1f))
-        {
-            if(Mathf.Sign(this.transform.Find("Skins").GetChild(indexSkin).localScale.x) == 1) {
-                this.transform.position += new Vector3(-1.5f,0);
-            }
-            else
-            {
-                this.transform.position += new Vector3(1.5f, 0);
-            }
-        }else if ( horizontal < 0.1f && horizontal > -0.1f )
-        {
-            this.transform.position += new Vector3(0, Mathf.Sign(vertical) * 1.5f);
-        }
-        if((vertical < 0.1f && vertical > -0.1f) && (horizontal > 0.1f || horizontal < -0.1f))
-        {
-            this.transform.position += new Vector3(Mathf.Sign(horizontal) * 1.5f, 0);
-        }
-        if((horizontal > 0.1f || horizontal < -0.1f) && (vertical > 0.1f || vertical < -0.1f))
-        {
-            this.transform.position += new Vector3(Mathf.Sign(horizontal) * 1.2f, Mathf.Sign(vertical) * 1.2f);
-        }
-        if(this.transform.position.y > 3.25f)
-        {
-            this.transform.position = new Vector2(this.transform.position.x, 3.25f);
-        }
-        if (this.transform.position.y < -3.1f)
-        {
-            this.transform.position = new Vector2(this.transform.position.x, -3.1f);
-        }
-        if (this.transform.position.x < -6.4)
-        {
-            this.transform.position = new Vector2(-6.4f, this.transform.position.y);
-        }
-        if (this.transform.position.x > 6.6)
-        {
-            this.transform.position = new Vector2(6.6f, this.transform.position.y);
-        }
+
         //this.transform.position += new Vector3(Mathf.Sign(horizontal) * 1.5f, Mathf.Sign(vertical) * 1.5f);
-        this.transform.Find("DashAnimation").GetChild(0).gameObject.SetActive(true);
-        gameManager.ui_Manager.LaunchDashSound();
-        StartCoroutine(CouroutineAvaibleDash());
+        GetComponent<PlayerNetwork>().SendDash();
 
     }
 

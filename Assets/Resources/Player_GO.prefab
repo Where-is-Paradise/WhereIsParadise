@@ -75179,7 +75179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d526a2359b242fc4091066e6406531b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeLeft: 120
+  timeLeft: -1
   timerLaunch: 0
   pause: 0
   gameManager: {fileID: 0}

@@ -153,6 +153,8 @@ public class GameManager : MonoBehaviourPun
 
     public GameObject errorMessage;
 
+    public int distancePrayRoom = -1;
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -3356,14 +3358,14 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-        /*gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
         return;*/
 
         if (room.isVerySpecial)
         {
             float randomInt = Random.Range(0, 100);
             Debug.Log(randomInt);
-            //randomInt = 80;
+            randomInt = 80;
             if (randomInt < AdditionalProbaVerySpeciality(0)  && setting.listSpeciallyRoom[0])
             {
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
@@ -3456,7 +3458,7 @@ public class GameManager : MonoBehaviourPun
 
             float randomInt = Random.Range(randomMonsters, randomGodDeath);
 
-            if (randomInt < 50) // 50
+            if (randomInt < 100) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }
@@ -4688,7 +4690,7 @@ public class GameManager : MonoBehaviourPun
     {
 
         float randomfloat = Random.Range(0, 100);
-        randomfloat = 76;
+        //randomfloat = 76;
         if (randomfloat < 25 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[0]);
