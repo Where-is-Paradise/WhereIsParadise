@@ -28,13 +28,13 @@ public class PurificationRoom : MonoBehaviour
         {
             gameManager.game.currentRoom.speciallyPowerIsUsed = true;
             gameManager.PurificationIsUsed = true;
-            gameManager.ui_Manager.DisplaySpeciallyLevers(false, 10);
+            gameManager.ui_Manager.DisplaySpeciallyLevers(false, 2 , "SpeciallyRoom_levers");
             this.transform.Find("zone").Find("Animation").GetChild(0).gameObject.SetActive(true);
             StartCoroutine(ActivateZone(false));
         }
         else
         {
-            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 10);
+            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 2 , "SpeciallyRoom_levers");
             StartCoroutine(CoutoutineDisplayInitialZone());
            
         }

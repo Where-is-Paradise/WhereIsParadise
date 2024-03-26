@@ -25,7 +25,7 @@ public class FireBallRoom : TrialsRoom
     {
         if (!GameObject.FindGameObjectWithTag("FireBall") && gameManager.fireBallIsLaunch)
         {
-            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 2);
+            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 0 , "TrialRoom_lever");
             gameManager.fireBallIsLaunch = false;
         }
     }

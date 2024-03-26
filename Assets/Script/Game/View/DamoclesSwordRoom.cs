@@ -101,7 +101,6 @@ public class DamoclesSwordRoom : TrialsRoom
         if (currentPlayer)
             currentPlayer.GetComponent<PlayerGO>().damoclesSwordIsAbove = false;
 
-        Debug.LogError("sa apsse 4");
         this.currentPlayer = gameManager.GetPlayer(indexPlayer);
         currentPlayer.GetComponent<PlayerGO>().damoclesSwordIsAbove = true;
         ChangePositionAtPlayer(indexPlayer);

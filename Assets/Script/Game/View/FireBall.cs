@@ -152,8 +152,6 @@ public class FireBall : MonoBehaviourPun
             return;
         GameObject player = gameManager.GetPlayer(indexPlayer);
 
-        Debug.LogError(indexPlayer + " " + player.GetComponent<PlayerGO>().lifeTrialRoom);
-
         player.GetComponent<PlayerGO>().lifeTrialRoom--;
         player.GetComponent<PlayerNetwork>()
             .SendLifeTrialRoom(player.GetComponent<PlayerGO>().lifeTrialRoom);
@@ -242,7 +240,6 @@ public class FireBall : MonoBehaviourPun
                 counter++;
             }
         }
-        Debug.LogError(counter + " " + (listPlayer.Length - 1));
         if (counter >= (listPlayer.Length - 1))
             return true;
         return false;

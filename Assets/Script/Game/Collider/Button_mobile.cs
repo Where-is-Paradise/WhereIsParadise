@@ -70,7 +70,7 @@ public class Button_mobile : MonoBehaviour
 
         gameManager.gameManagerNetwork.SendCloseDoorWhenVoteCoroutine();
 
-        gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
+        gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
     }
 
     public void OnClickTutoPanel()

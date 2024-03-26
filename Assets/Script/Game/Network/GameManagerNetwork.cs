@@ -1510,17 +1510,17 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.CloseDoorWhenVote(false);
     }
 
-    public void SendDisplaySpeciallyLevers(bool display , int indexSpecially)
+    public void SendDisplaySpeciallyLevers(bool display , int indexSpecially, string groupSpeciality)
     {
-        photonView.RPC("SetDisplaySpeciallyLevers", RpcTarget.All, display, indexSpecially);
+        photonView.RPC("SetDisplaySpeciallyLevers", RpcTarget.All, display, indexSpecially, groupSpeciality);
     }
 
     [PunRPC]
-    public void SetDisplaySpeciallyLevers(bool display, int indexSpecially)
+    public void SetDisplaySpeciallyLevers(bool display, int indexSpecially, string groupSpeciality)
     {
         if (!gameManager.SamePositionAtBoss())
             return;
-        gameManager.ui_Manager.DisplaySpeciallyLevers(display , indexSpecially);
+        gameManager.ui_Manager.DisplaySpeciallyLevers(display , indexSpecially, groupSpeciality);
     }
 
 
@@ -2130,8 +2130,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void RelaunchRoom()
     {
         gameManager.ResurectionIsUsed = true;
-        //gameManager.UpdateSpecialsRooms(this.gameManager.game.currentRoom);
-        gameManager.ui_Manager.DisplaySpeciallyLevers(true, 11);
+        gameManager.ui_Manager.DisplaySpeciallyLevers(true, 3, "SpeciallyRoom_levers");
     }
 
     public void RevivePlayer(GameObject player)

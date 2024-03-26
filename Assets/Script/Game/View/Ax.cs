@@ -389,7 +389,6 @@ public class Ax : MonoBehaviourPun
 
     public void SetCanShoot()
     {
-        Debug.Log(launcher.GetComponent<PhotonView>().ViewID + "  " + axRoom.gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
         if (launcher.GetComponent<PhotonView>().ViewID == axRoom.gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID)
         {
             axRoom.canShoot = true;

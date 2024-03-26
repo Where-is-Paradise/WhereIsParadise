@@ -1398,7 +1398,7 @@ public class GameManager : MonoBehaviourPun
         }
         if (roomExpedition.IsVirus)
         {
-            ui_Manager.DisplaySpeciallyLevers(false, 0);
+            ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
         }
     }
 
@@ -1970,7 +1970,7 @@ public class GameManager : MonoBehaviourPun
         {
             ResetVoteVD();
             GameObject newDoor = GetDoorGo(indexNeWDoor3);
-            Debug.Log("NEW DOOR " + newDoor.GetComponent<Door>().index);
+/*            Debug.Log("NEW DOOR " + newDoor.GetComponent<Door>().index);*/
             game.currentRoom.door_isOpen[newDoor.GetComponent<Door>().index] = true;
         }
 
@@ -2410,7 +2410,7 @@ public class GameManager : MonoBehaviourPun
         gameManagerNetwork.SendHellIsFind(hellIsFind, GetPlayerMine().GetId());
         CloseDoorOveride();
         ui_Manager.DisplayMainLevers(false);
-        ui_Manager.DisplaySpeciallyLevers(false, 0);
+        ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
         ui_Manager.DisplayHell(false);
         ui_Manager.HideNbKey();
         ui_Manager.ShowAllDataInMap();
@@ -2685,7 +2685,7 @@ public class GameManager : MonoBehaviourPun
     {
         isActuallySpecialityTime = false;
         ui_Manager.ClearSpecialRoom();
-        ui_Manager.DisplaySpeciallyLevers(false, 0);
+        ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
         ui_Manager.DisplayMainLevers(true);
         ui_Manager.DisplayAutelTutorialSpeciallyRoom(false);
         ui_Manager.ChangeColorAllPlayerSkinToFoggy(false);
@@ -2737,7 +2737,7 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
                 isActuallySpecialityTime = false;
             }
             UpdateColorDoor(room);
@@ -2753,7 +2753,7 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
             }
@@ -2771,7 +2771,7 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed || SacrificeIsUsedOneTimes)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
                 isActuallySpecialityTime = false;
             }
             UpdateColorDoor(room);
@@ -2799,7 +2799,7 @@ public class GameManager : MonoBehaviourPun
             if (room.speciallyPowerIsUsed)
             {
                 //ui_Manager.DisplayDeathNPCRoom(false);
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
             }
@@ -2816,7 +2816,7 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
             }
@@ -2833,7 +2833,7 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
 
@@ -2851,7 +2851,7 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
 
@@ -2869,7 +2869,7 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
 
@@ -2885,7 +2885,7 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
             }
@@ -2902,7 +2902,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             if (room.speciallyPowerIsUsed || PurificationIsUsed)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
             }
             UpdateColorDoor(room);
             return;
@@ -2917,7 +2917,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             if (room.speciallyPowerIsUsed || ResurectionIsUsed)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
             }
             UpdateColorDoor(room);
             return;
@@ -2932,7 +2932,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             if (room.speciallyPowerIsUsed || PrayIsUsed)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
             }
             UpdateColorDoor(room);
             return;
@@ -2954,7 +2954,7 @@ public class GameManager : MonoBehaviourPun
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
-                ui_Manager.DisplaySpeciallyLevers(false, 0);
+                ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
                 ui_Manager.DisplayLeverVoteDoor(true);
                 isActuallySpecialityTime = false;
             }
@@ -2965,7 +2965,7 @@ public class GameManager : MonoBehaviourPun
 
         if (room.IsExit || room.IsHell)
         {
-            ui_Manager.DisplaySpeciallyLevers(false, 0);
+            ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
             ui_Manager.DisplayMainLevers(false);
         }
     }
@@ -3365,7 +3365,7 @@ public class GameManager : MonoBehaviourPun
         {
             float randomInt = Random.Range(0, 100);
             Debug.Log(randomInt);
-            randomInt = 80;
+            //randomInt = 80;
             if (randomInt < AdditionalProbaVerySpeciality(0)  && setting.listSpeciallyRoom[0])
             {
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
@@ -4052,10 +4052,10 @@ public class GameManager : MonoBehaviourPun
             return true;
         }
 
-        int countChild = ui_Manager.MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").childCount;
+        int countChild = ui_Manager.MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_levers").Find("Specially").childCount;
         for (int i = 0;  i < countChild; i++)
         {
-            if (ui_Manager.MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").GetChild(i).gameObject.activeSelf)
+            if (ui_Manager.MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_levers").Find("Specially").GetChild(i).gameObject.activeSelf)
             {
                 return true;
             }
@@ -4123,7 +4123,7 @@ public class GameManager : MonoBehaviourPun
     public void UpdateDataInformationInEndGame()
     {
         ui_Manager.DisplayMainLevers(false);
-        ui_Manager.DisplaySpeciallyLevers(false, 0);
+        ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
         ui_Manager.ShowAllDataInMap();
         ui_Manager.ShowImpostor();
     }

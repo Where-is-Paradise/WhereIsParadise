@@ -183,6 +183,8 @@ public class PlayerGO : MonoBehaviour
 
     public bool hasCurrentTorch = false;
 
+    public bool onClickButtonKeySpecially = false;
+
     [HideInInspector]
     public int blackSoul_money = 900; 
 
@@ -1525,11 +1527,12 @@ public class PlayerGO : MonoBehaviour
 
     public void LaunchRoomSpeciallyPower()
     {
+        string groupSpeciality = "";
         if (!GetComponent<PhotonView>().IsMine)
         {
             return;
         }
-        if (!InputManager.GetButtonDown("Exploration") || !canLaunchSpeciallyRoomPower)
+        if ((!InputManager.GetButtonDown("Exploration") && !onClickButtonKeySpecially) || !canLaunchSpeciallyRoomPower)
         {
             return;
         }
@@ -1539,72 +1542,87 @@ public class PlayerGO : MonoBehaviour
         }
         if (gameManager.game.currentRoom.chest)
         {
+            groupSpeciality = "SpeciallyRoom_levers";
             gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
         }
         if (gameManager.game.currentRoom.fireBall)
         {
+            groupSpeciality = "SpeciallyRoom_levers";
             gameManager.gameManagerNetwork.SendLaunchFireBallRoom();
         } 
         if (gameManager.game.currentRoom.isSacrifice)
         {
+            groupSpeciality = "SpeciallyRoom_levers";
             gameManager.gameManagerNetwork.SendDisplayNuVoteSacrificeForAllPlayer();
             GameObject.Find("SacrificeRoom").GetComponent<SacrificeRoom>().LaunchTimerVote();
         }
         if (gameManager.game.currentRoom.isDeathNPC)
         {
-            //gameManager.InstantiateDeathNPC();
+            groupSpeciality = "TrialRoomTeam_lever";
             gameManager.gameManagerNetwork.SendLaunchDeathNPC();
         }
         if (gameManager.game.currentRoom.isSwordDamocles)
         {
+            groupSpeciality = "TrialRoom_lever";
             gameManager.gameManagerNetwork.SendLaunchDamoclesRoom();
         }
         if (gameManager.game.currentRoom.isAx)
         {
+            groupSpeciality = "TrialRoom_lever";
             gameManager.gameManagerNetwork.SendLaunchAxRoom();
         }
         if (gameManager.game.currentRoom.isSword)
         {
+            groupSpeciality = "TrialRoom_lever";
             gameManager.gameManagerNetwork.SendLaunchSwordRoom();
         }
         if (gameManager.game.currentRoom.isLostTorch)
         {
+            groupSpeciality = "TrialRoom_lever";
             gameManager.gameManagerNetwork.SendLaunchLostTorchRoom();
         }
         if (gameManager.game.currentRoom.isMonsters)
         {
+            groupSpeciality = "TrialRoomTeam_lever";
             gameManager.gameManagerNetwork.SendLaunchMonsterRoom();
         }
         if (gameManager.game.currentRoom.isPurification)
         {
+            groupSpeciality = "SpeciallyRoom_levers";
             gameManager.gameManagerNetwork.SendLaunchPurificationRoom();
         }
         if (gameManager.game.currentRoom.isResurection)
         {
+            groupSpeciality = "SpeciallyRoom_levers";
             gameManager.gameManagerNetwork.SendLaunchResurectionRoom();
         }
         if (gameManager.game.currentRoom.isPray)
         {
+            groupSpeciality = "SpeciallyRoom_levers";
             gameManager.gameManagerNetwork.SendLaunchPrayRoom();
         }
         if (gameManager.game.currentRoom.isNPC)
         {
+            groupSpeciality = "SpeciallyRoom_levers";
             gameManager.gameManagerNetwork.SendNpcRoom();
         }
         if (gameManager.game.currentRoom.isLabyrintheHide)
         {
+            groupSpeciality = "TrialRoom_lever";
             gameManager.gameManagerNetwork.SendLaunchLabyrinthRoom();
         }
 
         gameManager.gameManagerNetwork.SendCloseDoorWhenVoteCoroutine();
-        StartCoroutine(HideLeverCouroutine());
-        //gameManager.ui_Manager.DisplaySpeciallyLevers(false, 0);
+        StartCoroutine(HideLeverCouroutine(groupSpeciality));
+        onClickButtonKeySpecially = false;
+        gameManager.ui_Manager.DisplayButtonSpeciallyRoomKeyBigger(false);
+        gameManager.ui_Manager.DisplayButtonTrialRoomKeyBigger(false);
     }
 
-    public IEnumerator HideLeverCouroutine()
+    public IEnumerator HideLeverCouroutine(string groupSpeciality)
     {
         yield return new WaitForSeconds(0.2f);
-        gameManager.gameManagerNetwork.SendDisplaySpeciallyLevers(false, 0);
+        gameManager.gameManagerNetwork.SendDisplaySpeciallyLevers(false, 0, groupSpeciality);
     }
 
 
@@ -2217,6 +2235,7 @@ public class PlayerGO : MonoBehaviour
         //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         GameObject.Find("Levers").transform.Find("OpenDoor_lever").Find("Hexagone").Find("HexagoneBiggerAndLight").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Door_panel").gameObject.SetActive(isEnter);
+        
 
         if (isEnter)
         {
@@ -2244,10 +2263,11 @@ public class PlayerGO : MonoBehaviour
             gameManager.ui_Manager.DisplayUI_Mobile_SpecialRoom(false);
             return;
         }
-        if (collision.name != "SpeciallyRoom_lever")
+        if (collision.transform.parent.name != "SpeciallyRoom_levers" && collision.name != "TrialRoom_lever" && collision.name != "TrialRoomTeam_lever")
         {
             return;
         }
+        
         if (hasWinFireBallRoom)
         {
             return;
@@ -2256,6 +2276,10 @@ public class PlayerGO : MonoBehaviour
         //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.DisplayLightLeverSpeciallyRoom(isEnter);
         gameManager.ui_Manager.DisplayUI_Mobile_SpecialRoom(isEnter);
+        if(collision.transform.parent.name == "SpeciallyRoom_levers")
+            gameManager.ui_Manager.DisplayButtonSpeciallyRoomKeyBigger(isEnter);
+        else
+            gameManager.ui_Manager.DisplayButtonTrialRoomKeyBigger(isEnter);
     }
 
     public void CanChangeBoss(GameObject collision, bool isEnter)

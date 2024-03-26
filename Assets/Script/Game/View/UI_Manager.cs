@@ -1300,7 +1300,7 @@ setting_button_echapMenu.SetActive(false);
             }
         }
         MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display,0);
+        DisplaySpeciallyLevers(display,0 , "SpeciallyRoom_levers");
 
         if(!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hideImpostorInformation && !gameManager.game.currentRoom.speciallyPowerIsUsed)
             DisplayAwardAndPenaltyForImpostor(display);
@@ -1408,30 +1408,44 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayFireBallRoom(bool display)
     {
         MainRoomGraphic.transform.Find("Special").transform.Find("FireBallRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display,1);
+        DisplaySpeciallyLevers(display,0 , "TrialRoom_lever");
     }
     public void DisplaySacrificeRoom(bool display)
     {
         MainRoomGraphic.transform.Find("Special").transform.Find("SacrificeRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display,2);
+        DisplaySpeciallyLevers(display, 1 , "SpeciallyRoom_levers");
     }
 
     
-    public void DisplaySpeciallyLevers(bool display, int indexSpecially)
+    public void DisplaySpeciallyLevers(bool display, int indexSpecially, string groupSpeciality)
     {
-        for (int i = 0; i < MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").childCount; i++)
+        for (int i = 0; i < MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").Find("SpeciallyRoom_levers").childCount; i++)
         {
-            MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").GetChild(i).gameObject.SetActive(false);
+            MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").Find("SpeciallyRoom_levers").GetChild(i).gameObject.SetActive(false);
         }
-        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").GetChild(indexSpecially).gameObject.SetActive(display);
-        MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").gameObject.SetActive(display);
+        for (int i = 0; i < MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").Find("TrialRoom_lever").childCount; i++)
+        {
+            MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").Find("TrialRoom_lever").GetChild(i).gameObject.SetActive(false);
+        }
+        for (int i = 0; i < MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").Find("TrialRoomTeam_lever").childCount; i++)
+        {
+            MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").Find("TrialRoomTeam_lever").GetChild(i).gameObject.SetActive(false);
+        }
+        MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").Find("SpeciallyRoom_levers").gameObject.SetActive(false);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").Find("TrialRoom_lever").gameObject.SetActive(false);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").Find("TrialRoomTeam_lever").gameObject.SetActive(false);
+
+        MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").Find(groupSpeciality).gameObject.SetActive(display);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").Find(groupSpeciality).GetChild(indexSpecially).gameObject.SetActive(display);
+        MainRoomGraphic.transform.Find("Levers").transform.Find("All_SpeciallyRoom_lever").gameObject.SetActive(display);
+ 
+
     }
     public void HideAllLever()
     {
-        for (int i = 0; i < MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").childCount; i++)
-        {
-            MainRoomGraphic.transform.Find("Levers").transform.Find("SpeciallyRoom_lever").Find("Specially").GetChild(i).gameObject.SetActive(false);
-        }
+        DisplaySpeciallyLevers(false, 0, "TrialRoom_lever");
+        DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
+        DisplaySpeciallyLevers(false, 0, "TrialRoomTeam_lever");
     }
 
     public void DisplayMainLevers(bool display)
@@ -1585,47 +1599,47 @@ setting_button_echapMenu.SetActive(false);
     {
         GameObject.Find("Special").transform.Find("DeathNPCRoom").gameObject.SetActive(display);
         //GameObject.Find("Special").transform.Find("DeathNPCRoom").Find("DeathNpc").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 4);
+        DisplaySpeciallyLevers(display, 0 , "TrialRoomTeam_lever");
     }
     public void DisplayDamoclesSwordRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("DamoclesSwordRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 5);
+        DisplaySpeciallyLevers(display, 1, "TrialRoom_lever");
     }
     public void DisplayAxRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("AxRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 6);
+        DisplaySpeciallyLevers(display, 2 , "TrialRoom_lever");
     }
     public void DisplaySwordRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("SwordRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 7);
+        DisplaySpeciallyLevers(display, 3, "TrialRoom_lever");
     }
     public void DisplayLostTorchRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("LostTorchRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 8);
+        DisplaySpeciallyLevers(display, 4, "TrialRoom_lever");
     }
     public void DisplayMonstersRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("MonstersRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 9);
+        DisplaySpeciallyLevers(display, 1, "TrialRoomTeam_lever");
     }
     public void DisplayPurificationRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("PurificationRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 10);
+        DisplaySpeciallyLevers(display, 2 , "SpeciallyRoom_levers");
     }
     public void DisplayResurectionRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("ResurectionRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 11);
+        DisplaySpeciallyLevers(display, 3 , "SpeciallyRoom_levers");
     }
     public void DisplayPrayRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("PrayRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 12);
+        DisplaySpeciallyLevers(display, 4 , "SpeciallyRoom_levers");
     }
     public void DisplayNPCRoom(bool display)
     {
@@ -1635,7 +1649,7 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayLabyrinthRoom(bool display)
     {
         GameObject.Find("Special").transform.Find("LabyrinthHideRoom").gameObject.SetActive(display);
-        DisplaySpeciallyLevers(display, 14);
+        DisplaySpeciallyLevers(display, 5 , "TrialRoom_lever");
     }
     public void DisplayImpostorRoom(bool display)
     {
@@ -2049,39 +2063,51 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayLightLeverSpeciallyRoom(bool display)
     {
         Room room = gameManager.game.currentRoom;
-        if (!GameObject.Find("SpeciallyRoom_lever"))
+        if (!GameObject.Find("Room").transform.Find("Levers").Find("All_SpeciallyRoom_lever").gameObject.activeSelf)
             return;
-        GameObject lever = GameObject.Find("SpeciallyRoom_lever").transform.Find("Specially").gameObject;
-        if (room.chest)
-            lever.transform.Find("Chest").Find("Light").gameObject.SetActive(display);
-        if (room.fireBall)
-            lever.transform.Find("FireBall").Find("Light").gameObject.SetActive(display);
-        if (room.isSacrifice)
-            lever.transform.Find("Sacrifice").Find("Light").gameObject.SetActive(display);
-        if (room.IsVirus)
-            lever.transform.Find("Cursed").Find("Light").gameObject.SetActive(display);
-        if (room.isDeathNPC)
-            lever.transform.Find("DeathNPC").Find("DeathNPCLight").gameObject.SetActive(display);
-        if (room.isSwordDamocles)
-            lever.transform.Find("DamoclesSword").Find("Light").gameObject.SetActive(display);
-        if (room.isAx)
-            lever.transform.Find("Ax").Find("Light").gameObject.SetActive(display);
-        if (room.isSword)
-            lever.transform.Find("Sword").Find("Light").gameObject.SetActive(display);
-        if (room.isLostTorch)
-            lever.transform.Find("LostTorchLever").Find("Light").gameObject.SetActive(display);
-        if (room.isMonsters)
-            lever.transform.Find("MonsterRoom").Find("Light").gameObject.SetActive(display);
-        if (room.isPurification)
-            lever.transform.Find("PurificationRoom").Find("Light").gameObject.SetActive(display);
-        if (room.isResurection)
-            lever.transform.Find("ResurectionRoom").Find("ResurectionLight").gameObject.SetActive(display);
-        if (room.isPray)
-            lever.transform.Find("PrayRoom").Find("Light").gameObject.SetActive(display);
-        if (room.isNPC)
-            lever.transform.Find("NPCRoom").Find("NPCLight").gameObject.SetActive(display);
-        if (room.isLabyrintheHide)
-            lever.transform.Find("LabyrinthRoom").Find("Light").gameObject.SetActive(display);
+
+
+        if (room.isTeamTrial)
+        {
+            GameObject lever = GameObject.Find("All_SpeciallyRoom_lever").transform.Find("TrialRoomTeam_lever").gameObject;
+            if (room.isMonsters)
+                lever.transform.Find("MonsterRoom").Find("Light").gameObject.SetActive(display);
+            if (room.isDeathNPC)
+                lever.transform.Find("DeathNPC").Find("DeathNPCLight").gameObject.SetActive(display);
+            return;
+        }
+
+        if (room.isTrial)
+        {
+            GameObject lever = GameObject.Find("All_SpeciallyRoom_lever").transform.Find("TrialRoom_lever").gameObject;
+            if (room.fireBall)
+                lever.transform.Find("FireBall").Find("Light").gameObject.SetActive(display);
+            if (room.isSwordDamocles)
+                lever.transform.Find("DamoclesSword").Find("Light").gameObject.SetActive(display);
+            if (room.isAx)
+                lever.transform.Find("Ax").Find("Light").gameObject.SetActive(display);
+            if (room.isSword)
+                lever.transform.Find("Sword").Find("Light").gameObject.SetActive(display);
+            if (room.isLostTorch)
+                lever.transform.Find("LostTorchLever").Find("Light").gameObject.SetActive(display);
+            if (room.isLabyrintheHide)
+                lever.transform.Find("LabyrinthRoom").Find("Light").gameObject.SetActive(display);
+
+            return;
+        }
+        if (room.isVerySpecial)
+        {
+            GameObject lever = GameObject.Find("All_SpeciallyRoom_lever").transform.Find("SpeciallyRoom_levers").gameObject;
+            if (room.chest)
+                lever.transform.Find("Chest").Find("Light").gameObject.SetActive(display);
+            if (room.isSacrifice)
+                lever.transform.Find("Sacrifice").Find("Light").gameObject.SetActive(display);
+            if (room.isPurification)
+                lever.transform.Find("Purification").Find("Light").gameObject.SetActive(display);
+            if (room.isPray)
+                lever.transform.Find("Pray").Find("Light").gameObject.SetActive(display);
+        }
+        
     }
 
     public void SetRedColorDoorTrapedSpeciallyRoom(int indexDoor , bool display)
@@ -2433,6 +2459,26 @@ setting_button_echapMenu.SetActive(false);
     {
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().displayTutorial = true;
     }
+
+    public void DisplayButtonSpeciallyRoomKeyBigger(bool display)
+    {
+        canvasInGame.transform.Find("Interaction").Find("SpeciallyRoom_intercation").gameObject.SetActive(display);
+    }
+
+    public void DisplayButtonTrialRoomKeyBigger(bool display)
+    {
+        canvasInGame.transform.Find("Interaction").Find("TrialRoom_intercation").gameObject.SetActive(display);
+    }
+
+    public void OnClickSpeciallyRoomKeyBigger()
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().onClickButtonKeySpecially = true;
+    }
+    public void OnClickTrialRoomKeyBigger()
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().onClickButtonKeySpecially = true;
+    }
+
 
     public void OnClickButtonNPC()
     {

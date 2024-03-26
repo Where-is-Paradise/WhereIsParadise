@@ -138,13 +138,11 @@ public class PrayRoom : MonoBehaviour
             {
                 if (room.IsObstacle || room.IsExit)
                     continue;
-                Debug.Log(gameManager.game.currentRoom.DistancePathFinding + " " + gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.currentRoom));
                 if (gameManager.game.currentRoom.DistancePathFinding == gameManager.game.dungeon.GetPathFindingDistance(room, gameManager.game.currentRoom))
                     continue;
                 listPossiblityRoom.Add(room);
             }
         }
-        Debug.Log(listPossiblityRoomWithMoreDistance.Count);
         if (listPossiblityRoom.Count == 0)
         {
             distanceImpostor = 5;

@@ -270,7 +270,7 @@ public class MonstersRoom : TrialsRoom
     {
         if (!GameObject.FindGameObjectWithTag("Monster"))
         {
-            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 9);
+            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 1 , "TrialRoomTeam_lever");
             roomIsLaunch = false;
         }
     }

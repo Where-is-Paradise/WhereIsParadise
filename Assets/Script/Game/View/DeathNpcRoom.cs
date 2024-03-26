@@ -37,7 +37,7 @@ public class DeathNpcRoom : TrialsRoom
     {
         if (!GameObject.FindGameObjectWithTag("GodDeath"))
         {
-            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 4);
+            gameManager.ui_Manager.DisplaySpeciallyLevers(true, 0, "TrialRoomTeam_lever");
         }
     }
     public IEnumerator StartDeathNPCRoomAfterTeleportation()
