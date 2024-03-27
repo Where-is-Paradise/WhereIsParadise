@@ -98,7 +98,7 @@ public class Dungeon : ScriptableObject
                 room.isTrial = true;
             else
             {
-                if (randomIsTrial < 80) // 70
+                if (randomIsTrial < 75) // 75
                 {
                     room.isTeamTrial = true;
                 }

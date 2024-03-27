@@ -2272,6 +2272,9 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (gameManager.timer.timerLaunch)
+            return;
+
         canLaunchSpeciallyRoomPower = isEnter;
         //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.DisplayLightLeverSpeciallyRoom(isEnter);

@@ -19,6 +19,7 @@ public class UI_Manager : MonoBehaviour
     public Text nbKeyText;
     public GameObject zonesVote;
     public GameObject zones_X;
+    public GameObject zones_X_double;
 
     public GameObject blackWallPaper;
     public GameObject blueWallPaper;
@@ -158,6 +159,11 @@ public class UI_Manager : MonoBehaviour
     public GameObject listHexa;
 
     public GameObject supportTorch;
+
+    public GameObject chests;
+
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -443,8 +449,18 @@ setting_button_echapMenu.SetActive(false);
         }
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isInJail)
         {
-            zones_X.SetActive(true);
-            zones_X.GetComponent<Animator>().SetBool("zone_x", true);
+            if (gameManager.game.currentRoom.chest || gameManager.game.currentRoom.isNPC)
+            {
+                zones_X_double.SetActive(true);
+                zones_X_double.GetComponent<Animator>().SetBool("zone_x", true);
+                zones_X_double.transform.Find("X_zone_right").GetComponent<Animator>().SetBool("zone_x", true);
+            }
+            else
+            {
+                zones_X.SetActive(true);
+                zones_X.GetComponent<Animator>().SetBool("zone_x", true);
+            }
+          
         }
         soundChrono.Play();
     }
@@ -463,10 +479,21 @@ setting_button_echapMenu.SetActive(false);
         gameManager.gameManagerNetwork.SendCollisionZoneVoteDoorX(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID, false,false);
         DesactivateLightAroundPlayersN2();
         zones_X.GetComponent<Animator>().SetBool("zone_x", false);
+
+        zones_X_double.SetActive(false);
+        zones_X_double.GetComponent<Animator>().SetBool("zone_x", false);
+        zones_X_double.transform.Find("X_zone_right").GetComponent<Animator>().SetBool("zone_x", false);
     }
 
     public void ActiveXzone(bool active)
     {
+        if (gameManager.game.currentRoom.chest || gameManager.game.currentRoom.isNPC)
+        {
+            zones_X_double.SetActive(active);
+            zones_X_double.GetComponent<Animator>().SetBool("zone_x", active);
+            zones_X_double.transform.Find("X_zone_right").GetComponent<Animator>().SetBool("zone_x", active);
+            return;
+        }
         zones_X.SetActive(active);
         zones_X.GetComponent<Animator>().SetBool("zone_x", active);
     }
@@ -2066,6 +2093,8 @@ setting_button_echapMenu.SetActive(false);
         if (!GameObject.Find("Room").transform.Find("Levers").Find("All_SpeciallyRoom_lever").gameObject.activeSelf)
             return;
 
+        if (gameManager.timer.timerLaunch)
+            return;
 
         if (room.isTeamTrial)
         {
@@ -2073,7 +2102,7 @@ setting_button_echapMenu.SetActive(false);
             if (room.isMonsters)
                 lever.transform.Find("MonsterRoom").Find("Light").gameObject.SetActive(display);
             if (room.isDeathNPC)
-                lever.transform.Find("DeathNPC").Find("DeathNPCLight").gameObject.SetActive(display);
+                lever.transform.Find("DeathNPC").Find("Light").gameObject.SetActive(display);
             return;
         }
 
@@ -2095,7 +2124,7 @@ setting_button_echapMenu.SetActive(false);
 
             return;
         }
-        if (room.isVerySpecial)
+        if (room.isVerySpecial || room.speciallyIsInsert || room.isTraped)
         {
             GameObject lever = GameObject.Find("All_SpeciallyRoom_lever").transform.Find("SpeciallyRoom_levers").gameObject;
             if (room.chest)
@@ -2668,38 +2697,38 @@ setting_button_echapMenu.SetActive(false);
         }
     }
 
-    public void DisplayZoneChest()
+    public void DisplayZoneWithoutWay(string speciallyRoomString)
     {
         GameObject doorPivot = GameObject.FindGameObjectWithTag("Door");
         GameObject parentDoor = doorPivot.transform.parent.gameObject;
-        GameObject chestRoom = GameObject.Find("ChestRoom");
+        GameObject speciallyRoom = GameObject.Find(speciallyRoomString);
 
         for(int i =0; i < parentDoor.transform.childCount; i++)
         {
             GameObject door = parentDoor.transform.GetChild(i).gameObject;
             if (door.GetComponent<Door>().doorName == "A")
             {
-                chestRoom.transform.Find("Zones").Find("A").gameObject.SetActive(door.activeSelf);
+                speciallyRoom.transform.Find("Zones").Find("A").gameObject.SetActive(door.activeSelf);
             }
             if (door.GetComponent<Door>().doorName == "B")
             {
-                chestRoom.transform.Find("Zones").Find("B").gameObject.SetActive(door.activeSelf);
+                speciallyRoom.transform.Find("Zones").Find("B").gameObject.SetActive(door.activeSelf);
             }
             if (door.GetComponent<Door>().doorName == "C")
             {
-                chestRoom.transform.Find("Zones").Find("C").gameObject.SetActive(door.activeSelf);
+                speciallyRoom.transform.Find("Zones").Find("C").gameObject.SetActive(door.activeSelf);
             }
             if (door.GetComponent<Door>().doorName == "D")
             {
-                chestRoom.transform.Find("Zones").Find("D").gameObject.SetActive(door.activeSelf);
+                speciallyRoom.transform.Find("Zones").Find("D").gameObject.SetActive(door.activeSelf);
             }
             if (door.GetComponent<Door>().doorName == "E")
             {
-                chestRoom.transform.Find("Zones").Find("E").gameObject.SetActive(door.activeSelf);
+                speciallyRoom.transform.Find("Zones").Find("E").gameObject.SetActive(door.activeSelf);
             }
             if (door.GetComponent<Door>().doorName == "F")
             {
-                chestRoom.transform.Find("Zones").Find("F").gameObject.SetActive(door.activeSelf);
+                speciallyRoom.transform.Find("Zones").Find("F").gameObject.SetActive(door.activeSelf);
             }
         }
     }
@@ -2752,6 +2781,20 @@ setting_button_echapMenu.SetActive(false);
                 }
             }
 
+        }
+    }
+    public void DisplayChests(bool display)
+    {
+        chests.gameObject.SetActive(display);
+    }
+
+    public void DisplayNPCs(bool display)
+    {
+        GameObject[] listNpc = GameObject.FindGameObjectsWithTag("NPC");
+
+        foreach(GameObject npc in listNpc)
+        {
+            npc.SetActive(display);
         }
     }
 }

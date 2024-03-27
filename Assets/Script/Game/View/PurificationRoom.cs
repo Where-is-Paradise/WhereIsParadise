@@ -34,6 +34,7 @@ public class PurificationRoom : MonoBehaviour
         }
         else
         {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplaySoulMustBeInCircle();
             gameManager.ui_Manager.DisplaySpeciallyLevers(true, 2 , "SpeciallyRoom_levers");
             StartCoroutine(CoutoutineDisplayInitialZone());
            
@@ -44,7 +45,10 @@ public class PurificationRoom : MonoBehaviour
     public bool PurificationPlayer()
     {
         if (!this.transform.Find("zone").gameObject.GetComponent<ZonePurification>().currentPlayer)
+        {
             return false;
+        }
+           
         this.transform.Find("zone").gameObject.GetComponent<ZonePurification>().currentPlayer.GetComponent<PlayerNetwork>().SendPurification();
         return true;
     }

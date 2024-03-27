@@ -49,6 +49,11 @@ public class ErrorMessage : MonoBehaviour
             StartCoroutine(DisplayErrorCouroutine("OpenDoorBeforeChangeBoss"));
     }
 
+    public void DisplaySoulMustBeInCircle()
+    {
+        if (!this.transform.Find("SoulMustBeInCircle").gameObject.activeSelf)
+            StartCoroutine(DisplayErrorCouroutine("SoulMustBeInCircle"));
+    }
 
 
 

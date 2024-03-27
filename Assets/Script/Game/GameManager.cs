@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviourPun
     public Room roomTeam;
     public Room hell;
 
+    public GameObject x_zone;
+
     public int nbPlayerFinishLoading = 0;
 
     public bool launchExpedtion_inputButton = false;
@@ -332,10 +334,17 @@ public class GameManager : MonoBehaviourPun
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
         PauseTimerFroce(true);
         DisplayTimerForce(false);
+        if (game.currentRoom.chest)
+            ui_Manager.DisplayChests(false);
+        if (game.currentRoom.isNPC)
+            ui_Manager.DisplayNPCs(false);
         yield return new WaitForSeconds(5.3f);
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         ui_Manager.DisplayAllDoorLight(false);
-        //StartCoroutine(ui_Manager.DesactivateLightAroundPlayers());
+        if(game.currentRoom.chest)
+            ui_Manager.DisplayChests(true);
+        if (game.currentRoom.isNPC)
+            ui_Manager.DisplayNPCs(true);
         if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             GameObject door = GetDoorWithMajority();
@@ -1241,13 +1250,15 @@ public class GameManager : MonoBehaviourPun
 
     public bool VerifyVoteVD(int voteDoorMax)
     {
-        GameObject x_zone = GameObject.Find("X_zone");
+
+
         if (!x_zone)
         {
             return true;
         }
         if (game.currentRoom.IsVirus)
         {
+            Debug.Log(x_zone.GetComponent<x_zone_colider>().nbVote);
             if (x_zone.GetComponent<x_zone_colider>().nbVote > CountPlayerNoneSacrifice() / 2)
             {
                 return false;
@@ -2733,7 +2744,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayChestRoom(true);
             ui_Manager.DisplayMainLevers(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-            ui_Manager.DisplayZoneChest();
+            ui_Manager.DisplayZoneWithoutWay("ChestRoom");
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
@@ -2944,6 +2955,7 @@ public class GameManager : MonoBehaviourPun
             GameObject.Find("NPCRoom").GetComponent<NPCRoom>().ActivateRoom();
             ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
             UpdateColorDoor(room);
+            ui_Manager.DisplayZoneWithoutWay("NPCRoom");
             return;
         }
         if (room.isLabyrintheHide)
@@ -3358,7 +3370,7 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
         return;*/
 
         if (room.isVerySpecial)
@@ -3385,7 +3397,7 @@ public class GameManager : MonoBehaviourPun
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 2);
                 CalculProbabiltyVerySpeciality(2);
             } 
-            else if(randomInt < AdditionalProbaVerySpeciality(3) && setting.listSpeciallyRoom[3])
+            else if(randomInt < AdditionalProbaVerySpeciality(3) && setting.listSpeciallyRoom[6])
             {
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 3);
                 CalculProbabiltyVerySpeciality(3);
@@ -3458,7 +3470,7 @@ public class GameManager : MonoBehaviourPun
 
             float randomInt = Random.Range(randomMonsters, randomGodDeath);
 
-            if (randomInt < 100) // 50
+            if (randomInt < 50) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }

@@ -29,43 +29,88 @@ public class ImpostorRoom : TrialsRoom
             return;
 
 
-        int numberObject = GetNumberOfObjectInSetting();
-        float randomLeft = 0;
-        float randomRight = 100;
-        if (!gameManager.setting.listObjectImpostor[0])
-        {
-            randomLeft += (float) (100 / 3f);
-        }
-        if (!gameManager.setting.listObjectImpostor[1])
-        {
-            randomRight -= (float)(100 / 3f);
-        }
-        if (!gameManager.setting.listObjectImpostor[2])
-        {
-            randomRight -= (float)(100 / 3f);
-        }
+        //int numberObject = GetNumberOfObjectInSetting();
+      
 
 
-        float randomfloat = Random.Range(randomLeft, randomRight);
+       
+        GameObject[] playerList = GameObject.FindGameObjectsWithTag("Player");
+        if (playerList.Length > 4)
+        {
+           
+            float randomLeft = 0;
+            float randomRight = 100;
+            if (!gameManager.setting.listObjectImpostor[0])
+            {
+                randomLeft += (float)(100 / 3f);
+            }
+            if (!gameManager.setting.listObjectImpostor[1])
+            {
+                randomRight -= (float)(100 / 3f);
+            }
+            if (!gameManager.setting.listObjectImpostor[2])
+            {
+                randomRight -= (float)(100 / 3f);
+            }
 
-        
-        if (randomfloat < 33f && gameManager.setting.listObjectImpostor[0])
-        {
-            this.transform.Find("potion").gameObject.SetActive(true);
-        }
-        else if (randomfloat < 66f  && gameManager.setting.listObjectImpostor[1])
-        {
-            this.transform.Find("book").gameObject.SetActive(true);
-        }
-        else if (randomfloat < 100 && gameManager.setting.listObjectImpostor[2])
-        {
-            this.transform.Find("key").gameObject.SetActive(true);
+            float randomfloat = Random.Range(randomLeft, randomRight);
+
+            if (randomfloat < 33f && gameManager.setting.listObjectImpostor[0])
+            {
+                this.transform.Find("potion").gameObject.SetActive(true);
+            }
+            else if (randomfloat < 66f && gameManager.setting.listObjectImpostor[1])
+            {
+                this.transform.Find("book").gameObject.SetActive(true);
+            }
+            else if (randomfloat < 100 && gameManager.setting.listObjectImpostor[2])
+            {
+                this.transform.Find("key").gameObject.SetActive(true);
+            }
+            else
+            {
+                //if(gameManager.setting.listObjectImpostor[3])
+                this.transform.Find("knife").gameObject.SetActive(true);
+            }
         }
         else
         {
-            //if(gameManager.setting.listObjectImpostor[3])
-            this.transform.Find("knife").gameObject.SetActive(true);
-        }
+            float randomLeft = 0;
+            float randomRight = 100;
+            if (!gameManager.setting.listObjectImpostor[0])
+            {
+                randomLeft += 15;
+            }
+            if (!gameManager.setting.listObjectImpostor[1])
+            {
+                randomRight -= 75;
+            }
+            if (!gameManager.setting.listObjectImpostor[2])
+            {
+                randomRight -= 10;
+            }
+
+            float randomfloat = Random.Range(randomLeft, randomRight);
+            Debug.Log(randomLeft + " / " + randomRight);
+            Debug.Log(randomfloat);
+            if (randomfloat < 15f && gameManager.setting.listObjectImpostor[0])
+            {
+                this.transform.Find("potion").gameObject.SetActive(true);
+            }
+            else if (randomfloat < 90f && gameManager.setting.listObjectImpostor[1])
+            {
+                this.transform.Find("book").gameObject.SetActive(true);
+            }
+            else if (randomfloat < 100 && gameManager.setting.listObjectImpostor[2])
+            {
+                this.transform.Find("key").gameObject.SetActive(true);
+            }
+            else
+            {
+                //if(gameManager.setting.listObjectImpostor[3])
+                this.transform.Find("knife").gameObject.SetActive(true);
+            }
+        } 
     }
 
 

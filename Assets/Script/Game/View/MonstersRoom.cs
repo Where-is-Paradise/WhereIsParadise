@@ -62,7 +62,7 @@ public class MonstersRoom : TrialsRoom
     {
         yield return new WaitForSeconds(1);
         if (timerSpawnMonster > 0.2f)
-            timerSpawnMonster -= 0.01f;
+            timerSpawnMonster -= 0.015f;
         StartCoroutine(AddDifficulty());
     }
 
@@ -77,7 +77,7 @@ public class MonstersRoom : TrialsRoom
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
         gameManager.PauseTimerFroce(true);
         SetLifeTrialRoomAllPlayer();
-        timerSpawnMonster = 1.5f;
+        timerSpawnMonster = 1f;
         yield return new WaitForSeconds(2);
         gameManager.ui_Manager.LaunchFightMusic();
         isLoose = false;
