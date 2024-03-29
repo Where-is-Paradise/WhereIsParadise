@@ -2954,6 +2954,7 @@ public class GameManager : MonoBehaviourPun
             //DisplayDoorForEachSituationInSpeciality("NPCRoom");
             GameObject.Find("NPCRoom").GetComponent<NPCRoom>().ActivateRoom();
             ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
+            ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             UpdateColorDoor(room);
             ui_Manager.DisplayZoneWithoutWay("NPCRoom");
             return;
@@ -3370,8 +3371,10 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
-        return;*/
+        /*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
+                return;*/
+        gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 4);
+        return;
 
         if (room.isVerySpecial)
         {

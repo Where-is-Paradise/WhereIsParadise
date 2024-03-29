@@ -12223,7 +12223,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -11, y: -209}
+  m_AnchoredPosition: {x: -11, y: -94.00003}
   m_SizeDelta: {x: 660, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &307256372
@@ -23428,7 +23428,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: TEST PANEL SKIN
+  m_Text: Beta for testing
 --- !u!222 &537574776
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -42600,8 +42600,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000015259, y: 154}
-  m_SizeDelta: {x: 549.02, y: 104.83}
+  m_AnchoredPosition: {x: -0.00000047684, y: 105}
+  m_SizeDelta: {x: 618.26, y: 149.63}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &989692189
 MonoBehaviour:
@@ -42636,7 +42636,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Rentre ton pseudo d\xE9bilos, fais gaffe il est d\xE9finitif :"
+  m_Text: Rentrez votre pseudo, attention il est definitif pour la phase de beta.
 --- !u!222 &989692190
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -51496,7 +51496,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -10.999687, y: -392.60004}
+  m_AnchoredPosition: {x: -10.999687, y: -295}
   m_SizeDelta: {x: 660, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1241575721
@@ -74850,7 +74850,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1759106593
 RectTransform:
   m_ObjectHideFlags: 0

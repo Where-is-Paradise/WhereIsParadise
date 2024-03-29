@@ -1226,6 +1226,8 @@ public class PlayerNetwork : MonoBehaviourPun
         {
             player.gameManager.ui_Manager.DisabledButtonPowerExploration(!dislay);
             player.gameManager.ui_Manager.DisplayAllDoorLightExploration(dislay);
+            if(!player.isBoss)
+                player.DisplayTutorial(5);
         }
         player.gameManager.onePlayerHasTorch = dislay;
 

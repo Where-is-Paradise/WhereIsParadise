@@ -2212,7 +2212,7 @@ public class PlayerGO : MonoBehaviour
         }
         if (!isBoss && isEnter)
         {
-            DisplayTutorial(2);
+            DisplayTutorial(11);
             return;
         }
         if ((gameManager.expeditionHasproposed && gameManager.timer.timerLaunch) || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed)

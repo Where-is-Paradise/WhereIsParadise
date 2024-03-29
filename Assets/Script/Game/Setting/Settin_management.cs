@@ -461,9 +461,10 @@ public class Settin_management : MonoBehaviour
         try
         {
             QuickSaveReader.Create("tutorial")
-                      .Read<bool>("display_tutorial", (r) => { displayTutorial = r; })
+                      //.Read<bool>("display_tutorial", (r) => { displayTutorial = r; })
                       .Read<bool>("tutorial_impostor", (r) => { tutorialImpostor = r; })
-                      .Read<bool>("first_time_panel", (r) => { firstTimePanel = r; });
+                      .Read<bool>("first_time_panel", (r) => { firstTimePanel = r; })
+                      .Read<bool>("display_tutorial_V2", (r) => { displayTutorial = r; }); ;
         }
         catch (Exception e)
         {
@@ -480,9 +481,10 @@ public class Settin_management : MonoBehaviour
     public void SaveTutorial(bool displayTutorial , bool tutorialImpostor, bool firstTimePanel)
     {
         QuickSaveWriter.Create("tutorial")
-                        .Write("display_tutorial", displayTutorial)
+                        .Write("display_tutorial", true)
                         .Write("tutorial_impostor", tutorialImpostor)
                         .Write("first_time_panel", firstTimePanel)
+                        .Write("display_tutorial_V2" , displayTutorial)
                         .Commit();
 
         QuickSaveRaw.LoadString("tutorial.json");

@@ -142,7 +142,7 @@ public class UI_Managment : MonoBehaviourPun
 
         //Debug.Log(SteamFriends.GetPersonaName());
 
-        Debug.Log(SteamUser.GetSteamID());
+   
 
         index_menu = 1;
         //ChangeColorButton(listButton_menu1, index_menu);
@@ -150,7 +150,12 @@ public class UI_Managment : MonoBehaviourPun
             backToMenu = true;
         StartCoroutine(TranslateDropdown());
         StartCoroutine(HideSkipTextTrailer());
-       
+        StartCoroutine(LaunchMenuMusic());
+        //StartCoroutine(DisplayCoroutineWelcomePanel());
+        StartCoroutine(DisplayFirstConnexionPanel());
+
+        Debug.Log(SteamUser.GetSteamID());
+
     }
 
     // Update is called once per frame
@@ -206,7 +211,7 @@ public class UI_Managment : MonoBehaviourPun
         }
         else
         {
-            presentation.SetActive(true);
+            //presentation.SetActive(true);
         }
 
         k += (Time.deltaTime / 4f);
@@ -286,13 +291,12 @@ public class UI_Managment : MonoBehaviourPun
 
     public void OnClickFirstConnexionPanel()
     {
-        StartCoroutine(DisplayCoroutineWelcomePanel());
         StartCoroutine(DisplayCoroutineIpPanel());
     }
 
     public IEnumerator DisplayCoroutineWelcomePanel()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
         Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
         if (setting.welcome)
         {
@@ -301,7 +305,7 @@ public class UI_Managment : MonoBehaviourPun
     }
     public IEnumerator DisplayCoroutineIpPanel()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1f);
         Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
         Debug.Log(setting.ip + " "  + (setting.ip == ""));
         if (setting.MODE_TEST_SKIN_IP && setting.ip == "")
@@ -314,7 +318,7 @@ public class UI_Managment : MonoBehaviourPun
     {
         trailer.gameObject.SetActive(false);
         //presentation.SetActive(true);
-        menuAudio.Play();
+        //menuAudio.Play();
         backgroundImage.SetActive(true);
         presentation.SetActive(false);
         Canvas.SetActive(true);
@@ -1114,5 +1118,23 @@ public class UI_Managment : MonoBehaviourPun
             toogle.GetComponent<ToggleObjectImpostor>().UpdateToggle();
         }
     }
+
+    public IEnumerator LaunchMenuMusic()
+    {
+        yield return new WaitForSeconds(1);
+        menuAudio.Play();
+    }
+
+    public IEnumerator DisplayFirstConnexionPanel()
+    {
+        yield return new WaitForSeconds(1);
+        if (setting.firstTimePanel)
+        {
+            panelFirstConnexion.gameObject.SetActive(true);
+            setting.firstTimePanel = true;
+        }
+    }
+
+    
 
 }

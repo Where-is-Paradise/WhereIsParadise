@@ -203,7 +203,7 @@ public class LabyrinthRoom : TrialsRoom
     {
         foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
         {
-            player.transform.localScale = new Vector3(0.65f, 0.65f);
+            player.transform.localScale = new Vector3(0.8f, 0.8f);
             player.GetComponent<PlayerGO>().canMove = true;
             player.GetComponent<PlayerGO>().movementlControlSpeed = 4.5f;
         }
