@@ -134,6 +134,7 @@ public class MonsterNPC : MonoBehaviourPun
 
         if (player.GetComponent<PlayerGO>().lifeTrialRoom <= 0)
         {
+            photonView.RPC("SendIgnoreCollisionOnePlayer", RpcTarget.All, player.GetComponent<PhotonView>().ViewID, true);
             SetPlayerColor(player);
 
             if (TestLastPlayer())
@@ -215,7 +216,7 @@ public class MonsterNPC : MonoBehaviourPun
     {
         player.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
         player.gameObject.GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
-        player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").gameObject.SetActive(false);
+        player.transform.Find("SwordMonster").gameObject.SetActive(false);
     }
 
     public void ChoosePlayerRandomly()
@@ -280,4 +281,9 @@ public class MonsterNPC : MonoBehaviourPun
     }
 
 
+    [PunRPC]
+    public void SendIgnoreCollisionOnePlayer(int indexPlayer, bool ignore)
+    {
+        monsterRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionPlayer(indexPlayer, ignore);
+    }
 }

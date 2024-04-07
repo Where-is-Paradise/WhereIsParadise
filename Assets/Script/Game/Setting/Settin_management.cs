@@ -484,7 +484,7 @@ public class Settin_management : MonoBehaviour
                         .Write("display_tutorial", true)
                         .Write("tutorial_impostor", tutorialImpostor)
                         .Write("first_time_panel", firstTimePanel)
-                        .Write("display_tutorial_V2" , displayTutorial)
+                        .Write("display_tutorial_V2", displayTutorial)
                         .Commit();
 
         QuickSaveRaw.LoadString("tutorial.json");
@@ -492,7 +492,7 @@ public class Settin_management : MonoBehaviour
     public void SaveTutorial(bool displayTutorial)
     {
         QuickSaveWriter.Create("tutorial")
-                        .Write("display_tutorial", displayTutorial)
+                        .Write("display_tutorial_V2", displayTutorial)
                         .Commit();
 
         QuickSaveRaw.LoadString("tutorial.json");

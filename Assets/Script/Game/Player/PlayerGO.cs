@@ -185,6 +185,8 @@ public class PlayerGO : MonoBehaviour
 
     public bool onClickButtonKeySpecially = false;
 
+    public bool isTeleporting = false;
+
     [HideInInspector]
     public int blackSoul_money = 900; 
 
@@ -579,7 +581,8 @@ public class PlayerGO : MonoBehaviour
 
             if (takeDoor)
             {
-                gameManager.TakeDoor(doorCollision.transform.parent.gameObject, this.gameObject);
+                if(!isTeleporting)
+                    gameManager.TakeDoor(doorCollision.transform.parent.gameObject, this.gameObject);
                 takeDoor = false;
                 canMove = true;
                 gameManager.ui_Manager.DisplayBlackScreen(false, true);
@@ -1327,8 +1330,7 @@ public class PlayerGO : MonoBehaviour
         {
             if (player.GetComponent<PhotonView>().ViewID != this.GetComponent<PhotonView>().ViewID)
             {
-                if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isSacrifice && 
-                    !player.GetComponent<PlayerGO>().isInJail)
+                if (gameManager.SamePositionAtBossWithIndex(player.GetComponent<PhotonView>().ViewID) && !player.GetComponent<PlayerGO>().isSacrifice)
                 {
                     player.GetComponent<CapsuleCollider2D>().isTrigger = ignore;
                     Physics2D.IgnoreCollision(player.transform.GetComponent<CapsuleCollider2D>(), this.GetComponent<CapsuleCollider2D>(), ignore);

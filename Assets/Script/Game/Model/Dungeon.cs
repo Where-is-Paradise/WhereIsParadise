@@ -64,7 +64,7 @@ public class Dungeon : ScriptableObject
         }
     }
 
-    public void InsertSpeciallyRoom()
+    public void InsertSpeciallyRoom(int distance)
     {
         foreach (Room room in rooms)
         {
@@ -75,8 +75,9 @@ public class Dungeon : ScriptableObject
 
         }
 
-        InsertSpeciallyRoom2();
+        //InsertSpeciallyRoom2();
         //InsertImpostorRoom();
+        InsertSpeciallyRoom3(distance);
     }
 
     public void InsertSpeciallyRoom2()
@@ -109,6 +110,58 @@ public class Dungeon : ScriptableObject
             }
             room.isSpecial = true;
         }
+    }
+
+    public void InsertSpeciallyRoom3(int distance)
+    {
+        List<Room> listRoomInDistance = GetListRoomByDistance(initialRoom, distance);
+        listRoomInDistance.Add(exit);
+
+
+        foreach(Room roomDistance in listRoomInDistance)
+        {
+            List<Room> listRoomWay = new List<Room>();
+            Room.GetShortPathByDestination(initialRoom, roomDistance, listRoomWay, 0, distance);
+
+            List<int> listSpecialyIndex = new List<int>();
+            listSpecialyIndex.Add(0);
+            listSpecialyIndex.Add(1);
+            listSpecialyIndex.Add(2);
+/*
+            if (distance == 7)
+                listSpecialyIndex.Add(0);*/
+
+            foreach (int specialityCounter in listSpecialyIndex)
+            {
+                int indexRandom = 0;
+
+                indexRandom = Random.Range(0, listRoomWay.Count);
+                if (listRoomWay[indexRandom].isSpecial)
+                {
+                    listRoomWay.RemoveAt(indexRandom);
+                    continue;
+                }  
+                  
+
+                listRoomWay[indexRandom].isSpecial = true;
+                switch (specialityCounter)
+                {
+                    case 0:
+                        listRoomWay[indexRandom].isTrial = true;
+                        break;
+                    case 1:
+                        listRoomWay[indexRandom].isTeamTrial = true;
+                        break;
+                    case 2:
+                        listRoomWay[indexRandom].isVerySpecial = true;
+                        break;
+                }
+                listRoomWay.RemoveAt(indexRandom);
+            }
+        }
+        
+       
+
     }
 
     public int InsertImpostorRoom(int distance , bool isNearOfInitial, int scale)

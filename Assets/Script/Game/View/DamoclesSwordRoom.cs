@@ -47,9 +47,12 @@ public class DamoclesSwordRoom : TrialsRoom
         DisplayHeartsFoAllPlayer(true);
 
         CounterLaunch(15);
+       
 
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
+            int randomTimer = Random.Range(5, 25);
+            photonView.RPC("SendCouterLaunch", RpcTarget.All, randomTimer);
             SendObstalceGroup();
             GameObject player = ChoosePlayerRandomly();
             SetCurrentPlayer(player.GetComponent<PhotonView>().ViewID);
@@ -121,12 +124,18 @@ public class DamoclesSwordRoom : TrialsRoom
          
     }
 
-    public void CounterLaunch(float seconde)
+    public void CounterLaunch(int seconde)
     {
         StartCoroutine(TimerCouroutine(seconde));
     }
 
-    public IEnumerator TimerCouroutine(float seconde)
+    [PunRPC]
+    public void SendCouterLaunch(int seconde)
+    {
+        CounterLaunch(seconde);
+    }
+
+    public IEnumerator TimerCouroutine(int seconde)
     {
         yield return new WaitForSeconds(seconde);
         StartCoroutine(CouroutineAnimationDeath());
@@ -175,9 +184,12 @@ public class DamoclesSwordRoom : TrialsRoom
         }
         else
         {
-            StartCoroutine(TimerCouroutine(15f));
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            {
+                int randomTimer = Random.Range(5, 25);
+                photonView.RPC("SendCouterLaunch", RpcTarget.All, randomTimer);
+            }
         }
-
     }
 
     [PunRPC]

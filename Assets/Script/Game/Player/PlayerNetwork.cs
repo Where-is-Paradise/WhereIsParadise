@@ -312,6 +312,7 @@ public class PlayerNetwork : MonoBehaviourPun
             if (counterChangeBoss == (listPlayer.Length - 1))
             {
                 StartCoroutine(player.gameManager.ChangeBossCoroutine(0.2f));
+                player.gameManager.gameManagerNetwork.SendLaunchTimerForceOpen();
                 foreach (GameObject player in listPlayer)
                 {
                     StartCoroutine(player.GetComponent<PlayerNetwork>().CouroutineResetWantToChangeBoss());
@@ -324,6 +325,7 @@ public class PlayerNetwork : MonoBehaviourPun
             if (counterChangeBoss > (listPlayer.Length / 2))
             {
                 StartCoroutine(player.gameManager.ChangeBossCoroutine(0.2f));
+                player.gameManager.gameManagerNetwork.SendLaunchTimerForceOpen();
                 foreach (GameObject player in listPlayer)
                 {
                     StartCoroutine(player.GetComponent<PlayerNetwork>().CouroutineResetWantToChangeBoss());
@@ -960,6 +962,8 @@ public class PlayerNetwork : MonoBehaviourPun
         player.gameManager.UpdateSpecialsRooms(player.gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room);
         player.gameManager.gameManagerNetwork.SendUpdateHidePlayer();
         player.gameManager.ui_Manager.HideDistanceRoom();
+        player.isTeleporting = true;
+        StartCoroutine(ResetTeleportingCoroutine());
         StartCoroutine(player.gameManager.SetMapOFLostSoul(0.1f));
     }
 
@@ -1381,5 +1385,11 @@ public class PlayerNetwork : MonoBehaviourPun
         this.transform.Find("DashAnimation").GetChild(0).gameObject.SetActive(true);
         player.gameManager.ui_Manager.LaunchDashSound();
         StartCoroutine(player.CouroutineAvaibleDash());
+    }
+
+    public IEnumerator ResetTeleportingCoroutine()
+    {
+        yield return new WaitForSeconds(5);
+        player.isTeleporting = false;
     }
 }

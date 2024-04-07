@@ -41,13 +41,17 @@ public class LostTorchRoom : TrialsRoom
         yield return new WaitForSeconds(2);
         
         SpawnLostTorch();
-        LaunchTimer();
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
             SendObstalceGroup();
-
+            int timerRandom = Random.Range(20, 45);
+            photonView.RPC("SendLaunchTimer", RpcTarget.All, timerRandom);
+        }
+           
     }
+
     public void SpawnLostTorch()
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
@@ -67,22 +71,29 @@ public class LostTorchRoom : TrialsRoom
         lostTorch.currentPlayer = gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>();
     }
 
-    public void LaunchTimer()
+
+    [PunRPC]
+    public void SendLaunchTimer(int timer)
     {
-        StartCoroutine(TimerCouroutine());
-        StartCoroutine(TimerCouroutineTestNotEnd());
+        LaunchTimer(timer);
     }
-    public IEnumerator TimerCouroutine()
+
+    public void LaunchTimer(int timer)
     {
-        yield return new WaitForSeconds(30); // 30
+        StartCoroutine(TimerCouroutine(timer));
+        StartCoroutine(TimerCouroutineTestNotEnd(timer));
+    }
+    public IEnumerator TimerCouroutine(int timer)
+    {
+        yield return new WaitForSeconds(timer); // 30
         timerFinish = true;
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             photonView.RPC("SendEndGame", RpcTarget.All);
     }
 
-    public IEnumerator TimerCouroutineTestNotEnd()
+    public IEnumerator TimerCouroutineTestNotEnd(int timer)
     {
-        yield return new WaitForSeconds(34);
+        yield return new WaitForSeconds(timer + 3);
         if (gameManager.speciallyIsLaunch)
             SendEndGame();
     }

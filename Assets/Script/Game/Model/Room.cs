@@ -371,6 +371,45 @@ public class Room : ScriptableObject
 
     }
 
+    public Room GetNeigbourShortByRoomDestination(Room destination)
+    {
+        int min = 5000;
+        Room currentRoom = null;
+        foreach (Room neigbour in listNeighbour)
+        {
+            if (neigbour.IsObstacle)
+                continue;
+            int distanceNeibour = GetPathFindingDistance(neigbour, destination);
+            if (distanceNeibour < min)
+            {
+                min = distanceNeibour;
+                currentRoom = neigbour;
+            }
+                
+        }
+        return currentRoom;
+    }
+
+    public static void GetShortPathByDestination(Room initial, Room destination , List<Room> listRoomWay, int limit, int distanceParadise)
+    {
+        if (initial.index == destination.index)
+            return;
+        if (limit > 500)
+        {
+            Debug.LogError("Destination unFoudable");
+            return;
+        }
+            
+
+        Room neigbourShorter = initial.GetNeigbourShortByRoomDestination(destination);
+        Debug.Log(neigbourShorter.index);
+        if(!neigbourShorter.isExit && neigbourShorter.distancePathFinding != distanceParadise )
+            listRoomWay.Add(neigbourShorter);
+        limit++;
+        GetShortPathByDestination(neigbourShorter, destination, listRoomWay, limit, distanceParadise) ;
+
+    }
+
     public int Fcost()
     {
         return (gcost + hcost) - 1;
@@ -406,6 +445,76 @@ public class Room : ScriptableObject
                 counter++;
         }
         return counter == 1;
+    }
+
+    public int GetPathFindingDistance(Room initialRoom, Room exit)
+    {
+        List<Room> openList = new List<Room>();
+        List<Room> closeList = new List<Room>();
+        openList.Add(initialRoom);
+        while (openList.Count > 0)
+        {
+            Room current = openList[0];
+            for (int i = 1; i < openList.Count; i++)
+            {
+                if (openList[i].Fcost() < current.Fcost() || (openList[i].Fcost() == current.Fcost()))
+                {
+                    if (openList[i].hcost < current.hcost)
+                        current = openList[i];
+                }
+            }
+
+            openList.Remove(current);
+            closeList.Add(current);
+
+
+            if (current.X == exit.X && current.Y == exit.Y)
+            {
+                return RetracePath(initialRoom, exit);
+            }
+
+
+            foreach (Room neighbour in current.listNeighbour)
+            {
+                if (neighbour.X == exit.X && neighbour.Y == exit.Y)
+                {
+                    neighbour.parent = current;
+                    return RetracePath(initialRoom, exit);
+                }
+                if (neighbour.IsObstacle || closeList.Contains(neighbour))
+                {
+                    continue;
+                }
+                int newCostToNeighbour = current.gcost + (Dungeon.GetDistance(neighbour, current) * 5);
+                if (newCostToNeighbour < neighbour.gcost || !openList.Contains(neighbour) || Dungeon.GetDistance(neighbour, current) == 0)
+                {
+                    neighbour.hcost = Dungeon.GetDistance(neighbour, exit);
+                    neighbour.gcost = newCostToNeighbour;
+                    neighbour.parent = current;
+                }
+                if (!openList.Contains(neighbour))
+                {
+                    openList.Add(neighbour);
+
+                }
+            }
+        }
+        return -1;
+    }
+
+    private int RetracePath(Room startNode, Room endNode)
+    {
+        List<Room> path = new List<Room>();
+        Room currentNode = endNode;
+
+        while (currentNode != startNode)
+        {
+            path.Add(currentNode);
+            currentNode = currentNode.parent;
+
+        }
+        return path.Count;
+
     }
 }
 

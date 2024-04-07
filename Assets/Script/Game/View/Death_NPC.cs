@@ -134,7 +134,7 @@ public class Death_NPC : MonoBehaviourPun
                 continue;
             if (!player.GetComponent<PhotonView>().IsMine)
                 continue;
-            if (Mathf.Abs((this.transform.position.x - player.transform.position.x)) < 2f && Mathf.Abs((this.transform.position.y - player.transform.position.y)) < 2f)
+            if (Mathf.Abs((this.transform.position.x - player.transform.position.x)) < 2.5f && Mathf.Abs((this.transform.position.y - player.transform.position.y)) < 2.5f)
                 return true;       
         }
         return false;
@@ -574,13 +574,13 @@ public class Death_NPC : MonoBehaviourPun
     {
         old_x = this.transform.position.x;
         old_y = this.transform.position.y;
-        transform.Translate(direction.normalized * (speed * 4f) * Time.deltaTime);
+        transform.Translate(direction.normalized * (speed * 3f) * Time.deltaTime);
     }
     public void DashDirectionTarget(Vector3 target)
     {
         old_x = this.transform.position.x;
         old_y = this.transform.position.y;
-        transform.Translate((target - this.transform.position).normalized * 5 * Time.deltaTime);
+        transform.Translate((target - this.transform.position).normalized * 4 * Time.deltaTime);
 
         if(Mathf.Abs(this.transform.position.x - target.x) <0.01 && Mathf.Abs(this.transform.position.y - target.y) < 0.01)
         {

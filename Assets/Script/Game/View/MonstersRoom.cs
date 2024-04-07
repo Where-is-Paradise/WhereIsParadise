@@ -36,13 +36,14 @@ public class MonstersRoom : TrialsRoom
             DestroyAllMonster();
             return;
         }
-            
+
         if (roomIsLaunch && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss && canSpawn)
             StartCoroutine(SpawnMonsterCouroutine(timerSpawnMonster));
 
         if (!roomIsLaunch || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchInTrial)
             return;
         CanAttack();
+        ChangeSwordScaleForSituation();
     }
 
     public void StartMonstersRoom()
@@ -61,7 +62,7 @@ public class MonstersRoom : TrialsRoom
     public IEnumerator AddDifficulty()
     {
         yield return new WaitForSeconds(1);
-        if (timerSpawnMonster > 0.2f)
+        if (timerSpawnMonster > 0.1f)
             timerSpawnMonster -= 0.015f;
         StartCoroutine(AddDifficulty());
     }
@@ -91,7 +92,11 @@ public class MonstersRoom : TrialsRoom
         float randomTimer = Random.Range(25, 80);
         //randomTimer = 10;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
             photonView.RPC("SendTimer", RpcTarget.All, randomTimer);
+            photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, false);
+        }
+            
         gameManager.ui_Manager.DisplayKeyAndTorch(false);
 
        
@@ -108,6 +113,7 @@ public class MonstersRoom : TrialsRoom
         StartCoroutine(CouroutineEndGame(randomTimer));
         this.transform.Find("X_zone_animation").gameObject.SetActive(true);
         this.transform.Find("X_zone_animation").Find("Timer").GetComponent<Timer>().LaunchTimer(randomTimer, true);
+
         this.transform.Find("X_zone_animation").GetComponent<Animator>().speed = (this.transform.Find("X_zone_animation").GetComponent<Animator>().speed / (CalculAnimationSpeed(randomTimer)));
     }
 
@@ -150,7 +156,7 @@ public class MonstersRoom : TrialsRoom
         foreach (GameObject player in listPlayer)
         {
             if (!player.GetComponent<PlayerGO>().isSacrifice && !player.GetComponent<PlayerGO>().isInJail)
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").gameObject.SetActive(display);
+                player.transform.Find("SwordMonster").gameObject.SetActive(display);
         }
     }
     public void CanAttack()
@@ -178,8 +184,11 @@ public class MonstersRoom : TrialsRoom
 
     public void DesactivateRoomChild()
     {
-        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, true);
             DestroyAllMonster();
+        }
         DisplaySwordAllPlayer(false);
         timerSpawnMonster = 1;
         roomIsLaunch = false;
@@ -213,9 +222,9 @@ public class MonstersRoom : TrialsRoom
     public IEnumerator DisplayInitial(int indexPlayer)
     {
         yield return new WaitForSeconds(0.4f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Initial").gameObject.SetActive(true);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("Initial").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = false;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().canMove = true;
         canAttack = true;
     }
@@ -223,31 +232,30 @@ public class MonstersRoom : TrialsRoom
     [PunRPC]
     public void DisplayMiddleOne(int indexPlayer)
     {
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Initial").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle1").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("Initial").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("middle1").gameObject.SetActive(true);
         StartCoroutine(DisplayMiddleTwo(indexPlayer));
     }
     public IEnumerator DisplayMiddleTwo(int indexPlayer)
     {
         yield return new WaitForSeconds(0.01f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle1").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle2").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("middle1").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("middle2").gameObject.SetActive(true);
         StartCoroutine(DisplayMiddleThree(indexPlayer));
     }
     public IEnumerator DisplayMiddleThree(int indexPlayer)
     {
         yield return new WaitForSeconds(0.01f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle2").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle3").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("middle2").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("middle3").gameObject.SetActive(true);
         StartCoroutine(DisplayFinal(indexPlayer));
     }
     public IEnumerator DisplayFinal(int indexPlayer)
     {
         yield return new WaitForSeconds(0.01f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("middle3").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = true;
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = true;
-        //gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("SwordMonster").Find("Final").Find("SwordAnimation").GetChild(0).gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("middle3").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        gameManager.GetPlayer(indexPlayer).transform.Find("SwordMonster").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = true;
         StartCoroutine(DisplayInitial(indexPlayer));
     }
     public void GiveAwardToPlayer(GameObject lastPlayer)
@@ -305,6 +313,7 @@ public class MonstersRoom : TrialsRoom
         DesactivateRoomChild();
         this.transform.Find("X_zone_animation").GetComponent<Animator>().speed = 1;
         this.transform.Find("X_zone_animation").Find("Timer").GetComponent<Timer>().ResetTimer();
+        this.transform.Find("X_zone_animation").GetComponent<Animator>().ForceStateNormalizedTime(0);
     }
 
     public void SetLifeTrialRoomAllPlayer()
@@ -313,5 +322,21 @@ public class MonstersRoom : TrialsRoom
         {
             player.GetComponent<PlayerGO>().lifeTrialRoom = 1;
         }
+    }
+
+    [PunRPC]
+    public void SendIgnoreCollisionPlayer(bool ignore)
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionAllPlayer(ignore);
+    }
+
+    public void ChangeSwordScaleForSituation()
+    {
+        float localScaleX = 0;
+        if (gameManager.GetPlayerMineGO().transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).localScale.x > 0)
+            localScaleX = 0.2f;
+        else
+            localScaleX =  -0.2f;
+        gameManager.GetPlayerMineGO().transform.Find("SwordMonster").localScale = new Vector2(localScaleX, gameManager.GetPlayerMineGO().transform.Find("SwordMonster").localScale.y);
     }
 }

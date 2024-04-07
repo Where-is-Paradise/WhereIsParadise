@@ -61,7 +61,8 @@ public class Game : ScriptableObject
         int randomPercentageRatioObatacle = Random.Range(50, 55);
         int randomPercentagePropagation = Random.Range(2, 5);
         int randomPercentageInitialPropagation = Random.Range(2, 5);
-        int limit = 0; 
+        int limit = 0;
+        int distanceExit = 6;
         do
         {
             Debug.Log("creation map");
@@ -71,8 +72,7 @@ public class Game : ScriptableObject
             dungeon.SetDistanceAllRoom();
             dungeon.SetPathFindingDistanceInitiateRoom();
             dungeon.SetDistanceReelInitialRoom();
-            int distanceExit = Random.Range(5, 8);
-           //int distanceExit = 6;
+            distanceExit = Random.Range(5, 8);
             correctExit = dungeon.AssignRandomExit(distanceExit);
             if (correctExit)
             {
@@ -92,7 +92,7 @@ public class Game : ScriptableObject
         }
 
         dungeon.RemoveAllRoomTooFarAway();
-        dungeon.InsertSpeciallyRoom();
+        dungeon.InsertSpeciallyRoom(distanceExit);
     }
 
 

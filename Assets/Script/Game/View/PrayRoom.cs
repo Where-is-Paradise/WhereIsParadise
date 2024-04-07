@@ -145,7 +145,9 @@ public class PrayRoom : MonoBehaviour
         }
         if (listPossiblityRoom.Count == 0)
         {
+            gameManager.distancePrayRoom = 5;
             distanceImpostor = 5;
+            gameManager.gameManagerNetwork.SendDistancePrayRoom(gameManager.distancePrayRoom);
             return;
         }
       

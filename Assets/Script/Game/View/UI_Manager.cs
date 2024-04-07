@@ -1945,7 +1945,9 @@ setting_button_echapMenu.SetActive(false);
 
             // set player when win trial game
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayWhiteLight(false);
-            gameManager.gameManagerNetwork.SendDisplayMainLevers(true);
+            
+            if(!(gameManager.game.currentRoom.isTeamTrial && !gameManager.game.currentRoom.speciallyPowerIsUsed))
+                gameManager.gameManagerNetwork.SendDisplayMainLevers(true);
            
 
             // set gameManager

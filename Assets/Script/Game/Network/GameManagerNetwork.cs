@@ -660,6 +660,29 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     }
 
+    public void SendRandomIndexDoor2(int indexDoor)
+    {
+        photonView.RPC("SetRandomIndexDoor2", RpcTarget.All, indexDoor);
+    }
+
+    [PunRPC]
+    public void SetRandomIndexDoor2(int indexDoor)
+    {
+        GameObject door = gameManager.GetDoorGo(indexDoor);
+        if(gameManager.SamePositionAtBoss())
+            gameManager.OpenDoor(door, false);
+        gameManager.expeditionHasproposed = false;
+        gameManager.game.key_counter--;
+        gameManager.nbKeyBroken++;
+        gameManager.ui_Manager.SetNBKey();
+        gameManager.alreaydyExpeditionHadPropose = false;
+        if (gameManager.game.currentRoom.IsVirus)
+        {
+            gameManager.ui_Manager.ResetLetterDoor();
+        }
+
+    }
+
 
     public void SendHell(int indexHell)
     {
@@ -2709,7 +2732,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetOpenDoorForceByTimer(int indexDoor)
     {
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            SendRandomIndexDoor(indexDoor);
+            SendRandomIndexDoor2(indexDoor);
         StartCoroutine(gameManager.ChangeBossCoroutine(0.1f));
         StartCoroutine(gameManager.LaunchTimerForceOpen());
 
@@ -2741,6 +2764,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         if (gameManager.indexPlayerPreviousExploration == gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID)
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayTorchBarre(true);
     }
+
+
 
     public void SendHidePlayerNotSameRoom()
     {
