@@ -46,7 +46,7 @@ public class DamoclesSwordRoom : TrialsRoom
         speciallyLaunched = true;
         DisplayHeartsFoAllPlayer(true);
 
-        CounterLaunch(15);
+        //CounterLaunch(15);
        
 
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
@@ -322,8 +322,10 @@ public class DamoclesSwordRoom : TrialsRoom
                 }
             }
             player.GetComponent<PlayerGO>().isTouchInTrial = false;
+            player.GetComponent<PlayerGO>().damoclesSwordIsAbove = false;
         }
     }
+
 
     [PunRPC]
     public void DesactivateDamoclesSwordRoom()

@@ -986,6 +986,8 @@ public class PlayerNetwork : MonoBehaviourPun
                 player.gameManager.ResetSpeciallyRoomState(room);
                 room.chest = true;
                 room.isTraped = true;
+                room.isSpecial = true;
+                room.isVerySpecial = true;
                 if (PhotonNetwork.IsMasterClient)
                 {
                     player.gameManager.game.dungeon.InsertChestRoom(room.Index);
@@ -1002,7 +1004,9 @@ public class PlayerNetwork : MonoBehaviourPun
             case 3:
                 player.gameManager.ResetSpeciallyRoomState(room);
                 room.isPray = true;
-                room.isTraped = true;      
+                room.isTraped = true;
+                room.isSpecial = true;
+                room.isVerySpecial = true;
                 break;
             case 4:
                 room.isIllustion = true;

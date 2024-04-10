@@ -498,8 +498,6 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.CloseDoorWhenVote(true);
         if (gameManager.ui_Manager.map.activeSelf || gameManager.ui_Manager.mapLostSoul.activeSelf)
         {
-            /*            gameManager.ui_Manager.map.SetActive(false);
-                        gameManager.ui_Manager.mapLostSoul.SetActive(false);*/
 
             if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
                 gameManager.ui_Manager.HideLostSoulMap();

@@ -119,6 +119,8 @@ public class Room : ScriptableObject
     public bool isNewParadise = false;
     public int isOldSpeciality = 0;
 
+    public bool virus_spawned = false;
+
     public void Init(int pos_X, int pos_Y)
     {
         this.x = pos_X;
@@ -402,8 +404,8 @@ public class Room : ScriptableObject
             
 
         Room neigbourShorter = initial.GetNeigbourShortByRoomDestination(destination);
-        Debug.Log(neigbourShorter.index);
-        if(!neigbourShorter.isExit && neigbourShorter.distancePathFinding != distanceParadise )
+        Debug.Log(neigbourShorter.distancePathFinding);
+        if(!neigbourShorter.isExit && neigbourShorter.distance_pathFinding_initialRoom != distanceParadise )
             listRoomWay.Add(neigbourShorter);
         limit++;
         GetShortPathByDestination(neigbourShorter, destination, listRoomWay, limit, distanceParadise) ;

@@ -137,9 +137,13 @@ public class TrialsRoom : MonoBehaviourPun
         gameManagerParent.ui_Manager.DisplayInteractionObject(true);
         gameManagerParent.ui_Manager.HideFightMusic();
 
-        Debug.Log(indexObject);
         if(indexObject != 0)
             gameManagerParent.PauseTimerFroce(false);
+
+        if (gameManagerParent.game.currentRoom.IsVirus)
+        {
+            gameManagerParent.ui_Manager.DisplayFloorVirusTransparency();
+        }
     }
 
     public void ActivateObjectPower(int indexPlayer)

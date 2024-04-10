@@ -2724,9 +2724,11 @@ public class GameManager : MonoBehaviourPun
             DisplayDoorForEachSituationInSpeciality("VirusRoom");
             ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-            ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
+            //ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
             ui_Manager.DisplaySpecificDoorInSpeciallyRoom(virusRoomObject);
-            
+            //ui_Manager.DisplayFloorVirusTransparency();
+
+
             UpdateColorDoor(room);
         }
         if (room.isImpostorRoom)
@@ -2752,7 +2754,6 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.fireBall)
         {
@@ -2769,7 +2770,6 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.isSacrifice)
         {
@@ -2786,7 +2786,6 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.isJail)
         {
@@ -2798,12 +2797,12 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplayJailRoom(false);
             }
             UpdateColorDoor(room);
-            return;
         }
        
         if (room.isDeathNPC)
         {
             ui_Manager.DisplayDeathNPCRoom(true);
+            DisplayDoorForEachSituationInSpeciality("DeathNPCRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
@@ -2815,7 +2814,6 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.isSwordDamocles)
         {
@@ -2832,7 +2830,6 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.isAx)
         {
@@ -2850,7 +2847,6 @@ public class GameManager : MonoBehaviourPun
 
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.isSword)
         {
@@ -2868,7 +2864,6 @@ public class GameManager : MonoBehaviourPun
 
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.isLostTorch)
         {
@@ -2886,11 +2881,11 @@ public class GameManager : MonoBehaviourPun
 
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.isMonsters)
         {
             ui_Manager.DisplayMonstersRoom(true);
+            DisplayDoorForEachSituationInSpeciality("MonstersRoom");
             ui_Manager.DisplayMainLevers(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             isActuallySpecialityTime = true;
@@ -2901,7 +2896,6 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.isPurification)
         {
@@ -2916,7 +2910,6 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.isResurection)
         {
@@ -2931,7 +2924,6 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.isPray)
         {
@@ -2946,7 +2938,6 @@ public class GameManager : MonoBehaviourPun
                 ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
             }
             UpdateColorDoor(room);
-            return;
         }
         if (room.isNPC)
         {
@@ -2957,7 +2948,6 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             UpdateColorDoor(room);
             ui_Manager.DisplayZoneWithoutWay("NPCRoom");
-            return;
         }
         if (room.isLabyrintheHide)
         {
@@ -2972,9 +2962,17 @@ public class GameManager : MonoBehaviourPun
                 isActuallySpecialityTime = false;
             }
             UpdateColorDoor(room);
-            return;
         }
-        
+
+        Debug.Log(ui_Manager.IsOnlyVirusRoom());
+        if (ui_Manager.IsOnlyVirusRoom() &&  !room.virus_spawned)
+        {
+            ui_Manager.DisplayFloorVirusTransparency();
+        }
+        if (room.IsVirus && room.virus_spawned)
+        {
+            ui_Manager.DisplayAllZoneInSpeciallyRoomExceptVirusRoom(false);
+        }
 
         if (room.IsExit || room.IsHell)
         {
@@ -3371,8 +3369,8 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
-        return;
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
+        return;*/
         /*        gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 4);
                 return;*/
 
@@ -3906,6 +3904,13 @@ public class GameManager : MonoBehaviourPun
     {
         if (!GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
+
+        if (GameObject.Find("DeathNPC_1") && index == 1)
+            PhotonNetwork.Destroy(GameObject.Find("DeathNPC_1"));
+        if(GameObject.Find("DeathNPC_2") && index == 2)
+            PhotonNetwork.Destroy(GameObject.Find("DeathNPC_2"));
+
+
         GameObject DeathNPCRoom = GameObject.Find("Special").transform.Find("DeathNPCRoom").gameObject;
         GameObject npc = PhotonNetwork.Instantiate("DeathNpc", DeathNPCRoom.transform.Find("SpawnDeathNPC" + index).transform.position, Quaternion.identity);
         npc.GetComponent<Death_NPC>().SendIndex(index);
@@ -4260,7 +4265,7 @@ public class GameManager : MonoBehaviourPun
 
         GameObject parentSpeciality = GameObject.Find(specialityRoom);
 
-        ResetZoneDoorSpeciality(parentSpeciality.transform.Find("DoorZone").gameObject);
+         ResetZoneDoorSpeciality(parentSpeciality.transform.Find("DoorZone").gameObject);
 
         if (HasDoor(0) && HasDoor(1) && HasDoor(5))
         {
@@ -4705,7 +4710,7 @@ public class GameManager : MonoBehaviourPun
     {
 
         float randomfloat = Random.Range(0, 100);
-        //randomfloat = 76;
+        randomfloat = 70;
         if (randomfloat < 25 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[0]);

@@ -162,7 +162,7 @@ public class UI_Manager : MonoBehaviour
 
     public GameObject chests;
 
-
+    public GameObject virusRoomFloor;
 
 
     // Start is called before the first frame update
@@ -687,7 +687,7 @@ setting_button_echapMenu.SetActive(false);
     {
         int random = Random.Range(0, 6);
 
-        string letter = random switch
+/*        string letter = random switch
         {
             0 => "A",
             1 => "B",
@@ -696,15 +696,19 @@ setting_button_echapMenu.SetActive(false);
             4 => "E",
             5 => "F",
             _ => "X",
-        };
+        };*/
 
         GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
 
         foreach (GameObject door in doors)
         {
-            door.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
-            door.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = letter;
-            door.transform.GetChild(0).GetChild(2).gameObject.SetActive(false);
+            door.transform.Find("Zones").Find("childZone").GetComponent<SpriteRenderer>().enabled = false; 
+            for (int i =0; i < door.transform.Find("LettersVirus").childCount; i++)
+            {
+                door.transform.Find("LettersVirus").GetChild(i).gameObject.SetActive(false);
+            }
+
+            door.transform.Find("LettersVirus").GetChild(random).gameObject.SetActive(true);
         }
 
 
@@ -756,19 +760,13 @@ setting_button_echapMenu.SetActive(false);
         foreach (GameObject door in doors)
         {
             int indexDoor = door.GetComponent<Door>().index;
-            string letter = indexDoor switch
+            for(int i = 0; i < door.transform.Find("LettersVirus").childCount; i++)
             {
-                0 => "A",
-                1 => "B",
-                2 => "C",
-                3 => "D",
-                4 => "E",
-                5 => "F",
-                _ => "X",
-            };
-            door.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
-            door.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = letter;
-            door.transform.GetChild(0).GetChild(2).gameObject.SetActive(true);
+                door.transform.Find("LettersVirus").GetChild(i).gameObject.SetActive(false);
+            }
+
+  
+            door.transform.Find("Zones").Find("childZone").GetComponent<SpriteRenderer>().enabled = true;
         }
     }
 
@@ -2764,6 +2762,70 @@ setting_button_echapMenu.SetActive(false);
         }
     }
 
+    public void DisplayAllZoneInSpeciallyRoomExceptVirusRoom(bool display)
+    {
+        GameObject SpecialRoomParent = GameObject.Find("Room").transform.Find("Special").gameObject;
+
+        for(int i =0; i < SpecialRoomParent.transform.childCount; i++)
+        {
+            if (SpecialRoomParent.transform.GetChild(i).name == "AwardObject")
+                continue;
+            if (!SpecialRoomParent.transform.GetChild(i).gameObject.activeSelf)
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "VirusRoom" || SpecialRoomParent.transform.GetChild(i).name == "LabyrinthHideRoom")
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "ChestRoom")
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "PurificationRoom")
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "NPCRoom")
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "ResurectionRoom")
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "PrayRoom")
+                continue;
+            GameObject leftZones = SpecialRoomParent.transform.GetChild(i).Find("DoorZone").Find("Left").gameObject;
+            for (int j =0; j < leftZones.transform.childCount; j++)
+            {
+                leftZones.transform.GetChild(j).gameObject.SetActive(display);
+            }
+
+            GameObject RightZones = SpecialRoomParent.transform.GetChild(i).Find("DoorZone").Find("Right").gameObject;
+            for (int h = 0; h < RightZones.transform.childCount; h++)
+            {
+                RightZones.transform.GetChild(h).gameObject.SetActive(display);
+            }
+
+        }
+    }
+
+    public bool IsOnlyVirusRoom()
+    {
+        GameObject SpecialRoomParent = GameObject.Find("Room").transform.Find("Special").gameObject;
+        for (int i = 0; i < SpecialRoomParent.transform.childCount; i++)
+        {
+            if (SpecialRoomParent.transform.GetChild(i).name == "AwardObject")
+                continue;
+            if (!SpecialRoomParent.transform.GetChild(i).gameObject.activeSelf)
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "VirusRoom")
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "ChestRoom")
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "PurificationRoom")
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "NPCRoom")
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "ResurectionRoom")
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "PrayRoom")
+                continue;
+            return false;
+        }
+        return true;
+    }
+
+
 
     public void SetColorWallPaper()
     {
@@ -2798,6 +2860,28 @@ setting_button_echapMenu.SetActive(false);
         {
             npc.SetActive(display);
         }
+    }
+
+    public void DisplayFloorVirusTransparency()
+    {
+        virusRoomFloor.transform.Find("Floor").GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+        virusRoomFloor.transform.Find("Circle").GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+       
+        for(int i =0; i < virusRoomFloor.transform.Find("Doors").childCount; i++)
+        {
+            virusRoomFloor.transform.Find("Doors").GetChild(i).GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+        }
+
+        for(int i = 0; i < virusRoomFloor.transform.Find("DoorZone").Find("Left").childCount; i++)
+        {
+            virusRoomFloor.transform.Find("DoorZone").Find("Left").GetChild(i).GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+        }
+        for (int i = 0; i < virusRoomFloor.transform.Find("DoorZone").Find("Right").childCount; i++)
+        {
+            virusRoomFloor.transform.Find("DoorZone").Find("Right").GetChild(i).GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+        }
+        gameManager.game.currentRoom.virus_spawned = true;
+        DisplayAllZoneInSpeciallyRoomExceptVirusRoom(false);
     }
 }
 

@@ -78,6 +78,8 @@ public class Dungeon : ScriptableObject
         //InsertSpeciallyRoom2();
         //InsertImpostorRoom();
         InsertSpeciallyRoom3(distance);
+        InsertRandomSpeciallyRoom(distance);
+        SettingIsHide();
     }
 
     public void InsertSpeciallyRoom2()
@@ -127,42 +129,106 @@ public class Dungeon : ScriptableObject
             listSpecialyIndex.Add(0);
             listSpecialyIndex.Add(1);
             listSpecialyIndex.Add(2);
-/*
-            if (distance == 7)
-                listSpecialyIndex.Add(0);*/
+
 
             foreach (int specialityCounter in listSpecialyIndex)
             {
-                int indexRandom = 0;
-
-                indexRandom = Random.Range(0, listRoomWay.Count);
+                int indexRandom = Random.Range(0, listRoomWay.Count);
                 if (listRoomWay[indexRandom].isSpecial)
                 {
                     listRoomWay.RemoveAt(indexRandom);
                     continue;
                 }  
                   
-
-                listRoomWay[indexRandom].isSpecial = true;
                 switch (specialityCounter)
                 {
                     case 0:
+                        listRoomWay[indexRandom].isSpecial = true;
                         listRoomWay[indexRandom].isTrial = true;
                         break;
                     case 1:
-                        listRoomWay[indexRandom].isTeamTrial = true;
+                        int random = Random.Range(0, 2);
+                        if(random == 0)
+                        {
+                            listRoomWay[indexRandom].isSpecial = true;
+                            listRoomWay[indexRandom].isTeamTrial = true;
+                        }
                         break;
                     case 2:
-                        listRoomWay[indexRandom].isVerySpecial = true;
+                        int random2 = Random.Range(0, 2);
+                        if (random2 == 0)
+                        {
+                            listRoomWay[indexRandom].isSpecial = true;
+                            listRoomWay[indexRandom].isVerySpecial = true;
+                        }
+                           
                         break;
                 }
                 listRoomWay.RemoveAt(indexRandom);
             }
         }
-        
-       
-
     }
+
+    public void InsertRandomSpeciallyRoom(int distance)
+    {
+        foreach (Room room in trueListRoomDungeon)
+        {
+            if (room.IsObstacle)
+                continue;
+
+            if (room.isSpecial)
+                continue;
+
+            if (room.distance_pathFinding_initialRoom == distance)
+                continue;
+
+            int randomIsHide = Random.Range(0, 100); // 100
+            if (randomIsHide <= 62) //62
+            {
+                room.isHide = true;
+                //room.isNPC = true;
+                continue;
+            }
+            float randomIsTrial = Random.Range(0, 100);  // 100
+            if (randomIsTrial < 55) // 55
+                room.isTrial = true;
+            else
+            {
+                if (randomIsTrial < 60) // 75
+                {
+                    room.isTeamTrial = true;
+                }
+                else
+                {
+                    room.isVerySpecial = true;
+                }
+            }
+            room.isSpecial = true;
+        }
+    }
+
+    public void SettingIsHide()
+    {
+        foreach (Room room in trueListRoomDungeon)
+        {
+            if (room.IsObstacle)
+                continue;
+
+            if (room.isSpecial)
+                continue;
+
+            if (room.isImpostorRoom)
+                continue;
+
+            if (room.IsExit)
+                continue;
+
+            room.isHide = true;
+
+
+        }
+    }
+
 
     public int InsertImpostorRoom(int distance , bool isNearOfInitial, int scale)
     {
