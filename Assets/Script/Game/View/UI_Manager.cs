@@ -2747,6 +2747,7 @@ setting_button_echapMenu.SetActive(false);
         foreach(GameObject door in doors)
         {
             door.transform.Find("Light").gameObject.SetActive(display);
+            door.transform.Find("LightDoor").gameObject.SetActive(display);
         }
     }
 
@@ -2774,28 +2775,39 @@ setting_button_echapMenu.SetActive(false);
                 continue;
             if (SpecialRoomParent.transform.GetChild(i).name == "VirusRoom" || SpecialRoomParent.transform.GetChild(i).name == "LabyrinthHideRoom")
                 continue;
-            if (SpecialRoomParent.transform.GetChild(i).name == "ChestRoom")
-                continue;
+
             if (SpecialRoomParent.transform.GetChild(i).name == "PurificationRoom")
-                continue;
-            if (SpecialRoomParent.transform.GetChild(i).name == "NPCRoom")
                 continue;
             if (SpecialRoomParent.transform.GetChild(i).name == "ResurectionRoom")
                 continue;
             if (SpecialRoomParent.transform.GetChild(i).name == "PrayRoom")
                 continue;
-            GameObject leftZones = SpecialRoomParent.transform.GetChild(i).Find("DoorZone").Find("Left").gameObject;
-            for (int j =0; j < leftZones.transform.childCount; j++)
-            {
-                leftZones.transform.GetChild(j).gameObject.SetActive(display);
-            }
+            if (SpecialRoomParent.transform.GetChild(i).name == "ImpostorRoom")
+                continue;
 
-            GameObject RightZones = SpecialRoomParent.transform.GetChild(i).Find("DoorZone").Find("Right").gameObject;
-            for (int h = 0; h < RightZones.transform.childCount; h++)
-            {
-                RightZones.transform.GetChild(h).gameObject.SetActive(display);
-            }
 
+            if (SpecialRoomParent.transform.GetChild(i).name == "ChestRoom" || SpecialRoomParent.transform.GetChild(i).name == "NPCRoom")
+            {
+                for (int n = 0; n < SpecialRoomParent.transform.GetChild(i).Find("Zones").childCount; n++)
+                {
+                    SpecialRoomParent.transform.GetChild(i).Find("Zones").GetChild(n).gameObject.SetActive(display);
+                }
+            }
+            else
+            {
+                GameObject leftZones = SpecialRoomParent.transform.GetChild(i).Find("DoorZone").Find("Left").gameObject;
+                for (int j = 0; j < leftZones.transform.childCount; j++)
+                {
+                    leftZones.transform.GetChild(j).gameObject.SetActive(display);
+                }
+
+                GameObject RightZones = SpecialRoomParent.transform.GetChild(i).Find("DoorZone").Find("Right").gameObject;
+                for (int h = 0; h < RightZones.transform.childCount; h++)
+                {
+                    RightZones.transform.GetChild(h).gameObject.SetActive(display);
+                }
+
+            }
         }
     }
 
@@ -2820,6 +2832,10 @@ setting_button_echapMenu.SetActive(false);
                 continue;
             if (SpecialRoomParent.transform.GetChild(i).name == "PrayRoom")
                 continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "ImpostorRoom")
+                continue;
+            if (SpecialRoomParent.transform.GetChild(i).name == "SacrificeRoom")
+                continue;
             return false;
         }
         return true;
@@ -2839,10 +2855,14 @@ setting_button_echapMenu.SetActive(false);
         {
             for(int i =0; i < speciality.transform.Find("Doors").childCount; i++)
             {
-                if(speciality.transform.Find("Doors").GetChild(i).name == door.GetComponent<Door>().doorName)
+
+
+                if (speciality.transform.Find("Doors").GetChild(i).name == door.GetComponent<Door>().doorName)
                 {
                     speciality.transform.Find("Doors").GetChild(i).gameObject.SetActive(true);
                 }
+    
+              
             }
 
         }
@@ -2865,21 +2885,35 @@ setting_button_echapMenu.SetActive(false);
     public void DisplayFloorVirusTransparency()
     {
         virusRoomFloor.transform.Find("Floor").GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
-        virusRoomFloor.transform.Find("Circle").GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+        
        
         for(int i =0; i < virusRoomFloor.transform.Find("Doors").childCount; i++)
         {
             virusRoomFloor.transform.Find("Doors").GetChild(i).GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
         }
 
-        for(int i = 0; i < virusRoomFloor.transform.Find("DoorZone").Find("Left").childCount; i++)
+        Debug.Log(gameManager.game.currentRoom.chest +" " + gameManager.game.currentRoom.isNPC);
+        if(gameManager.game.currentRoom.chest || gameManager.game.currentRoom.isNPC)
         {
-            virusRoomFloor.transform.Find("DoorZone").Find("Left").GetChild(i).GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+            virusRoomFloor.transform.Find("DoubleZone_circle").GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+            for (int i = 0; i < virusRoomFloor.transform.Find("Zones").childCount; i++)
+            {
+                virusRoomFloor.transform.Find("Zones").GetChild(i).GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+            }
         }
-        for (int i = 0; i < virusRoomFloor.transform.Find("DoorZone").Find("Right").childCount; i++)
+        else
         {
-            virusRoomFloor.transform.Find("DoorZone").Find("Right").GetChild(i).GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+            virusRoomFloor.transform.Find("Circle").GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+            for (int i = 0; i < virusRoomFloor.transform.Find("DoorZone").Find("Left").childCount; i++)
+            {
+                virusRoomFloor.transform.Find("DoorZone").Find("Left").GetChild(i).GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+            }
+            for (int i = 0; i < virusRoomFloor.transform.Find("DoorZone").Find("Right").childCount; i++)
+            {
+                virusRoomFloor.transform.Find("DoorZone").Find("Right").GetChild(i).GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(2f);
+            }
         }
+        
         gameManager.game.currentRoom.virus_spawned = true;
         DisplayAllZoneInSpeciallyRoomExceptVirusRoom(false);
     }

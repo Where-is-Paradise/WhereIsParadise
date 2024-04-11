@@ -2721,7 +2721,10 @@ public class GameManager : MonoBehaviourPun
         if (room.IsVirus)
         {
             GameObject virusRoomObject = ui_Manager.DisplayVirusRoom(true);
-            DisplayDoorForEachSituationInSpeciality("VirusRoom");
+            if(room.chest || room.isNPC)
+                ui_Manager.DisplayZoneWithoutWay("VirusRoom");
+            else
+                DisplayDoorForEachSituationInSpeciality("VirusRoom");
             ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             //ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
@@ -2965,7 +2968,7 @@ public class GameManager : MonoBehaviourPun
         }
 
         Debug.Log(ui_Manager.IsOnlyVirusRoom());
-        if (ui_Manager.IsOnlyVirusRoom() &&  !room.virus_spawned)
+        if (room.IsVirus && ui_Manager.IsOnlyVirusRoom() &&  !room.virus_spawned)
         {
             ui_Manager.DisplayFloorVirusTransparency();
         }
@@ -3378,7 +3381,7 @@ public class GameManager : MonoBehaviourPun
         {
             float randomInt = Random.Range(0, 100);
             Debug.Log(randomInt);
-            //randomInt = 80;
+            randomInt = 97;
             if (randomInt < AdditionalProbaVerySpeciality(0)  && setting.listSpeciallyRoom[0])
             {
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
@@ -3620,6 +3623,7 @@ public class GameManager : MonoBehaviourPun
             if(i == 0)
             {
                 listProbabilityVerySpecialityRoom[i] = 30;
+                gameManagerNetwork.SendUpdateListSpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
             }
             else
             {
@@ -3663,9 +3667,9 @@ public class GameManager : MonoBehaviourPun
         float returnValue = 0;
         for (int i = index; i >= 0; i--)
         {
-            returnValue += listProbabilityVerySpecialityRoom[index];
+            returnValue += listProbabilityVerySpecialityRoom[i];
         }
-
+        Debug.Log(index + " : " + returnValue);
         return returnValue;
     }
 
@@ -4374,7 +4378,7 @@ public class GameManager : MonoBehaviourPun
         List<Door> listDoorPotential = new List<Door>();
         foreach (GameObject door in listDoor)
         {
-            if (door.GetComponent<Door>().RoomBehindHaslessDistance())
+            if (!door.GetComponent<Door>().RoomBehindHaslessDistance())
                 continue;
             else
                 listDoorPotential.Add(door.GetComponent<Door>());

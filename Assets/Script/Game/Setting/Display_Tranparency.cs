@@ -10,7 +10,7 @@ public class Display_Tranparency : MonoBehaviour
     public bool display;
     public float speed;
 
-    private bool launchTransition = false;
+    public bool launchTransition = false;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +43,9 @@ public class Display_Tranparency : MonoBehaviour
 
     public void LaunchTransitionUnDisplayToDisplay(float speed)
     {
+        if (sprite.gameObject.name == "Circle")
+            Debug.Log(this.gameObject.name);
+
         timer = 0;
         display = true;
         this.speed = speed;

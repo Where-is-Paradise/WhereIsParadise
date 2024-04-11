@@ -55,6 +55,10 @@ public class NPCRoom : MonoBehaviourPun
             gameManager.game.currentRoom.doorNameLongerNPC = doorNameLonger;
             string doorNameShorter = gameManager.GetDoorShorter().doorName;
             gameManager.game.currentRoom.doorNameShorterNPC = doorNameShorter;
+
+          
+
+
         } 
         else
         {
@@ -206,6 +210,8 @@ public class NPCRoom : MonoBehaviourPun
         powerIsUsed = true;
 
         gameManager.gameManagerNetwork.SendPowerIsUsed(gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.Index, true);
+
+        HideNormalNPC();
     }
 
     [PunRPC]
@@ -326,23 +332,36 @@ public class NPCRoom : MonoBehaviourPun
                     || gameManager.game.currentRoom.indexEvilNPC == 1 && gameManager.game.currentRoom.indexEvilNPC_2 == 0)
 
                 {
-                    this.transform.Find("NPCLeft").Find("Evil").gameObject.SetActive(true);
+/*                    this.transform.Find("NPCLeft").Find("Evil").gameObject.SetActive(true);
                     this.transform.Find("NPCMiddle").Find("Evil").gameObject.SetActive(true);
-                    this.transform.Find("NPCRight").Find("Angel").gameObject.SetActive(true);
+                    this.transform.Find("NPCRight").Find("Angel").gameObject.SetActive(true);*/
+
+                    this.transform.Find("NPCLeft").Find("Transparency").Find("Evil").gameObject.SetActive(true);
+                    this.transform.Find("NPCMiddle").Find("Transparency").Find("Evil").gameObject.SetActive(true);
+                    this.transform.Find("NPCRight").Find("Transparency").Find("Angel").gameObject.SetActive(true);
                 }
                 else if((gameManager.game.currentRoom.indexEvilNPC == 0 && gameManager.game.currentRoom.indexEvilNPC_2 == 2) 
                     || gameManager.game.currentRoom.indexEvilNPC == 2 && gameManager.game.currentRoom.indexEvilNPC_2 == 0)
                 {
-                    this.transform.Find("NPCRight").Find("Evil").gameObject.SetActive(true);
+/*                    this.transform.Find("NPCRight").Find("Evil").gameObject.SetActive(true);
                     this.transform.Find("NPCMiddle").Find("Angel").gameObject.SetActive(true);
-                    this.transform.Find("NPCLeft").Find("Evil").gameObject.SetActive(true);
+                    this.transform.Find("NPCLeft").Find("Evil").gameObject.SetActive(true);*/
+
+                    this.transform.Find("NPCRight").Find("Transparency").Find("Evil").gameObject.SetActive(true);
+                    this.transform.Find("NPCMiddle").Find("Transparency").Find("Angel").gameObject.SetActive(true);
+                    this.transform.Find("NPCLeft").Find("Transparency").Find("Evil").gameObject.SetActive(true);
+
                 }
                 else if (gameManager.game.currentRoom.indexEvilNPC == 1 && gameManager.game.currentRoom.indexEvilNPC_2 == 2 
                     || gameManager.game.currentRoom.indexEvilNPC == 2 && gameManager.game.currentRoom.indexEvilNPC_2 == 1)
                 {
-                    this.transform.Find("NPCLeft").Find("Angel").gameObject.SetActive(true);
+/*                    this.transform.Find("NPCLeft").Find("Angel").gameObject.SetActive(true);
                     this.transform.Find("NPCMiddle").Find("Evil").gameObject.SetActive(true);
-                    this.transform.Find("NPCRight").Find("Evil").gameObject.SetActive(true);
+                    this.transform.Find("NPCRight").Find("Evil").gameObject.SetActive(true);*/
+
+                    this.transform.Find("NPCLeft").Find("Transparency").Find("Angel").gameObject.SetActive(true);
+                    this.transform.Find("NPCMiddle").Find("Transparency").Find("Evil").gameObject.SetActive(true);
+                    this.transform.Find("NPCRight").Find("Transparency").Find("Evil").gameObject.SetActive(true);
                 }
             }
         }
@@ -367,6 +386,13 @@ public class NPCRoom : MonoBehaviourPun
         this.transform.Find("NPCRight").Find("SquareMessage").gameObject.SetActive(false);
         this.transform.Find("NPCLeft").Find("SquareMessage").gameObject.SetActive(false);
         this.transform.Find("NPCMiddle").Find("SquareMessage").gameObject.SetActive(false);
+    }
+
+    public void HideNormalNPC()
+    {
+        this.transform.Find("NPCRight").Find("img").gameObject.SetActive(false);
+        this.transform.Find("NPCLeft").Find("img").gameObject.SetActive(false);
+        this.transform.Find("NPCMiddle").Find("img").gameObject.SetActive(false);
     }
 
 
