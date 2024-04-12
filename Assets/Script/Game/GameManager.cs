@@ -2717,6 +2717,7 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.ChangeColorAllPlayerSkinToFoggy(true);
             ui_Manager.DisplayLeverVoteDoor(true);
             UpdateColorDoor(room);
+            ui_Manager.DisplayFoggyRoomTransparyAnimation();
         }
         if (room.IsVirus)
         {
@@ -3083,9 +3084,11 @@ public class GameManager : MonoBehaviourPun
         speciallyIsLaunch = true;
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         GameObject.Find("GameManager").GetComponent<GameManager>().PauseTimerFroce(true);
-        yield return new WaitForSeconds(10);
+        ui_Manager.DisplayCircleZoneColorChest(true);
+        yield return new WaitForSeconds(8);
         voteChestHasProposed = false;
         isActuallySpecialityTime = false;
+        ui_Manager.DisplayCircleZoneColorChest(false);
         ui_Manager.DisplayAwardAndPenaltyForImpostor(false);
         ui_Manager.ResetAllPlayerLightAround();
         StartCoroutine(ResetAllPlayerLightAroundCoroutine());
@@ -3381,7 +3384,7 @@ public class GameManager : MonoBehaviourPun
         {
             float randomInt = Random.Range(0, 100);
             Debug.Log(randomInt);
-            randomInt = 97;
+            randomInt = 10;
             if (randomInt < AdditionalProbaVerySpeciality(0)  && setting.listSpeciallyRoom[0])
             {
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
@@ -4378,7 +4381,7 @@ public class GameManager : MonoBehaviourPun
         List<Door> listDoorPotential = new List<Door>();
         foreach (GameObject door in listDoor)
         {
-            if (!door.GetComponent<Door>().RoomBehindHaslessDistance())
+            if (door.GetComponent<Door>().RoomBehindHaslessDistance())
                 continue;
             else
                 listDoorPotential.Add(door.GetComponent<Door>());
@@ -4714,7 +4717,7 @@ public class GameManager : MonoBehaviourPun
     {
 
         float randomfloat = Random.Range(0, 100);
-        randomfloat = 70;
+        randomfloat = 60;
         if (randomfloat < 25 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[0]);

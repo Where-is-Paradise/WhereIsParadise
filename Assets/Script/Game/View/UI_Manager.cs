@@ -2916,6 +2916,23 @@ setting_button_echapMenu.SetActive(false);
         
         gameManager.game.currentRoom.virus_spawned = true;
         DisplayAllZoneInSpeciallyRoomExceptVirusRoom(false);
+        soundDemonicLaugh.Play();
+    }
+
+    public void DisplayFoggyRoomTransparyAnimation()
+    {
+        GameObject foggyRoom = GameObject.Find("Room").transform.Find("Special").Find("FoggyRoom").gameObject;
+
+        foggyRoom.transform.Find("FoggyAnimation").GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(6f, 0.3f);
+        soundDemonicLaugh.Play();
+
+    }
+
+    public void DisplayCircleZoneColorChest(bool display)
+    {
+        GameObject chestRoom = GameObject.Find("Room").transform.Find("Special").Find("ChestRoom").gameObject;
+
+        chestRoom.transform.Find("ColorCircleZone").gameObject.SetActive(display);
     }
 }
 

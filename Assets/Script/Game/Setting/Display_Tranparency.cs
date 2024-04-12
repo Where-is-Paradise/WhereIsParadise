@@ -9,6 +9,7 @@ public class Display_Tranparency : MonoBehaviour
     public SpriteRenderer sprite;
     public bool display;
     public float speed;
+    public float max  = 1; 
 
     public bool launchTransition = false;
 
@@ -24,7 +25,7 @@ public class Display_Tranparency : MonoBehaviour
         if (launchTransition)
         {
             SetColorImage(timer);
-            if (timer < 1)
+            if (timer < max)
             {
                 timer += (Time.deltaTime / speed);
             }
@@ -43,13 +44,22 @@ public class Display_Tranparency : MonoBehaviour
 
     public void LaunchTransitionUnDisplayToDisplay(float speed)
     {
-        if (sprite.gameObject.name == "Circle")
-            Debug.Log(this.gameObject.name);
+
 
         timer = 0;
         display = true;
         this.speed = speed;
         launchTransition = true;
+        max = 1;
+    }
+
+    public void LaunchTransitionUnDisplayToDisplay(float speed, float max)
+    {
+        timer = 0;
+        display = true;
+        this.speed = speed;
+        launchTransition = true;
+        this.max = max;
 
     }
 }
