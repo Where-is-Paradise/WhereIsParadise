@@ -83,7 +83,7 @@ public class Hexagone : MonoBehaviourPun
 #endif
         if (!this.room.IsObstacle && (this.room.isSpecial || this.room.IsExit || this.room.IsHell || this.room.isImpostorRoom || this.room.isNewParadise))
         {
-            if (gameManager.ui_Manager.map.activeSelf)
+            if (this.GetComponent<Hexagone>().enabled && gameManager.ui_Manager.map.activeSelf)
             {
 
                 this.transform.Find("Canvas").Find("ImpostorPower").gameObject.SetActive(false);
@@ -142,8 +142,13 @@ public class Hexagone : MonoBehaviourPun
             return;
         if (this.isLightByOther)
             return;
+        if (!gameManager)
+            return;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lightHexagoneIsOn && !isLighted)
             return;
+        if (this.transform.parent.name != "Listhexa")
+            return;
+
         isLighted = !this.transform.Find("Light").gameObject.activeSelf;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lightHexagoneIsOn = isLighted;
         this.transform.Find("Light").gameObject.SetActive(isLighted);
@@ -156,10 +161,22 @@ public class Hexagone : MonoBehaviourPun
         this.transform.Find("Light").gameObject.SetActive(active);
         isLightByOther = active;
     }
+    public void SetLight2(bool active)
+    {
+        this.transform.Find("Light").gameObject.SetActive(active);
+        isLightByOther = active;
+        isLighted = active;
+        if (!gameManager)
+            return;
+        gameManager.gameManagerNetwork.SendLightHexagone(this.room.Index, isLighted);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lightHexagoneIsOn = active;
+    }
 
     void OnMouseExit()
     {
 
+        if (!gameManager)
+            return;
 #if UNITY_IOS || UNITY_ANDROID
         return;
 #endif
@@ -249,7 +266,6 @@ public class Hexagone : MonoBehaviourPun
         }
         if (this.room.isImpostorRoom)
         {
-           
             Information_Speciality.transform.Find("Hexagone").Find("ImpostorRoom").gameObject.SetActive(display);
             Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
             Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 0 / 255f, 0 / 255f);

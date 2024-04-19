@@ -55,6 +55,11 @@ public class ErrorMessage : MonoBehaviour
             StartCoroutine(DisplayErrorCouroutine("SoulMustBeInCircle"));
     }
 
+    public void AllDoorAreAlreadyOpen()
+    {
+        if (!this.transform.Find("CannotOpenDoor").gameObject.activeSelf)
+            StartCoroutine(DisplayErrorCouroutine("CannotOpenDoor"));
+    }
 
 
 }

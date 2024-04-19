@@ -404,7 +404,7 @@ public class Room : ScriptableObject
             
 
         Room neigbourShorter = initial.GetNeigbourShortByRoomDestination(destination);
-        Debug.Log(neigbourShorter.distancePathFinding);
+        //Debug.Log(neigbourShorter.distancePathFinding);
         if(!neigbourShorter.isExit && neigbourShorter.distance_pathFinding_initialRoom != distanceParadise )
             listRoomWay.Add(neigbourShorter);
         limit++;

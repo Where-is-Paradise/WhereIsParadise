@@ -1745,6 +1745,17 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.GetHexagone(indexHexagone).SetLight(activeLight);
     }
 
+    public void SendLightHexagoneLostSoul(int indexHexagone, bool activeLight)
+    {
+        photonView.RPC("SetLightHexagoneLostSoul", RpcTarget.Others, indexHexagone, activeLight);
+    }
+
+    [PunRPC]
+    public void SetLightHexagoneLostSoul(int indexHexagone, bool activeLight)
+    {
+        gameManager.GetHexagone(indexHexagone).GetComponent<HexagoneLostSoul>().SetLight(activeLight);
+    }
+
     public void SendDistanceAwardChest(int indexChest)
     {
         photonView.RPC("SetDistanceAwardChest", RpcTarget.All, indexChest);
@@ -2897,5 +2908,21 @@ public class GameManagerNetwork : MonoBehaviourPun
     public void SetPauseTimerForce(bool pause)
     {
         gameManager.PauseTimerFroce(pause);
+    }
+
+    public void SendImpostorRoomForEnd(int indexImpostorRoom)
+    {
+        photonView.RPC("SetImpostorRoomForEnd", RpcTarget.All, indexImpostorRoom);
+    }
+
+    [PunRPC]
+    public void SetImpostorRoomForEnd(int indexImpostorRoom)
+    {
+        Debug.LogError(indexImpostorRoom);
+        SetResetSpeciallyRoomToImpostor(indexImpostorRoom);
+        gameManager.GetHexagone(indexImpostorRoom).Room.isImpostorRoom = true;
+        gameManager.GetHexagone(indexImpostorRoom).Room.isHide = false;
+        gameManager.GetHexagone(indexImpostorRoom).DiplayInformationSpeciallyRoom(true);
+
     }
 }

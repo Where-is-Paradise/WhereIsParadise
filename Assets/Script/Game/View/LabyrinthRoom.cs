@@ -119,6 +119,7 @@ public class LabyrinthRoom : TrialsRoom
         listInitalObstacleLeft.Add(GetObtacleByPosition(21, 13));
         listInitalObstacleLeft.Add(GetObtacleByPosition(21, 14));
         gameManagerParent.speciallyIsLaunch = true;
+        thereIsTorchInAward = false;
         gameManagerParent.ActivateCollisionTPOfAllDoor(false);
         gameManagerParent.CloseDoorWhenVote(true);
         gameManagerParent.ui_Manager.DisplayTrapPowerButtonDesactivate(true);
@@ -550,8 +551,11 @@ public class LabyrinthRoom : TrialsRoom
         }
         ResetScalePlayer();
         ResetAllData();
-
-
+        if (!thereIsTorchInAward)
+        {
+            StartCoroutine(CouroutineActivateDoorLever(2));
+            ReactivateCurrentRoom();
+        }
     }
 
     public void ResetAllData()
@@ -574,6 +578,7 @@ public class LabyrinthRoom : TrialsRoom
         objectIsInsert = false;
         gameManagerParent.speciallyIsLaunch = false;
         gameManagerParent.game.currentRoom.speciallyPowerIsUsed = true;
+        thereIsTorchInAward = false;
         ChangeColliderSize(false);
         DisplayListSeparation(false);
 

@@ -194,7 +194,9 @@ public class GameManager : MonoBehaviourPun
         parentMapCurrent = parentMap.transform.parent.gameObject;
         lostSoulMapCurrent = lostSoulMap.transform.parent.gameObject;
         StartCoroutine(SetMapOFLostSoul(4f));
-        StartCoroutine(RandomStartMusic(Random.Range(10, 25)));
+       
+        //StartCoroutine(StartAmbianceBeginingMusic())
+        StartCoroutine(PauseMusic());
     }
     public IEnumerator MasterClientCreateMap()
     {
@@ -473,14 +475,10 @@ public class GameManager : MonoBehaviourPun
 
     public void InitiatiateListIndexPower()
     {
-        if (setting.listTrapRoom[0])
-            listIndexImpostorPower.Add(0);
-        if (setting.listTrapRoom[1])
-            listIndexImpostorPower.Add(1);
-        if (setting.listTrapRoom[2])
-            listIndexImpostorPower.Add(2);
-        if (setting.listTrapRoom[3])
-            listIndexImpostorPower.Add(3);
+        listIndexImpostorPower.Add(0);
+        listIndexImpostorPower.Add(1);
+        listIndexImpostorPower.Add(2);
+        listIndexImpostorPower.Add(3);
 
         //listIndexImpostorPower.Add(4);
     }
@@ -2403,6 +2401,7 @@ public class GameManager : MonoBehaviourPun
 
     public void Win()
     {
+        ui_Manager.StopAllMusic();
         paradiseIsFind = true;
         gameManagerNetwork.SendParadiseIsFind(GetPlayerMine().GetId());
         CloseDoorOveride();
@@ -2417,6 +2416,7 @@ public class GameManager : MonoBehaviourPun
 
     public void Loose()
     {
+        ui_Manager.StopAllMusic();
         hellIsFind = true;
         gameManagerNetwork.SendHellIsFind(hellIsFind, GetPlayerMine().GetId());
         CloseDoorOveride();
@@ -2431,6 +2431,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplayAutelTutorialSpeciallyRoom(false);
         ui_Manager.ActiveSlideMap();
         ui_Manager.DisplayMapForEnd();
+
 
     }
 
@@ -3375,8 +3376,8 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 7);
-        return;*/
+        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 0);
+        return;
         /*        gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 4);
                 return;*/
 
@@ -3384,7 +3385,7 @@ public class GameManager : MonoBehaviourPun
         {
             float randomInt = Random.Range(0, 100);
             Debug.Log(randomInt);
-            randomInt = 10;
+            //randomInt = 10;
             if (randomInt < AdditionalProbaVerySpeciality(0)  && setting.listSpeciallyRoom[0])
             {
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
@@ -3477,7 +3478,7 @@ public class GameManager : MonoBehaviourPun
 
             float randomInt = Random.Range(randomMonsters, randomGodDeath);
 
-            if (randomInt < 50) // 50
+            if (randomInt < 100) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }
@@ -4135,6 +4136,9 @@ public class GameManager : MonoBehaviourPun
     {
         ui_Manager.HideSpeciallyDisplay();
         gameManagerNetwork.SendIsEndGame(true);
+        ui_Manager.StopAllMusic();
+
+        ui_Manager.soundAmbianceHell.Play();
         yield return new WaitForSeconds(4);
         if (!GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
         {
@@ -4145,6 +4149,7 @@ public class GameManager : MonoBehaviourPun
         StartCoroutine(CouroutineDisplayEndPanel());
         StartCoroutine(SacrificeAFKplayer());
         ui_Manager.DisplayMapForEnd();
+        
     }
 
     public void UpdateDataInformationInEndGame()
@@ -4716,53 +4721,107 @@ public class GameManager : MonoBehaviourPun
     public void GiveImpostorObject()
     {
 
-        float randomfloat = Random.Range(0, 100);
-        randomfloat = 60;
+        float randomLeft = 0;
+        float randomRight = 100;
+        if (!setting.listTrapRoom[0])
+        {
+            randomLeft += (float)(100 / 4f);
+        }
+        if (!setting.listTrapRoom[2])
+        {
+            if(!setting.listTrapRoom[1] && !setting.listTrapRoom[3])
+                randomRight -= (float)(100 / 4f);
+            if(!!setting.listTrapRoom[0])
+                randomLeft += (float)(100 / 4f);
+        }
+        if (!setting.listTrapRoom[1])
+        {
+            if(!setting.listTrapRoom[3])
+                randomRight -= (float)(100 / 4f);
+        }
+        if (!setting.listTrapRoom[3])
+        {
+            randomRight -= (float)(100 / 4f);
+        }
+
+        Debug.Log(randomLeft + " " + randomRight);
+        float randomfloat = Random.Range(randomLeft, randomRight);
+        Debug.Log(randomfloat);
+
+        //randomfloat = 60;
         if (randomfloat < 25 && setting.listTrapRoom[0])
         {
-            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[0]);
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(0); // foggy
         }
-        else if (randomfloat < 50 && setting.listTrapRoom[1])
+        else if (randomfloat < 50 && setting.listTrapRoom[2])
         {
-            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[1]);
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(1); // chest
         }
-        else if (randomfloat < 75 && setting.listTrapRoom[2])
+        else if (randomfloat < 75 && setting.listTrapRoom[1])
         {
-            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[2]);
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(2); // virus
 
         }
         else if (randomfloat < 100 && setting.listTrapRoom[3])
         {
-            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(listIndexImpostorPower[3]);
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(3); // pray
         }
 
         ui_Manager.DisplayPowerImpostorInGame();
         GetPlayerMineGO().GetComponent<PlayerGO>().hasOneTrapPower = true;
     }
 
+    public IEnumerator PauseMusic()
+    {
+        int randomPause = Random.Range(2, 5);
+        yield return new WaitForSeconds(randomPause);
+        Debug.LogError("sa passe 0");
+        StartCoroutine(StartAmbianceBeginingMusic());
+    }
+
     public IEnumerator RandomStartMusic(int seconde)
     {
 
         yield return new WaitForSeconds(seconde);
-
+        ui_Manager.CaveMusicAmbiance.Stop();
         if (!speciallyIsLaunch)
         {
             int randomSeconde = Random.Range(150, 275);
-            int radomMusic = Random.Range(0, 2);
-            ui_Manager.currentMusic_index = radomMusic;
-            radomMusic = 0;
+            int radomMusic = Random.Range(0, 3);
+            //radomMusic = 0;
+         
             if (radomMusic == 0)
+            {
                 ui_Manager.BasesMusic.Play();
-            else
+            }
+               
+            else if(radomMusic == 1)
+            {
                 ui_Manager.BasesMusic2.Play();
+            }
 
-            StartCoroutine(RandomStartMusic(randomSeconde));
+            else
+            {
+                ui_Manager.BasesMusic3.Play();
+            }
+               
+
+            ui_Manager.currentMusic_index = radomMusic;
+            //StartCoroutine(RandomStartMusic(randomSeconde));
         }
-        else
+
+    }
+    public IEnumerator StartAmbianceBeginingMusic()
+    {
+        yield return new WaitForSeconds(1);
+        if (!ui_Manager.CaveMusicAmbiance.isPlaying)
         {
-            StartCoroutine(RandomStartMusic(15));
+            ui_Manager.CaveMusicAmbiance.Play();
         }
-
+            
+        //ui_Manager.currentMusic_index = 3;
+        int randomStartMusic = Random.Range(25, 125);
+        StartCoroutine(RandomStartMusic(randomStartMusic));
     }
 
     public List<GameObject> TreePlayerByID()
@@ -4872,6 +4931,16 @@ public class GameManager : MonoBehaviourPun
            
         }
         return null;
+    }
+
+    public int GetImpostorRoom()
+    {
+        foreach(Hexagone hexagone in dungeon)
+        {
+            if (hexagone.Room.isImpostorRoom)
+                return hexagone.Room.Index;
+        }
+        return -1;
     }
 
 }

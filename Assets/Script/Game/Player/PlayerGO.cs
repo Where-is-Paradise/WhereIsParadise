@@ -451,7 +451,8 @@ public class PlayerGO : MonoBehaviour
                     }
                     else
                     {
-                        gameManager.ui_Manager.DisplayXzoneRed();
+                        gameManager.errorMessage.GetComponent<ErrorMessage>().AllDoorAreAlreadyOpen();
+                        //gameManager.ui_Manager.DisplayXzoneRed();
                     }
                 }
                 launchVoteDoorMobile = false;
@@ -1355,7 +1356,7 @@ public class PlayerGO : MonoBehaviour
 
         if (collision.gameObject.CompareTag("teleport_paradise"))
         {
-            if (GetComponent<PhotonView>().IsMine)
+            if (GetComponent<PhotonView>().IsMine && !isImpostor)
             {
                 gameManager.timer.LaunchTimer(100000f, false);
                 collisionParadise = true;
@@ -1438,7 +1439,10 @@ public class PlayerGO : MonoBehaviour
             else
             {
                 if(gameManager.teamHasWinTrialRoom && !isTouchInTrial)
+                {
                     playerNetwork.SendDesactivateObjectTeam();
+                }
+                    
                 if (gameManager.game.currentRoom.isImpostorRoom)
                     GameObject.Find("ImpostorRoom").GetComponent<ImpostorRoom>().CollisionObject(collision.gameObject.name);
             }

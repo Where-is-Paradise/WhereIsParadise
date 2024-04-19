@@ -39,7 +39,7 @@ public class LostTorchRoom : TrialsRoom
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
         gameManager.PauseTimerFroce(true);
         yield return new WaitForSeconds(2);
-        
+        gameManager.ui_Manager.LaunchFightMusic();
         SpawnLostTorch();
         gameManager.speciallyIsLaunch = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);

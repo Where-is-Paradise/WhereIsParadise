@@ -131,9 +131,11 @@ public class MonsterNPC : MonoBehaviourPun
         player.GetComponent<PlayerGO>().lifeTrialRoom--;
         player.GetComponent<PlayerNetwork>()
             .SendLifeTrialRoom(player.GetComponent<PlayerGO>().lifeTrialRoom);
+        
 
         if (player.GetComponent<PlayerGO>().lifeTrialRoom <= 0)
         {
+            player.GetComponent<PlayerNetwork>().SendHideSwordMonster();
             photonView.RPC("SendIgnoreCollisionOnePlayer", RpcTarget.All, player.GetComponent<PhotonView>().ViewID, true);
             SetPlayerColor(player);
 
@@ -247,8 +249,8 @@ public class MonsterNPC : MonoBehaviourPun
     [PunRPC]
     public void SetDestroy()
     {
-        if (GetComponent<PhotonView>().IsMine)
-            PhotonNetwork.Destroy(this.gameObject);
+  
+        PhotonNetwork.Destroy(this.gameObject);
        // StartCoroutine(CouroutineDestroy());
     }
 
@@ -256,8 +258,7 @@ public class MonsterNPC : MonoBehaviourPun
     {
         photonView.RPC("SendDesactivateView", RpcTarget.Others);
         yield return new WaitForSeconds(1f);
-        if (GetComponent<PhotonView>().IsMine)
-            PhotonNetwork.Destroy(this.gameObject);
+        PhotonNetwork.Destroy(this.gameObject);
     }
 
     [PunRPC]
@@ -285,5 +286,7 @@ public class MonsterNPC : MonoBehaviourPun
     public void SendIgnoreCollisionOnePlayer(int indexPlayer, bool ignore)
     {
         monsterRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionPlayer(indexPlayer, ignore);
+        Physics2D.IgnoreCollision(this.transform.GetComponent<CircleCollider2D>(), monsterRoom.gameManager.GetPlayer(indexPlayer).transform.GetComponent<CapsuleCollider2D>(), true);
     }
+
 }

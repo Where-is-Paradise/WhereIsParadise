@@ -130,7 +130,7 @@ public class MonstersRoom : TrialsRoom
 
     public void SpawnMonster()
     {
-        if (GameObject.FindGameObjectsWithTag("Monster").Length >= 20)
+        if (GameObject.FindGameObjectsWithTag("Monster").Length >= 30)
             return;
 
         int indexSpawn = Random.Range(0, listSpawn.transform.childCount);
@@ -192,6 +192,9 @@ public class MonstersRoom : TrialsRoom
         DisplaySwordAllPlayer(false);
         timerSpawnMonster = 1;
         roomIsLaunch = false;
+        this.transform.Find("X_zone_animation").GetComponent<Animator>().speed = 1;
+        this.transform.Find("X_zone_animation").Find("Timer").GetComponent<Timer>().ResetTimer();
+        this.transform.Find("X_zone_animation").GetComponent<Animator>().ForceStateNormalizedTime(0);
         this.transform.Find("X_zone_animation").gameObject.SetActive(false);
     }
 
@@ -288,7 +291,7 @@ public class MonstersRoom : TrialsRoom
     public IEnumerator CouroutineEndGame(float seconde)
     { 
         yield return new WaitForSeconds(seconde);
-        gameManagerParent.ui_Manager.HideFightMusic();
+        //gameManagerParent.ui_Manager.HideFightMusic();
         if (!isLoose)
         {
             GiveTeamAward();    

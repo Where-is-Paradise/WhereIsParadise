@@ -1297,7 +1297,7 @@ public class PlayerNetwork : MonoBehaviourPun
         if (!speciallyRoom.GetComponent<TrialsRoom>())
             return;
         speciallyRoom.GetComponent<TrialsRoom>().ReactivateCurrentRoom();
-        speciallyRoom.GetComponent<TrialsRoom>().ApplyGlobalAward();
+        speciallyRoom.GetComponent<TrialsRoom>().ApplyGlobalAward(player.GetComponent<PhotonView>().ViewID);
 
     }
 
@@ -1397,5 +1397,16 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         yield return new WaitForSeconds(5);
         player.isTeleporting = false;
+    }
+
+    public void SendHideSwordMonster()
+    {
+        photonView.RPC("SetHideSwordMonster", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetHideSwordMonster()
+    {
+        this.transform.Find("SwordMonster").gameObject.SetActive(false);
     }
 }

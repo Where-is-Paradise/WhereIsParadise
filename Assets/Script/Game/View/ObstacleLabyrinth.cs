@@ -136,7 +136,11 @@ public class ObstacleLabyrinth : MonoBehaviourPun
         hasAward = true;
         this.indexObject = indexAward;
         if (indexAward == 0 || indexAward == 3)
+        {
             awardIsTorch = true;
+            labyrinthRoom.thereIsTorchInAward = true;
+        }
+            
         this.indexObjectInList = indexObjectInList;
         return indexAward;
     }

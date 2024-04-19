@@ -177,7 +177,8 @@ public class TrialsRoom : MonoBehaviourPun
                 {
                     gameManagerParent.ui_Manager.DisplayInformationObjectWon(1);
                 }
-                StartCoroutine(CouroutineActivateDoorLever(2));
+                if(!gameManagerParent.game.currentRoom.isLabyrintheHide)
+                    StartCoroutine(CouroutineActivateDoorLever(2));
                 break;
             case 2:
                 gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasProtection = true;
@@ -187,7 +188,8 @@ public class TrialsRoom : MonoBehaviourPun
                 {
                     gameManagerParent.ui_Manager.DisplayInformationObjectWon(2);
                 }
-                StartCoroutine(CouroutineActivateDoorLever(2));
+                if (!gameManagerParent.game.currentRoom.isLabyrintheHide)
+                    StartCoroutine(CouroutineActivateDoorLever(2));
                 break;
             case 3:
                 if (!gameManagerParent.SamePositionAtBoss())
@@ -214,6 +216,8 @@ public class TrialsRoom : MonoBehaviourPun
         if (!gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
             return;
         if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasOneTrapPower)
+            return;
+        if (!gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isImpostor)
             return;
 
         float randomfloat = Random.Range(0, 100);
@@ -340,14 +344,17 @@ public class TrialsRoom : MonoBehaviourPun
                 indexObject = 2;
                 break;
             case 3:
-                DisplayAwardObject(7);
+                /*DisplayAwardObject(7);*/
+                this.transform.parent.Find("AwardObject").gameObject.SetActive(true);
+                this.transform.parent.transform.Find("AwardObject").Find("ChestTeam").gameObject.SetActive(true);
+                StartCoroutine(ActiveCollisionChestTeamCoroutine());
                 indexObject = 3;
                 break;
 
         }
         
     }
-    public void ApplyGlobalAward()
+    public void ApplyGlobalAward(int indexPlayer)
     {
         switch (indexObject)
         {
@@ -377,7 +384,7 @@ public class TrialsRoom : MonoBehaviourPun
                 StartCoroutine(CouroutineActivateDoorLever(2));
                 break;
             case 3:
-                if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
+                if (!gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
                     return;
                 gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.SetActive(true);
                 break;
@@ -463,6 +470,13 @@ public class TrialsRoom : MonoBehaviourPun
         yield return new WaitForSeconds(1f);
         this.transform.parent.transform.Find("AwardObject").Find("Chest").Find("collisionChest").gameObject.SetActive(false);
         this.transform.parent.transform.Find("AwardObject").Find("Chest").GetComponent<BoxCollider2D>().enabled = true;
+    }
+
+    public IEnumerator ActiveCollisionChestTeamCoroutine()
+    {
+        yield return new WaitForSeconds(1f);
+        this.transform.parent.transform.Find("AwardObject").Find("ChestTeam").Find("collisionChest").gameObject.SetActive(false);
+        this.transform.parent.transform.Find("AwardObject").Find("ChestTeam").GetComponent<BoxCollider2D>().enabled = true;
     }
 
 }

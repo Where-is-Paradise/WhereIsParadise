@@ -124,11 +124,15 @@ public class UI_Manager : MonoBehaviour
 
     public AudioSource BasesMusic;
     public AudioSource BasesMusic2;
+    public AudioSource BasesMusic3;
+    public AudioSource CaveMusicAmbiance;
 
     public AudioSource currentMusic;
 
     public float timerMusic;
     public float timerMusic2;
+    public float timerMusic3;
+    public float timerCave;
 
     public AudioSource dashSound;
     public AudioSource monsterExplosion;
@@ -150,7 +154,7 @@ public class UI_Manager : MonoBehaviour
 
     public AudioSource fireball;
 
-    public int currentMusic_index = 0;
+    public int currentMusic_index = -1;
     public bool launchIncreaseVolumLittleToLittle = false;
 
     public GameObject map_interaction;
@@ -163,6 +167,9 @@ public class UI_Manager : MonoBehaviour
     public GameObject chests;
 
     public GameObject virusRoomFloor;
+
+    public GameObject hexagoneImpostorInformation;
+    public GameObject hexagoneNoneImpostorInformation;
 
 
     // Start is called before the first frame update
@@ -182,7 +189,7 @@ setting_button_echapMenu.SetActive(false);
             listTutorialBool.Add(false);
         }
 
-
+        currentMusic_index = -1;
     }
 
     // Update is called once per frame
@@ -238,6 +245,29 @@ setting_button_echapMenu.SetActive(false);
                 launchIncreaseVolumLittleToLittle = false;
         }
 
+       //ebug.Log(BasesMusic.time);
+
+        if(currentMusic_index != -1)
+        {
+            if (!BasesMusic.isPlaying && currentMusic_index == 0)
+            {
+                StartCoroutine(gameManager.PauseMusic());
+                currentMusic_index = -1;
+            }
+            if (!BasesMusic2.isPlaying && currentMusic_index == 1)
+            {
+                StartCoroutine(gameManager.PauseMusic());
+                currentMusic_index = -1;
+            }
+            if (!BasesMusic3.isPlaying && currentMusic_index == 2)
+            {
+                StartCoroutine(gameManager.PauseMusic());
+                currentMusic_index = -1;
+            }
+        }
+
+      
+
     }
 
 
@@ -267,7 +297,12 @@ setting_button_echapMenu.SetActive(false);
         }
 
         if (!map.activeSelf)
+        {
             DesactivateInformationSpecallyRoomAllHexagone();
+            RemoveLightHexagone();
+        }
+            
+
 
         //gameManager.SetCurrentRoomColor();
     }
@@ -278,13 +313,41 @@ setting_button_echapMenu.SetActive(false);
         map.SetActive(false);
         blueWallPaper.SetActive(false);
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
+        RemoveLightHexagone();
+    }
+
+    public void RemoveLightHexagone()
+    {
+        foreach (Hexagone hexagone in gameManager.dungeon)
+        {
+            hexagone.SetLight2(false);
+        }
+        if (mapLostSoul.transform.Find("LostSoulMap"))
+        {
+            for (int i = 0; i < mapLostSoul.transform.Find("LostSoulMap").childCount; i++)
+            {
+                if (mapLostSoul.transform.Find("LostSoulMap").GetChild(i).GetComponent<HexagoneLostSoul>())
+                    mapLostSoul.transform.Find("LostSoulMap").GetChild(i).GetComponent<HexagoneLostSoul>().SetLight(false);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < mapLostSoul.transform.childCount; i++)
+            {
+                if (mapLostSoul.transform.GetChild(i).GetComponent<HexagoneLostSoul>())
+                    mapLostSoul.transform.GetChild(i).GetComponent<HexagoneLostSoul>().SetLight(false);
+            }
+        }
+        
     }
 
     public void DisplayMapLostSoul(bool isBackButton)
     {
+        RemoveLightHexagone();
         if (!mapLostSoul.activeSelf && isBackButton)
+        {
             return;
-
+        }
         if (!echap_menu.activeSelf)
         {
             mapLostSoul.SetActive(!mapLostSoul.activeSelf);
@@ -1997,6 +2060,7 @@ setting_button_echapMenu.SetActive(false);
             return;
         GameObject.Find("Special").gameObject.SetActive(false);
         HideAllLever();
+        gameManager.DisplayZoneDoorForEachSituation();
         //DisplayLightLeverSpeciallyRoom(false);
     }
 
@@ -2536,7 +2600,7 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayMapImpostorInButtonPanel()
     {
-
+        RemoveLightHexagone();
         if (map.activeSelf)
         {
             DisplayMap();
@@ -2547,12 +2611,33 @@ setting_button_echapMenu.SetActive(false);
             DisplayMapLostSoul(false);
             DisplayMap();
         }
-        
+        hexagoneImpostorInformation.gameObject.SetActive(false);
+        hexagoneNoneImpostorInformation.gameObject.SetActive(true);
     }
+
+    public void DisplayMapImpostorInButtonPanel2()
+    {
+        RemoveLightHexagone();
+        if (map.activeSelf)
+        {
+            DisplayMap();
+            DisplayMapLostSoul(false);
+        }
+        else
+        {
+            DisplayMapLostSoul(false);
+            DisplayMap();
+        }
+        hexagoneImpostorInformation.gameObject.SetActive(true);
+        hexagoneNoneImpostorInformation.gameObject.SetActive(false);
+    }
+
     public bool lastIsImpostor = false;
 
     public void DisplayMapImpostor()
     {
+        RemoveLightHexagone();
+
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             buttonDisplayMapImpostor.SetActive(true);
 
@@ -2605,22 +2690,26 @@ setting_button_echapMenu.SetActive(false);
         musicFight.Play();
         timerMusic = BasesMusic.time;
         timerMusic2 = BasesMusic2.time;
-        BasesMusic.gameObject.SetActive(false);
-        BasesMusic2.gameObject.SetActive(false);
+        timerMusic3 = BasesMusic3.time;
+        timerCave = CaveMusicAmbiance.time;
+
+        BasesMusic.Stop();
+        BasesMusic2.Stop();
+        BasesMusic3.Stop();
+        CaveMusicAmbiance.Stop();
+        //CaveMusicAmbiance.gameObject.SetActive(false);
+        currentMusic_index = -1;
     }
 
     public void HideFightMusic()
     {
         musicFight.Stop();
-        if(currentMusic_index == 0) {
-            BasesMusic.volume = 0;
-            IncreaseVolumeLittleToLittle(BasesMusic, timerMusic);
-        }
-        else
-        {
-            BasesMusic2.volume = 0;
-            IncreaseVolumeLittleToLittle(BasesMusic2, timerMusic2);
-        }
+        currentMusic_index = -1;
+        CaveMusicAmbiance.volume = 0;
+        IncreaseVolumeLittleToLittle(CaveMusicAmbiance, timerMusic3);
+      
+        Debug.LogError("sa passe 2");
+        StartCoroutine(gameManager.StartAmbianceBeginingMusic());
        
     }
     public void LaunchDashSound()
@@ -2668,6 +2757,17 @@ setting_button_echapMenu.SetActive(false);
     {
         SetColorWallPaper();
         CanMapMoveAtEnd();
+        DisplayImpostorRoomForEnd();
+
+    }
+    
+    public void DisplayImpostorRoomForEnd()
+    {
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+
+        int indexImpostorRoom = gameManager.GetImpostorRoom();
+        gameManager.gameManagerNetwork.SendImpostorRoomForEnd(indexImpostorRoom);
     }
 
     public void CanMapMoveAtEnd()
@@ -2933,6 +3033,14 @@ setting_button_echapMenu.SetActive(false);
         GameObject chestRoom = GameObject.Find("Room").transform.Find("Special").Find("ChestRoom").gameObject;
 
         chestRoom.transform.Find("ColorCircleZone").gameObject.SetActive(display);
+    }
+
+    public void StopAllMusic()
+    {
+        BasesMusic.Stop();
+        BasesMusic2.Stop();
+        BasesMusic3.Stop();
+        CaveMusicAmbiance.Stop();
     }
 }
 
