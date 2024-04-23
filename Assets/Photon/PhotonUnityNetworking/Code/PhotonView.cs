@@ -673,7 +673,7 @@ namespace Photon.Pun
         /// <param name="parameters">The parameters that the RPC method has (must fit this call!).</param>
         public void RPC(string methodName, RpcTarget target, params object[] parameters)
         {
-            //Debug.LogError(methodName);
+            Debug.LogError(methodName);
             PhotonNetwork.RPC(this, methodName, target, false, parameters);
         }
 

@@ -146,8 +146,9 @@ public class Hexagone : MonoBehaviourPun
             return;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lightHexagoneIsOn && !isLighted)
             return;
-        if (this.transform.parent.name != "Listhexa")
+        if (this.transform.parent.name != "Listhexa" && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasMap)
             return;
+
 
         isLighted = !this.transform.Find("Light").gameObject.activeSelf;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lightHexagoneIsOn = isLighted;

@@ -320,14 +320,23 @@ setting_button_echapMenu.SetActive(false);
     {
         foreach (Hexagone hexagone in gameManager.dungeon)
         {
-            hexagone.SetLight2(false);
+            if(hexagone.GetComponent<Hexagone>().isLighted)
+                hexagone.SetLight2(false);
         }
         if (mapLostSoul.transform.Find("LostSoulMap"))
         {
             for (int i = 0; i < mapLostSoul.transform.Find("LostSoulMap").childCount; i++)
             {
                 if (mapLostSoul.transform.Find("LostSoulMap").GetChild(i).GetComponent<HexagoneLostSoul>())
-                    mapLostSoul.transform.Find("LostSoulMap").GetChild(i).GetComponent<HexagoneLostSoul>().SetLight(false);
+                {
+                    if (mapLostSoul.transform.Find("LostSoulMap").GetChild(i).GetComponent<HexagoneLostSoul>().isLighted  )
+                    {
+                        mapLostSoul.transform.Find("LostSoulMap").GetChild(i).GetComponent<HexagoneLostSoul>().SetLight2(false);
+                        gameManager.gameManagerNetwork.SendLightHexagoneLostSoul(mapLostSoul.transform.Find("LostSoulMap").GetChild(i).GetComponent<HexagoneLostSoul>().room.Index, mapLostSoul.transform.Find("LostSoulMap").GetChild(i).GetComponent<HexagoneLostSoul>().isLighted); 
+                    }
+                       
+                }
+                   
             }
         }
         else
@@ -335,7 +344,15 @@ setting_button_echapMenu.SetActive(false);
             for (int i = 0; i < mapLostSoul.transform.childCount; i++)
             {
                 if (mapLostSoul.transform.GetChild(i).GetComponent<HexagoneLostSoul>())
-                    mapLostSoul.transform.GetChild(i).GetComponent<HexagoneLostSoul>().SetLight(false);
+                {
+                     if (mapLostSoul.transform.GetChild(i).GetComponent<HexagoneLostSoul>().isLighted)
+                    {
+                        mapLostSoul.transform.GetChild(i).GetComponent<HexagoneLostSoul>().SetLight2(false);
+                        gameManager.gameManagerNetwork.SendLightHexagoneLostSoul(mapLostSoul.transform.GetChild(i).GetComponent<HexagoneLostSoul>().room.Index, mapLostSoul.transform.GetChild(i).GetComponent<HexagoneLostSoul>().isLighted);
+                    }
+                      
+                }
+                    
             }
         }
         
@@ -343,7 +360,7 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayMapLostSoul(bool isBackButton)
     {
-        RemoveLightHexagone();
+        //RemoveLightHexagone();
         if (!mapLostSoul.activeSelf && isBackButton)
         {
             return;
@@ -360,6 +377,12 @@ setting_button_echapMenu.SetActive(false);
         if (mapLostSoul.activeSelf)
         {
             mapLostSoul = gameManager.CenterMapLostSoulByPostionPlayer();
+        }
+        else
+        {
+            
+            RemoveLightHexagone();
+
         }
         if (!blueWallPaper.activeSelf)
         {
@@ -2636,7 +2659,7 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayMapImpostor()
     {
-        RemoveLightHexagone();
+        //RemoveLightHexagone();
 
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
             buttonDisplayMapImpostor.SetActive(true);
@@ -2652,6 +2675,7 @@ setting_button_echapMenu.SetActive(false);
             HidePanel(blueWallPaper);
             gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().canMove = true;
             DesactivateInformationSpecallyRoomAllHexagone();
+            RemoveLightHexagone();
         }
         else
         {

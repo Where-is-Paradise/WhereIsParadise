@@ -34,7 +34,7 @@ public class HexagoneLostSoul : MonoBehaviour
             return;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lightHexagoneIsOn && !isLighted)
             return;
-        if (this.transform.parent.name == "Listhexa")
+        if (this.transform.parent.name == "Listhexa" && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasMap)
             return;
 
         isLighted = !this.transform.Find("Light").gameObject.activeSelf;
@@ -47,8 +47,13 @@ public class HexagoneLostSoul : MonoBehaviour
     {
         this.transform.Find("Light").gameObject.SetActive(active);
         isLightByOther = active;
+    }
+
+    public void SetLight2(bool active)
+    {
+        this.transform.Find("Light").gameObject.SetActive(active);
+        isLightByOther = active;
         isLighted = active;
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().lightHexagoneIsOn = active;
-        gameManager.gameManagerNetwork.SendLightHexagoneLostSoul(this.room.Index, active);
     }
 }

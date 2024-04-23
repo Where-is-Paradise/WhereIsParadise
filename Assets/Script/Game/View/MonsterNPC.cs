@@ -256,8 +256,10 @@ public class MonsterNPC : MonoBehaviourPun
 
     public IEnumerator CouroutineDestroy()
     {
+        
         photonView.RPC("SendDesactivateView", RpcTarget.Others);
         yield return new WaitForSeconds(1f);
+        monsterRoom.gameManager.ui_Manager.DisplayKeyAndTorch(true);
         PhotonNetwork.Destroy(this.gameObject);
     }
 
@@ -279,6 +281,7 @@ public class MonsterNPC : MonoBehaviourPun
         this.GetComponent<SpriteRenderer>().enabled = false;
         this.GetComponent<CapsuleCollider2D>().enabled = false;
         this.GetComponent<CircleCollider2D>().enabled = false;
+        monsterRoom.gameManager.ui_Manager.DisplayKeyAndTorch(true);
     }
 
 

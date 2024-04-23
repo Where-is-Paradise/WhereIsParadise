@@ -646,6 +646,16 @@ public class PlayerGO : MonoBehaviour
 
         if (gameManager)
         {
+            if (gameManager.ui_Manager.canvasInGame.transform.Find("Exploration").Find("Torch").Find("Bigger").gameObject.activeSelf)
+            {
+                if (InputManager.GetButtonDown("Exploration"))
+                    gameManager.ui_Manager.OnClickButtonPowerExplorationBigger();
+            }
+        }
+
+
+        if (gameManager)
+        {
             if (!gameManager.game)
             {
                 return;
@@ -1141,6 +1151,9 @@ public class PlayerGO : MonoBehaviour
         
         gameManager.ui_Manager.DisplayButtonPowerExplorationBigger(enter);
         collsionDoorIndexForExploration = collision.transform.parent.gameObject.GetComponent<Door>().index;
+
+        if (InputManager.GetButtonDown("Exploration"))
+            gameManager.ui_Manager.OnClickButtonPowerExplorationBigger();
 
         if (!enter)
             StartCoroutine(CanCollisionToDoorExplorationCoroutine());

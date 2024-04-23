@@ -1753,7 +1753,8 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetLightHexagoneLostSoul(int indexHexagone, bool activeLight)
     {
-        gameManager.GetHexagone(indexHexagone).GetComponent<HexagoneLostSoul>().SetLight(activeLight);
+        Debug.Log("indexHexagone " + indexHexagone + " " + activeLight);
+        gameManager.GetHexagoneLostSoul(indexHexagone).GetComponent<HexagoneLostSoul>().SetLight(activeLight);
     }
 
     public void SendDistanceAwardChest(int indexChest)

@@ -545,6 +545,52 @@ public class GameManager : MonoBehaviourPun
         return null;
     }
 
+    public HexagoneLostSoul GetHexagoneLostSoul(int index)
+    {
+
+        GameObject[] listHexagoneLostSoul = GameObject.FindGameObjectsWithTag("Hexagone");
+
+
+        GameObject parentHexagonesLostSoul = GameObject.Find("UI");
+
+        Debug.Log(parentHexagonesLostSoul);
+        if (parentHexagonesLostSoul.transform.Find("Hexagone_SF(Clone)(Clone)"))
+        {
+            GameObject hexagonerLeader = parentHexagonesLostSoul.transform.Find("Hexagone_SF(Clone)(Clone)").Find("LostSoulMap").gameObject;
+            for (int i =0; i < hexagonerLeader.transform.childCount; i++)
+            {
+                Debug.Log(hexagonerLeader.transform.GetChild(i).GetComponent<HexagoneLostSoul>().indexRoom);
+                if (hexagonerLeader.transform.GetChild(i).GetComponent<HexagoneLostSoul>().indexRoom == index)
+                    return hexagonerLeader.transform.GetChild(i).GetComponent<HexagoneLostSoul>();
+            }
+        }
+        else
+        {
+            if (parentHexagonesLostSoul.transform.Find("LostSoulMap"))
+            {
+                GameObject hexagonerLeader = parentHexagonesLostSoul.transform.Find("LostSoulMap").gameObject;
+                for (int i = 0; i < hexagonerLeader.transform.childCount; i++)
+                {
+                    Debug.Log(hexagonerLeader.transform.GetChild(i).GetComponent<HexagoneLostSoul>().indexRoom);
+                    if (hexagonerLeader.transform.GetChild(i).GetComponent<HexagoneLostSoul>().indexRoom == index)
+                        return hexagonerLeader.transform.GetChild(i).GetComponent<HexagoneLostSoul>();
+                }
+            }
+        }
+/*
+        Debug.Log("taille hexagone ::: "  + listHexagoneLostSoul.Length);
+
+        foreach(GameObject hexagone in listHexagoneLostSoul)
+        {
+            if (hexagone.name != "Hexagone_SF(Clone)(Clone)")
+                continue;
+            if (hexagone.GetComponent<Hexagone>().Room.Index == index)
+                return hexagone.GetComponent<HexagoneLostSoul>();
+        }*/
+
+        return null;
+    }
+
     public Hexagone GetHexagoneByPosition(int x, int y)
     {
 
@@ -3376,7 +3422,7 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 0);
+        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
         return;
         /*        gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 4);
                 return;*/
