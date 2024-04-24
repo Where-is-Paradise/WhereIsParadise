@@ -10,6 +10,8 @@ public class ChestZoneVote : MonoBehaviour
 
     public GameManager gameManager;
     public bool canSend = true;
+
+    public GameObject zoneLightRed;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +21,10 @@ public class ChestZoneVote : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!gameManager.voteChestHasProposed)
+        {
+            DisplayZoneRedLight(false);
+        }
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -42,6 +47,7 @@ public class ChestZoneVote : MonoBehaviour
         }
         StartCoroutine(CouroutineTimerCanSend());
         gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, true, false);
+        DisplayZoneRedLight(true);
 
     }
     public void OnTriggerExit2D(Collider2D collision)
@@ -63,6 +69,7 @@ public class ChestZoneVote : MonoBehaviour
             return;
         }
         gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, false, false);
+        DisplayZoneRedLight(false);
     }
 
     public void OnTriggerStay2D(Collider2D collision)
@@ -87,6 +94,7 @@ public class ChestZoneVote : MonoBehaviour
         {
             gameManager.gameManagerNetwork.SendCollisionChestVote(collision.GetComponent<PhotonView>().ViewID, indexChest, false, true);
             canSend = false;
+            
         }
                 
     }
@@ -97,5 +105,10 @@ public class ChestZoneVote : MonoBehaviour
         canSend = true;
         if (gameManager.timer.timerLaunch)
             StartCoroutine(CouroutineTimerCanSend());
+    }
+
+    public void DisplayZoneRedLight(bool display)
+    {
+        zoneLightRed.SetActive(display);
     }
 }

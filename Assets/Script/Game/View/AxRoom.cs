@@ -55,13 +55,16 @@ public class AxRoom : TrialsRoom
 
         if(gameManager.GetPlayerMineGO().transform.Find("LineForAx").localPosition.x > 0)
         {
-            gameManager.GetPlayerMineGO().transform.Find("LineForAx").localScale = new Vector3(-0.9f, 0.77f);
+            gameManager.GetPlayerMineGO().transform.Find("LineForAx").localScale = new Vector3(-0.8228684f, 0.6142969f);
         }
         else
         {
-            gameManager.GetPlayerMineGO().transform.Find("LineForAx").localScale = new Vector3(0.9f, 0.77f);
+            gameManager.GetPlayerMineGO().transform.Find("LineForAx").localScale = new Vector3(0.8228684f, 0.6142969f);
         }
-       
+
+        ChangeSwordScaleForSituation();
+
+
     }
     public void LaunchAxRoom()
     {
@@ -107,7 +110,7 @@ public class AxRoom : TrialsRoom
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach(GameObject player in listPlayer)
         {
-            player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Ax").gameObject.SetActive(display);
+            player.transform.Find("Ax").gameObject.SetActive(display);
         }
     }
 
@@ -348,5 +351,25 @@ public class AxRoom : TrialsRoom
                 player.transform.Find("Timer").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay>().timeLeft = 15;
             player.transform.Find("Timer").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay>().timerLaunch = display;
         }
+    }
+
+    public void ChangeSwordScaleForSituation()
+    {
+        float localScaleX = 0;
+        float localPosition_X = 0;
+        if (gameManager.GetPlayerMineGO().transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).localScale.x > 0)
+        {
+            localScaleX = 0.54615f;
+            localPosition_X = 0.278f;
+        }
+
+        else
+        {
+            localScaleX = -0.54615f;
+            localPosition_X = -0.273f;
+        }
+            
+        gameManager.GetPlayerMineGO().transform.Find("Ax").localScale = new Vector2(localScaleX, gameManager.GetPlayerMineGO().transform.Find("Ax").localScale.y);
+        gameManager.GetPlayerMineGO().transform.Find("Ax").localPosition = new Vector2(localPosition_X, gameManager.GetPlayerMineGO().transform.Find("Ax").localPosition.y);
     }
 }

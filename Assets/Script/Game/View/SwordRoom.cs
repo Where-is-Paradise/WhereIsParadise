@@ -21,6 +21,8 @@ public class SwordRoom : TrialsRoom
         if (!roomIsLaunched || gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchInTrial)
             return;
         CanAttack();
+
+        ChangeSwordScaleForSituation();
     }
     public void LaunchSwordRoom()
     {
@@ -57,7 +59,7 @@ public class SwordRoom : TrialsRoom
         foreach(GameObject player in listPlayer)
         {
             if(!player.GetComponent<PlayerGO>().isSacrifice)
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Sword").gameObject.SetActive(display);
+                player.transform.Find("Sword").gameObject.SetActive(display);
         }
     }
     public void DisplayHeartsFoAllPlayer(bool display)
@@ -97,9 +99,9 @@ public class SwordRoom : TrialsRoom
     {
 
         yield return new WaitForSeconds(0.4f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("Initial").gameObject.SetActive(true);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("Initial").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = false;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().canMove = true;
         canAttack = true;
        
@@ -108,30 +110,30 @@ public class SwordRoom : TrialsRoom
     [PunRPC]
     public void DisplayMiddleOne(int indexPlayer)
     {
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("Initial").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("middle1").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("Initial").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("middle1").gameObject.SetActive(true);
         StartCoroutine(DisplayMiddleTwo(indexPlayer));
     }
     public IEnumerator DisplayMiddleTwo(int indexPlayer)
     {
         yield return new WaitForSeconds(0.01f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("middle1").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("middle2").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("middle1").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("middle2").gameObject.SetActive(true);
         StartCoroutine(DisplayMiddleThree(indexPlayer));
     }
     public IEnumerator DisplayMiddleThree(int indexPlayer)
     {
         yield return new WaitForSeconds(0.01f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("middle2").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("middle3").gameObject.SetActive(true);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("middle2").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("middle3").gameObject.SetActive(true);
         StartCoroutine(DisplayFinal(indexPlayer));
     }
     public IEnumerator DisplayFinal(int indexPlayer)
     {
         yield return new WaitForSeconds(0.01f);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("middle3").gameObject.SetActive(false);
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = true;
-        gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = true;
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("middle3").gameObject.SetActive(false);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = true;
         //gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("Final").Find("SwordAnimation").GetChild(0).gameObject.SetActive(true);
         StartCoroutine(DisplayInitial(indexPlayer));
     }
@@ -200,5 +202,15 @@ public class SwordRoom : TrialsRoom
                 player.transform.Find("Timer").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay>().timeLeft = 15;
             player.transform.Find("Timer").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay>().timerLaunch = display;
         }
+    }
+
+    public void ChangeSwordScaleForSituation()
+    {
+        float localScaleX = 0;
+        if (gameManager.GetPlayerMineGO().transform.Find("Skins").GetChild(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexSkin).localScale.x > 0)
+            localScaleX = 0.2f;
+        else
+            localScaleX = -0.2f;
+        gameManager.GetPlayerMineGO().transform.Find("Sword").localScale = new Vector2(localScaleX, gameManager.GetPlayerMineGO().transform.Find("Sword").localScale.y);
     }
 }

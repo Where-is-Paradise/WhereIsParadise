@@ -12223,7 +12223,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -11, y: -94.00003}
+  m_AnchoredPosition: {x: -11, y: -171.00005}
   m_SizeDelta: {x: 660, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &307256372
@@ -51496,7 +51496,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -10.999687, y: -295}
+  m_AnchoredPosition: {x: -10.999687, y: -372}
   m_SizeDelta: {x: 660, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1241575721
@@ -74850,7 +74850,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1759106593
 RectTransform:
   m_ObjectHideFlags: 0
@@ -74868,7 +74868,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -10.999999, y: -25.000004}
+  m_AnchoredPosition: {x: -10.999999, y: 10.999985}
   m_SizeDelta: {x: 660, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1759106594
@@ -84205,6 +84205,11 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 52
       objectReference: {fileID: 0}
+    - target: {fileID: 3601097081411671357, guid: b41be8656eb036e4ba5d49242a98ca27,
+        type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3680287670906152346, guid: b41be8656eb036e4ba5d49242a98ca27,
         type: 3}
       propertyPath: sceneViewId
@@ -84448,7 +84453,7 @@ PrefabInstance:
     - target: {fileID: 4973797655702299269, guid: b41be8656eb036e4ba5d49242a98ca27,
         type: 3}
       propertyPath: sceneViewId
-      value: 1
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 4974846477991233282, guid: b41be8656eb036e4ba5d49242a98ca27,
         type: 3}
@@ -84859,6 +84864,11 @@ PrefabInstance:
         type: 3}
       propertyPath: sceneViewId
       value: 51
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432374695614382299, guid: b41be8656eb036e4ba5d49242a98ca27,
+        type: 3}
+      propertyPath: sceneViewId
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 8479024530156181337, guid: b41be8656eb036e4ba5d49242a98ca27,
         type: 3}

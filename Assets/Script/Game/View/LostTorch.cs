@@ -24,11 +24,11 @@ public class LostTorch : MonoBehaviourPun
             this.transform.localScale = new Vector3(-sign_x * Mathf.Abs(this.transform.localScale.x),this.transform.localScale.y);
             if (this.transform.localScale.x < 0)
             {
-                this.transform.localPosition = new Vector3(-0.4f, 0);
+                this.transform.localPosition = new Vector3(-0.4f, -0.2f);
             }
             else
             {
-                this.transform.localPosition = new Vector3(0.4f, 0);
+                this.transform.localPosition = new Vector3(0.4f, -0.2f);
             }
         }
         if (!this.transform.parent)

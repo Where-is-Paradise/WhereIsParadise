@@ -528,7 +528,16 @@ public class Lobby : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.LoadLevel("Game");
+            //StartCoroutine(HideVisibleRoomCoroutine());
+            
         }
+        
+    }
+
+    public IEnumerator HideVisibleRoomCoroutine()
+    {
+        yield return new WaitForSeconds(3);
+        PhotonNetwork.CurrentRoom.IsVisible = false;
     }
 
     [PunRPC]
