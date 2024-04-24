@@ -72,6 +72,8 @@ public class UI_Manager : MonoBehaviour
 
     public AudioSource soundChrono;
     public AudioSource soundChrono2;
+    public AudioSource soundChrono_8sec;
+    public AudioSource soundChrono_10sec;
     public AudioSource soundDemonicLaugh;
     public AudioSource soundAmbianceHell;
     public AudioSource soundAmbianceParadise;
@@ -1110,7 +1112,7 @@ setting_button_echapMenu.SetActive(false);
         foreach(GameObject player  in GameObject.FindGameObjectsWithTag("Player"))
         {
             player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_blue").gameObject.SetActive(false);
-            player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_redDark").gameObject.SetActive(false);
+            player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_red").gameObject.SetActive(false);
         }
     }
 
@@ -1421,6 +1423,13 @@ setting_button_echapMenu.SetActive(false);
             ResetChestRoom();
         }
     }
+
+    public void DisplayChest(bool display)
+    {
+        GameObject chestRoom = MainRoomGraphic.transform.Find("Special").transform.Find("ChestRoom").gameObject;
+        chestRoom.transform.Find("Chests").gameObject.SetActive(display);
+    }
+
     public void DisplayAwardAndPenaltyForImpostor(bool display)
     {
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
@@ -3057,6 +3066,12 @@ setting_button_echapMenu.SetActive(false);
         GameObject chestRoom = GameObject.Find("Room").transform.Find("Special").Find("ChestRoom").gameObject;
 
         chestRoom.transform.Find("ColorCircleZone").gameObject.SetActive(display);
+
+        if (!display)
+        {
+            chestRoom.transform.Find("ColorCircleZone").transform.Find("CircleZoneLeft").Find("Light").gameObject.SetActive(false);
+            chestRoom.transform.Find("ColorCircleZone").transform.Find("CircleZoneRight").Find("Light").gameObject.SetActive(false);
+        }
     }
 
     public void StopAllMusic()

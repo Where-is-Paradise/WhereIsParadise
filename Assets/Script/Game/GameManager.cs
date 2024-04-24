@@ -2798,10 +2798,12 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DisplayMainLevers(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             ui_Manager.DisplayZoneWithoutWay("ChestRoom");
+            ui_Manager.DisplayChest(true);
             isActuallySpecialityTime = true;
             if (room.speciallyPowerIsUsed)
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
+                ui_Manager.DisplayChest(false);
                 isActuallySpecialityTime = false;
             }
             UpdateColorDoor(room);
@@ -3132,6 +3134,7 @@ public class GameManager : MonoBehaviourPun
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         GameObject.Find("GameManager").GetComponent<GameManager>().PauseTimerFroce(true);
         ui_Manager.DisplayCircleZoneColorChest(true);
+        ui_Manager.soundChrono_8sec.Play();
         yield return new WaitForSeconds(8);
         voteChestHasProposed = false;
         isActuallySpecialityTime = false;
@@ -3156,6 +3159,11 @@ public class GameManager : MonoBehaviourPun
             SendLoose();
         }
         GameObject.Find("GameManager").GetComponent<GameManager>().PauseTimerFroce(false);
+
+        if (game.currentRoom.isTraped)
+        {
+            ui_Manager.soundDemonicLaugh.Play();
+        }
     }
     public IEnumerator ResetAllPlayerLightAroundCoroutine()
     {
@@ -3338,8 +3346,8 @@ public class GameManager : MonoBehaviourPun
         yield return new WaitForSeconds(4);
 
         ui_Manager.ResetChestRoom();
-        //ui_Manager.DisplayChestRoom(false);
-        //CloseAllDoor(game.currentRoom, false);
+        ui_Manager.DisplayChest(false);
+        //CloseAllDoor(game.DisplayChest, false);
     }
 
     public void ChangePositionParadise()
@@ -3424,14 +3432,14 @@ public class GameManager : MonoBehaviourPun
 
         /*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 0);
                 return;*/
-        gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
-        return;
+/*        gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
+        return;*/
 
         if (room.isVerySpecial)
         {
             float randomInt = Random.Range(0, 100);
             Debug.Log(randomInt);
-            //randomInt = 10;
+            //randomInt = 75;
             if (randomInt < AdditionalProbaVerySpeciality(0)  && setting.listSpeciallyRoom[0])
             {
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
@@ -3631,7 +3639,7 @@ public class GameManager : MonoBehaviourPun
         float returnValue = 0;
         for(int i = index;  i >= 0 ; i--)
         {
-            returnValue += listProbabilitySpecialityRoom[index];
+            returnValue += listProbabilitySpecialityRoom[i];
         }
 
         return returnValue;
@@ -3673,12 +3681,12 @@ public class GameManager : MonoBehaviourPun
             if(i == 0)
             {
                 listProbabilityVerySpecialityRoom[i] = 30;
-                gameManagerNetwork.SendUpdateListSpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
+                gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
             }
             else
             {
                 listProbabilityVerySpecialityRoom[i] = (float)(70f / (sizeListProbabilityVerySpecialityRoom - 1));
-                gameManagerNetwork.SendUpdateListSpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
+                gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
             }
             
         }

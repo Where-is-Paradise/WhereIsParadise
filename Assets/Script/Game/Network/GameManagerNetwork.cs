@@ -970,7 +970,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
            
             if (indexChest == 1)
-                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_redDark").gameObject.SetActive(true);
+                player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_red").gameObject.SetActive(true);
             else
                 player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_blue").gameObject.SetActive(true);
         }
@@ -982,7 +982,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                 chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote++;
                 
                 if (indexChest == 1)
-                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_redDark").gameObject.SetActive(true);
+                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_red").gameObject.SetActive(true);
                 else
                     player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_blue").gameObject.SetActive(true);
             }
@@ -991,7 +991,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                 chest.transform.Find("VoteZone").GetComponent<ChestZoneVote>().nbVote--;
                 
                 if (indexChest == 1)
-                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_redDark").gameObject.SetActive(false);
+                    player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_red").gameObject.SetActive(false);
                 else
                     player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_blue").gameObject.SetActive(false);
 

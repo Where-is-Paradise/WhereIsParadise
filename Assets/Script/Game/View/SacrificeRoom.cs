@@ -31,6 +31,7 @@ public class SacrificeRoom : MonoBehaviour
         GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
         GameObject.Find("GameManager").GetComponent<GameManager>().gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
         GameObject.Find("GameManager").GetComponent<GameManager>().PauseTimerFroce(true);
+        GameObject.Find("GameManager").GetComponent<GameManager>().ui_Manager.soundChrono_10sec.Play();
         yield return new WaitForSeconds(10f);
         GameObject player = GetPlayerWithMaxVote();
         player.GetComponent<PlayerNetwork>().SendDeathSacrifice(true);
