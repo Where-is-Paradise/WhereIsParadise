@@ -46,7 +46,7 @@ public class ColliderZindexLabyrinth : MonoBehaviour
 
     public void SetZIndexByPositionYToLabyritnhRoom(int indexObstacle, int indexSkin, int indexSkinColor, GameObject player)
     {
-        player.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().sortingOrder = indexObstacle - 11;
+        //player.transform.Find("Skins").GetChild(indexSkin).GetComponent<SpriteRenderer>().sortingOrder = indexObstacle - 11;
         player.transform.Find("Skins").GetChild(indexSkin).Find("Colors").GetChild(indexSkinColor).GetComponent<SpriteRenderer>().sortingOrder = indexObstacle - 11;
     }
 }

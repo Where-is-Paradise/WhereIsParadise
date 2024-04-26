@@ -80,6 +80,7 @@ public class Dungeon : ScriptableObject
         InsertSpeciallyRoom3(distance);
         InsertRandomSpeciallyRoom(distance);
         SettingIsHide();
+        InsertLittleObject();
     }
 
     public void InsertSpeciallyRoom2()
@@ -229,6 +230,18 @@ public class Dungeon : ScriptableObject
         }
     }
 
+    public void InsertLittleObject()
+    {
+        foreach (Room room in trueListRoomDungeon)
+        {
+            if (room.IsObstacle)
+                continue;
+            if (!room.isHide && !room.isVerySpecial)
+                continue;
+
+            room.AddLittleObjectInRoom();
+        }
+    }
 
     public int InsertImpostorRoom(int distance , bool isNearOfInitial, int scale)
     {
@@ -615,6 +628,7 @@ public class Dungeon : ScriptableObject
         }
         return null;
     }
+
 
     public void InsertRandomFoggyRoom()
     {

@@ -28,10 +28,10 @@
   "menu_information_connection":"Connexion..",
   "menu_information_connection_buttonCancel":"Annuler",
 
-  "waitingRoom_players":"Joueurs",
+  "waitingRoom_players":"Joueurs : ",
   "waitingRoom_code":"Code : ",
   "waitingRoom_searchPlayer":"Recherche de joueurs..",
-  "waitingRoom_button_setting":"Paramètres",
+  "waitingRoom_button_setting":"Paramètre de Jeu",
 
   "menu_setting_controls":"Controles",
 

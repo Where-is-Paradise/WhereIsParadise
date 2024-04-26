@@ -152,16 +152,16 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendMap(int indexRoom, bool isExit, bool isObstacle, bool isTooFar, 
         bool isInitial, int distance_exit, int distance_pathFinding,int distance_pathFinding_IR,bool isLast, 
-        bool isFoggy , bool isVirus, bool hasKey, bool chest , bool isHide, bool isTrial, bool isSpecial, bool isTeamTrial)
+        bool isFoggy , bool isVirus, bool hasKey, bool chest , bool isHide, bool isTrial, bool isSpecial, bool isTeamTrial, bool isVerySpecial)
     {
         photonView.RPC("SetRooms", RpcTarget.Others, indexRoom,isExit,isObstacle, isTooFar, isInitial,
-            distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey, chest , isHide, isTrial, isSpecial, isTeamTrial);
+            distance_exit,distance_pathFinding, distance_pathFinding_IR, isLast, isFoggy, isVirus, hasKey, chest , isHide, isTrial, isSpecial, isTeamTrial, isVerySpecial);
     }
 
     [PunRPC]
     public void SetRooms(int indexRoom, bool isExit, bool isObstacle, bool isTooFar,
         bool isInitial, int distance_exit, int distance_pathFinding,int  distance_pathFinding_IR, 
-        bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest, bool isHide, bool isTrial, bool isSpecial, bool isTeamTrial)
+        bool isLast, bool isFoggy, bool isVirus, bool hasKey, bool chest, bool isHide, bool isTrial, bool isSpecial, bool isTeamTrial, bool isVerySpecial)
     {
         gameManager.game.dungeon.rooms[indexRoom].IsExit = isExit;
         gameManager.game.dungeon.rooms[indexRoom].IsObstacle = isObstacle;
@@ -179,6 +179,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.rooms[indexRoom].isTrial = isTrial;
         gameManager.game.dungeon.rooms[indexRoom].isSpecial = isSpecial;
         gameManager.game.dungeon.rooms[indexRoom].isTeamTrial = isTeamTrial;
+        gameManager.game.dungeon.rooms[indexRoom].isVerySpecial = isVerySpecial;
 
         if (isExit)
         {
@@ -1468,6 +1469,17 @@ public class GameManagerNetwork : MonoBehaviourPun
         
     }
 
+    public void SendLittleObject(int indexRoom, int indexParent, int indexScenario)
+    {
+        photonView.RPC("SetLittleObject", RpcTarget.Others, indexRoom, indexParent, indexScenario);
+    }
+
+    [PunRPC]
+    public void SetLittleObject(int indexRoom, int indexParent, int indexScenario)
+    {
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).listLittleObject[indexParent] = indexScenario;
+    }
+
 
     public void SendDisplayFireBallRoom(bool display)
     {
@@ -1648,6 +1660,7 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendUpdateListSpecialityProbality(float newValue, int indexSpeciality)
     {
+        Debug.LogError("sa passe");
         photonView.RPC("SetUpdateListSpecialityProbality", RpcTarget.All, newValue, indexSpeciality);
     }
 
@@ -2925,5 +2938,19 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.GetHexagone(indexImpostorRoom).Room.isHide = false;
         gameManager.GetHexagone(indexImpostorRoom).DiplayInformationSpeciallyRoom(true);
 
+    }
+
+    public void SendLittleObjectInMap(int indexParent, int indexScenario)
+    {
+        photonView.RPC("SetLittleObjectInMap", RpcTarget.All, indexParent, indexScenario);
+    }
+
+    [PunRPC]
+    public void SetLittleObjectInMap(int indexParent, int indexScenario)
+    {
+        GameObject room = GameObject.Find("Room").gameObject;
+        GameObject listLittleObject = room.transform.Find("LittleObject").gameObject;
+
+        listLittleObject.transform.GetChild(indexParent).GetChild(indexScenario).gameObject.SetActive(true);
     }
 }

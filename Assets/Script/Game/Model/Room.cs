@@ -121,6 +121,8 @@ public class Room : ScriptableObject
 
     public bool virus_spawned = false;
 
+    public int[] listLittleObject;
+
     public void Init(int pos_X, int pos_Y)
     {
         this.x = pos_X;
@@ -142,7 +144,8 @@ public class Room : ScriptableObject
         }
         chestList = new List<Chest>();
 
-
+        listLittleObject = new int[8];
+        //AddLittleObjectInRoom();
     }
 
     public static Room CreateInstance(int pos_X, int pos_Y)
@@ -517,6 +520,23 @@ public class Room : ScriptableObject
         }
         return path.Count;
 
+    }
+
+    public void AddLittleObjectInRoom()
+    {
+
+        GameObject room = GameObject.Find("Room").gameObject;
+        GameObject listLittleObject_Go = room.transform.Find("LittleObject").gameObject;
+
+        for (int i = 0; i < listLittleObject_Go.transform.childCount; i++)
+        {
+            int randomEmpty = Random.Range(0, 5);
+            if (randomEmpty == 0)
+                continue;
+            int randomIndex = Random.Range(0, listLittleObject_Go.transform.GetChild(i).childCount);
+            listLittleObject[i] = randomIndex;
+
+        }
     }
 }
 

@@ -1008,7 +1008,7 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendMap(room.Index, room.IsExit, room.IsObstacle, room.isTooFar,
                 room.IsInitiale, room.DistanceExit, room.DistancePathFinding,
                 room.distance_pathFinding_initialRoom, counter == game.dungeon.rooms.Count, room.IsFoggy, room.IsVirus,
-                room.HasKey, room.chest, room.isHide, room.isTrial, room.isSpecial, room.isTeamTrial);
+                room.HasKey, room.chest, room.isHide, room.isTrial, room.isSpecial, room.isTeamTrial, room.isVerySpecial);
 
             if (room.chest)
             {
@@ -1074,6 +1074,13 @@ public class GameManager : MonoBehaviourPun
             if (room.isImpostorRoom)
             {
                 gameManagerNetwork.SendIsImpostorRoomData(room.GetIndex(), room.isImpostorRoom);
+            }
+            if(room.isHide || room.isImpostorRoom || room.isVerySpecial)
+            {
+                for(int i = 0; i < room.listLittleObject.Length; i++)
+                {
+                    gameManagerNetwork.SendLittleObject(room.Index, i, room.listLittleObject[i]);
+                }
             }
 
             counter++;
@@ -1998,13 +2005,14 @@ public class GameManager : MonoBehaviourPun
         int indexDoor = door.GetComponent<Door>().index;
         ResetDoorsActive();
         ResetIndexDoor();
+        ResetLittleObjectInMap();
         Room oldroom = game.currentRoom;  
         
         // SI oldroom est uen salle illision alors ouvrir la bonne porte avec le bonne index 
 
         game.currentRoom = game.GetRoomByNeigbourID(indexDoor);
-        
-      
+
+       
 
         if (game.currentRoom.isIllustion)
         {
@@ -2138,6 +2146,11 @@ public class GameManager : MonoBehaviourPun
 
         StartCoroutine(SetMapOFLostSoul(0.1f));
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
+
+        if (game.currentRoom.isHide || game.currentRoom.isImpostorRoom || game.currentRoom.isVerySpecial) {
+            //AddLittleObjectInMap();
+            SetLittleObjectInMap();
+        }
 
     }
 
@@ -3532,7 +3545,7 @@ public class GameManager : MonoBehaviourPun
 
             float randomInt = Random.Range(randomMonsters, randomGodDeath);
 
-            if (randomInt < 100) // 50
+            if (randomInt < 50) // 50
             {
                 gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
             }
@@ -4995,6 +5008,56 @@ public class GameManager : MonoBehaviourPun
                 return hexagone.Room.Index;
         }
         return -1;
+    }
+
+    public void AddLittleObjectInMap()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        GameObject room = GameObject.Find("Room").gameObject;
+        GameObject listLittleObject = room.transform.Find("LittleObject").gameObject;
+
+        for(int i =0; i< listLittleObject.transform.childCount; i++)
+        {
+            int randomEmpty = Random.Range(0, 5);
+            if (randomEmpty == 0)
+                continue;
+            int randomIndex = Random.Range(0, listLittleObject.transform.GetChild(i).childCount);
+            listLittleObject.transform.GetChild(i).GetChild(randomIndex).gameObject.SetActive(true);
+            gameManagerNetwork.SendLittleObjectInMap(i, randomIndex);
+
+        }
+    }
+
+    public void ResetLittleObjectInMap()
+    {
+        GameObject room = GameObject.Find("Room").gameObject;
+        GameObject listLittleObject = room.transform.Find("LittleObject").gameObject;
+
+        for (int i = 0; i < listLittleObject.transform.childCount; i++)
+        {
+            for(int j =0;j < listLittleObject.transform.GetChild(i).childCount; j++)
+            {
+                listLittleObject.transform.GetChild(i).GetChild(j).gameObject.SetActive(false);
+            } 
+        }
+    }
+
+    public void SetLittleObjectInMap()
+    {
+
+        if (game.currentRoom.listLittleObject.Length <= 0)
+            return;
+
+        GameObject room = GameObject.Find("Room").gameObject;
+        GameObject listLittleObject = room.transform.Find("LittleObject").gameObject;
+
+        for (int i = 0; i < listLittleObject.transform.childCount; i++)
+        {
+            listLittleObject.transform.GetChild(i).GetChild(game.currentRoom.listLittleObject[i]).gameObject.SetActive(true);
+        }
+
+            
     }
 
 }

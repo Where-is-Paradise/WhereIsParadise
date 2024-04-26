@@ -454,6 +454,18 @@ public class Lobby : MonoBehaviourPunCallbacks
                 ui_management.DisabledBackButton();
                 StartCoroutine(CouroutineStartGame());
             }
+            else
+            {
+                if (matchmaking)
+                {
+                    if (CheckNumberPlayerJoin())
+                    {
+                        StartCoroutine(CouroutineStartGame2());
+                    }
+                }
+              
+            }
+
         }
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsReady(GetPlayerMineGO().GetComponent<PlayerGO>().isReady);
 
@@ -639,11 +651,17 @@ public class Lobby : MonoBehaviourPunCallbacks
                 return false;
             }
         }
-        if (players.Length < 4)
+        if (players.Length < 3) //  < 3
         {
             return false;
         }
         return true;
+    }
+
+    public bool CheckNumberPlayerJoin()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        return players.Length > 2; // > 2 
     }
 
     [PunRPC]
@@ -657,16 +675,41 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public IEnumerator CouroutineStartGame()
     {
+        ui_management.timerMatchmaking_global.SetActive(false);
+        photonView.RPC("SendGlobalTimer", RpcTarget.Others, false);
         ui_management.DisplayReadyButton(false);
         ui_management.DisabledBackButton();
         ResetAllPlayerReady();
-        //ui_management.launchChrono.Play();
+        ui_management.menuAudio.Stop();
+        ui_management.launchChrono.Play();
         PhotonNetwork.CurrentRoom.IsVisible = false;
-        
+        ui_management.timerMatchMaking.GetComponent<TimerMenu>().timerLaunch = true;
 
-       yield return new WaitForSeconds(15);
+       yield return new WaitForSeconds(10);
         ResetAllPlayerReady();
         OnclikStartGame();
+    }
+
+    public IEnumerator CouroutineStartGame2()
+    {
+        ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().timerLaunch = true;
+        ui_management.timerMatchmaking_global.SetActive(true);
+        photonView.RPC("SendGlobalTimer", RpcTarget.Others, true);
+
+        yield return new WaitForSeconds(61);
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if (players.Length > 2) { // > 2
+            StartCoroutine(CouroutineStartGame());
+        }
+        else
+            StartCoroutine(CouroutineStartGame2());
+    }
+
+    [PunRPC]
+    public void SendGlobalTimer(bool launch)
+    {
+        ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().timerLaunch = launch;
+        ui_management.timerMatchmaking_global.SetActive(launch);
     }
 
     public void ResetAllPlayerReady()

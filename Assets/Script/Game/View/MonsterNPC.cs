@@ -14,6 +14,8 @@ public class MonsterNPC : MonoBehaviourPun
         monsterRoom = GameObject.Find("MonstersRoom").GetComponent<MonstersRoom>();
         if (!monsterRoom)
             Destroy(this.gameObject);
+
+        StartCoroutine(IgnoreCollisionAllPlayerTouchInTrial());
     }
 
     // Update is called once per frame
@@ -125,9 +127,12 @@ public class MonsterNPC : MonoBehaviourPun
         GameObject player = collision.transform.parent.gameObject;
         if (player.GetComponent<PlayerGO>().isInvincible)
             return;
-        if(player.GetComponent<PlayerGO>().lifeTrialRoom < 0)        
+        if (player.GetComponent<PlayerGO>().isTouchInTrial)
             return;
-        
+        if (player.GetComponent<PlayerGO>().lifeTrialRoom <= 0)        
+            return;
+
+
         player.GetComponent<PlayerGO>().lifeTrialRoom--;
         player.GetComponent<PlayerNetwork>()
             .SendLifeTrialRoom(player.GetComponent<PlayerGO>().lifeTrialRoom);
@@ -290,6 +295,21 @@ public class MonsterNPC : MonoBehaviourPun
     {
         monsterRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionPlayer(indexPlayer, ignore);
         Physics2D.IgnoreCollision(this.transform.GetComponent<CircleCollider2D>(), monsterRoom.gameManager.GetPlayer(indexPlayer).transform.GetComponent<CapsuleCollider2D>(), true);
+    }
+
+    public IEnumerator IgnoreCollisionAllPlayerTouchInTrial()
+    {
+     
+        GameObject[] players  = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach(GameObject player in players)
+        {
+            if (player.GetComponent<PlayerGO>().isTouchInTrial)
+                SendIgnoreCollisionOnePlayer(player.GetComponent<PhotonView>().ViewID, true);
+        }
+        yield return new WaitForSeconds(1);
+
+        StartCoroutine(IgnoreCollisionAllPlayerTouchInTrial());
     }
 
 }

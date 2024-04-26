@@ -1343,6 +1343,8 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetDash()
     {
+        this.transform.Find("DashAnimation").GetChild(0).gameObject.SetActive(true);
+
         if (!player.GetComponent<PhotonView>().IsMine)
             return;
 
@@ -1388,7 +1390,7 @@ public class PlayerNetwork : MonoBehaviourPun
             this.transform.position = new Vector2(6.6f, this.transform.position.y);
         }
 
-        this.transform.Find("DashAnimation").GetChild(0).gameObject.SetActive(true);
+        
         player.gameManager.ui_Manager.LaunchDashSound();
         StartCoroutine(player.CouroutineAvaibleDash());
     }

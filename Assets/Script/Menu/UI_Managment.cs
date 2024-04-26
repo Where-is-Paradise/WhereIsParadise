@@ -135,6 +135,10 @@ public class UI_Managment : MonoBehaviourPun
     public List<ToogleObject> list_toogle_object;
     public List<ToggleObjectImpostor> list_toogle_objectImpostor;
 
+    public GameObject timerMatchMaking;
+
+    public GameObject timerMatchmaking_global;
+
     float k = -1;
     // Start is called before the first frame update
     void Start()
@@ -643,7 +647,7 @@ public class UI_Managment : MonoBehaviourPun
     {
         textNbPlayer.text = nbPlayer + " / " + nbPlayerMax;
         textNbPlayerMatchmaking.text = textNbPlayer.text;
-        if (nbPlayer < 4)
+        if (nbPlayer < 3)
         {
             textNbPlayer.color = new Color(255, 0, 0);
             textNbPlayerMatchmaking.color = textNbPlayer.color;
