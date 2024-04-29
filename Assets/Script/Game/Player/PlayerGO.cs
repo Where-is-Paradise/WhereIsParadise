@@ -188,7 +188,10 @@ public class PlayerGO : MonoBehaviour
     public bool isTeleporting = false;
 
     [HideInInspector]
-    public int blackSoul_money = 900; 
+    public int blackSoul_money = 900;
+
+
+    public List<GameObject> listInformationAbovePlayer; 
 
     private void Awake()
     {
@@ -642,6 +645,8 @@ public class PlayerGO : MonoBehaviour
 
         SetZIndexByPositionY();
         ActionnWantToChangeBoss();
+
+        PlaceCorrectyInformationAbove();
 
 
         if (gameManager)
@@ -2732,5 +2737,85 @@ public class PlayerGO : MonoBehaviour
 
     }
 
+    public int NumberInformationAbove( )
+    {
+        int counter = 0;
+        foreach(GameObject information in listInformationAbovePlayer)
+        {
+            if (information.gameObject.activeSelf)
+            {
+                if (information.transform.Find("CanvasTimer"))
+                {
+                    if (information.transform.Find("CanvasTimer").Find("Timer").GetComponent<Text>().enabled)
+                    {
+                        counter++;
+                    }
+                       
+                }
+                else
+                {
+                    counter++;
+                }
+
+               
+            }
+        }
+        //Debug.Log(counter);
+        return counter;
+    }
+
+    public void SetCurrentListInformationActive(List<GameObject> listInformationActive)
+    {
+        foreach (GameObject information in listInformationAbovePlayer)
+        {
+            if (information.gameObject.activeSelf)
+            {
+                if (information.transform.Find("CanvasTimer"))
+                {
+                    if (information.transform.Find("CanvasTimer").Find("Timer").GetComponent<Text>().enabled)
+                        listInformationActive.Add(information.gameObject);
+                }
+                else
+                {
+                    listInformationActive.Add(information.gameObject);
+                }
+            }
+        }
+    }
+
+
+    public void PlaceCorrectyInformationAbove()
+    {
+        List<GameObject> listCurrentInformation = new List<GameObject>();
+
+        SetCurrentListInformationActive(listCurrentInformation);
+
+        if (NumberInformationAbove() < 1)
+            return;
+
+        if (NumberInformationAbove() < 2)
+        {
+            listCurrentInformation[0].transform.localPosition = new Vector3(0, listCurrentInformation[0].transform.localPosition.y);
+            return;
+        }
+           
+
+
+        if(NumberInformationAbove() == 2)
+        {
+            listCurrentInformation[0].transform.localPosition = new Vector3(-0.5f, listCurrentInformation[0].transform.localPosition.y);
+            listCurrentInformation[1].transform.localPosition = new Vector3(0.5f, listCurrentInformation[1].transform.localPosition.y);
+        }
+        else
+        {
+            if(NumberInformationAbove() == 3)
+            {
+                listCurrentInformation[0].transform.localPosition = new Vector3(-0.75f, listCurrentInformation[0].transform.localPosition.y);
+                listCurrentInformation[2].transform.localPosition = new Vector3(0.75f, listCurrentInformation[2].transform.localPosition.y);
+            }
+        }
+
+
+    }
 
 }

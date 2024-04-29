@@ -2147,7 +2147,7 @@ public class GameManager : MonoBehaviourPun
         StartCoroutine(SetMapOFLostSoul(0.1f));
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
 
-        if (game.currentRoom.isHide || game.currentRoom.isImpostorRoom || game.currentRoom.isVerySpecial) {
+        if (game.currentRoom.isHide || game.currentRoom.isImpostorRoom) {
             //AddLittleObjectInMap();
             SetLittleObjectInMap();
         }
@@ -2469,8 +2469,8 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.ShowImpostor();
         ui_Manager.DisplayKeyAndTorch(false);
         ui_Manager.DisplayMapForEnd();
-
-
+        ui_Manager.doorsParent.SetActive(false);
+        ui_Manager.supportTorch.transform.parent.gameObject.SetActive(false);
     }
 
     public void Loose()
@@ -2490,6 +2490,8 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.DisplayAutelTutorialSpeciallyRoom(false);
         ui_Manager.ActiveSlideMap();
         ui_Manager.DisplayMapForEnd();
+        ui_Manager.doorsParent.SetActive(false);
+        ui_Manager.supportTorch.transform.parent.gameObject.SetActive(false);
 
 
     }
@@ -4811,11 +4813,10 @@ public class GameManager : MonoBehaviourPun
             randomRight -= (float)(100 / 4f);
         }
 
-        Debug.Log(randomLeft + " " + randomRight);
         float randomfloat = Random.Range(randomLeft, randomRight);
-        Debug.Log(randomfloat);
 
-        //randomfloat = 60;
+
+        //randomfloat = 10;
         if (randomfloat < 25 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(0); // foggy
@@ -4842,7 +4843,6 @@ public class GameManager : MonoBehaviourPun
     {
         int randomPause = Random.Range(2, 5);
         yield return new WaitForSeconds(randomPause);
-        Debug.LogError("sa passe 0");
         StartCoroutine(StartAmbianceBeginingMusic());
     }
 
@@ -4851,7 +4851,8 @@ public class GameManager : MonoBehaviourPun
 
         yield return new WaitForSeconds(seconde);
         ui_Manager.CaveMusicAmbiance.Stop();
-        if (!speciallyIsLaunch)
+
+        if (!speciallyIsLaunch && (!hellIsFind || !paradiseIsFind || !isAlreadyLoose) )
         {
             int randomSeconde = Random.Range(150, 275);
             int radomMusic = Random.Range(0, 3);
@@ -5054,6 +5055,8 @@ public class GameManager : MonoBehaviourPun
 
         for (int i = 0; i < listLittleObject.transform.childCount; i++)
         {
+            if (game.currentRoom.listLittleObject[i] == -1)
+                continue;
             listLittleObject.transform.GetChild(i).GetChild(game.currentRoom.listLittleObject[i]).gameObject.SetActive(true);
         }
 

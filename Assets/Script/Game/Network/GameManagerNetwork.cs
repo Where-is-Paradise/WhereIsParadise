@@ -2317,6 +2317,7 @@ public class GameManagerNetwork : MonoBehaviourPun
                 break;
             case 1:
                 gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSacrifice = true;
+                
                 break;
             case 2:
                 gameManager.game.dungeon.GetRoomByIndex(indexRoom).isPray = true;
@@ -2329,6 +2330,8 @@ public class GameManagerNetwork : MonoBehaviourPun
                 break;
         }
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).isSpecial = true;
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).isVerySpecial = true;
+        gameManager.game.dungeon.GetRoomByIndex(indexRoom).speciallyIsInsert = true;
 
     }
 

@@ -156,6 +156,8 @@ public class UI_Manager : MonoBehaviour
 
     public AudioSource fireball;
 
+    public AudioSource DeathSound;
+
     public int currentMusic_index = -1;
     public bool launchIncreaseVolumLittleToLittle = false;
 
@@ -172,6 +174,8 @@ public class UI_Manager : MonoBehaviour
 
     public GameObject hexagoneImpostorInformation;
     public GameObject hexagoneNoneImpostorInformation;
+
+    public GameObject doorsParent;
 
 
     // Start is called before the first frame update
@@ -3054,11 +3058,13 @@ setting_button_echapMenu.SetActive(false);
 
     public void DisplayFoggyRoomTransparyAnimation()
     {
-        GameObject foggyRoom = GameObject.Find("Room").transform.Find("Special").Find("FoggyRoom").gameObject;
+        if (gameManager.game.currentRoom.animationFoogyAlreayHapped)
+            return;
 
+        GameObject foggyRoom = GameObject.Find("Room").transform.Find("Special").Find("FoggyRoom").gameObject;
         foggyRoom.transform.Find("FoggyAnimation").GetComponent<Display_Tranparency>().LaunchTransitionUnDisplayToDisplay(6f, 0.3f);
         soundDemonicLaugh.Play();
-
+        gameManager.game.currentRoom.animationFoogyAlreayHapped = true;
     }
 
     public void DisplayCircleZoneColorChest(bool display)

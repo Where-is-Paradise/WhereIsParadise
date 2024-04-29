@@ -16,25 +16,30 @@ public class BlackHole : MonoBehaviour
     public GameObject lavaBackgrounl;
     private bool changeSensLava = false;
 
+    public GameObject animationDoor;
+
     void Start()
     {
         m_Pivot = gameManager.GetPlayerMineGO().transform;
+
+       
     }
 
     private void FixedUpdate()
     {
-        if (gameManager.AllPlayerHaveHell() )
+        if (gameManager.AllPlayerHaveHell())
         {
-            
-            StartCoroutine(OpenDoorHell());
+
+            //StartCoroutine(OpenDoorHell());
+            StartCoroutine(WaitForAttraction());
         }
 
-        if(gameManager.AllPlayerHaveHell() && !doorHell_IsOpen)
+        if (gameManager.AllPlayerHaveHell() && !doorHell_IsOpen)
         {
-            soundDoorHell.PlayDelayed(1.5f);
+            StartCoroutine(animationDoor.GetComponent<Animation_hell_circie>().LaunchAnimationRotation());
             doorHell_IsOpen = true;
         }
-        MoveLavaBackground();
+        //MoveLavaBackground();
 
     }
 
@@ -65,14 +70,13 @@ public class BlackHole : MonoBehaviour
         transform.parent.GetChild(7).gameObject.SetActive(false);
 
         transform.GetChild(0).transform.GetComponent<Animator>().SetBool("OpenHell", true);
-        StartCoroutine(WaitForAttraction());
 
     }
 
 
     public IEnumerator WaitForAttraction()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(4);
         AttractivePlayer();
     }
 

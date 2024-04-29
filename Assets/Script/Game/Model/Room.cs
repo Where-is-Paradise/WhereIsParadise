@@ -123,6 +123,8 @@ public class Room : ScriptableObject
 
     public int[] listLittleObject;
 
+    public bool animationFoogyAlreayHapped = false;
+
     public void Init(int pos_X, int pos_Y)
     {
         this.x = pos_X;
@@ -530,9 +532,13 @@ public class Room : ScriptableObject
 
         for (int i = 0; i < listLittleObject_Go.transform.childCount; i++)
         {
-            int randomEmpty = Random.Range(0, 5);
+            int randomEmpty = Random.Range(0, 4);
             if (randomEmpty == 0)
+            {
+                listLittleObject[i] = -1;
                 continue;
+            }
+               
             int randomIndex = Random.Range(0, listLittleObject_Go.transform.GetChild(i).childCount);
             listLittleObject[i] = randomIndex;
 

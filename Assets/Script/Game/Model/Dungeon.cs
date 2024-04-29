@@ -236,7 +236,7 @@ public class Dungeon : ScriptableObject
         {
             if (room.IsObstacle)
                 continue;
-            if (!room.isHide && !room.isVerySpecial)
+            if (!room.isHide)
                 continue;
 
             room.AddLittleObjectInRoom();

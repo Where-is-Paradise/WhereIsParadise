@@ -503,6 +503,7 @@ public class PlayerNetwork : MonoBehaviourPun
         GetComponent<PhotonTransformViewClassic>().enabled = false;
         GetComponent<PhotonRigidbody2DView>().enabled = false;
         GetComponent<Lag_Compensation>().enabled = false;
+        player.gameManager.ui_Manager.DeathSound.Play();
         player.canMove = false;
         if (!player.gameManager.SamePositionAtMine(player.GetComponent<PhotonView>().ViewID))
             return;
