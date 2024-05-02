@@ -30,4 +30,10 @@ public class TimerMenu : MonoBehaviour
 
         this.GetComponent<Text>().text = Mathf.FloorToInt(timeLeft).ToString();
     }
+
+    public void ResetTimer()
+    {
+        timerLaunch = false;
+        timeLeft = initial_timer;
+    }
 }

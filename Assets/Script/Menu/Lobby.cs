@@ -380,6 +380,11 @@ public class Lobby : MonoBehaviourPunCallbacks
             if (PhotonNetwork.IsMasterClient)
             {
                 ui_management.DisplayStartButton(true);
+                if (!matchmaking)
+                {
+                    newPlayer.GetComponent<PlayerGO>().isBossMenu = true;
+                    newPlayer.transform.Find("Skins").GetChild(index_skin).Find("Crown").gameObject.SetActive(true);
+                } 
             }
         }
 
@@ -440,31 +445,41 @@ public class Lobby : MonoBehaviourPunCallbacks
             PlayerIsMine().GetComponent<PlayerNetwork>().SendindexSkin(PlayerIsMine().GetComponent<PlayerGO>().indexSkin);
             PlayerIsMine().GetComponent<PlayerNetwork>().SendindexSkinColor(PlayerIsMine().GetComponent<PlayerGO>().indexSkinColor, true);
         }
-            
-
-        //ui_management.SetGameSettingFirstTime();
-        //ui_management.SetSettingInWaitingRoom();
-
+           
         if (PhotonNetwork.IsMasterClient)
         {
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            if(players.Length+1 == 6 && matchmaking)
+            if(nbPlayer == 6 && matchmaking)
             {
                 ui_management.SendDisplayReadyButton(false);
                 ui_management.DisabledBackButton();
-                StartCoroutine(CouroutineStartGame());
+                photonView.RPC("SendLaunchCouroutine1", RpcTarget.All);
+               
             }
             else
             {
                 if (matchmaking)
                 {
-                    if (CheckNumberPlayerJoin())
+                    if (ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().timerLaunch)
                     {
-                        StartCoroutine(CouroutineStartGame2());
+                        photonView.RPC("SendGlobalTimer", RpcTarget.Others, true, ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().timeLeft-1);
+
+                    }
+                    else
+                    {
+                        if (nbPlayer > 2)
+                        {
+                            StartCoroutine(CouroutineStartGame2());
+                            
+                            photonView.RPC("SendLaunchCoroutine", RpcTarget.Others);
+                            photonView.RPC("SendGlobalTimer", RpcTarget.Others, true, ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().timeLeft - 1);
+                        }
                     }
                 }
               
             }
+
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsBossMenu(true);
+
 
         }
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsReady(GetPlayerMineGO().GetComponent<PlayerGO>().isReady);
@@ -512,6 +527,16 @@ public class Lobby : MonoBehaviourPunCallbacks
         base.OnPlayerLeftRoom(otherPlayer);
         nbPlayer--;
         ui_management.SetNbPlayerUI(nbPlayer, maxPlayer);
+        if (nbPlayer < 3 )
+        {
+            ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().ResetTimer();
+            ui_management.timerMatchmaking_global.SetActive(false);
+            ui_management.labelSearch.SetActive(true);
+        }
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsBossMenu(true);
+        }
     }
 
     public void SendMaxPlayer(int maxPlayer)
@@ -646,6 +671,7 @@ public class Lobby : MonoBehaviourPunCallbacks
 
         foreach(GameObject player in players)
         {
+            Debug.Log(player.GetComponent<PlayerGO>().isReady);
             if (!player.GetComponent<PlayerGO>().isReady)
             {
                 return false;
@@ -661,7 +687,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     public bool CheckNumberPlayerJoin()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        return players.Length > 2; // > 2 
+        return players.Length > 1; // > 1 
     }
 
     [PunRPC]
@@ -676,7 +702,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     public IEnumerator CouroutineStartGame()
     {
         ui_management.timerMatchmaking_global.SetActive(false);
-        photonView.RPC("SendGlobalTimer", RpcTarget.Others, false);
+        ui_management.labelSearch.SetActive(false);
         ui_management.DisplayReadyButton(false);
         ui_management.DisabledBackButton();
         ResetAllPlayerReady();
@@ -692,11 +718,12 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public IEnumerator CouroutineStartGame2()
     {
+        ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().ResetTimer();
         ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().timerLaunch = true;
         ui_management.timerMatchmaking_global.SetActive(true);
-        photonView.RPC("SendGlobalTimer", RpcTarget.Others, true);
 
-        yield return new WaitForSeconds(61);
+        yield return new WaitForSeconds(60); 
+
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         if (players.Length > 2) { // > 2
             StartCoroutine(CouroutineStartGame());
@@ -706,10 +733,31 @@ public class Lobby : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void SendGlobalTimer(bool launch)
+    public void SendGlobalTimer( bool display , float timer)
     {
-        ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().timerLaunch = launch;
-        ui_management.timerMatchmaking_global.SetActive(launch);
+        ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().timerLaunch = display;
+        ui_management.timerMatchmaking_global.SetActive(display);
+        ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().timeLeft = timer;
+    }
+
+    [PunRPC]
+    public void SendResetTimer()
+    {
+        ui_management.timerMatchmaking_global.GetComponent<TimerMenu>().ResetTimer();
+
+    }
+
+    [PunRPC]
+    public void SendLaunchCoroutine()
+    {
+        StartCoroutine(CouroutineStartGame2());
+    }
+
+
+    [PunRPC]
+    public void SendLaunchCouroutine1()
+    {
+        StartCoroutine(CouroutineStartGame());
     }
 
     public void ResetAllPlayerReady()

@@ -261,7 +261,7 @@ public class GameManager : MonoBehaviourPun
             alreadyPasseLoading = true;
             GetImpostorName();
         }
-        if (InputManager.GetButtonDown("Escape") || Input.GetKeyDown(KeyCode.Joystick1Button7) || Input.GetKeyDown(KeyCode.Escape))
+        if (InputManager.GetButtonDown("Escape") /*|| Input.GetKeyDown(KeyCode.Joystick1Button7)*/ || Input.GetKeyDown(KeyCode.Escape))
         {
             if (ui_Manager.map.activeSelf && gameIsReady)
             {
@@ -3445,10 +3445,10 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-        /*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 0);
+        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
+        return;
+        /*        gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
                 return;*/
-/*        gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
-        return;*/
 
         if (room.isVerySpecial)
         {

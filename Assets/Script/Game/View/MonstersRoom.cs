@@ -1,3 +1,4 @@
+using Luminosity.IO;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -161,7 +162,8 @@ public class MonstersRoom : TrialsRoom
     }
     public void CanAttack()
     {
-        if (Input.GetMouseButtonDown(0) && canAttack)
+
+        if (InputManager.GetButtonDown("Attack") && canAttack)
         {
             DisplaySwordAttack();
         }

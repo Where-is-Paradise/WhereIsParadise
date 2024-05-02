@@ -16,6 +16,7 @@ public class Settin_management : MonoBehaviour
 
     public GameObject input_manager;
     public List<Text> listTextInput;
+    public List<Text> listTextInputController;
 
     // Video
     public GameObject resolution;
@@ -40,6 +41,7 @@ public class Settin_management : MonoBehaviour
 
     private GameObject currentFormInput;
     private bool inputIsPress = false;
+    private bool inputIsPressController = false;
 
     public GameObject panelLanguageReset;
     public bool serverRegionIsUpdated = false;
@@ -52,12 +54,8 @@ public class Settin_management : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
-        //SaveLanguage();
-        //Screen.SetResolution(1920, 1080,true);
+      
         SetTextDropDownResolution(resolution.GetComponent<Dropdown>());
-/*        if(resolutionFirstConnexion)
-            SetTextDropDownResolution(resolutionFirstConnexion.GetComponent<Dropdown>());*/
         setting = GameObject.Find("Setting").GetComponent<Setting>();
         if(input_manager)
             DontDestroyOnLoad(input_manager);
@@ -72,7 +70,6 @@ public class Settin_management : MonoBehaviour
         LoadWelcome();
         LoadTestSkinIP();
 
-        //SetFullScreenModeListView();
         SetLanguageDropdown();
 
         SetGlobalVolume();
@@ -80,23 +77,91 @@ public class Settin_management : MonoBehaviour
 
         LoadServerRegion("");
 
-        
+        StartCoroutine(test());
     }
-
+    
     // Update is called once per frame
     void Update()
     {
+    }
+    public IEnumerator test()
+    {
+        yield return new WaitForSeconds(2);
+        Debug.Log(InputManager.PlayerOneControlScheme.Actions[8].Bindings[1].Axis);
     }
 
     void OnGUI()
     {
         Event e = Event.current;
-        if (e.isKey && inputIsPress)
+
+
+        if ((e.isKey || e.isMouse) && inputIsPress)
         {
-            currentFormInput.GetComponent<Text>().text = e.keyCode + "";
+            if (e.isMouse)
+            {
+                if(e.button == 0)
+                {
+                    currentFormInput.GetComponent<Text>().text = KeyCode.Mouse0 + "";
+                    SetInput(int.Parse(currentFormInput.transform.parent.name), KeyCode.Mouse0);
+
+                }
+                else if( e.button == 1)
+                {
+                    currentFormInput.GetComponent<Text>().text = KeyCode.Mouse1 + "";
+                    SetInput(int.Parse(currentFormInput.transform.parent.name), KeyCode.Mouse1);
+                }
+                else if(e.button == 2)
+                {
+                    currentFormInput.GetComponent<Text>().text = KeyCode.Mouse2 + "";
+                    SetInput(int.Parse(currentFormInput.transform.parent.name), KeyCode.Mouse2);
+                }
+            }
+            else
+            {
+                currentFormInput.GetComponent<Text>().text = e.keyCode + "";
+                SetInput(int.Parse(currentFormInput.transform.parent.name), e.keyCode);
+
+               
+            }
             inputIsPress = false;
-            SetInput(int.Parse(currentFormInput.transform.parent.name), e.keyCode);
         }
+        if (inputIsPressController)
+        {
+            if (e.isMouse)
+            {
+                inputIsPressController = false;
+                return;
+            }
+            
+            foreach (KeyCode vKey in System.Enum.GetValues(typeof(KeyCode)))
+            {
+                if (Input.GetKey(vKey))
+                {
+                    if (vKey.ToString().Equals("Mouse0") || vKey.ToString().Equals("Mouse1") || vKey.ToString().Equals("Mouse2"))
+                        return;
+
+                    currentFormInput.GetComponent<Text>().text = vKey.ToString().Substring(8, (vKey.ToString().Length - 8));
+                    SetInputController(int.Parse(currentFormInput.transform.parent.name), vKey );
+                    inputIsPressController = false;
+                }
+               
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                if (Input.GetAxis("joy_0_axis_" + i) > 0.15f)
+                {
+                    currentFormInput.GetComponent<Text>().text = "Axis_" + i ;
+                    SetInputControllerAxis(int.Parse(currentFormInput.transform.parent.name) , i);
+                    inputIsPressController = false;
+                }
+            }
+
+
+
+        }
+       
+
     }
 
 
@@ -240,6 +305,12 @@ public class Settin_management : MonoBehaviour
         inputIsPress = true;
     }
 
+    public void OnClickSetInputController(GameObject form)
+    {
+        currentFormInput = form;
+        inputIsPressController = true;
+    }
+
     public void SetInput(int indexInput , KeyCode newInput)
     {
         switch (indexInput)
@@ -280,12 +351,93 @@ public class Settin_management : MonoBehaviour
                 InputManager.PlayerOneControlScheme.Actions[4].Bindings[0].Positive = newInput;
                 InputManager.Save();
                 break;
+
+            case 7:
+                setting.INPUT_ATTACK = newInput;
+                InputManager.PlayerOneControlScheme.Actions[8].Bindings[0].Positive = newInput;
+                InputManager.Save();
+                break;
+
+            case 8:
+                setting.INPUT_DASH = newInput;
+                InputManager.PlayerOneControlScheme.Actions[9].Bindings[0].Positive = newInput;
+                InputManager.Save();
+                break;
         }
     }
 
+    public void SetInputController(int indexInput, KeyCode newInput)
+    {
+
+        switch (indexInput)
+        {
+            case 4:
+                setting.INPUT_LAUCNH_EXPLORATION_controller = newInput;
+                InputManager.PlayerOneControlScheme.Actions[2].Bindings[1].Positive = newInput;
+                InputManager.Save();
+                break;
+            case 5:
+                setting.INPUT_LAUNCH_VOTE_DOOR_controller = newInput;
+                InputManager.PlayerOneControlScheme.Actions[3].Bindings[1].Positive = newInput;
+                InputManager.Save();
+                break;
+            case 6:
+                setting.INPUT_DISPLAY_MAP_controller = newInput;
+                InputManager.PlayerOneControlScheme.Actions[4].Bindings[1].Positive = newInput;
+                InputManager.Save();
+                break;
+
+            case 7:
+                setting.INPUT_ATTACK_controller = newInput;
+                InputManager.PlayerOneControlScheme.Actions[8].Bindings[1].Positive = newInput;
+                InputManager.Save();
+                break;
+            case 8:
+                setting.INPUT_DASH_controller = newInput;
+                InputManager.PlayerOneControlScheme.Actions[9].Bindings[1].Positive = newInput;
+                InputManager.Save();
+                break;
+        }
+    }
+
+
+    public void SetInputControllerAxis(int indexInput, int indexAxis)
+    {
+        switch (indexInput)
+        {
+            case 4:
+                //setting.INPUT_LAUCNH_EXPLORATION_controller = newInput;
+                InputManager.PlayerOneControlScheme.Actions[2].Bindings[2].Axis = indexAxis;
+                InputManager.Save();
+                break;
+            case 5:
+                //setting.INPUT_LAUNCH_VOTE_DOOR_controller = newInput;
+                InputManager.PlayerOneControlScheme.Actions[3].Bindings[2].Axis = indexAxis;
+                InputManager.Save();
+                break;
+            case 6:
+                //setting.INPUT_DISPLAY_MAP_controller = newInput;
+                InputManager.PlayerOneControlScheme.Actions[4].Bindings[2].Axis = indexAxis;
+                InputManager.Save();
+                break;
+
+            case 7:
+                //setting.INPUT_ATTACK_controller = newInput;
+                InputManager.PlayerOneControlScheme.Actions[8].Bindings[2].Axis = indexAxis;
+                InputManager.Save();
+                break;
+            case 8:
+                //setting.INPUT_DASH_controller = newInput;
+                InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Axis = indexAxis;
+                InputManager.Save();
+                break;
+        }
+    }
+
+
     public void DisplayInputTextInEachPanel()
     {
-        for(int i =0; i < 7; i++)
+        for(int i =0; i < 9; i++)
         {
             switch (listTextInput[i].transform.parent.name)
             {
@@ -310,7 +462,34 @@ public class Settin_management : MonoBehaviour
                 case "6":
                     listTextInput[i].text = setting.INPUT_DISPLAY_MAP.ToString();
                     break;
+                case "7":
+                    listTextInput[i].text = setting.INPUT_ATTACK.ToString();
+                    break;
+                case "8":
+                    listTextInput[i].text = setting.INPUT_DASH.ToString();
+                    break;
+
             }   
+        }
+    }
+
+    public void DisplayInputControllerTextInEachPanel()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            switch (listTextInput[i].transform.parent.name)
+            {
+                case "4":
+                    listTextInput[i].text = setting.INPUT_MOVE_FORWARD.ToString();
+                    break;
+                case "7":
+                    listTextInput[i].text = setting.INPUT_MOVE_BACKWARD.ToString();
+                    break;
+                case "8":
+                    listTextInput[i].text = setting.INPUT_MOVE_LEFT.ToString();
+                    break;
+
+            }
         }
     }
 

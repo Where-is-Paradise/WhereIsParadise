@@ -191,7 +191,9 @@ public class PlayerGO : MonoBehaviour
     public int blackSoul_money = 900;
 
 
-    public List<GameObject> listInformationAbovePlayer; 
+    public List<GameObject> listInformationAbovePlayer;
+
+    public bool isBossMenu = false;
 
     private void Awake()
     {
@@ -2476,7 +2478,7 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (!Input.GetKey(KeyCode.Space))
+        if (!InputManager.GetButtonDown("Dash"))
         {
             return;
         }

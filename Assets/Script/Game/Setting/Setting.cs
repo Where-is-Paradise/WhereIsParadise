@@ -48,7 +48,7 @@ public class Setting : MonoBehaviour
     public bool isMatchmaking = false;
     public float version = 0.48f;
 
-    // Player controller
+    // Player keyboard
     public KeyCode INPUT_MOVE_FORWARD = KeyCode.Z;
     public KeyCode INPUT_MOVE_BACKWARD =  KeyCode.S;
     public KeyCode INPUT_MOVE_LEFT = KeyCode.Q;
@@ -56,6 +56,27 @@ public class Setting : MonoBehaviour
     public KeyCode INPUT_LAUCNH_EXPLORATION = KeyCode.E;
     public KeyCode INPUT_LAUNCH_VOTE_DOOR = KeyCode.F;
     public KeyCode INPUT_DISPLAY_MAP = KeyCode.M;
+    public KeyCode INPUT_ATTACK = KeyCode.Mouse0;
+    public KeyCode INPUT_DASH = KeyCode.Space;
+
+    // Player controller 
+    public KeyCode INPUT_LAUCNH_EXPLORATION_controller = KeyCode.Joystick1Button0;
+    public KeyCode INPUT_LAUNCH_VOTE_DOOR_controller = KeyCode.A;
+    public KeyCode INPUT_DISPLAY_MAP_controller = KeyCode.Joystick1Button1;
+    public KeyCode INPUT_ATTACK_controller = KeyCode.Joystick1Button6;
+    public KeyCode INPUT_DASH_controller = KeyCode.Joystick1Button2;
+
+    public int INPUT_LAUCNH_EXPLORATION_controller_axis = 0;
+    public int INPUT_LAUNCH_VOTE_DOOR_controller_axis = 1;
+    public int INPUT_DISPLAY_MAP_controller_axis = 2;
+    public int INPUT_ATTACK_controller_axis = 3;
+    public int INPUT_DASH_controller_axis = 4;
+
+    public bool INPUT_LAUCNH_EXPLORATION_controller_isAxis = false;
+    public bool INPUT_LAUNCH_VOTE_DOOR_controller_isAxis = false;
+    public bool INPUT_DISPLAY_MAP_controller_isAxis = false;
+    public bool INPUT_ATTACK_controller_isAxis = true;
+    public bool INPUT_DASH_controller_isAxis = false;
 
 
     // Audio
@@ -104,6 +125,8 @@ public class Setting : MonoBehaviour
         INPUT_LAUCNH_EXPLORATION = InputManager.PlayerOneControlScheme.Actions[2].Bindings[0].Positive;
         INPUT_LAUNCH_VOTE_DOOR = InputManager.PlayerOneControlScheme.Actions[3].Bindings[0].Positive;
         INPUT_DISPLAY_MAP = InputManager.PlayerOneControlScheme.Actions[4].Bindings[0].Positive;
+        INPUT_ATTACK = InputManager.PlayerOneControlScheme.Actions[8].Bindings[0].Positive;
+        INPUT_DASH = InputManager.PlayerOneControlScheme.Actions[9].Bindings[0].Positive;
 
         listLangage.Add("en");
         listLangage.Add("fr");

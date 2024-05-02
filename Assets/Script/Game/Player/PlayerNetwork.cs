@@ -1412,4 +1412,21 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         this.transform.Find("SwordMonster").gameObject.SetActive(false);
     }
+
+    public void SendIsBossMenu(bool isBossMenu)
+    {
+        photonView.RPC("SetIsBossMenu", RpcTarget.All, isBossMenu);
+    }
+
+    [PunRPC]
+    public void SetIsBossMenu(bool isBossMenu)
+    {
+        player.isBossMenu = isBossMenu;
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Crown").gameObject.SetActive(player.isBossMenu);
+    }
+
 }
+
+ 
+
+

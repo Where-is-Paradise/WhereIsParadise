@@ -20947,6 +20947,7 @@ MonoBehaviour:
   - {fileID: 5716440983982512546}
   - {fileID: 7607005394030933238}
   - {fileID: 365425083937857396}
+  isBossMenu: 0
 --- !u!114 &7384524027293410437
 MonoBehaviour:
   m_ObjectHideFlags: 0
