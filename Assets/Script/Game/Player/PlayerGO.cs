@@ -288,8 +288,7 @@ public class PlayerGO : MonoBehaviour
         }
 
         ChangeSystemSyncPostionToTrial();
-        Dash();
-        DashIsAvailable();
+     
         
     }
 
@@ -367,7 +366,11 @@ public class PlayerGO : MonoBehaviour
 
             }
         }
-
+        if (gameManager)
+        {
+            Dash();
+            DashIsAvailable();
+        }
 
         if (gameManager)
         {
@@ -2471,7 +2474,7 @@ public class PlayerGO : MonoBehaviour
             this.transform.Translate(new Vector3(0, -0.75f));
 /*        }*/
     }
-    private bool avaibleDash = true; 
+    public bool avaibleDash = true; 
     public void Dash()
     {
         if (!GetComponent<PhotonView>().IsMine)
@@ -2496,7 +2499,7 @@ public class PlayerGO : MonoBehaviour
 
         if (isTouchInTrial)
             return;
-
+        Debug.Log("sa passe");
         //this.transform.position += new Vector3(Mathf.Sign(horizontal) * 1.5f, Mathf.Sign(vertical) * 1.5f);
         GetComponent<PlayerNetwork>().SendDash();
 

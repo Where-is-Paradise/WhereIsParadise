@@ -127,7 +127,7 @@ public class Settin_management : MonoBehaviour
         }
         if (inputIsPressController)
         {
-            if (e.isMouse)
+            if (e.isMouse || e.isKey)
             {
                 inputIsPressController = false;
                 return;
@@ -140,7 +140,10 @@ public class Settin_management : MonoBehaviour
                     if (vKey.ToString().Equals("Mouse0") || vKey.ToString().Equals("Mouse1") || vKey.ToString().Equals("Mouse2"))
                         return;
 
-                    currentFormInput.GetComponent<Text>().text = vKey.ToString().Substring(8, (vKey.ToString().Length - 8));
+                    //currentFormInput.GetComponent<Text>().text = vKey.ToString().Substring(8, (vKey.ToString().Length - 8));
+                    String key_controllerString = ModifyTextController(vKey.ToString());
+                    currentFormInput.GetComponent<Text>().text = key_controllerString;
+
                     SetInputController(int.Parse(currentFormInput.transform.parent.name), vKey );
                     inputIsPressController = false;
                 }
@@ -151,16 +154,13 @@ public class Settin_management : MonoBehaviour
             {
                 if (Input.GetAxis("joy_0_axis_" + i) > 0.15f)
                 {
-                    currentFormInput.GetComponent<Text>().text = "Axis_" + i ;
+                    String key_controllerString = ModifyTextController(i+"");
+                    currentFormInput.GetComponent<Text>().text = key_controllerString;
                     SetInputControllerAxis(int.Parse(currentFormInput.transform.parent.name) , i);
                     inputIsPressController = false;
                 }
             }
-
-
-
         }
-       
 
     }
 
@@ -373,28 +373,38 @@ public class Settin_management : MonoBehaviour
         {
             case 4:
                 setting.INPUT_LAUCNH_EXPLORATION_controller = newInput;
+                setting.INPUT_LAUCNH_EXPLORATION_controller_isAxis = false;
                 InputManager.PlayerOneControlScheme.Actions[2].Bindings[1].Positive = newInput;
+                InputManager.PlayerOneControlScheme.Actions[2].Bindings[2].Joystick = 9;
                 InputManager.Save();
                 break;
             case 5:
                 setting.INPUT_LAUNCH_VOTE_DOOR_controller = newInput;
+                setting.INPUT_LAUNCH_VOTE_DOOR_controller_isAxis = false;
                 InputManager.PlayerOneControlScheme.Actions[3].Bindings[1].Positive = newInput;
+                InputManager.PlayerOneControlScheme.Actions[3].Bindings[2].Joystick = 9;
                 InputManager.Save();
                 break;
             case 6:
                 setting.INPUT_DISPLAY_MAP_controller = newInput;
+                setting.INPUT_DISPLAY_MAP_controller_isAxis = false;
                 InputManager.PlayerOneControlScheme.Actions[4].Bindings[1].Positive = newInput;
+                InputManager.PlayerOneControlScheme.Actions[4].Bindings[2].Joystick = 9;
                 InputManager.Save();
                 break;
 
             case 7:
                 setting.INPUT_ATTACK_controller = newInput;
+                setting.INPUT_ATTACK_controller_isAxis = false;
                 InputManager.PlayerOneControlScheme.Actions[8].Bindings[1].Positive = newInput;
+                InputManager.PlayerOneControlScheme.Actions[8].Bindings[2].Joystick = 9;
                 InputManager.Save();
                 break;
             case 8:
                 setting.INPUT_DASH_controller = newInput;
+                setting.INPUT_DASH_controller_isAxis = false;
                 InputManager.PlayerOneControlScheme.Actions[9].Bindings[1].Positive = newInput;
+                InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Joystick = 9;
                 InputManager.Save();
                 break;
         }
@@ -406,29 +416,44 @@ public class Settin_management : MonoBehaviour
         switch (indexInput)
         {
             case 4:
-                //setting.INPUT_LAUCNH_EXPLORATION_controller = newInput;
+                setting.INPUT_LAUCNH_EXPLORATION_controller_axis = indexAxis;
+                setting.INPUT_LAUCNH_EXPLORATION_controller_isAxis = true;
+                InputManager.PlayerOneControlScheme.Actions[2].Bindings[1].Positive = KeyCode.None;
                 InputManager.PlayerOneControlScheme.Actions[2].Bindings[2].Axis = indexAxis;
+                InputManager.PlayerOneControlScheme.Actions[2].Bindings[2].Joystick = 0;
                 InputManager.Save();
                 break;
             case 5:
-                //setting.INPUT_LAUNCH_VOTE_DOOR_controller = newInput;
+                setting.INPUT_LAUNCH_VOTE_DOOR_controller_axis = indexAxis;
+                setting.INPUT_LAUNCH_VOTE_DOOR_controller_isAxis = true;
+                InputManager.PlayerOneControlScheme.Actions[3].Bindings[1].Positive = KeyCode.None;
                 InputManager.PlayerOneControlScheme.Actions[3].Bindings[2].Axis = indexAxis;
+                InputManager.PlayerOneControlScheme.Actions[3].Bindings[2].Joystick = 0;
                 InputManager.Save();
                 break;
             case 6:
-                //setting.INPUT_DISPLAY_MAP_controller = newInput;
+                setting.INPUT_DISPLAY_MAP_controller_axis = indexAxis;
+                setting.INPUT_DISPLAY_MAP_controller_isAxis = true;
+                InputManager.PlayerOneControlScheme.Actions[4].Bindings[1].Positive = KeyCode.None;
                 InputManager.PlayerOneControlScheme.Actions[4].Bindings[2].Axis = indexAxis;
+                InputManager.PlayerOneControlScheme.Actions[4].Bindings[2].Joystick = 0;
                 InputManager.Save();
                 break;
 
             case 7:
-                //setting.INPUT_ATTACK_controller = newInput;
+                setting.INPUT_ATTACK_controller_axis = indexAxis;
+                setting.INPUT_ATTACK_controller_isAxis = true;
+                InputManager.PlayerOneControlScheme.Actions[8].Bindings[1].Positive = KeyCode.None;
                 InputManager.PlayerOneControlScheme.Actions[8].Bindings[2].Axis = indexAxis;
+                InputManager.PlayerOneControlScheme.Actions[8].Bindings[2].Joystick = 0;
                 InputManager.Save();
                 break;
             case 8:
-                //setting.INPUT_DASH_controller = newInput;
+                setting.INPUT_DASH_controller_axis = indexAxis;
+                setting.INPUT_DASH_controller_isAxis = true;
+                InputManager.PlayerOneControlScheme.Actions[9].Bindings[1].Positive = KeyCode.None;
                 InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Axis = indexAxis;
+                InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Joystick = 0;
                 InputManager.Save();
                 break;
         }
@@ -437,7 +462,7 @@ public class Settin_management : MonoBehaviour
 
     public void DisplayInputTextInEachPanel()
     {
-        for(int i =0; i < 9; i++)
+        for(int i =0; i < listTextInput.Count; i++)
         {
             switch (listTextInput[i].transform.parent.name)
             {
@@ -475,18 +500,33 @@ public class Settin_management : MonoBehaviour
 
     public void DisplayInputControllerTextInEachPanel()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < listTextInputController.Count; i++)
         {
-            switch (listTextInput[i].transform.parent.name)
+            switch (listTextInputController[i].transform.parent.name)
             {
                 case "4":
-                    listTextInput[i].text = setting.INPUT_MOVE_FORWARD.ToString();
+                    if(!setting.INPUT_LAUCNH_EXPLORATION_controller_isAxis)
+                        listTextInputController[i].text = ModifyTextController(setting.INPUT_LAUCNH_EXPLORATION_controller.ToString());
+                    else
+                        listTextInputController[i].text = ModifyTextController(setting.INPUT_LAUCNH_EXPLORATION_controller_axis.ToString());
+                    break;
+                case "6":
+                    if(!setting.INPUT_DISPLAY_MAP_controller_isAxis)
+                        listTextInputController[i].text = ModifyTextController(setting.INPUT_DISPLAY_MAP_controller.ToString());
+                    else
+                        listTextInputController[i].text = ModifyTextController(setting.INPUT_DISPLAY_MAP_controller_axis.ToString());
                     break;
                 case "7":
-                    listTextInput[i].text = setting.INPUT_MOVE_BACKWARD.ToString();
+                    if (!setting.INPUT_ATTACK_controller_isAxis)
+                        listTextInputController[i].text = ModifyTextController(setting.INPUT_ATTACK_controller.ToString());
+                    else
+                        listTextInputController[i].text = ModifyTextController(setting.INPUT_ATTACK_controller_axis.ToString());
                     break;
                 case "8":
-                    listTextInput[i].text = setting.INPUT_MOVE_LEFT.ToString();
+                    if (!setting.INPUT_DASH_controller_isAxis)
+                        listTextInputController[i].text = ModifyTextController(setting.INPUT_DASH_controller.ToString());
+                    else
+                        listTextInputController[i].text = ModifyTextController(setting.INPUT_DASH_controller_axis.ToString());
                     break;
 
             }
@@ -878,6 +918,7 @@ public class Settin_management : MonoBehaviour
         setting.canUpdate = true;
         ChangeControlToAzerty(azerty.isOn);
         DisplayInputTextInEachPanel();
+        DisplayInputControllerTextInEachPanel();
         StartCoroutine(SetCanUpdateCouroutine());
     }
 
@@ -913,6 +954,64 @@ public class Settin_management : MonoBehaviour
             InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Positive = KeyCode.D;
             InputManager.Save();
         }
+    }
+
+    public string ModifyTextController(string textInputController)
+    {
+        string stringReturn = "";
+        switch (textInputController)
+        {
+
+            case "Joystick1Button0":
+                stringReturn = "A";
+                break;
+            case "Joystick1Button1":
+                stringReturn = "B";
+                break;
+            case "Joystick1Button2":
+                stringReturn = "X";
+                break;
+            case "Joystick1Button3":
+                stringReturn = "Y";
+                break;
+            case "9":
+                stringReturn = "RT";
+                break;
+            case "Joystick1Button5":
+                stringReturn = "RB";
+                break;
+            case "8":
+                stringReturn = "LT";
+                break;
+            case "Joystick1Button4":
+                stringReturn = "LB";
+                break;
+            case "Joystick1Button7":
+                stringReturn = "Start";
+                break;
+            case "Joystick1Button6":
+                stringReturn = "Back";
+                break;
+            case "Joystick1Button9":
+                stringReturn = "RS_B";
+                break;
+            case "Joystick1Button8":
+                stringReturn = "LS_B";
+                break;
+            case "0":
+                stringReturn = "LS_h";
+                break;
+            case "1":
+                stringReturn = "LS_v";
+                break;
+            case "5":
+                stringReturn = "DPAD_h";
+                break;
+            case "6":
+                stringReturn = "DPAD_b";
+                break;
+        }
+        return stringReturn;
     }
 
 }

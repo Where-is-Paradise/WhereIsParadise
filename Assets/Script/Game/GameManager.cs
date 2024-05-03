@@ -2147,7 +2147,7 @@ public class GameManager : MonoBehaviourPun
         StartCoroutine(SetMapOFLostSoul(0.1f));
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
 
-        if (game.currentRoom.isHide || game.currentRoom.isImpostorRoom) {
+        if ((game.currentRoom.isHide || game.currentRoom.isImpostorRoom) && !game.currentRoom.isTraped) {
             //AddLittleObjectInMap();
             SetLittleObjectInMap();
         }
@@ -3445,16 +3445,16 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
-        return;
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
+        return;*/
         /*        gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
                 return;*/
 
         if (room.isVerySpecial)
         {
             float randomInt = Random.Range(0, 100);
-            Debug.Log(randomInt);
-            //randomInt = 75;
+/*            Debug.Log(randomInt);
+            randomInt = 5;*/
             if (randomInt < AdditionalProbaVerySpeciality(0)  && setting.listSpeciallyRoom[0])
             {
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);

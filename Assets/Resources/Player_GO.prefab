@@ -20948,6 +20948,7 @@ MonoBehaviour:
   - {fileID: 7607005394030933238}
   - {fileID: 365425083937857396}
   isBossMenu: 0
+  avaibleDash: 1
 --- !u!114 &7384524027293410437
 MonoBehaviour:
   m_ObjectHideFlags: 0
