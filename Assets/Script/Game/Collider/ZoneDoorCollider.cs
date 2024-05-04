@@ -43,7 +43,8 @@ public class ZoneDoorCollider : MonoBehaviour
         StartCoroutine(CouroutineTimerCanSend());
         int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
         gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, true, false);
- 
+        gameManager.GetDoorGo(parentDoorIndex).transform.Find("LightDoor").gameObject.SetActive(true);
+
     }
     public void OnTriggerExit2D(Collider2D collision)
     {
@@ -67,6 +68,7 @@ public class ZoneDoorCollider : MonoBehaviour
             return;
         int parentDoorIndex = this.transform.parent.transform.parent.GetComponent<Door>().index;
         gameManager.gameManagerNetwork.SendCollisionZoneVoteDoor(collision.gameObject.GetComponent<PhotonView>().ViewID, parentDoorIndex, false, false);
+        gameManager.GetDoorGo(parentDoorIndex).transform.Find("LightDoor").gameObject.SetActive(false);
 
     }
 

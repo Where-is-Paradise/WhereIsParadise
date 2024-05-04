@@ -492,6 +492,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.ui_Manager.DisplayKeyAndTorch(false);
         DisplayLightAllAvailableDoorN2(false);
         gameManager.canVoteDoor = true;
+        gameManager.ui_Manager.DisabledAllButtonBigger();
         gameManager.timer.LaunchTimer(5, false);
         StartCoroutine(ResultAllDoorVoteSinceBoss());
         StartCoroutine(gameManager.LauchVoteDoorCoroutine());
@@ -827,7 +828,7 @@ public class GameManagerNetwork : MonoBehaviourPun
             }
         }
         player.transform.Find("Skins").GetChild(player.GetComponent<PlayerGO>().indexSkin).Find("Light_around").gameObject.SetActive(enter);
-        gameManager.GetDoorGo(indexDoor).transform.Find("LightDoor").gameObject.SetActive(enter);
+        
         //gameManager.GetDoorGo(indexDoor).transform.Find("Light").gameObject.SetActive(enter);
         player.GetComponent<PlayerGO>().hasVoteVD = enter;
 

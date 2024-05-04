@@ -38,7 +38,7 @@ public class TrialsRoom : MonoBehaviourPun
 
     public void GetRandomAward(float randomFloat, int indexPlayer)
     {
-        //randomFloat = 95;
+        randomFloat = 65;
         if(randomFloat < 50)
         {
             // bluetorch
@@ -222,7 +222,9 @@ public class TrialsRoom : MonoBehaviourPun
 
         float randomfloat = Random.Range(0, 100);
 
-        if(randomfloat < 25 &&  gameManagerParent.setting.listTrapRoom[0])
+        //randomfloat = 60;
+
+        if (randomfloat < 25 &&  gameManagerParent.setting.listTrapRoom[0])
         {
             gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(gameManagerParent.listIndexImpostorPower[0]);
             gameManagerParent.ui_Manager.DisplayInformationObjectWon(9);
@@ -368,7 +370,7 @@ public class TrialsRoom : MonoBehaviourPun
                 break;
 
             case 1:
-                gameManagerParent.GetBoss().transform.Find("TrialObject").Find("MagicalKey").gameObject.SetActive(true);
+                //gameManagerParent.GetBoss().transform.Find("TrialObject").Find("MagicalKey").gameObject.SetActive(true);
                 if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
                     return;
                
@@ -449,7 +451,7 @@ public class TrialsRoom : MonoBehaviourPun
                 gameManagerParent.ui_Manager.SetTorchNumber();
                 break;
             case 2:
-                gameManagerParent.GetBoss().transform.Find("TrialObject").Find("MagicalKey").gameObject.SetActive(true);
+                gameManagerParent.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayMagicalKey(true);
                 gameManagerParent.ui_Manager.DisplayAllDoorLightOther(true);
                 gameManagerParent.ui_Manager.DisplayMagicalKeyButton();
                 gameManagerParent.CloseDoorWhenVote(true);

@@ -837,6 +837,7 @@ public class PlayerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetIstouchInTrial(bool isTouch)
     {
+        Debug.LogError("receive touch in trial ");
         this.player.isTouchInTrial = isTouch;
     }
 
@@ -899,7 +900,10 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.GetComponent<PlayerGO>().isCursed = isCursed;
         if (player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
+        {
             player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_Cursed").gameObject.SetActive(isCursed);
+            player.transform.Find("BookCursed").gameObject.SetActive(isCursed);
+        }
     }
 
     public void SendPurification()
@@ -938,7 +942,11 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.GetComponent<PlayerGO>().isBlind = isBlind;
         if (player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor || player.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasTrueEyes)
+        {
             player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_Cursed").gameObject.SetActive(isBlind);
+            player.transform.Find("BlindPotion").gameObject.SetActive(isBlind);
+        }
+           
     }
 
     public void SendTeleportPlayerToSameRoomOfBoss()
@@ -1345,7 +1353,8 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetDash()
     {
         this.transform.Find("DashAnimation").GetChild(0).gameObject.SetActive(true);
-
+        player.isInvincible = true;
+        StartCoroutine(player.ResetInvincibleCouroutine());
         if (!player.GetComponent<PhotonView>().IsMine)
             return;
 

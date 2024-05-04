@@ -98,6 +98,8 @@ public class SwordRoom : TrialsRoom
 
     public IEnumerator DisplayInitial(int indexPlayer)
     {
+        yield return new WaitForSeconds(0.05f);
+        gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = false;
 
         yield return new WaitForSeconds(0.4f);
         gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("Initial").gameObject.SetActive(true);

@@ -15,7 +15,8 @@ public class MonsterNPC : MonoBehaviourPun
         if (!monsterRoom)
             Destroy(this.gameObject);
 
-        StartCoroutine(IgnoreCollisionAllPlayerTouchInTrial());
+        StartCoroutine(LaunchIgnoreCoroutine());
+        IgnoreCollisionDoor();
     }
 
     // Update is called once per frame
@@ -70,6 +71,7 @@ public class MonsterNPC : MonoBehaviourPun
         {
             if (!collision.transform.parent.GetComponent<PhotonView>().IsMine)
                 return;
+            Debug.LogError("OntriggerEnter0");
             IsTouchPlayer(collision);
           
         }
@@ -132,11 +134,13 @@ public class MonsterNPC : MonoBehaviourPun
         if (player.GetComponent<PlayerGO>().lifeTrialRoom <= 0)        
             return;
 
+        Debug.LogError("IsTouchPlayerAfter3condition");
 
         player.GetComponent<PlayerGO>().lifeTrialRoom--;
         player.GetComponent<PlayerNetwork>()
             .SendLifeTrialRoom(player.GetComponent<PlayerGO>().lifeTrialRoom);
-        
+
+        Debug.LogError(player.GetComponent<PlayerGO>().lifeTrialRoom + " lifeTrialRoom after negative");
 
         if (player.GetComponent<PlayerGO>().lifeTrialRoom <= 0)
         {
@@ -221,6 +225,7 @@ public class MonsterNPC : MonoBehaviourPun
 
     public void SetPlayerColor(GameObject player)
     {
+        Debug.LogError("Send touch in trial ");
         player.gameObject.GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
         player.gameObject.GetComponent<PlayerNetwork>().SendChangeColorWhenTouchByDeath();
         player.transform.Find("SwordMonster").gameObject.SetActive(false);
@@ -247,8 +252,7 @@ public class MonsterNPC : MonoBehaviourPun
         this.transform.Find("AnimationDeath").GetChild(0).gameObject.SetActive(true);
         monsterRoom.gameManager.ui_Manager.monsterExplosion.Play();
         StartCoroutine(CouroutineDestroy());
-        //photonView.RPC("SetDestroy", RpcTarget.All);
-        //PhotonNetwork.Destroy(this.gameObject);
+        StartCoroutine(CouroutineDestroy2());
     }
 
     [PunRPC]
@@ -264,7 +268,6 @@ public class MonsterNPC : MonoBehaviourPun
         
         photonView.RPC("SendDesactivateView", RpcTarget.Others);
         yield return new WaitForSeconds(1f);
-        monsterRoom.gameManager.ui_Manager.DisplayKeyAndTorch(true);
         PhotonNetwork.Destroy(this.gameObject);
     }
 
@@ -277,6 +280,7 @@ public class MonsterNPC : MonoBehaviourPun
         this.monsterRoom.DesactivateRoomChild();
         monsterRoom.ReactivateCurrentRoom();
         monsterRoom.gameManager.ui_Manager.DisplayLeverVoteDoor(true);
+        monsterRoom.gameManager.ui_Manager.DisplayKeyAndTorch(true);
     }
 
     [PunRPC]
@@ -286,15 +290,28 @@ public class MonsterNPC : MonoBehaviourPun
         this.GetComponent<SpriteRenderer>().enabled = false;
         this.GetComponent<CapsuleCollider2D>().enabled = false;
         this.GetComponent<CircleCollider2D>().enabled = false;
-        monsterRoom.gameManager.ui_Manager.DisplayKeyAndTorch(true);
+        StartCoroutine(CouroutineDestroy2());
     }
 
+    public IEnumerator CouroutineDestroy2()
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(this.gameObject);
+    }
 
     [PunRPC]
     public void SendIgnoreCollisionOnePlayer(int indexPlayer, bool ignore)
     {
+        if (!monsterRoom)
+            return;
         monsterRoom.gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().IgnoreCollisionPlayer(indexPlayer, ignore);
         Physics2D.IgnoreCollision(this.transform.GetComponent<CircleCollider2D>(), monsterRoom.gameManager.GetPlayer(indexPlayer).transform.GetComponent<CapsuleCollider2D>(), true);
+    }
+
+    public IEnumerator LaunchIgnoreCoroutine()
+    {
+        yield return new WaitForSeconds(3);
+        StartCoroutine(IgnoreCollisionAllPlayerTouchInTrial());
     }
 
     public IEnumerator IgnoreCollisionAllPlayerTouchInTrial()
@@ -306,10 +323,25 @@ public class MonsterNPC : MonoBehaviourPun
         {
             if (player.GetComponent<PlayerGO>().isTouchInTrial)
                 SendIgnoreCollisionOnePlayer(player.GetComponent<PhotonView>().ViewID, true);
+            else
+                SendIgnoreCollisionOnePlayer(player.GetComponent<PhotonView>().ViewID, false);
         }
         yield return new WaitForSeconds(1);
 
         StartCoroutine(IgnoreCollisionAllPlayerTouchInTrial());
+    }
+
+    public void IgnoreCollisionDoor()
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+
+        foreach (GameObject door in doors)
+        {
+            Physics2D.IgnoreCollision(this.transform.GetComponent<CircleCollider2D>(), door.GetComponent<BoxCollider2D>(), true);
+            Physics2D.IgnoreCollision(this.transform.GetComponent<CircleCollider2D>(), door.transform.Find("CollisionField").GetComponent<CircleCollider2D>(), true);
+        }
+
+        
     }
 
 }

@@ -448,8 +448,6 @@ public class PlayerGO : MonoBehaviour
                         if (!gameManager.OnePlayerHaveToGoToExpedition())
                         {
                             gameManager.ActiveZoneDoor();
-                       
-
                         }
                         else
                         {

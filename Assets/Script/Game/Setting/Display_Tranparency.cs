@@ -5,7 +5,7 @@ using UnityEngine;
 public class Display_Tranparency : MonoBehaviour
 {
 
-    private float timer = 0;
+    public float timer = 0;
     public SpriteRenderer sprite;
     public bool display;
     public float speed;
@@ -61,5 +61,16 @@ public class Display_Tranparency : MonoBehaviour
         launchTransition = true;
         this.max = max;
 
+    }
+
+    public void DesactivateTransition()
+    {
+        timer = 0;
+        SetColorImage(0);
+        launchTransition = false;
+    }
+    public void DisplayWithoutTransition()
+    {
+        SetColorImage(1);
     }
 }

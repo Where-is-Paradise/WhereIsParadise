@@ -211,11 +211,11 @@ public class GameManager : MonoBehaviourPun
             SendMap();
             ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
             game.nbTorch = Mathf.CeilToInt(game.dungeon.GetPathFindingDistance(game.currentRoom, game.dungeon.exit) / 2) + setting.TORCH_ADDITIONAL;
-            game.nbTorch = game.nbTorch + 1;
+            game.nbTorch++;
             //game.nbTorch = 50;
             //game.nbTorch = 25;
-            gameManagerNetwork.SendTorchNumber(game.nbTorch);
-            ui_Manager.SetTorchNumber();
+           
+           
             InitiateProbalityListSpecialityWithSetting();
             InitiateProbabilityListVerySpecialityWithSetting();
             ResetTeamTrialRoomSetting();
@@ -227,9 +227,13 @@ public class GameManager : MonoBehaviourPun
             gameManagerNetwork.SendBoss(GetBoss().GetComponent<PhotonView>().ViewID);
             game.SetKeyCounter();
             game.key_counter = game.key_counter + setting.KEY_ADDITIONAL + 3;
-            //game.key_counter = 3;
+
+            CalculMoreKeyAndTorchInSituation();
+
             gameManagerNetwork.SendKey(game.key_counter);
+            gameManagerNetwork.SendTorchNumber(game.nbTorch);
             ui_Manager.SetNBKey();
+            ui_Manager.SetTorchNumber();
             SetInitialPositionPlayers();
             gameManagerNetwork.SendDisplayLightAllAvailableDoor(true);
             gameManagerNetwork.SendDisplayPowerImpostorInGame();
@@ -2037,6 +2041,9 @@ public class GameManager : MonoBehaviourPun
             game.currentRoom.door_isOpen[newDoor.GetComponent<Door>().index] = true;
         }
 
+        if (!game.currentRoom.virus_spawned)
+            ui_Manager.DesactivateTransparencyFloor();
+
         ui_Manager.DisplayAllDoorLightExploration(false);
       
         ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
@@ -2151,6 +2158,7 @@ public class GameManager : MonoBehaviourPun
             //AddLittleObjectInMap();
             SetLittleObjectInMap();
         }
+
 
     }
 
@@ -2790,13 +2798,10 @@ public class GameManager : MonoBehaviourPun
                 DisplayDoorForEachSituationInSpeciality("VirusRoom");
             ui_Manager.DisplayLeverVoteDoor(true);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
-            //ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
             ui_Manager.DisplaySpecificDoorInSpeciallyRoom(virusRoomObject);
-            //ui_Manager.DisplayFloorVirusTransparency();
-
-
             UpdateColorDoor(room);
         }
+
         if (room.isImpostorRoom)
         {
             ui_Manager.DisplayImpostorRoom(true);
@@ -3040,6 +3045,7 @@ public class GameManager : MonoBehaviourPun
         if (room.IsVirus && room.virus_spawned)
         {
             ui_Manager.DisplayAllZoneInSpeciallyRoomExceptVirusRoom(false);
+            ui_Manager.DisplayVirusFloorWithoutTransition();
         }
 
         if (room.IsExit || room.IsHell)
@@ -3074,10 +3080,6 @@ public class GameManager : MonoBehaviourPun
             }
         }
 
-/*        if (room.IsVirus)
-        {
-
-        }*/
 
     }
 
@@ -3445,8 +3447,8 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
-        return;*/
+        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
+        return;
         /*        gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
                 return;*/
 
@@ -4816,7 +4818,7 @@ public class GameManager : MonoBehaviourPun
         float randomfloat = Random.Range(randomLeft, randomRight);
 
 
-        //randomfloat = 10;
+        randomfloat = 60;
         if (randomfloat < 25 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(0); // foggy
@@ -5061,6 +5063,23 @@ public class GameManager : MonoBehaviourPun
         }
 
             
+    }
+
+    public void CalculMoreKeyAndTorchInSituation()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        if(players.Length > 4)
+        {
+            game.key_counter++;
+            game.nbTorch++;
+        }
+        
+        if(game.currentRoom.GetNumberOfNeigbourNoneObstacleAndNotOpen() > 3)
+        {
+            game.nbTorch++;
+        }
+        
     }
 
 }
