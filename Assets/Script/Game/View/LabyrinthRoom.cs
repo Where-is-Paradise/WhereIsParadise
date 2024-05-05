@@ -126,6 +126,7 @@ public class LabyrinthRoom : TrialsRoom
         gameManagerParent.ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         gameManagerParent.DisplayTorchBarre(false);
         gameManagerParent.ui_Manager.LaunchFightMusic();
+        gameManagerParent.ui_Manager.DisplayKeyAndTorch(false);
 
         if (gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
@@ -556,6 +557,7 @@ public class LabyrinthRoom : TrialsRoom
             StartCoroutine(CouroutineActivateDoorLever(2));
             ReactivateCurrentRoom();
         }
+        gameManagerParent.ui_Manager.DisplayKeyAndTorch(true);
     }
 
     public void ResetAllData()

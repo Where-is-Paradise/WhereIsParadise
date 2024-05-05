@@ -139,6 +139,12 @@ public class UI_Managment : MonoBehaviourPun
 
     public GameObject timerMatchmaking_global;
 
+    public GameObject error_version_panel;
+    public GameObject error_connexion_panel;
+
+    public GameObject publicPrivate_panel;
+    public GameObject private_panel;
+
     float k = -1;
     // Start is called before the first frame update
     void Start()
@@ -196,7 +202,7 @@ public class UI_Managment : MonoBehaviourPun
             GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
             if(listPlayer.Length > 0)
             {
-                StartCoroutine(HideLoadingConnection());
+                //StartCoroutine(HideLoadingConnection());
                 isLoadingConnection = false;
             }
         }
@@ -442,8 +448,8 @@ public class UI_Managment : MonoBehaviourPun
         float randomSecond = Random.Range(0.5f, 2.5f);
         yield return new WaitForSeconds(randomSecond);
         pannel_loadingConnection.SetActive(false);
-        if(!loadingCancel)
-            LauchWaitingRoom();
+/*        if(!loadingCancel)*/
+        LauchWaitingRoom();
         SetCanChange();
 
         loadingCancel = false;
@@ -998,7 +1004,7 @@ public class UI_Managment : MonoBehaviourPun
 
     public void CheckVersion()
     {
-        StartCoroutine(CheckVersionCoroutine());
+        //StartCoroutine(CheckVersionCoroutine());
     }
 
     public IEnumerator CheckVersionCoroutine()

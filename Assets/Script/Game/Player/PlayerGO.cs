@@ -677,8 +677,8 @@ public class PlayerGO : MonoBehaviour
                 DisplayNamePlayer(false);
                 if (GetComponent<PhotonView>().IsMine)
                 {
-                    if ((this.isInvisible || this.isSacrifice))
-                    {;
+                    if ((this.isInvisible || this.isSacrifice || this.isTouchInTrial))
+                    {
                         IncreaseTransparency(true);
                     }
                         

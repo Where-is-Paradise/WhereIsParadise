@@ -2867,6 +2867,18 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.PauseTimerFroce(pause);
     }
 
+    public void SendDisplayTimerForce(bool display)
+    {
+        photonView.RPC("SetDisplayTimerForce", RpcTarget.All, display);
+    }
+
+
+    [PunRPC]
+    public void SetDisplayTimerForce(bool display)
+    {
+        gameManager.DisplayTimerForce(display);
+    }
+
     public void SendOpenDoorInListBoolean(int indexRoom , int indexBoolen, bool isOpen)
     {
         photonView.RPC("SetOpenDoorInListBoolean", RpcTarget.All, indexRoom , indexBoolen, isOpen) ;
@@ -2956,5 +2968,17 @@ public class GameManagerNetwork : MonoBehaviourPun
         GameObject listLittleObject = room.transform.Find("LittleObject").gameObject;
 
         listLittleObject.transform.GetChild(indexParent).GetChild(indexScenario).gameObject.SetActive(true);
+    }
+
+    public void SendChronoSacrifice()
+    {
+        photonView.RPC("SetChronoSacrifice", RpcTarget.All);
+    }
+
+
+    [PunRPC]
+    public void SetChronoSacrifice()
+    {
+         gameManager.ui_Manager.soundChrono_sacrifice_10sec.Play();
     }
 }

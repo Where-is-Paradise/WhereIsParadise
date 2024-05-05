@@ -74,6 +74,7 @@ public class UI_Manager : MonoBehaviour
     public AudioSource soundChrono2;
     public AudioSource soundChrono_8sec;
     public AudioSource soundChrono_10sec;
+    public AudioSource soundChrono_sacrifice_10sec;
     public AudioSource soundDemonicLaugh;
     public AudioSource soundAmbianceHell;
     public AudioSource soundAmbianceParadise;
@@ -1077,7 +1078,7 @@ setting_button_echapMenu.SetActive(false);
     {
         if (!gameManager.paradiseIsFind && !gameManager.hellIsFind)
         {
-            addKey.transform.Translate(Vector3.down * Time.deltaTime * 3);
+            addKey.transform.Translate(Vector3.left * Time.deltaTime * 3);
             if (addKey.transform.position.y < -1)
             {
                 addKeyAnimation = false;
@@ -2531,6 +2532,7 @@ setting_button_echapMenu.SetActive(false);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(false);
         gameManager.gameManagerNetwork.SendDisplayMainLevers(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayWhiteLight(false);
+        gameManager.ui_Manager.doorTorched.Play();
         if (!gameManager.ISTrailsRoom(gameManager.game.currentRoom))
         {
             gameManager.game.nbTorch--;

@@ -7,10 +7,11 @@ public class SacrificeRoom : MonoBehaviour
 {
 
     public bool sacrificeVoteIsLaunch = false;
+    public GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -27,19 +28,21 @@ public class SacrificeRoom : MonoBehaviour
 
     public IEnumerator CouroutineTimerVote()
     {
-        GameObject.Find("GameManager").GetComponent<GameManager>().gameManagerNetwork.SendSacrificeVoteIsLaunch(true);
-        GameObject.Find("GameManager").GetComponent<GameManager>().TeleportAllPlayerInRoomOfBoss();
-        GameObject.Find("GameManager").GetComponent<GameManager>().gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
-        GameObject.Find("GameManager").GetComponent<GameManager>().PauseTimerFroce(true);
-        GameObject.Find("GameManager").GetComponent<GameManager>().ui_Manager.soundChrono_10sec.Play();
+        gameManager.gameManagerNetwork.SendSacrificeVoteIsLaunch(true);
+        gameManager.TeleportAllPlayerInRoomOfBoss();
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
+        gameManager.gameManagerNetwork.SendTimerForcePause(true);
+        gameManager.gameManagerNetwork.SendDisplayTimerForce(false);
+        gameManager.gameManagerNetwork.SendChronoSacrifice();
+
         yield return new WaitForSeconds(10f);
         GameObject player = GetPlayerWithMaxVote();
         player.GetComponent<PlayerNetwork>().SendDeathSacrifice(true);
         player.GetComponent<PlayerNetwork>().SendResetVoteSacrifice();
-        GameObject.Find("GameManager").GetComponent<GameManager>().gameManagerNetwork.SendSacrificeVoteIsLaunch(false);
-        //player.GetComponent<PlayerGO>().gameManager.gameManagerNetwork.SendKey();
-        GameObject.Find("GameManager").GetComponent<GameManager>().gameManagerNetwork.DisplayLightAllAvailableDoor(true);
-        GameObject.Find("GameManager").GetComponent<GameManager>().PauseTimerFroce(false);
+        gameManager.gameManagerNetwork.SendSacrificeVoteIsLaunch(false);
+        gameManager.gameManagerNetwork.DisplayLightAllAvailableDoor(true);
+        gameManager.gameManagerNetwork.SendTimerForcePause(false);
+        gameManager.gameManagerNetwork.SendDisplayTimerForce(true);
     }
 
 

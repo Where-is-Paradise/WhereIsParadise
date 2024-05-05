@@ -2784,7 +2784,7 @@ public class GameManager : MonoBehaviourPun
         if (room.IsFoggy)
         {
             ui_Manager.DisplayFoggyRoom(true);
-            ui_Manager.ChangeColorAllPlayerSkinToFoggy(true);
+            //ui_Manager.ChangeColorAllPlayerSkinToFoggy(true);
             ui_Manager.DisplayLeverVoteDoor(true);
             UpdateColorDoor(room);
             ui_Manager.DisplayFoggyRoomTransparyAnimation();
@@ -3447,16 +3447,15 @@ public class GameManager : MonoBehaviourPun
         if (room.speciallyIsInsert)
             return;
 
-        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 6);
-        return;
+/*        gameManagerNetwork.SendUpdateNeighbourSpeciality(room.Index, 3);
+        return;*/
         /*        gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
                 return;*/
 
         if (room.isVerySpecial)
         {
             float randomInt = Random.Range(0, 100);
-/*            Debug.Log(randomInt);
-            randomInt = 5;*/
+            //randomInt = 75;
             if (randomInt < AdditionalProbaVerySpeciality(0)  && setting.listSpeciallyRoom[0])
             {
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 0);
@@ -4818,7 +4817,7 @@ public class GameManager : MonoBehaviourPun
         float randomfloat = Random.Range(randomLeft, randomRight);
 
 
-        randomfloat = 60;
+        randomfloat = 14;
         if (randomfloat < 25 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(0); // foggy
@@ -5074,10 +5073,14 @@ public class GameManager : MonoBehaviourPun
             game.key_counter++;
             game.nbTorch++;
         }
-        
-        if(game.currentRoom.GetNumberOfNeigbourNoneObstacleAndNotOpen() > 3)
+        if(game.currentRoom.GetNumberOfNeigbourNoneObstacleAndNotOpen() > 4 && players.Length < 5)
         {
+            Debug.Log("sa passe plus de 3 porte");
             game.nbTorch++;
+        }
+        if(game.currentRoom.GetNumberOfNeigbourNoneObstacleAndNotOpen() > 5 && players.Length > 4)
+        {
+            game.key_counter++;
         }
         
     }

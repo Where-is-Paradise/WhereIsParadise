@@ -126,13 +126,17 @@ public class Lobby : MonoBehaviourPunCallbacks
                 {
                     versionIsCorrect = true;
                 }
+                else
+                {
+                    DisconnetByVersionError();
+                }
             }
             catch(System.Exception e)
             {
                 Debug.Log(e);
             }
-           
 
+            //ui_management.waitingMap.SetActive(false);
           
             // Or retrieve results as binary data
             //byte[] results = www.downloadHandler.data;
@@ -156,6 +160,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         {
             if (GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().isBackToWaitingRoom)
             {
+
                 isBackToWaitingRoom = true;
                 oldCode = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().codeRoom;
                 setting.oldCodeRoom = oldCode;
@@ -166,6 +171,7 @@ public class Lobby : MonoBehaviourPunCallbacks
                 setting.INDEX_SKIN = index_skin;
                 CreateRoomBack();
 
+
             }
         }
         //Debug.LogError(PhotonNetwork.CloudRegion);
@@ -175,26 +181,18 @@ public class Lobby : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
-        Debug.LogError("Disconnected : " + cause.ToString());
         isConnected = false;
-        Debug.LogError((cause.ToString() == "DnsExceptionOnConnect") + " " + cause.ToString() + "/" + "DnsExceptionOnConnect");
         if (cause.ToString() == "DnsExceptionOnConnect")
         {
-            //StartCoroutine(reconnect());
-            ui_management.DisplayErrorPanel("Disconnection..");
-            Debug.LogError("sa passe mon frero");
-            // afficher un panel "ressayer"
+            //ui_management.DisplayErrorPanel("Disconnection..");
         }
         else
         {
             matchmaking = false;
-            // 
             ui_management.canChange = false;
-            ui_management.DisplayErrorPanel("Disconnection..");
-            //ConnectToMaster();
-            StartCoroutine(Reconnect());
+            //ui_management.DisplayErrorPanel("Disconnection..");
         }
-        ui_management.OnClickBackInWaitingRoom(true);
+        DisconnectByNotHaveConnexion();
     }
 
     public IEnumerator Reconnect()
@@ -247,6 +245,18 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public void Matchmaking()
     {
+        if (!versionIsCorrect)
+        {
+            DisconnetByVersionError();
+            return;
+        }
+        if (!isConnected)
+        {
+            DisconnectByNotHaveConnexion();
+            ConnectToMaster();
+            return;
+        }
+
         matchmaking = true;
         PhotonNetwork.JoinRandomRoom();   
     }
@@ -258,6 +268,17 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public void CreateRoom(int maxPlayerParam, bool isVisible)
     {
+        if (!versionIsCorrect)
+        {
+            DisconnetByVersionError();
+            return;
+        }
+        if (!isConnected)
+        {
+            DisconnectByNotHaveConnexion();
+            ConnectToMaster();
+            return;
+        }
         code = GenerateCodeRoom(5);
         Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
         maxPlayer = maxPlayerParam;
@@ -279,6 +300,18 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public void CreateRoomBack()
     {
+        if (!versionIsCorrect)
+        {
+            DisconnetByVersionError();
+            return;
+        }
+        if (!isConnected)
+        {
+            DisconnectByNotHaveConnexion();
+            ConnectToMaster();
+            return;
+        }
+
         maxPlayer = 8;
         if (matchmaking)
         {
@@ -347,6 +380,17 @@ public class Lobby : MonoBehaviourPunCallbacks
         {
             code = "error";
         }
+        if (!versionIsCorrect)
+        {
+            DisconnetByVersionError();
+            return;
+        }
+        if (!isConnected)
+        {
+            DisconnectByNotHaveConnexion();
+            ConnectToMaster();
+            return;
+        }
         PhotonNetwork.JoinRoom(code);
         ui_management.LauchWaitingRoom();
         ui_management.SetLabelSearchPlayer(matchmaking);
@@ -355,6 +399,19 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        if (!versionIsCorrect)
+        {
+            DisconnetByVersionError();
+            return;
+        }
+        if (!isConnected)
+        {
+            DisconnectByNotHaveConnexion();
+            ConnectToMaster();
+            return;
+        }
+        StartCoroutine(ui_management.HideLoadingConnection());
+
         base.OnJoinedRoom();
         nbPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
         indexPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
@@ -841,4 +898,40 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     }
 
+    public void DisconnetByVersionError()
+    {
+        ui_management.error_version_panel.SetActive(true);
+        ui_management.waitingMap.SetActive(false);
+        versionIsCorrect = false;
+        ui_management.pannel_loadingConnection.SetActive(false);
+        ui_management.mainMenu_lobby.SetActive(true);
+        ui_management.backgroundImage.SetActive(true);
+        StartCoroutine(CouroutineDesactivePanel());
+        isConnected = false;
+    }
+
+    public IEnumerator CouroutineDesactivePanel()
+    {
+        yield return new WaitForSeconds(0.1f);
+        ui_management.pannel_loadingConnection.SetActive(false);
+        ui_management.joinLobby_panel.SetActive(false);
+       
+    }
+
+    public void DisconnectByNotHaveConnexion()
+    {
+        ui_management.error_connexion_panel.SetActive(true);
+        ui_management.waitingMap.SetActive(false);
+        ui_management.pannel_loadingConnection.SetActive(false);
+        ui_management.mainMenu_lobby.SetActive(true);
+        ui_management.backgroundImage.SetActive(true);
+        ui_management.createLobby_panel.SetActive(false);
+        ui_management.joinLobby_panel.SetActive(false);
+        ui_management.publicPrivate_panel.SetActive(false);
+        ui_management.private_panel.SetActive(false);
+        ui_management.mainMenu_lobby.transform.parent.gameObject.transform.parent.gameObject.SetActive(true);
+        StartCoroutine(CouroutineDesactivePanel());
+        isConnected = false;
+
+    }
 }

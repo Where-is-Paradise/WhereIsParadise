@@ -38,10 +38,16 @@ public class TrialsRoom : MonoBehaviourPun
 
     public void GetRandomAward(float randomFloat, int indexPlayer)
     {
-        randomFloat = 65;
+        //randomFloat = 99;
         if(randomFloat < 50)
         {
             // bluetorch
+            if (gameManagerParent.game.currentRoom.HaveOneNeighbour())
+            {
+                GetAward(indexPlayer);
+                return;
+            }
+
             DisplayAwardObject(0);
             indexObject = 0; 
         }
@@ -79,6 +85,10 @@ public class TrialsRoom : MonoBehaviourPun
         }
         else
         {
+            if (gameManagerParent.game.currentRoom.HaveOneNeighbour())
+            {
+                return;
+            }
             DisplayAwardObject(0);
             indexObject = 0;
         }
@@ -222,7 +232,7 @@ public class TrialsRoom : MonoBehaviourPun
 
         float randomfloat = Random.Range(0, 100);
 
-        //randomfloat = 60;
+        randomfloat = 20;
 
         if (randomfloat < 25 &&  gameManagerParent.setting.listTrapRoom[0])
         {

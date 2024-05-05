@@ -216,6 +216,8 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void DeathTouchPlayerEvent(int indexPlayer)
     {
+        if(!gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial)
+            gameManager.GetPlayer(indexPlayer).transform.Find("HearBrokenAnimation").GetChild(0).gameObject.SetActive(true);
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             return;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial = true;
@@ -717,8 +719,9 @@ public class Death_NPC : MonoBehaviourPun
     }
     public void MoveOnTarget()
     {
-        if (!target)
+        if (!target || target.isTouchInTrial)
         {
+            ChangeRandomTarget();
             return;
         }
 

@@ -134,13 +134,11 @@ public class MonsterNPC : MonoBehaviourPun
         if (player.GetComponent<PlayerGO>().lifeTrialRoom <= 0)        
             return;
 
-        Debug.LogError("IsTouchPlayerAfter3condition");
 
         player.GetComponent<PlayerGO>().lifeTrialRoom--;
         player.GetComponent<PlayerNetwork>()
             .SendLifeTrialRoom(player.GetComponent<PlayerGO>().lifeTrialRoom);
 
-        Debug.LogError(player.GetComponent<PlayerGO>().lifeTrialRoom + " lifeTrialRoom after negative");
 
         if (player.GetComponent<PlayerGO>().lifeTrialRoom <= 0)
         {
