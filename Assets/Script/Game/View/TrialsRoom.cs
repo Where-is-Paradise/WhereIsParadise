@@ -158,14 +158,11 @@ public class TrialsRoom : MonoBehaviourPun
 
     public void ActivateObjectPower(int indexPlayer)
     {
-
         if (!gameManagerParent.GetPlayer(indexPlayer)){
             List<GameObject> listPlayerTree = gameManagerParent.TreePlayerByID();
             GameObject lastPlayer = listPlayerTree[listPlayerTree.Count - 1];
             indexPlayer = lastPlayer.GetComponent<PhotonView>().ViewID;
         }
-
-
         switch (indexObject)
         {
             case 0:
@@ -216,9 +213,7 @@ public class TrialsRoom : MonoBehaviourPun
                 }
                 break;
         }
-
         this.transform.parent.transform.Find("AwardObject").Find("Chest").Find("collisionChest").gameObject.SetActive(true);
-
     }
 
     public void ActivateImpostorObject(int indexPlayer)
@@ -232,7 +227,7 @@ public class TrialsRoom : MonoBehaviourPun
 
         float randomfloat = Random.Range(0, 100);
 
-        randomfloat = 20;
+        //randomfloat = 20;
 
         if (randomfloat < 25 &&  gameManagerParent.setting.listTrapRoom[0])
         {

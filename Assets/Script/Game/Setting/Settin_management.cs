@@ -51,6 +51,9 @@ public class Settin_management : MonoBehaviour
 
     public Text  formIp_value;
 
+
+    public bool isCurrentChangeRegion = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -814,20 +817,75 @@ public class Settin_management : MonoBehaviour
     public void OnclickChangeServerRegion(GameObject regionText)
     {
         if (serverRegionIsUpdated)
-        {
-            SaveServerRegion(regionText.GetComponent<Text>().text);
-            setting.region = regionText.GetComponent<Text>().text;
-
+        {           
+            setting.region = AdapteRegionToPhotonComprehsion(regionText.GetComponent<Text>().text);
+            SaveServerRegion(setting.region);
+            isCurrentChangeRegion = true;
             PhotonNetwork.Disconnect();
             PhotonNetwork.ConnectToRegion(setting.region);
-            //PhotonNetwork.LoadOrCreateSettings();
-            //StartCoroutine(CoroutineReset(2));
         }   
+    }
+
+    public string AdapteRegionToPhotonComprehsion(string textRegion)
+    {
+        string textReturn = "eu";
+        switch (textRegion)
+        {
+            case "Europe":
+                textReturn = "eu";
+                break;
+            case "Canada, East":
+                textReturn = "cae";
+                break;
+            case "South Korea":
+                textReturn = "kr";
+                break;
+            case "Japan":
+                textReturn = "jp";
+                break;
+            case "USA, East":
+                textReturn = "us";
+                break;
+            case "USA, West":
+                textReturn = "usw";
+                break;
+            case "USA,S Central":
+                textReturn = "ussc";
+                break;
+            case "Australia":
+                textReturn = "au";
+                break;
+            case "South America":
+                textReturn = "sa";
+                break;
+            case "Asia":
+                textReturn = "asia";
+                break;
+            case "United Arab Emirates":
+                textReturn = "uae";
+                break;
+            case "Chinese Mainland":
+                textReturn = "cn";
+                break;
+            case "Hong Kong":
+                textReturn = "hk";
+                break;
+            case "India":
+                textReturn = "in";
+                break;
+            case "South Africa":
+                textReturn = "za";
+                break;
+            case "Turkey":
+                textReturn = "tr";
+                break;
+        }
+
+        return textReturn;
     }
 
     public void UpdateServerRegion()
     {
-        //if(PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion.Length != 0)
         string serverRegionString = setting.region;
         Dropdown server_dropdown = serverRegion.GetComponent<Dropdown>();
         GetIndexServerWithName(serverRegionString);

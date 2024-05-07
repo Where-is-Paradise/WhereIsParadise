@@ -157,6 +157,8 @@ public class GameManager : MonoBehaviourPun
 
     public int distancePrayRoom = -1;
 
+    public bool canLaunchVoteDoor = true;
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -691,7 +693,10 @@ public class GameManager : MonoBehaviourPun
                 hexagone.GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
                 hexagone.transform.Find("Information_Speciality").transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
                 if (!hexagone.GetComponent<Hexagone>().Room.IsExit)
+                {
                     hexagone.GetComponent<Hexagone>().Room.IsTraversed = true;
+                }
+                    
                 if (!MineIsInExpedition())
                 {
                     hexagone.transform.Find("Canvas").Find("Player_identification").gameObject.SetActive(game.currentRoom.Index == hexagone.GetComponent<Hexagone>().Room.Index);
@@ -734,6 +739,21 @@ public class GameManager : MonoBehaviourPun
         }
     }
 
+    public void UpdateHexagoneIsTraversed()
+    {
+        foreach (Hexagone hexagone in dungeon)
+        {
+            if (hexagone.GetComponent<Hexagone>().Room.IsTraversed)
+            {
+                Debug.Log("index : " + hexagone.GetComponent<Hexagone>().Room.Index);
+                if (!hexagone.GetComponent<Hexagone>().Room.IsExit && !(hexagone.GetComponent<Hexagone>().Room.Index == game.currentRoom.Index))
+                {
+                    hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
+                    hexagone.transform.Find("Information_Speciality").transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
+                }
+            }
+        }
+    }
 
     public void SetRoomColor(Room room, bool inExpedition)
     {
@@ -891,7 +911,7 @@ public class GameManager : MonoBehaviourPun
             {
                 if (door.GetComponent<Door>().index == expe.indexNeigbour)
                 {
-                    OpenDoor(door, true);
+                    //OpenDoor(door, true);
                 }
             }
 
@@ -4817,7 +4837,7 @@ public class GameManager : MonoBehaviourPun
         float randomfloat = Random.Range(randomLeft, randomRight);
 
 
-        randomfloat = 14;
+        //randomfloat = 14;
         if (randomfloat < 25 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(0); // foggy
@@ -5083,6 +5103,12 @@ public class GameManager : MonoBehaviourPun
             game.key_counter++;
         }
         
+    }
+
+    public IEnumerator ResetCanLaunchVoteDoorCouroutine()
+    {
+        yield return new WaitForSeconds(5);
+        canLaunchVoteDoor = true;
     }
 
 }

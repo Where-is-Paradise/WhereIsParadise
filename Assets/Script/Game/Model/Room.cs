@@ -51,7 +51,7 @@ public class Room : ScriptableObject
 
     private bool isHell = false;
     public bool IsHell { get { return isHell; } set { isHell = value; } }
-    private bool isTraversed = false;
+    public bool isTraversed = false;
     public bool IsTraversed { get { return isTraversed; } set { isTraversed = value; } }
     private bool isDiscovered = false;
     public bool IsDiscovered { get { return isDiscovered; } set { isDiscovered = value; } }

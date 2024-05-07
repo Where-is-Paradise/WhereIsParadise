@@ -21,7 +21,7 @@ public class ErrorMessage : MonoBehaviour
     public IEnumerator DisplayErrorCouroutine(string objectName)
     {
         this.transform.Find(objectName).gameObject.SetActive(true);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1.5f);
         this.transform.Find(objectName).gameObject.SetActive(false);
     }
 
@@ -59,6 +59,12 @@ public class ErrorMessage : MonoBehaviour
     {
         if (!this.transform.Find("CannotOpenDoor").gameObject.activeSelf)
             StartCoroutine(DisplayErrorCouroutine("CannotOpenDoor"));
+    }
+
+    public void YouHaveToWait()
+    {
+        if (!this.transform.Find("YouHaveToWait").gameObject.activeSelf)
+            StartCoroutine(DisplayErrorCouroutine("YouHaveToWait"));
     }
 
 

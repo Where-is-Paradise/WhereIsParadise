@@ -256,14 +256,22 @@ public class Hexagone : MonoBehaviourPun
         if (this.room.isSpecial && !this.room.isTrial && !this.room.isTeamTrial)
         {
             Information_Speciality.transform.Find("Hexagone").Find("SpeciallyRoom").gameObject.SetActive(display);
-            Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
-            Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
+            if (!this.room.isTraversed)
+            {
+                Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
+                Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
+            }
+           
         } 
         if (this.room.isTrial && !(this.room.isDeathNPC || this.room.isMonsters))
         {
             Information_Speciality.transform.Find("Hexagone").Find("TrailRoom").gameObject.SetActive(display);
-            Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
-            Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
+            if (!this.room.isTraversed)
+            {
+                Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
+                Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 215 / 255f, 0 / 255f);
+            }
+         
         }
         if (this.room.isImpostorRoom)
         {
@@ -273,9 +281,13 @@ public class Hexagone : MonoBehaviourPun
         }
         if(this.room.isTeamTrial)
         {
+          
             Information_Speciality.transform.Find("Hexagone").Find("TeamTrailRoom").gameObject.SetActive(display);
-            Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 135 / 255f, 0 / 255f);
-            Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 135 / 255f, 0 / 255f);
+            if (!this.room.isTraversed){
+                Information_Speciality.transform.Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 135 / 255f, 0 / 255f);
+                Information_Speciality.transform.parent.GetComponent<SpriteRenderer>().color = new Color(255 / 255f, 135 / 255f, 0 / 255f);
+            }
+
         }
         if (this.room.isNewParadise)
         {

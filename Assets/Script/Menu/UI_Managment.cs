@@ -447,10 +447,14 @@ public class UI_Managment : MonoBehaviourPun
     {
         float randomSecond = Random.Range(0.5f, 2.5f);
         yield return new WaitForSeconds(randomSecond);
-        pannel_loadingConnection.SetActive(false);
-/*        if(!loadingCancel)*/
-        LauchWaitingRoom();
-        SetCanChange();
+        if (!lobby.disconnectByCancel)
+        {
+            pannel_loadingConnection.SetActive(false);
+            /*        if(!loadingCancel)*/
+            LauchWaitingRoom();
+            SetCanChange();
+        }
+    
 
         loadingCancel = false;
     }

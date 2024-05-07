@@ -2719,6 +2719,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         {
             if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
                 SendPauseTimerForce(false);
+            gameManager.canLaunchVoteDoor = false;
+            StartCoroutine(gameManager.ResetCanLaunchVoteDoorCouroutine());
         }
 
         gameManager.ui_Manager.ResetNbVote();
@@ -2953,6 +2955,8 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.GetHexagone(indexImpostorRoom).Room.isImpostorRoom = true;
         gameManager.GetHexagone(indexImpostorRoom).Room.isHide = false;
         gameManager.GetHexagone(indexImpostorRoom).DiplayInformationSpeciallyRoom(true);
+        
+        gameManager.UpdateHexagoneIsTraversed();
 
     }
 

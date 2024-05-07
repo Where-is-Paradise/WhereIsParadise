@@ -1546,6 +1546,11 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (!gameManager.canLaunchVoteDoor)
+        {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().YouHaveToWait();
+            return;
+        }
 
         launchVoteDoorMobile = true;
 
@@ -2250,6 +2255,7 @@ public class PlayerGO : MonoBehaviour
             gameManager.ui_Manager.mobileCanvas.transform.Find("Door_panel").gameObject.SetActive(false);
             return;
         }
+
         if (collision.name != "OpenDoor_lever")
         {
             return;

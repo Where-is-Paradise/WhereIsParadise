@@ -470,7 +470,7 @@ public class PlayerNetwork : MonoBehaviourPun
             StartCoroutine(player.gameManager.ui_Manager.LaunchAnimationAddKeyCouroutine());
         }
         player.GetComponent<PlayerGO>().isSacrifice = true;
-        player.gameManager.gameManagerNetwork.SendUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
+        player.gameManager.gameManagerNetwork.SetUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(false);
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_Cursed").gameObject.SetActive(false);
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_red").gameObject.SetActive(false);
@@ -480,7 +480,8 @@ public class PlayerNetwork : MonoBehaviourPun
         player.transform.Find("TrialObject").gameObject.SetActive(false);
         player.transform.Find("TorchBarre").gameObject.SetActive(false);
 
-        LaunchSacrificeAnimation();
+        if(player.GetComponent<PhotonView>().IsMine)
+            photonView.RPC("SendLaunchSacrificeAnimation", RpcTarget.All);
 
         player.gameManager.SacrificeIsUsedOneTimes = true;
 
@@ -498,9 +499,16 @@ public class PlayerNetwork : MonoBehaviourPun
         }
     }
 
+     [PunRPC]
+    public void SendLaunchSacrificeAnimation()
+    {
+        LaunchSacrificeAnimation();
+    }
+
     public void LaunchSacrificeAnimation()
     {
         GetComponent<PhotonTransformViewClassic>().enabled = false;
+        this.transform.Find("Skins").GetChild(player.indexSkin).GetComponent<PhotonTransformViewClassic>().enabled = false;
         GetComponent<PhotonRigidbody2DView>().enabled = false;
         GetComponent<Lag_Compensation>().enabled = false;
         player.gameManager.ui_Manager.DeathSound.Play();
@@ -516,6 +524,9 @@ public class PlayerNetwork : MonoBehaviourPun
         if (player.transform.position.x > 6.6)
             player.transform.position = new Vector3(6.6f, this.transform.position.y);
         player.old_y_position = player.transform.position.y;
+        player.transform.GetChild(0).gameObject.SetActive(true);
+        player.transform.GetChild(1).gameObject.SetActive(true);
+        player.transform.Find("TorchBarre").gameObject.SetActive(false);
         this.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).GetComponent<SpriteRenderer>().sortingOrder = -54;
         StartCoroutine(player.CanMoveActiveCoroutine());
         StartCoroutine(player.MovingDeathAnimationWaitCouroutine());

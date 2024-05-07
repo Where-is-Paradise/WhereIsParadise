@@ -178,6 +178,7 @@ public class UI_Manager : MonoBehaviour
 
     public GameObject doorsParent;
 
+    public GameObject button_back;
 
     // Start is called before the first frame update
     void Start()
@@ -308,8 +309,8 @@ setting_button_echapMenu.SetActive(false);
             DesactivateInformationSpecallyRoomAllHexagone();
             RemoveLightHexagone();
         }
-            
 
+        gameManager.UpdateHexagoneIsTraversed();
 
         //gameManager.SetCurrentRoomColor();
     }
@@ -1281,6 +1282,7 @@ setting_button_echapMenu.SetActive(false);
         if (room.IsTraversed)
         {
             hexagone.GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
+            hexagone.transform.Find("Information_Speciality").Find("Hexagone").GetComponent<SpriteRenderer>().color = new Color((float)(16f / 255f), (float)78f / 255f, (float)29f / 255f, 1);
         }
         if (room.Index == gameManager.game.currentRoom.Index)
         {
@@ -2568,6 +2570,11 @@ setting_button_echapMenu.SetActive(false);
     }
     public void OnClickButtonMainKey()
     {
+        if (!gameManager.canLaunchVoteDoor)
+        {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().YouHaveToWait();
+            return;
+        }
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().launchVoteDoorMobile = true;
         canvasInGame.transform.Find("Interaction").Find("Key_intercation").gameObject.SetActive(false);
 
@@ -2825,6 +2832,7 @@ setting_button_echapMenu.SetActive(false);
         SetColorWallPaper();
         CanMapMoveAtEnd();
         DisplayImpostorRoomForEnd();
+        
 
     }
     
@@ -3192,6 +3200,29 @@ setting_button_echapMenu.SetActive(false);
         BasesMusic2.Stop();
         BasesMusic3.Stop();
         CaveMusicAmbiance.Stop();
+    }
+
+    public void OnclickBackMapAtTheEnd()
+    {
+        GameObject ui_panel = GameObject.Find("UI");
+
+        if (ui_panel.transform.Find("Hexagone_SF(Clone)(Clone)"))
+        {
+            ui_panel.transform.Find("Hexagone_SF(Clone)(Clone)").gameObject.SetActive(false);
+
+        }
+        if (ui_panel.transform.Find("Listhexa"))
+        {
+            ui_panel.transform.Find("Listhexa").gameObject.SetActive(false);
+        }
+    }
+
+    public void DisplayBackMapAtTheEnd()
+    {
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+            return;
+
+        button_back.SetActive(true);
     }
 }
 

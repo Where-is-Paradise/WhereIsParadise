@@ -44,6 +44,8 @@ public class Lobby : MonoBehaviourPunCallbacks
     public string nearServer = "";
 
     public Settin_management settingManagement;
+
+    public bool disconnectByCancel = false;
     // Use this  initialization
     void Start()
     {
@@ -192,7 +194,8 @@ public class Lobby : MonoBehaviourPunCallbacks
             ui_management.canChange = false;
             //ui_management.DisplayErrorPanel("Disconnection..");
         }
-        DisconnectByNotHaveConnexion();
+        if(!settingManagement.isCurrentChangeRegion && !disconnectByCancel)
+            DisconnectByNotHaveConnexion();
     }
 
     public IEnumerator Reconnect()
@@ -257,6 +260,8 @@ public class Lobby : MonoBehaviourPunCallbacks
             return;
         }
 
+        
+
         matchmaking = true;
         PhotonNetwork.JoinRandomRoom();   
     }
@@ -279,6 +284,10 @@ public class Lobby : MonoBehaviourPunCallbacks
             ConnectToMaster();
             return;
         }
+/*        if (disconnectByCancel)
+        {
+            return;
+        }*/
         code = GenerateCodeRoom(5);
         Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
         maxPlayer = maxPlayerParam;
@@ -309,6 +318,10 @@ public class Lobby : MonoBehaviourPunCallbacks
         {
             DisconnectByNotHaveConnexion();
             ConnectToMaster();
+            return;
+        }
+        if (disconnectByCancel)
+        {
             return;
         }
 
@@ -391,6 +404,11 @@ public class Lobby : MonoBehaviourPunCallbacks
             ConnectToMaster();
             return;
         }
+        if (disconnectByCancel)
+        {
+            return;
+        }
+
         PhotonNetwork.JoinRoom(code);
         ui_management.LauchWaitingRoom();
         ui_management.SetLabelSearchPlayer(matchmaking);
@@ -408,6 +426,10 @@ public class Lobby : MonoBehaviourPunCallbacks
         {
             DisconnectByNotHaveConnexion();
             ConnectToMaster();
+            return;
+        }
+        if (disconnectByCancel)
+        {
             return;
         }
         StartCoroutine(ui_management.HideLoadingConnection());
@@ -933,5 +955,23 @@ public class Lobby : MonoBehaviourPunCallbacks
         StartCoroutine(CouroutineDesactivePanel());
         isConnected = false;
 
+    }
+
+    public void OnClickCancelConnexion()
+    {
+        ui_management.pannel_loadingConnection.SetActive(false);
+        ui_management.waitingMap.SetActive(false);
+        ui_management.mainMenu_lobby.SetActive(true);
+        ui_management.backgroundImage.SetActive(true);
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LeaveLobby();
+        disconnectByCancel = true;
+        matchmaking = false;
+    }
+
+    public void ResetDisconnectByCancel()
+    {
+        disconnectByCancel = false;
+       
     }
 }
