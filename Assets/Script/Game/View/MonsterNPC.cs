@@ -308,7 +308,7 @@ public class MonsterNPC : MonoBehaviourPun
 
     public IEnumerator LaunchIgnoreCoroutine()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
         StartCoroutine(IgnoreCollisionAllPlayerTouchInTrial());
     }
 

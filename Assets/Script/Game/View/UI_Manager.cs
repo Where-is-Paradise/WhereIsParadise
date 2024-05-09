@@ -442,6 +442,7 @@ setting_button_echapMenu.SetActive(false);
     public void SetDistanceRoom(int distance, Room room)
     {
         text_distance_room.GetComponent<Text>().text = distance.ToString();
+        text_distance_room.gameObject.transform.Find("Image").gameObject.SetActive(true);
 
     }
     public void SetDistanceRoomFalse(int distance)
@@ -454,6 +455,7 @@ setting_button_echapMenu.SetActive(false);
         text_distance_room.GetComponent<Text>().text = "";
         letterOne.GetComponent<Text>().text = "";
         letterTwo.GetComponent<Text>().text = "";
+        text_distance_room.gameObject.transform.Find("Image").gameObject.SetActive(false);
     }
 
     public void DisplayInterrogationPoint()
@@ -2809,7 +2811,7 @@ setting_button_echapMenu.SetActive(false);
 
     public void OnClickDisplayTutorialExplorationAfterBossPanel()
     {
-        StartCoroutine(CouroutineDisplayTutorialExplorationAfterBossPanel());
+        //StartCoroutine(CouroutineDisplayTutorialExplorationAfterBossPanel());
     }
     public IEnumerator CouroutineDisplayTutorialExplorationAfterBossPanel()
     {
@@ -3223,6 +3225,28 @@ setting_button_echapMenu.SetActive(false);
             return;
 
         button_back.SetActive(true);
+    }
+
+    public IEnumerator DisplayTutorialCouroutine(int indexPanel)
+    {
+        yield return new WaitForSeconds(0.7f);
+        if (gameManager.setting.displayTutorial)
+        {
+
+            if (!gameManager.ui_Manager.listTutorialBool[indexPanel])
+            {
+                gameManager.ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
+                gameManager.ui_Manager.tutorial_parent.SetActive(true);
+                gameManager.ui_Manager.tutorial[indexPanel].SetActive(true);
+                 gameManager.ui_Manager.listTutorialBool[indexPanel] = true;
+            }
+
+        }
+    }
+
+    public void OnClickDisplayTutorialCouroutine(int indexPanel)
+    {
+        StartCoroutine(DisplayTutorialCouroutine(indexPanel));
     }
 }
 

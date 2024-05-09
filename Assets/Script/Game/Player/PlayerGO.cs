@@ -2174,8 +2174,8 @@ public class PlayerGO : MonoBehaviour
             DisplayTutorial(16, true);
         if (gameManager.game.currentRoom.isSacrifice)
             DisplayTutorial(17, true);
-        if (gameManager.game.currentRoom.IsVirus)
-            DisplayTutorial(18, true);
+/*        if (gameManager.game.currentRoom.IsVirus)
+            DisplayTutorial(18, true);*/
         if (gameManager.game.currentRoom.fireBall)
             DisplayTutorial(19, true);
         if (gameManager.game.currentRoom.isJail)

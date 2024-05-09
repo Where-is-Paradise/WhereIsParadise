@@ -305,7 +305,7 @@
 
 "tutorial_autel_purification_0" : "Salle de Purification",
 "tutorial_autel_purification_1" : "Vous pouvez purifier une âme.",
-"tutorial_autel_purification_2" : "Une âme purifiée ne sera plus maudite.",
+"tutorial_autel_purification_2" : "Une âme purifiée n'aura plus aucune malédiction.",
 
 "tutorial_autel_resurection_0" : "Salle de Resurection",
 "tutorial_autel_resurection_1" : "Vous pouvez ressusciter une âme sacrifiée.",
@@ -413,5 +413,34 @@
 "welcome_firstPanel_2" : "Nous arrivons bientôt à une version 1.0 et c'est grâce à vous !",
 "welcome_firstPanel_3" : "Merci de jouer à Where is paradise ? pendant l'accès anticiper, cela nous aide beaucoup à améliorer le jeu.",
 "welcome_firstPanel_1" : "Un nouveau discord officiel est aujourd'hui opérationnel (avec comme membre le développeur),  n'hésitez pas à le rejoindre !",
+
+
+
+"MISE A JOUR 1.0" : "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
+
+"1.0_menu_publicGame" : "Partie publique",
+"1.0_menu_privateGame" : "Partie privée",
+"1.0_menu_serveurText" : "Serveur : ",
+"1.0_menu_contactUs" : "Nous contacter : ",
+"1.0_menu_contactUsFirstSettingText" : "Veuillez faire vos premier réglages :",
+"1.0_menu_keyBoardAzerty" : "Clavier Azerty :",
+"1.0_menu_VersionNotCorrect" : "Votre version n'est pas à jour.",
+"1.0_menu_MakeUpdate" : "Veuillez faire la mise à jour.",
+"1.0_menu_Disconnect" : "Deconnexion",
+"1.0_menu_ErrorToConnect" : "erreur de connexion avec le serveur...",
+"1.0_menu_CodeRoomIncorrect" : "Le code est incorrect.",
+"1.0_menu_KeybordSetting" : "Clavier",
+"1.0_menu_ControllerSetting" : "Manette",
+"1.0_menu_KeyBordSetting_map" : "Carte",
+"1.0_menu_KeyBordSetting_attack" : "Attaque",
+"1.0_menu_KeyBordSetting_dash" : "Téléportation",
+
+"1.0_menu_SettingGame_globaleSetting" : "Paramètres généraux",
+"1.0_menu_SettingGame_SpeciallyRoom" : "Salles spéciales",
+"1.0_menu_SettingGame_TrialyRoom" : "Salles d'épreuves",
+"1.0_menu_SettingGame_TeamTrialyRoom" : "Salles d'épreuves en équipe",
+"1.0_menu_SettingGame_Object" : "Objets",
+"1.0_menu_SettingGame_TrapedRoom" : "Pièges",
+"1.0_menu_SettingGame_CorruptedSoulObject" : "Objets Âme corrompes",
 
   }

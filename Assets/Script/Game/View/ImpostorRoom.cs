@@ -97,7 +97,7 @@ public class ImpostorRoom : TrialsRoom
             {
                 this.transform.Find("potion").gameObject.SetActive(true);
             }
-            else if (randomfloat < 90f && gameManager.setting.listObjectImpostor[1])
+            else if (randomfloat < 5 && gameManager.setting.listObjectImpostor[1]) // 90f
             {
                 this.transform.Find("book").gameObject.SetActive(true);
             }

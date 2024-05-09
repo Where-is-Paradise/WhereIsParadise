@@ -25,7 +25,7 @@ public class LanguageManagement : MonoBehaviour
 
         GetComponent<Text>().text = result;
 
-        //GetComponent<Text>().color = new Color(255,0,0);
+        GetComponent<Text>().color = new Color(255,0,0);
 
 
     }
