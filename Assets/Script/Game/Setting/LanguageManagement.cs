@@ -25,7 +25,7 @@ public class LanguageManagement : MonoBehaviour
 
         GetComponent<Text>().text = result;
 
-        GetComponent<Text>().color = new Color(255,0,0);
+        //GetComponent<Text>().color = new Color(255,0,0);
 
 
     }
@@ -33,7 +33,7 @@ public class LanguageManagement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateLanguage();
+        //UpdateLanguage();
     }
 
     public IEnumerator LoadLanguage()

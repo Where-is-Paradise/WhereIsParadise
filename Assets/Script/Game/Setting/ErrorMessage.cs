@@ -67,5 +67,11 @@ public class ErrorMessage : MonoBehaviour
             StartCoroutine(DisplayErrorCouroutine("YouHaveToWait"));
     }
 
+    public void YouHaveNoMoreTorches()
+    {
+        if (!this.transform.Find("YouHaveNoMoreTorch").gameObject.activeSelf)
+            StartCoroutine(DisplayErrorCouroutine("YouHaveNoMoreTorch"));
+    }
+
 
 }

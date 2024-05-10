@@ -35,8 +35,8 @@ public class Turret : MonoBehaviourPun
         fireball.GetComponent<FireBall>().SendParent(fireball.transform.parent.GetComponent<Turret>().index);
         fireball.GetComponent<FireBall>().turretParent = this.gameObject;
         fireball.GetComponent<FireBall>().speed = 3f;
-        if (fireballRoom.frequency > 1.25f)
-            fireballRoom.gameManager.ui_Manager.fireball.Play();
+  /*      if (fireballRoom.frequency > 1.25f)
+            fireballRoom.gameManager.ui_Manager.fireball.Play();*/
     }
     public void DestroyFireBalls()
     {

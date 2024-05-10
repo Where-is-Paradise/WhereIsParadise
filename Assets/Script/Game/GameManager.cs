@@ -159,6 +159,9 @@ public class GameManager : MonoBehaviourPun
 
     public bool canLaunchVoteDoor = true;
 
+
+    public bool resetChestDisplayReset = false;
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -2065,7 +2068,8 @@ public class GameManager : MonoBehaviourPun
             ui_Manager.DesactivateTransparencyFloor();
 
         ui_Manager.DisplayAllDoorLightExploration(false);
-      
+        resetChestDisplayReset = true;
+        StartCoroutine(ResetChestDisplayResetCoroutine());
         ui_Manager.SetDistanceRoom(game.currentRoom.DistancePathFinding, game.currentRoom);
         SetDoorNoneObstacle(game.currentRoom);
         SetDoorObstacle(game.currentRoom);
@@ -2174,10 +2178,10 @@ public class GameManager : MonoBehaviourPun
         StartCoroutine(SetMapOFLostSoul(0.1f));
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
 
-        if ((game.currentRoom.isHide || game.currentRoom.isImpostorRoom) && !game.currentRoom.isTraped) {
+/*        if ((game.currentRoom.isHide || game.currentRoom.isImpostorRoom) && !game.currentRoom.isTraped) {
             //AddLittleObjectInMap();
             SetLittleObjectInMap();
-        }
+        }*/
 
 
     }
@@ -2213,6 +2217,10 @@ public class GameManager : MonoBehaviourPun
                     player.transform.Find("TrialObject").gameObject.SetActive(true);
                     if(indexPlayerPreviousExploration == player.GetComponent<PhotonView>().ViewID)
                         player.transform.Find("TorchBarre").gameObject.SetActive(true);
+                    if(player.GetComponent<PlayerGO>().isCursed)
+                        player.transform.Find("BookCursed").gameObject.SetActive(true);
+                    if (player.GetComponent<PlayerGO>().isBlind)
+                        player.transform.Find("BlindPotion").gameObject.SetActive(true);
                 }
                 else
                 {
@@ -2220,6 +2228,8 @@ public class GameManager : MonoBehaviourPun
                     player.transform.GetChild(1).gameObject.SetActive(false);
                     player.transform.Find("TrialObject").gameObject.SetActive(false);
                     player.transform.Find("TorchBarre").gameObject.SetActive(false);
+                    player.transform.Find("BookCursed").gameObject.SetActive(false);
+                    player.transform.Find("BlindPotion").gameObject.SetActive(false);
                 }
             }
         }
@@ -3382,9 +3392,19 @@ public class GameManager : MonoBehaviourPun
     {
         yield return new WaitForSeconds(4);
 
-        ui_Manager.ResetChestRoom();
-        ui_Manager.DisplayChest(false);
+        if (!resetChestDisplayReset)
+        {
+            ui_Manager.ResetChestRoom();
+            ui_Manager.DisplayChest(false);
+        }
+       
         //CloseAllDoor(game.DisplayChest, false);
+    }
+
+    public IEnumerator ResetChestDisplayResetCoroutine()
+    {
+        yield return new WaitForSeconds(5);
+        resetChestDisplayReset = false;
     }
 
     public void ChangePositionParadise()
@@ -3475,6 +3495,7 @@ public class GameManager : MonoBehaviourPun
         if (room.isVerySpecial)
         {
             float randomInt = Random.Range(0, 100);
+            Debug.Log(randomInt);
             //randomInt = 75;
             if (randomInt < AdditionalProbaVerySpeciality(0)  && setting.listSpeciallyRoom[0])
             {
@@ -3685,13 +3706,13 @@ public class GameManager : MonoBehaviourPun
 
         if (setting.listSpeciallyRoom[0])
             sizeListProbabilityVerySpecialityRoom++;
+        if (setting.listSpeciallyRoom[5])
+            sizeListProbabilityVerySpecialityRoom++;
         if (setting.listSpeciallyRoom[1])
             sizeListProbabilityVerySpecialityRoom++;
-        if (setting.listSpeciallyRoom[2])
+        if (setting.listSpeciallyRoom[6])
             sizeListProbabilityVerySpecialityRoom++;
         if (setting.listSpeciallyRoom[3])
-            sizeListProbabilityVerySpecialityRoom++;
-        if (setting.listSpeciallyRoom[4])
             sizeListProbabilityVerySpecialityRoom++;
 
         listProbabilityVerySpecialityRoom.Add(0);
@@ -3716,7 +3737,9 @@ public class GameManager : MonoBehaviourPun
         {
             if(i == 0)
             {
+
                 listProbabilityVerySpecialityRoom[i] = 30;
+
                 gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
             }
             else
@@ -3761,7 +3784,8 @@ public class GameManager : MonoBehaviourPun
         float returnValue = 0;
         for (int i = index; i >= 0; i--)
         {
-            returnValue += listProbabilityVerySpecialityRoom[i];
+            if(listProbabilityVerySpecialityRoom[i] > 0)
+                returnValue += listProbabilityVerySpecialityRoom[i];
         }
         Debug.Log(index + " : " + returnValue);
         return returnValue;

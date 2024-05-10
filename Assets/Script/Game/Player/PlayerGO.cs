@@ -1850,6 +1850,8 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (gameManager.speciallyIsLaunch)
+            return;
         if (gameManager.game.currentRoom.explorationIsUsed)
         {
             gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayErrorBlueTorchNotAvaible();
@@ -1858,6 +1860,7 @@ public class PlayerGO : MonoBehaviour
         }
         if(gameManager.game.nbTorch <= 0)
         {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().YouHaveNoMoreTorches();
             return;
         }
         if (gameManager.timer.timerLaunch)
@@ -1883,8 +1886,7 @@ public class PlayerGO : MonoBehaviour
             DispayRedLight();
             return;
         }
-        if (gameManager.speciallyIsLaunch)
-            return;
+
         if (OnePlayerHasWinFireball())
             return;
         if (gameManager.indexPlayerPreviousExploration == this.transform.GetComponent<PhotonView>().ViewID)
@@ -2686,6 +2688,7 @@ public class PlayerGO : MonoBehaviour
         }
     }
 
+    int counterLink = 0;
     public IEnumerator GetListSkinIndexInServerTestIP()
     {
         Setting setting = GameObject.Find("Setting").GetComponent<Setting>();
@@ -2698,7 +2701,9 @@ public class PlayerGO : MonoBehaviour
         if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError(www.downloadHandler.text);
-            StartCoroutine(GetListSkinIndexInServerTestIP());
+            counterLink++;
+            if (counterLink < 10)
+                StartCoroutine(GetListSkinIndexInServerTestIP());
         }
         else
         {

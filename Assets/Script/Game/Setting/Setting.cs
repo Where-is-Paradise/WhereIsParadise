@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Setting : MonoBehaviour
 {
-    public bool PROD = false;
+    public bool PROD = true;
     public string linkServerAws;
     public bool MODE_TEST_SKIN_IP = false;
     public string ip = "";
@@ -117,16 +117,10 @@ public class Setting : MonoBehaviour
             Destroy(this.gameObject);
 
         DontDestroyOnLoad(this);
+        //InputManager.Load();
+        //InputManager.Reinitialize();
+        InputManager.Save();
         InputManager.Load();
-        INPUT_MOVE_FORWARD = InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Positive;
-        INPUT_MOVE_BACKWARD = InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Negative;
-        INPUT_MOVE_LEFT = InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Negative;
-        INPUT_MOVE_RIGHT = InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Positive;
-        INPUT_LAUCNH_EXPLORATION = InputManager.PlayerOneControlScheme.Actions[2].Bindings[0].Positive;
-        INPUT_LAUNCH_VOTE_DOOR = InputManager.PlayerOneControlScheme.Actions[3].Bindings[0].Positive;
-        INPUT_DISPLAY_MAP = InputManager.PlayerOneControlScheme.Actions[4].Bindings[0].Positive;
-        INPUT_ATTACK = InputManager.PlayerOneControlScheme.Actions[8].Bindings[0].Positive;
-        INPUT_DASH = InputManager.PlayerOneControlScheme.Actions[9].Bindings[0].Positive;
 
         listLangage.Add("en");
         listLangage.Add("fr");
@@ -174,6 +168,21 @@ public class Setting : MonoBehaviour
         else
             linkServerAws = "localhost:8090";
 
+        
+
+    }
+
+    public void LoadInputManager()
+    {
+        INPUT_MOVE_FORWARD = InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Positive;
+        INPUT_MOVE_BACKWARD = InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Negative;
+        INPUT_MOVE_LEFT = InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Negative;
+        INPUT_MOVE_RIGHT = InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Positive;
+        INPUT_LAUCNH_EXPLORATION = InputManager.PlayerOneControlScheme.Actions[2].Bindings[0].Positive;
+        INPUT_LAUNCH_VOTE_DOOR = InputManager.PlayerOneControlScheme.Actions[3].Bindings[0].Positive;
+        INPUT_DISPLAY_MAP = InputManager.PlayerOneControlScheme.Actions[4].Bindings[0].Positive;
+        INPUT_ATTACK = InputManager.PlayerOneControlScheme.Actions[8].Bindings[0].Positive;
+        INPUT_DASH = InputManager.PlayerOneControlScheme.Actions[9].Bindings[0].Positive;
     }
 
 

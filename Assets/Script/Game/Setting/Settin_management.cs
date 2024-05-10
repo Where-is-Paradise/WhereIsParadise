@@ -80,17 +80,12 @@ public class Settin_management : MonoBehaviour
 
         LoadServerRegion("");
 
-        StartCoroutine(test());
     }
     
     // Update is called once per frame
     void Update()
     {
-    }
-    public IEnumerator test()
-    {
-        yield return new WaitForSeconds(2);
-        Debug.Log(InputManager.PlayerOneControlScheme.Actions[8].Bindings[1].Axis);
+
     }
 
     void OnGUI()
@@ -683,10 +678,9 @@ public class Settin_management : MonoBehaviour
         try
         {
             QuickSaveReader.Create("tutorial")
-                      //.Read<bool>("display_tutorial", (r) => { displayTutorial = r; })
                       .Read<bool>("tutorial_impostor", (r) => { tutorialImpostor = r; })
-                      .Read<bool>("first_time_panel", (r) => { firstTimePanel = r; })
-                      .Read<bool>("display_tutorial_V2", (r) => { displayTutorial = r; }); ;
+                      .Read<bool>("display_tutorial_V2", (r) => { displayTutorial = r; })
+                      .Read<bool>("first_time_panel_V2", (r) => { firstTimePanel = r; }) ;
         }
         catch (Exception e)
         {
@@ -696,17 +690,40 @@ public class Settin_management : MonoBehaviour
         setting.displayTutorial = displayTutorial;
         setting.tutorialImpostor = tutorialImpostor;
         setting.firstTimePanel = firstTimePanel;
+        //if (setting.firstTimePanel)
+            //ReloadFileControl();
+
     }
 
     
+    public void ReloadFileControl()
+    {
+        Debug.LogError("sa passe 0 ");
+
+        string filename = Application.persistentDataPath + "/input_config.xml";
+        if (File.Exists(filename))
+        {
+            Debug.LogError("sa passe 2");
+            try
+            {
+                File.Delete(filename);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e + "on est laaaaaa");
+            }
+           
+        }
+    }
 
     public void SaveTutorial(bool displayTutorial , bool tutorialImpostor, bool firstTimePanel)
     {
         QuickSaveWriter.Create("tutorial")
                         .Write("display_tutorial", true)
                         .Write("tutorial_impostor", tutorialImpostor)
-                        .Write("first_time_panel", firstTimePanel)
+                        .Write("first_time_panel", true)
                         .Write("display_tutorial_V2", displayTutorial)
+                        .Write("first_time_V2", firstTimePanel)
                         .Commit();
 
         QuickSaveRaw.LoadString("tutorial.json");
@@ -978,6 +995,13 @@ public class Settin_management : MonoBehaviour
         DisplayInputTextInEachPanel();
         DisplayInputControllerTextInEachPanel();
         StartCoroutine(SetCanUpdateCouroutine());
+        StartCoroutine(CouroutineSeSettingInput());
+    }
+
+    public IEnumerator CouroutineSeSettingInput()
+    {
+        yield return new WaitForSeconds(3);
+        setting.LoadInputManager();
     }
 
     public IEnumerator SetCanUpdateCouroutine()

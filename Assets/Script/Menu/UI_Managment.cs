@@ -145,6 +145,9 @@ public class UI_Managment : MonoBehaviourPun
     public GameObject publicPrivate_panel;
     public GameObject private_panel;
 
+    public GameObject code_text_inDoor;
+    public GameObject etoileEtoileEtoile;
+
     float k = -1;
     // Start is called before the first frame update
     void Start()
@@ -643,9 +646,11 @@ public class UI_Managment : MonoBehaviourPun
         gameObject.SetActive(true);
     }
 
-    public void InverseStateActive(GameObject gameObjectParam)
+    public void InverseStateActive()
     {
-        gameObjectParam.SetActive(!gameObjectParam.activeSelf);
+        code_text_inDoor.SetActive(!code_text_inDoor.activeSelf);
+        etoileEtoileEtoile.SetActive(!etoileEtoileEtoile.activeSelf);
+
     }
 
     public void OnClickOKpanelErrorForm(GameObject gameObject)

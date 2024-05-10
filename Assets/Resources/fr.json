@@ -441,6 +441,82 @@
 "1.0_menu_SettingGame_TeamTrialyRoom" : "Salles d'épreuves en équipe",
 "1.0_menu_SettingGame_Object" : "Objets",
 "1.0_menu_SettingGame_TrapedRoom" : "Pièges",
-"1.0_menu_SettingGame_CorruptedSoulObject" : "Objets Âme corrompes",
+"1.0_menu_SettingGame_CorruptedSoulObject" : "Objets Âme corrompues",
+"1.0_menu_SettingGame_CorruptedSoulText" : "Âme corrompues",
+"1.0_menu_SettingGame_NormalText" : "Normal",
+"1.0_menu_SettingGame_ManyText" : "Beaucoup",
+"1.0_menu_SettingGame_completeMap" : "Carte détaillée",
+"1.0_menu_SettingGame_fieldProtection" : "Champ de protection",
+"1.0_menu_SettingGame_BlackTorch" : "Torche noir",
+"1.0_menu_SettingGame_BlindPotion" : "Potion d'aveuglement",
+"1.0_menu_SettingGame_TrapedKey" : "Clef piégée",
+"1.0_menu_SettingGame_CursedBook" : "Livre maudit",
+
+"1.0_menu_SkinPage_Color" : "Couleurs",
+"1.0_menu_SkinPage_apply" : "Appliquer",
+
+
+
+
+
+"1.0_game_echapMenu_tutorial_role" : "Rôles",
+"1.0_game_echapMenu_tutorial_object" : "Objets",
+"1.0_game_echapMenu_tutorial_corrutpedSoul" : "Âme corrompues",
+
+"1.0_game_echapMenu_tutorial_voteDoor_Maintext" : "Le chef peut lancer un vote d'ouverture de porte.",
+"1.0_game_echapMenu_tutorial_voteDoor_2_Maintext" : "Lorsque le vote est lancé, les âmes doivent choisir une porte à ouvrire.",
+"1.0_game_echapMenu_tutorial_voteDoor_2_text2" : "La porte avec le plus de vote s'ouvrira.",
+"1.0_game_echapMenu_tutorial_voteDoor_2_textNote" : "Note : Une ouverture de porte utilisera une clef.",
+"1.0_game_echapMenu_tutorial_voteDoor_2_text3" : "+2 Votes",
+"1.0_game_echapMenu_tutorial_voteDoor_2_text4" : "+1 vote",
+"1.0_game_echapMenu_tutorial_voteDoor_3_MainText" : "La zone au centre permet d'annuler le vote.",
+
+"1.0_game_echapMenu_tutorial_exploration_MainText" : "Le chef peut donner une torche bleu à une et une seule âme",
+"1.0_game_echapMenu_tutorial_exploration_1_MainText" : "L'explorateur doit utiliser la torche bleu sur une porte de son choix.",
+"1.0_game_echapMenu_tutorial_exploration_2_MainText" : "L'utilisation de la torche bleu vous donnera une indication sur la direction à prendre.",
+"1.0_game_echapMenu_tutorial_exploration_2_Text1" : "Bleu = Bonne direction",
+"1.0_game_echapMenu_tutorial_exploration_2_Text2" : "Rouge = Mauvaise direction",
+"1.0_game_echapMenu_tutorial_exploration_2_TextNote" : "Note : Seule l'explorateur peut distinguer les couleurs",
+
+"1.0_game_echapMenu_tutorial_role_MainText" : "L'objectif des âmes égarée est de trouver la porte du Paradis ! ",
+"1.0_game_echapMenu_tutorial_role_NoteText" : "Mais attention dans l'équipe se cache des âmes compompues",
+"1.0_game_echapMenu_tutorial_role_2_MainText" : "L'objectif des âmes Corrompues est de ne pas trouver le Paradis.",
+"1.0_game_echapMenu_tutorial_role_2_text2" : "Gaspillez toutes les clefs de l'équipe.",
+"1.0_game_echapMenu_tutorial_role_2_text3" : "Ou",
+"1.0_game_echapMenu_tutorial_role_2_text4" : "Emmenez l'équipe dans la salle des enfers.",
+
+"1.0_game_echapMenu_tutorial_speciallyRoom_title1" : "Épreuve individuelle",
+"1.0_game_echapMenu_tutorial_speciallyRoom_texte1" : "Soyez le dernier survivant de l'épreuve afin de récupérer une récompense.",
+"1.0_game_echapMenu_tutorial_speciallyRoom_title2" : "Épreuve en équipe",
+"1.0_game_echapMenu_tutorial_speciallyRoom_texte2" : "Survivez à l'épreuve pour reçevoir une récompense d'équipe.",
+"1.0_game_echapMenu_tutorial_speciallyRoom_title3" : "Salle spéciale",
+"1.0_game_echapMenu_tutorial_speciallyRoom_texte3" : "Salle spéciale aléatoire (coffres, sacrifice etc..)",
+"1.0_game_echapMenu_tutorial_speciallyRoom_title4" : "Salle corrompue",
+"1.0_game_echapMenu_tutorial_speciallyRoom_texte4" : "Dans cette salle, en tant qu'âme corrompue vous pouvez récupérer un objet.",
+
+"1.0_game_echapMenu_tutorial_SoulObject_title1" : "Carte",
+"1.0_game_echapMenu_tutorial_SoulObject_text1" : "Permet d'obtenir tout le contenu de la carte.",
+"1.0_game_echapMenu_tutorial_SoulObject_title2" : "Champ de protection",
+"1.0_game_echapMenu_tutorial_SoulObject_text2" : "Permet de vous prémunir contre toute malédiction, mais cet objet ne vous soigne pas.",
+"1.0_game_echapMenu_tutorial_SoulObject_title3" : "Torche Noir",
+"1.0_game_echapMenu_tutorial_SoulObject_text3" : "Vous permet d'avoir le pouvoir de la torche bleu mais qui s'applique sur toutes les portes en même temps.",
+
+"1.0_game_echapMenu_tutorial_ImpostorChoice_text1" : "Pièges",
+"1.0_game_echapMenu_tutorial_ImpostorChoice_text2" : "Objets",
+
+"1.0_game_echapMenu_tutorial_TrapedRoom_texte1" : "Ce piège permet de cacher les couleurs lors de l'utilisation de la torche bleu.",
+"1.0_game_echapMenu_tutorial_TrapedRoom_texte2" : "Permet d'ajouter un malus sur les deux coffres.",
+"1.0_game_echapMenu_tutorial_TrapedRoom_texte3" : "Permet d'altérer la distance de la salle des prières.",
+
+"1.0_game_echapMenu_tutorial_ImpostorObject_title1" : "Potion d'aveuglement",
+"1.0_game_echapMenu_tutorial_ImpostorObject_text1" : "Vous permet de maudire une âme égarée, l'âme ne pourra plus distinguer les couleurs lors de l'utilisation de la torche bleu.",
+"1.0_game_echapMenu_tutorial_ImpostorObject_title2" : "Livre maudit",
+"1.0_game_echapMenu_tutorial_ImpostorObject_text2" : "Vous permet de maudire une âme égarée et de lui échanger l'interpretation des couleurs lors de l'utilisation de la torche bleu.",
+"1.0_game_echapMenu_tutorial_ImpostorObject_title3" : "Clef piégée",
+"1.0_game_echapMenu_tutorial_ImpostorObject_text3" : "Vous permet de placer le piège que vous souhaitez.",
+
+
+"1.0_game_echapMenu_setting_controls_keyboard" : "Clavier",
+"1.0_game_echapMenu_setting_controls_controller" : "Manette",
 
   }
