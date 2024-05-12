@@ -194,7 +194,7 @@ public class Lobby : MonoBehaviourPunCallbacks
             ui_management.canChange = false;
             //ui_management.DisplayErrorPanel("Disconnection..");
         }
-        if(!settingManagement.isCurrentChangeRegion && !disconnectByCancel)
+        if(!settingManagement.isCurrentChangeRegion && !disconnectByCancel && !setting.isCurrentChangeLanguage)
             DisconnectByNotHaveConnexion();
     }
 

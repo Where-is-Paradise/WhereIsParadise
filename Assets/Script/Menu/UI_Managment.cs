@@ -304,7 +304,7 @@ public class UI_Managment : MonoBehaviourPun
 
     public void OnClickFirstConnexionPanel()
     {
-        StartCoroutine(DisplayCoroutineIpPanel());
+        //StartCoroutine(DisplayCoroutineIpPanel());
     }
 
     public IEnumerator DisplayCoroutineWelcomePanel()

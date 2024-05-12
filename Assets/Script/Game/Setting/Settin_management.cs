@@ -8,6 +8,7 @@ using System.IO;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using Photon.Pun;
+using Steamworks;
 
 public class Settin_management : MonoBehaviour
 {
@@ -53,6 +54,7 @@ public class Settin_management : MonoBehaviour
 
 
     public bool isCurrentChangeRegion = false;
+    public bool isCurrentChangeLanguage = false;
 
     // Start is called before the first frame update
     void Start()
@@ -79,6 +81,8 @@ public class Settin_management : MonoBehaviour
         SetMusicVolume();
 
         LoadServerRegion("");
+
+        setting.ip = SteamUser.GetSteamID().ToString();
 
     }
     
@@ -212,16 +216,12 @@ public class Settin_management : MonoBehaviour
 
     public void OnClickApplyLanguage()
     {
-        if (setting.canUpdate)
-            return;
         Dropdown language_dropdown = language.GetComponent<Dropdown>();
         int language_index = language_dropdown.value;
         setting.langage = setting.listLangage[language_index];
         SaveLanguage(setting.langage);
+        StartCoroutine(CoroutineReset(1.5f));
 
-        setting.canUpdate = true;
-        StartCoroutine(SetCanUpdateCouroutine());
-        //StartCoroutine(CoroutineReset(1));
     }
 
     public void SetLanguageDropdown()
@@ -250,10 +250,17 @@ public class Settin_management : MonoBehaviour
     {
         panelLanguageReset.SetActive(true);
         yield return new WaitForSeconds(seconde);
+        setting.isCurrentChangeLanguage = true;
+        StartCoroutine(setting.ResetIsCurrentChangeLangugage());
+        PhotonNetwork.Disconnect();
         Destroy(GameObject.Find("Input Manager"));
-        Destroy(GameObject.Find("Setting"));
+        //Destroy(GameObject.Find("Setting"));
         SceneManager.LoadScene("Menu");
+        //DontDestroyOnLoad()
+        
     }
+
+
 
     public void SetMusicVolume()
     {
@@ -315,38 +322,45 @@ public class Settin_management : MonoBehaviour
         {
             case 0: 
                 setting.INPUT_MOVE_FORWARD = newInput;
-                InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Positive = newInput;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 2)
+                    InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Positive = newInput;
                 InputManager.Save();
                 
                 break;
             case 1:
                 setting.INPUT_MOVE_BACKWARD = newInput;
-                InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Negative = newInput;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 2)
+                    InputManager.PlayerOneControlScheme.Actions[1].Bindings[0].Negative = newInput;
                 InputManager.Save();
                 break;
             case 2:
                 setting.INPUT_MOVE_LEFT = newInput;
-                InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Negative = newInput;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 1)
+                    InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Negative = newInput;
                 InputManager.Save();
                 break;
             case 3:
                 setting.INPUT_MOVE_RIGHT = newInput;
-                InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Positive = newInput;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 1)
+                    InputManager.PlayerOneControlScheme.Actions[0].Bindings[0].Positive = newInput;
                 InputManager.Save();
                 break;
             case 4:
                 setting.INPUT_LAUCNH_EXPLORATION = newInput;
-                InputManager.PlayerOneControlScheme.Actions[2].Bindings[0].Positive = newInput;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 3)
+                    InputManager.PlayerOneControlScheme.Actions[2].Bindings[0].Positive = newInput;
                 InputManager.Save();
                 break;
             case 5:
                 setting.INPUT_LAUNCH_VOTE_DOOR = newInput;
-                InputManager.PlayerOneControlScheme.Actions[3].Bindings[0].Positive = newInput;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 4)
+                    InputManager.PlayerOneControlScheme.Actions[3].Bindings[0].Positive = newInput;
                 InputManager.Save();
                 break;
             case 6:
                 setting.INPUT_DISPLAY_MAP = newInput;
-                InputManager.PlayerOneControlScheme.Actions[4].Bindings[0].Positive = newInput;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 5)
+                    InputManager.PlayerOneControlScheme.Actions[4].Bindings[0].Positive = newInput;
                 InputManager.Save();
                 break;
 
@@ -361,7 +375,6 @@ public class Settin_management : MonoBehaviour
                 setting.INPUT_DASH = newInput;
                 if(InputManager.PlayerOneControlScheme.Actions.Count >= 10)
                     InputManager.PlayerOneControlScheme.Actions[9].Bindings[0].Positive = newInput;
-                Debug.LogError("sa passe Save"); 
                 InputManager.Save();
                 break;
         }
@@ -375,37 +388,58 @@ public class Settin_management : MonoBehaviour
             case 4:
                 setting.INPUT_LAUCNH_EXPLORATION_controller = newInput;
                 setting.INPUT_LAUCNH_EXPLORATION_controller_isAxis = false;
-                InputManager.PlayerOneControlScheme.Actions[2].Bindings[1].Positive = newInput;
-                InputManager.PlayerOneControlScheme.Actions[2].Bindings[2].Joystick = 9;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 3)
+                {
+                    InputManager.PlayerOneControlScheme.Actions[2].Bindings[1].Positive = newInput;
+                    InputManager.PlayerOneControlScheme.Actions[2].Bindings[2].Joystick = 9;
+                }
+              
                 InputManager.Save();
                 break;
             case 5:
                 setting.INPUT_LAUNCH_VOTE_DOOR_controller = newInput;
                 setting.INPUT_LAUNCH_VOTE_DOOR_controller_isAxis = false;
-                InputManager.PlayerOneControlScheme.Actions[3].Bindings[1].Positive = newInput;
-                InputManager.PlayerOneControlScheme.Actions[3].Bindings[2].Joystick = 9;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 4)
+                {
+                    InputManager.PlayerOneControlScheme.Actions[3].Bindings[1].Positive = newInput;
+                    InputManager.PlayerOneControlScheme.Actions[3].Bindings[2].Joystick = 9;
+                }
+             
                 InputManager.Save();
                 break;
             case 6:
                 setting.INPUT_DISPLAY_MAP_controller = newInput;
                 setting.INPUT_DISPLAY_MAP_controller_isAxis = false;
-                InputManager.PlayerOneControlScheme.Actions[4].Bindings[1].Positive = newInput;
-                InputManager.PlayerOneControlScheme.Actions[4].Bindings[2].Joystick = 9;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 5)
+                {
+                    InputManager.PlayerOneControlScheme.Actions[4].Bindings[1].Positive = newInput;
+                    InputManager.PlayerOneControlScheme.Actions[4].Bindings[2].Joystick = 9;
+                }
+               
+
                 InputManager.Save();
                 break;
 
             case 7:
                 setting.INPUT_ATTACK_controller = newInput;
                 setting.INPUT_ATTACK_controller_isAxis = false;
-                InputManager.PlayerOneControlScheme.Actions[8].Bindings[1].Positive = newInput;
-                InputManager.PlayerOneControlScheme.Actions[8].Bindings[2].Joystick = 9;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 9)
+                {
+                    InputManager.PlayerOneControlScheme.Actions[8].Bindings[1].Positive = newInput;
+                    InputManager.PlayerOneControlScheme.Actions[8].Bindings[2].Joystick = 9;
+                }
+              
                 InputManager.Save();
                 break;
             case 8:
                 setting.INPUT_DASH_controller = newInput;
                 setting.INPUT_DASH_controller_isAxis = false;
-                InputManager.PlayerOneControlScheme.Actions[9].Bindings[1].Positive = newInput;
-                InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Joystick = 9;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 10)
+                {
+                    InputManager.PlayerOneControlScheme.Actions[9].Bindings[1].Positive = newInput;
+                    InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Joystick = 9;
+                }
+               
                 InputManager.Save();
                 break;
         }
@@ -419,42 +453,62 @@ public class Settin_management : MonoBehaviour
             case 4:
                 setting.INPUT_LAUCNH_EXPLORATION_controller_axis = indexAxis;
                 setting.INPUT_LAUCNH_EXPLORATION_controller_isAxis = true;
-                InputManager.PlayerOneControlScheme.Actions[2].Bindings[1].Positive = KeyCode.None;
-                InputManager.PlayerOneControlScheme.Actions[2].Bindings[2].Axis = indexAxis;
-                InputManager.PlayerOneControlScheme.Actions[2].Bindings[2].Joystick = 0;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 3)
+                {
+                    InputManager.PlayerOneControlScheme.Actions[2].Bindings[1].Positive = KeyCode.None;
+                    InputManager.PlayerOneControlScheme.Actions[2].Bindings[2].Axis = indexAxis;
+                    InputManager.PlayerOneControlScheme.Actions[2].Bindings[2].Joystick = 0;
+                }
+                
                 InputManager.Save();
                 break;
             case 5:
                 setting.INPUT_LAUNCH_VOTE_DOOR_controller_axis = indexAxis;
                 setting.INPUT_LAUNCH_VOTE_DOOR_controller_isAxis = true;
-                InputManager.PlayerOneControlScheme.Actions[3].Bindings[1].Positive = KeyCode.None;
-                InputManager.PlayerOneControlScheme.Actions[3].Bindings[2].Axis = indexAxis;
-                InputManager.PlayerOneControlScheme.Actions[3].Bindings[2].Joystick = 0;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 4)
+                {
+                    InputManager.PlayerOneControlScheme.Actions[3].Bindings[1].Positive = KeyCode.None;
+                    InputManager.PlayerOneControlScheme.Actions[3].Bindings[2].Axis = indexAxis;
+                    InputManager.PlayerOneControlScheme.Actions[3].Bindings[2].Joystick = 0;
+                }
+               
                 InputManager.Save();
                 break;
             case 6:
                 setting.INPUT_DISPLAY_MAP_controller_axis = indexAxis;
                 setting.INPUT_DISPLAY_MAP_controller_isAxis = true;
-                InputManager.PlayerOneControlScheme.Actions[4].Bindings[1].Positive = KeyCode.None;
-                InputManager.PlayerOneControlScheme.Actions[4].Bindings[2].Axis = indexAxis;
-                InputManager.PlayerOneControlScheme.Actions[4].Bindings[2].Joystick = 0;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 5)
+                {
+                    InputManager.PlayerOneControlScheme.Actions[4].Bindings[1].Positive = KeyCode.None;
+                    InputManager.PlayerOneControlScheme.Actions[4].Bindings[2].Axis = indexAxis;
+                    InputManager.PlayerOneControlScheme.Actions[4].Bindings[2].Joystick = 0;
+                }
+               
                 InputManager.Save();
                 break;
 
             case 7:
                 setting.INPUT_ATTACK_controller_axis = indexAxis;
                 setting.INPUT_ATTACK_controller_isAxis = true;
-                InputManager.PlayerOneControlScheme.Actions[8].Bindings[1].Positive = KeyCode.None;
-                InputManager.PlayerOneControlScheme.Actions[8].Bindings[2].Axis = indexAxis;
-                InputManager.PlayerOneControlScheme.Actions[8].Bindings[2].Joystick = 0;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 9)
+                {
+                    InputManager.PlayerOneControlScheme.Actions[8].Bindings[1].Positive = KeyCode.None;
+                    InputManager.PlayerOneControlScheme.Actions[8].Bindings[2].Axis = indexAxis;
+                    InputManager.PlayerOneControlScheme.Actions[8].Bindings[2].Joystick = 0;
+                }
+              
                 InputManager.Save();
                 break;
             case 8:
                 setting.INPUT_DASH_controller_axis = indexAxis;
                 setting.INPUT_DASH_controller_isAxis = true;
-                InputManager.PlayerOneControlScheme.Actions[9].Bindings[1].Positive = KeyCode.None;
-                InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Axis = indexAxis;
-                InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Joystick = 0;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 10)
+                {
+                    InputManager.PlayerOneControlScheme.Actions[9].Bindings[1].Positive = KeyCode.None;
+                    InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Axis = indexAxis;
+                    InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Joystick = 0;
+                }
+              
                 InputManager.Save();
                 
                 break;
@@ -1004,6 +1058,8 @@ public class Settin_management : MonoBehaviour
         int language_index = language_dropdown.value;
         setting.langage = setting.listLangage[language_index];
         SaveLanguage(setting.langage);
+
+        
     }
     public void OnClickApplyFirstConnexion(Toggle azerty)
     {

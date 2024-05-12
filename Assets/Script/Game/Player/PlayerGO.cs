@@ -1222,7 +1222,8 @@ public class PlayerGO : MonoBehaviour
             return;
         if (!isBoss)
             return;
-
+        if (gameManager.voteDoorHasProposed)
+            return;
 
         if (collision.gameObject.name.Equals("NPCLeft"))
             indexNpc = 0;
@@ -1423,6 +1424,7 @@ public class PlayerGO : MonoBehaviour
 
         if (collision.gameObject.tag == "Lever")
         {
+            ResetAllCanLaunch();
             CanLaunchExplorationLever(collision.gameObject , true); ;
             CanLaunchVoterDoorLever(collision.gameObject, true);
             CanLaunchSpeciallyRoomPower(collision.gameObject, true);
@@ -1473,6 +1475,18 @@ public class PlayerGO : MonoBehaviour
         }
     }
 
+    public void ResetAllCanLaunch()
+    {
+        canLaunchChangeBoss = false;
+        canLaunchDoorVoteLever = false;
+        canLaunchExplorationLever = false;
+        canDisplayTutorial = false;
+        canLaunchSpeciallyRoomPower = false;
+        canDisplayMap = false;
+        displayMap = false;
+        launchVoteDoorMobile = false;
+        changeBoss = false;
+    }
     public void ResetHasWinFireBallRoom()
     {
         this.hasWinFireBallRoom = false;
@@ -2115,6 +2129,7 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        ResetAllCanLaunch();
         if (gameManager.speciallyIsLaunch)
             return;
         if (gameManager.timer.timerLaunch)
@@ -2145,6 +2160,7 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        ResetAllCanLaunch();
         if (gameManager.timer.timerLaunch)
         {
             return;
@@ -2223,6 +2239,7 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+      
         if (!isBoss) {
             DisplayTutorial(2);
             return;
@@ -2337,6 +2354,7 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        ResetAllCanLaunch();
         if (isBoss)
         {
             //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
@@ -2726,7 +2744,7 @@ public class PlayerGO : MonoBehaviour
 
             if (skinreturn.response.skins == null)
             {
-                string pseudoSteam = setting.ip;
+                string pseudoSteam = SteamFriends.GetPersonaName();
                 UnityWebRequest www2 = UnityWebRequest.Post(linkServer + "/player/addPlayer?steamId=" + steamId + "&pseudoSteam=" + pseudoSteam, form);
                 www2.certificateHandler = new CertifcateValidator();
                 yield return www2.SendWebRequest();

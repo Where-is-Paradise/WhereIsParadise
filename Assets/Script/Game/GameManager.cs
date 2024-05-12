@@ -340,6 +340,7 @@ public class GameManager : MonoBehaviourPun
 
     public IEnumerator LauchVoteDoorCoroutine()
     {
+        ui_Manager.DisplayButtonNPCBigger(false);
         ui_Manager.DisplayTrapPowerButtonDesactivate(true);
         ui_Manager.DisplayObjectPowerButtonDesactivate(true);
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendWantToChangeBossFalse();
@@ -4505,6 +4506,10 @@ public class GameManager : MonoBehaviourPun
             else
                 listDoorPotential.Add(door.GetComponent<Door>());
         }
+        if(listDoorPotential.Count == 0)
+        {
+            return listDoor[0].GetComponent<Door>();
+        }
         return listDoorPotential[Random.Range(0, listDoorPotential.Count)];
     }
 
@@ -5119,11 +5124,11 @@ public class GameManager : MonoBehaviourPun
         }
         if (players.Length <= 4)
         {
-            game.nbTorch--;
+            game.key_counter--;
         }
         if(game.currentRoom.GetNumberOfNeigbourNoneObstacleAndNotOpen() < 3 && players.Length <= 4)
         {
-            game.key_counter--;
+            game.nbTorch--;
         }
         
     }

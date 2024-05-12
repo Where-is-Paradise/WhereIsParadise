@@ -117,6 +117,8 @@ public class PowerImpostor : MonoBehaviourPun
         Room room = door.GetRoomBehind();
         if (room.IsObstacle)
             return;
+        if (room.isTraversed)
+            return;
         if (room.IsExit || room.IsHell)
             return;
         if(indexPower == 1 || indexPower == 3 )

@@ -12,13 +12,14 @@ public class NPCRoom : MonoBehaviourPun
     public bool evilIsleft = false;
     public int indexEvilNPC = 0;
     public int indexEvilNPC_2 = 0;
-    public string baseText = "Vous devez prendre la porte ";
+    public string baseText = "";
     public bool powerIsUsed = false;
     public string door = "";
 
     // Start is called before the first frame update
     void Start()
     {
+        baseText = this.transform.Find("Canvas").Find("Text").GetComponent<Text>().text;
     }
 
     // Update is called once per frame

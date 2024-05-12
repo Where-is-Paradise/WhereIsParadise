@@ -109,6 +109,9 @@ public class Setting : MonoBehaviour
     public int minor = 0;
     public int revision = 0;
 
+
+    public bool isCurrentChangeLanguage = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -117,21 +120,8 @@ public class Setting : MonoBehaviour
             Destroy(this.gameObject);
 
         DontDestroyOnLoad(this);
-        //InputManager.Load();
-        //InputManager.Save();
-        
+
        
-        /*        if (InputManager.PlayerOneControlScheme.Actions.Count >= 10)
-                {
-
-                }
-                else
-                {
-                    InputManager.Save();
-                }*/
-
-
-
         listLangage.Add("en");
         listLangage.Add("fr");
         listLangage.Add("kr");
@@ -222,6 +212,13 @@ public class Setting : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         LoadInputManager();
         maxCouroutine++;
+    }
+
+    public IEnumerator ResetIsCurrentChangeLangugage()
+    {
+        yield return new WaitForSeconds(10);
+        Debug.Log(" sa passe ");
+        isCurrentChangeLanguage = false;
     }
 
     // Update is called once per frame

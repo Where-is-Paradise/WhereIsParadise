@@ -220,7 +220,7 @@
 "menu_credit_3" : "Site web",
 "menu_credit_6" : "L'équipe",
 "menu_credit_team_0" : "Chef de projet / Programmeur / Game designer",
-"menu_credit_team_1" : "Graphiste principal",
+"menu_credit_team_1" : "Graphiste principale",
 "menu_credit_team_2" : "Graphiste  / Monteur / Animateur",
 "menu_credit_team_3" : "Community manager  / Développeur web",
 "menu_credit_team_4" : "Modération / Testeur",
@@ -667,5 +667,19 @@
 "1.0_game_trialObject_text13" : "Piège de salle des prières",
 "1.0_game_trialObject_text14" : "Piège illusion",
 
+"1.0_errorInGame_text1" : "La torche bleue n'est plus utilisable dans cette salle.",
+"1.0_errorInGame_text2" : "Vous devez faire l'épreuve avant de pouvoir utiliser la torche bleue.",
+"1.0_errorInGame_text3" : "Vous devez ouvrir une porte avant de pouvoir changer de chef d'équipe.",
+"1.0_errorInGame_text4" : "Une âme doit se situer dans le cercle de purification.",
+"1.0_errorInGame_text5" : "Cette âme ne peut utiliser de torche bleue pour le moment.",
+"1.0_errorInGame_text6" : "Une âme doit se situer dans le cercle de purification.",
+"1.0_errorInGame_text7" : "Toutes les portes sont déjà ouvertes.",
+"1.0_errorInGame_text8" : "Vous devez attendre 5 secondes avant de pouvoir proposer un vote à nouveau.",
+"1.0_errorInGame_text9" : "Vous n'avez plus de torches.",
+
+
+"1.0_npcRoom_Maintext" : "Vous devez prendre la porte : ",
+
+"1.0_credit_assistantGraphist" : "Assistant graphiste",
 
   }

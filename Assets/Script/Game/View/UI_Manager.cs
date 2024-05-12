@@ -2499,7 +2499,9 @@ setting_button_echapMenu.SetActive(false);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(false);
         if (!gameManager.GetDoorGo(indexDoor))
             return;
-       
+        if (gameManager.GetDoorGo(indexDoor).GetComponent<Door>().GetRoomBehind().isTraversed)
+            return;
+
         gameManager.gameManagerNetwork.SendNewSpeciallyRoom(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().GetRoomBehind().Index, indexChoice);
         gameManager.gameManagerNetwork.SendOrangeDoor(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().index);
         gameManager.gameManagerNetwork.SendTemporyCloseDoor();
