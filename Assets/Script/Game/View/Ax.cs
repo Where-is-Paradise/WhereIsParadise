@@ -13,6 +13,8 @@ public class Ax : MonoBehaviourPun
     public int maxBoudns = 1;
     public bool canChangeDirection = true;
     public PlayerGO launcher;
+
+    public int counterTurn = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -381,10 +383,15 @@ public class Ax : MonoBehaviourPun
     public IEnumerator CouroutineAnimationCircle()
     {
         yield return new WaitForSeconds(0.6f);
-        this.transform.Find("Animation").GetChild(0).gameObject.SetActive(false);
-        this.transform.Find("Animation").GetChild(0).gameObject.SetActive(true);
-        axRoom.gameManager.ui_Manager.axeLaunch.Play();
-        StartCoroutine(CouroutineAnimationCircle());
+        counterTurn++;
+        if (counterTurn < 30)
+        {
+            this.transform.Find("Animation").GetChild(0).gameObject.SetActive(false);
+            this.transform.Find("Animation").GetChild(0).gameObject.SetActive(true);
+            axRoom.gameManager.ui_Manager.axeLaunch.Play();
+            StartCoroutine(CouroutineAnimationCircle());
+        }
+        
     }
 
     public void SetCanShoot()

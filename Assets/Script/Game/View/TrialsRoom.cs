@@ -308,7 +308,7 @@ public class TrialsRoom : MonoBehaviourPun
     {
         yield return new WaitForSeconds(secondes);
         gameManagerParent.ui_Manager.DisplayLeverVoteDoor(true);
-        ResetHasWinFireBallRoom();
+        //ResetHasWinFireBallRoom();
     }
 
     public void ResetHasWinFireBallRoom()

@@ -1673,12 +1673,14 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendUpdateListVerySpecialityProbality(float newValue, int indexSpeciality)
     {
+        Debug.LogError(" sa passe avant erreur normalement");
         photonView.RPC("SetUpdateListVerySpecialityProbality", RpcTarget.All, newValue, indexSpeciality);
     }
 
     [PunRPC]
     public void SetUpdateListVerySpecialityProbality(float newValue, int indexSpeciality)
     {
+        Debug.LogError(indexSpeciality + " " + newValue);
         gameManager.listProbabilityVerySpecialityRoom[indexSpeciality] = newValue;
     }
 

@@ -333,6 +333,10 @@ public class PlayerNetwork : MonoBehaviourPun
                 player.gameManager.gameManagerNetwork.SendUsedBossPower(true);
             }
         }
+        if (player.GetComponent<PhotonView>().IsMine)
+        {
+            player.gameManager.ui_Manager.DisplayButtonChnageBossBigger(false);
+        }
     }
 
     public void SendWantToChangeBossFalse()
@@ -865,12 +869,14 @@ public class PlayerNetwork : MonoBehaviourPun
             int indexSkin = player.gameObject.GetComponent<PlayerGO>().indexSkin;
             player.transform.Find("Skins").GetChild(player.indexSkin).Find("Colors").GetChild(player.indexSkinColor).GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0.5f);
             player.transform.Find("Sword").gameObject.SetActive(false);
+            player.transform.Find("Ax").gameObject.SetActive(false);
         }
         else
         {
             player.transform.GetChild(0).gameObject.SetActive(false);
             player.transform.GetChild(1).gameObject.SetActive(false);
             player.transform.Find("Sword").gameObject.SetActive(false);
+            player.transform.Find("Ax").gameObject.SetActive(false);
             if (player.hasProtection)
                 player.transform.Find("TrialObject").Find("AuraProtection").gameObject.SetActive(false);
         }
@@ -1443,6 +1449,16 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.isBossMenu = isBossMenu;
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Crown").gameObject.SetActive(player.isBossMenu);
+    }
+
+    public void ResetHasWinFireBall()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach(GameObject player in players)
+        {
+            player.GetComponent<PlayerGO>().ResetHasWinFireBallRoom();
+        }
     }
 
 }

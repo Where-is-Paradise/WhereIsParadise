@@ -314,13 +314,6 @@ public class Door : MonoBehaviour
             DisplayTransparencyLightExploration();
             return;
         }
-        if (GetRoomBehind().IsHell)
-        {
-            this.transform.Find("LightsExploration").Find("RedLight").gameObject.SetActive(true);
-            StartCoroutine(Desactivatelight(false));
-            return;
-        }
-
         bool isBlue = false;
         if ((RoomBehindHaslessDistance() && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isCursed) ||
             (!RoomBehindHaslessDistance() && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isCursed))

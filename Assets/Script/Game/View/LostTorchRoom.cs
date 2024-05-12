@@ -87,14 +87,15 @@ public class LostTorchRoom : TrialsRoom
     {
         yield return new WaitForSeconds(timer); // 30
         timerFinish = true;
+
         if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             photonView.RPC("SendEndGame", RpcTarget.All);
     }
 
     public IEnumerator TimerCouroutineTestNotEnd(int timer)
     {
-        yield return new WaitForSeconds(timer + 3);
-        if (gameManager.speciallyIsLaunch)
+        yield return new WaitForSeconds((timer + 8));
+        if (gameManager.speciallyIsLaunch && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             SendEndGame();
     }
 
@@ -107,6 +108,8 @@ public class LostTorchRoom : TrialsRoom
             if (!lostTorch.currentPlayer)
             {
                 GetAward(gameManager.GetRandomPlayerID());
+                DesactivateLostTorchRoom();
+                SendResetObstacle();
                 return;
             }
             GetAward(lostTorch.currentPlayer.GetComponent<PhotonView>().ViewID);

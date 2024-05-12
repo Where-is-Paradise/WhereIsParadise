@@ -1455,8 +1455,11 @@ public class PlayerGO : MonoBehaviour
 
         if (collision.gameObject.tag == "TrialObject")
         {
-            if (hasWinFireBallRoom)
+            if (hasWinFireBallRoom && !isTouchInTrial)
+            {
                 playerNetwork.SendDesactivateObject(this.GetComponent<PhotonView>().ViewID);
+                //playerNetwork.ResetHasWinFireBall();
+            }
             else
             {
                 if(gameManager.teamHasWinTrialRoom && !isTouchInTrial)
@@ -1470,7 +1473,10 @@ public class PlayerGO : MonoBehaviour
         }
     }
 
-
+    public void ResetHasWinFireBallRoom()
+    {
+        this.hasWinFireBallRoom = false;
+    }
 
     public void InputExplorationAnimation()
     {
@@ -1512,12 +1518,14 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        changeBoss = !changeBoss;
-
         if (gameManager.usedChangeBossPower)
         {
             gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayOpenDoorBeforeChangeBoss();
+            return;
         }
+        changeBoss = !changeBoss;
+
+       
 
 
     }
@@ -2070,6 +2078,7 @@ public class PlayerGO : MonoBehaviour
         //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
         playerNetwork.SendWantToChangeBoss();
         changeBoss = false;
+        canLaunchChangeBoss = false;
 
     }
 
@@ -2331,11 +2340,16 @@ public class PlayerGO : MonoBehaviour
         if (isBoss)
         {
             //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
+            if (!isEnter)
+            {
+                gameManager.ui_Manager.DisplayButtonChnageBossBigger(false);
+            }
             return;
         }
         if (gameManager.expeditionHasproposed || gameManager.timer.timerLaunch || gameManager.voteDoorHasProposed || gameManager.voteChestHasProposed){
             //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(false);
             gameManager.ui_Manager.mobileCanvas.transform.Find("Change_Boss").gameObject.SetActive(false);
+            gameManager.ui_Manager.DisplayButtonChnageBossBigger(false);
             return;
         }
         if (isSacrifice)

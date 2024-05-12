@@ -352,13 +352,16 @@ public class Settin_management : MonoBehaviour
 
             case 7:
                 setting.INPUT_ATTACK = newInput;
-                InputManager.PlayerOneControlScheme.Actions[8].Bindings[0].Positive = newInput;
+                if (InputManager.PlayerOneControlScheme.Actions.Count >= 9)
+                    InputManager.PlayerOneControlScheme.Actions[8].Bindings[0].Positive = newInput;
                 InputManager.Save();
                 break;
 
             case 8:
                 setting.INPUT_DASH = newInput;
-                InputManager.PlayerOneControlScheme.Actions[9].Bindings[0].Positive = newInput;
+                if(InputManager.PlayerOneControlScheme.Actions.Count >= 10)
+                    InputManager.PlayerOneControlScheme.Actions[9].Bindings[0].Positive = newInput;
+                Debug.LogError("sa passe Save"); 
                 InputManager.Save();
                 break;
         }
@@ -453,6 +456,7 @@ public class Settin_management : MonoBehaviour
                 InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Axis = indexAxis;
                 InputManager.PlayerOneControlScheme.Actions[9].Bindings[2].Joystick = 0;
                 InputManager.Save();
+                
                 break;
         }
     }
@@ -460,6 +464,7 @@ public class Settin_management : MonoBehaviour
 
     public void DisplayInputTextInEachPanel()
     {
+        Debug.LogError("sa passe tutorial");
         for(int i =0; i < listTextInput.Count; i++)
         {
             switch (listTextInput[i].transform.parent.name)
@@ -680,7 +685,7 @@ public class Settin_management : MonoBehaviour
             QuickSaveReader.Create("tutorial")
                       .Read<bool>("tutorial_impostor", (r) => { tutorialImpostor = r; })
                       .Read<bool>("display_tutorial_V2", (r) => { displayTutorial = r; })
-                      .Read<bool>("first_time_panel_V2", (r) => { firstTimePanel = r; }) ;
+                      .Read<bool>("first_time_V2", (r) => { firstTimePanel = r; }) ;
         }
         catch (Exception e)
         {
@@ -690,8 +695,10 @@ public class Settin_management : MonoBehaviour
         setting.displayTutorial = displayTutorial;
         setting.tutorialImpostor = tutorialImpostor;
         setting.firstTimePanel = firstTimePanel;
-        //if (setting.firstTimePanel)
-            //ReloadFileControl();
+        if (setting.firstTimePanel)
+            ReloadFileControl();
+        else
+            InputManager.Load();
 
     }
 
@@ -707,6 +714,7 @@ public class Settin_management : MonoBehaviour
             try
             {
                 File.Delete(filename);
+                InputManager.Load();
             }
             catch (Exception e)
             {
@@ -733,6 +741,15 @@ public class Settin_management : MonoBehaviour
         QuickSaveWriter.Create("tutorial")
                         .Write("display_tutorial_V2", displayTutorial)
                         .Commit();
+
+        QuickSaveRaw.LoadString("tutorial.json");
+    }
+
+    public void SaveFirstPanel(bool firstPanel)
+    {
+        QuickSaveWriter.Create("tutorial")
+            .Write("first_time_V2", firstPanel)
+            .Commit();
 
         QuickSaveRaw.LoadString("tutorial.json");
     }
@@ -996,6 +1013,9 @@ public class Settin_management : MonoBehaviour
         DisplayInputControllerTextInEachPanel();
         StartCoroutine(SetCanUpdateCouroutine());
         StartCoroutine(CouroutineSeSettingInput());
+
+        setting.firstTimePanel = false;
+        SaveFirstPanel(setting.firstTimePanel);
     }
 
     public IEnumerator CouroutineSeSettingInput()

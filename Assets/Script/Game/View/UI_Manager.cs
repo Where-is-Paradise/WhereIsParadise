@@ -2972,18 +2972,24 @@ setting_button_echapMenu.SetActive(false);
             }
             else
             {
-                GameObject leftZones = SpecialRoomParent.transform.GetChild(i).Find("DoorZone").Find("Left").gameObject;
-                for (int j = 0; j < leftZones.transform.childCount; j++)
+                if (SpecialRoomParent.transform.GetChild(i).Find("DoorZone"))
                 {
-                    leftZones.transform.GetChild(j).gameObject.SetActive(display);
+                    GameObject leftZones = SpecialRoomParent.transform.GetChild(i).Find("DoorZone").Find("Left").gameObject;
+                    for (int j = 0; j < leftZones.transform.childCount; j++)
+                    {
+                        leftZones.transform.GetChild(j).gameObject.SetActive(display);
+                    }
                 }
 
-                GameObject RightZones = SpecialRoomParent.transform.GetChild(i).Find("DoorZone").Find("Right").gameObject;
-                for (int h = 0; h < RightZones.transform.childCount; h++)
+                if (SpecialRoomParent.transform.GetChild(i).Find("DoorZone"))
                 {
-                    RightZones.transform.GetChild(h).gameObject.SetActive(display);
-                }
+                    GameObject RightZones = SpecialRoomParent.transform.GetChild(i).Find("DoorZone").Find("Right").gameObject;
+                    for (int h = 0; h < RightZones.transform.childCount; h++)
+                    {
+                        RightZones.transform.GetChild(h).gameObject.SetActive(display);
+                    }
 
+                }
             }
         }
     }

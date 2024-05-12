@@ -231,7 +231,7 @@ public class GameManager : MonoBehaviourPun
             initialHexagone = InitialHexa;
             gameManagerNetwork.SendBoss(GetBoss().GetComponent<PhotonView>().ViewID);
             game.SetKeyCounter();
-            game.key_counter = game.key_counter + setting.KEY_ADDITIONAL + 3;
+            game.key_counter = game.key_counter + setting.KEY_ADDITIONAL + 2;
 
             CalculMoreKeyAndTorchInSituation();
 
@@ -2217,9 +2217,9 @@ public class GameManager : MonoBehaviourPun
                     player.transform.Find("TrialObject").gameObject.SetActive(true);
                     if(indexPlayerPreviousExploration == player.GetComponent<PhotonView>().ViewID)
                         player.transform.Find("TorchBarre").gameObject.SetActive(true);
-                    if(player.GetComponent<PlayerGO>().isCursed)
+                    if(player.GetComponent<PlayerGO>().isCursed && GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
                         player.transform.Find("BookCursed").gameObject.SetActive(true);
-                    if (player.GetComponent<PlayerGO>().isBlind)
+                    if (player.GetComponent<PlayerGO>().isBlind && GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
                         player.transform.Find("BlindPotion").gameObject.SetActive(true);
                 }
                 else
@@ -5112,19 +5112,18 @@ public class GameManager : MonoBehaviourPun
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-        if(players.Length > 4)
+        if(game.currentRoom.GetNumberOfNeigbourNoneObstacleAndNotOpen() > 4 && players.Length > 4)
         {
             game.key_counter++;
             game.nbTorch++;
         }
-        if(game.currentRoom.GetNumberOfNeigbourNoneObstacleAndNotOpen() > 4 && players.Length < 5)
+        if (players.Length <= 4)
         {
-            Debug.Log("sa passe plus de 3 porte");
-            game.nbTorch++;
+            game.nbTorch--;
         }
-        if(game.currentRoom.GetNumberOfNeigbourNoneObstacleAndNotOpen() > 5 && players.Length > 4)
+        if(game.currentRoom.GetNumberOfNeigbourNoneObstacleAndNotOpen() < 3 && players.Length <= 4)
         {
-            game.key_counter++;
+            game.key_counter--;
         }
         
     }
