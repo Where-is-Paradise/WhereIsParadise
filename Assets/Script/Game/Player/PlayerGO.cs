@@ -1460,7 +1460,7 @@ public class PlayerGO : MonoBehaviour
             if (hasWinFireBallRoom && !isTouchInTrial)
             {
                 playerNetwork.SendDesactivateObject(this.GetComponent<PhotonView>().ViewID);
-                //playerNetwork.ResetHasWinFireBall();
+                ResetHasWinFireBallRoom();
             }
             else
             {
@@ -1468,7 +1468,7 @@ public class PlayerGO : MonoBehaviour
                 {
                     playerNetwork.SendDesactivateObjectTeam();
                 }
-                    
+                
                 if (gameManager.game.currentRoom.isImpostorRoom)
                     GameObject.Find("ImpostorRoom").GetComponent<ImpostorRoom>().CollisionObject(collision.gameObject.name);
             }
@@ -1487,9 +1487,10 @@ public class PlayerGO : MonoBehaviour
         launchVoteDoorMobile = false;
         changeBoss = false;
     }
+
     public void ResetHasWinFireBallRoom()
     {
-        this.hasWinFireBallRoom = false;
+        GetComponent<PlayerNetwork>().SendResetHasWinFireBall();
     }
 
     public void InputExplorationAnimation()
@@ -1885,15 +1886,10 @@ public class PlayerGO : MonoBehaviour
             gameManager.errorMessage.GetComponent<ErrorMessage>().YouHaveNoMoreTorches();
             return;
         }
-        if (gameManager.timer.timerLaunch)
+        if (gameManager.voteDoorHasProposed)
         {
             return;
         }
-        if (gameManager.expeditionHasproposed)
-        {
-            return;
-        }
-
         if (!gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
         {
             return;
@@ -1910,7 +1906,11 @@ public class PlayerGO : MonoBehaviour
         }
 
         if (OnePlayerHasWinFireball())
+        {
+            Debug.LogError("error hasWinFireball");
             return;
+        }
+          
         if (gameManager.indexPlayerPreviousExploration == this.transform.GetComponent<PhotonView>().ViewID)
         {
             gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayHeHasAlreadyTorch();

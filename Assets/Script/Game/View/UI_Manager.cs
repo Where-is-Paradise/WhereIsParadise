@@ -3225,6 +3225,10 @@ setting_button_echapMenu.SetActive(false);
         {
             ui_panel.transform.Find("Listhexa").gameObject.SetActive(false);
         }
+        if (ui_panel.transform.Find("Hexagone_SF(Clone)"))
+        {
+            ui_panel.transform.Find("Hexagone_SF(Clone)").gameObject.SetActive(false);
+        }
     }
 
     public void DisplayBackMapAtTheEnd()

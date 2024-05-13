@@ -27,6 +27,8 @@
   "menu_error_codeRoomIsIncorrect":"Le code est incorrect.",
   "menu_information_connection":"Connexion..",
   "menu_information_connection_buttonCancel":"Annuler",
+  "menu_error_errorVersion":"Votre version n'est pas à jour.",
+  "menu_error_errorVersion_2":"Veuillez relancer le jeu",
 
   "waitingRoom_players":"Joueurs : ",
   "waitingRoom_code":"Code : ",
@@ -240,9 +242,9 @@
 
 "menu_settingGame_speciallyRoom_0" : "Salle des coffres",
 "menu_settingGame_speciallyRoom_1" : "Salle sacrifice",
-"menu_settingGame_speciallyRoom_2" : "Salle de l'Enfer",
-"menu_settingGame_speciallyRoom_3" : "Salle des prières",
-"menu_settingGame_speciallyRoom_4" : "Salle de l'informateur",
+"menu_settingGame_speciallyRoom_2" : "Salle des Enfers",
+"menu_settingGame_speciallyRoom_3" : "Salle de prière",
+"menu_settingGame_speciallyRoom_4" : "Salle des Informateurs",
 "menu_settingGame_speciallyRoom_5" : "Salle de résurection",
 "menu_settingGame_speciallyRoom_6" : "Salle de purification",
 
@@ -250,20 +252,20 @@
 "menu_settingGame_trialRoom_1" : "Salle de Damoclès",
 "menu_settingGame_trialRoom_2" : "Salle des haches",
 "menu_settingGame_trialRoom_3" : "Salle des épées",
-"menu_settingGame_trialRoom_4" : "Salle du Dieu de la Mort",
+"menu_settingGame_trialRoom_4" : "Salle des Faucheuses",
 "menu_settingGame_trialRoom_5" : "Salle des créatures",
-"menu_settingGame_trialRoom_6" : "Salle de la torche perdue",
+"menu_settingGame_trialRoom_6" : "Salle de la torche",
 "menu_settingGame_trialRoom_7" : "Salle du labyrinthe",
 
 "menu_settingGame_trapRoom_0" : "Salle embrumée",
 "menu_settingGame_trapRoom_1" : "Salle maudite",
 "menu_settingGame_trapRoom_2" : "Salle prison",
-"menu_settingGame_trapRoom_3" : "Salle des coffres piégés",
+"menu_settingGame_trapRoom_3" : "Salle des coffres piégée",
 "menu_settingGame_trapRoom_4" : "Salle empoisonée",
-"menu_settingGame_trapRoom_5" : "Salle des prières piégées",
+"menu_settingGame_trapRoom_5" : "Salle de prière piégée",
 
-"menu_settingGame_impostorObject_0" : "Potion d'invisibilité",
-"menu_settingGame_impostorObject_1" : "Livre satanique",
+"menu_settingGame_impostorObject_0" : "Potion d'aveuglement",
+"menu_settingGame_impostorObject_1" : "Livre maudit",
 "menu_settingGame_impostorObject_2" : "Couteau satanique",
 
 "menu_firstConnexion_0" : "Serveur",
@@ -311,7 +313,7 @@
 "tutorial_autel_resurection_1" : "Vous pouvez ressusciter une âme sacrifiée.",
 "tutorial_autel_resurection_2" : "Une âme éliminée par le couteau satanique peut aussi être ressuscitée.",
 
-"tutorial_autel_pray_0" : "Salle des prières",
+"tutorial_autel_pray_0" : "Salle de prière",
 "tutorial_autel_pray_1" : "Vous pouvez prier pour récupérer un indice.",
 "tutorial_autel_pray_2" : "Attention cette salle peut être piégée.",
 
@@ -330,12 +332,12 @@
 "tutorial_autel_trapList_4" : "Salle prison",
 "tutorial_autel_trapList_5" : "Cette salle permet d'emprisoner une âme lors de l'exploration.",
 
-"tutorial_autel_trapList2_0" : "Salle des coffres piégés",
+"tutorial_autel_trapList2_0" : "Salle des coffres piégé",
 "tutorial_autel_trapList2_1" : "Permet de modifier le bon coffre pour lui ajouter un malus.",
 "tutorial_autel_trapList2_2" : "Salle empoisonée",
 "tutorial_autel_trapList2_3" : "Ce piège modifie l'information de la distance lors de l'exploration.",
-"tutorial_autel_trapList2_4" : "Salle des prières piégées",
-"tutorial_autel_trapList2_5" : "Piège une salle des prières et permet de changer d'emplacement la salle du Paradis.",
+"tutorial_autel_trapList2_4" : "Salle de prière piégée",
+"tutorial_autel_trapList2_5" : "Piège une salle de prière et permet de changer d'emplacement la salle du Paradis.",
 
 "tutorial_autel_impostorObject_0" : "Potion d'invisibilité",
 "tutorial_autel_impostorObject_1" : "Vous permet de vous rendre invisible, utilisable sur un allié.",
@@ -422,12 +424,12 @@
 "1.0_menu_privateGame" : "Partie privée",
 "1.0_menu_serveurText" : "Serveur : ",
 "1.0_menu_contactUs" : "Nous contacter : ",
-"1.0_menu_contactUsFirstSettingText" : "Veuillez faire vos premier réglages :",
+"1.0_menu_contactUsFirstSettingText" : "Veuillez faire vos premiers réglages :",
 "1.0_menu_keyBoardAzerty" : "Clavier Azerty :",
 "1.0_menu_VersionNotCorrect" : "Votre version n'est pas à jour.",
 "1.0_menu_MakeUpdate" : "Veuillez faire la mise à jour.",
-"1.0_menu_Disconnect" : "Deconnexion",
-"1.0_menu_ErrorToConnect" : "erreur de connexion avec le serveur...",
+"1.0_menu_Disconnect" : "Déconnexion",
+"1.0_menu_ErrorToConnect" : "Erreur de connexion avec le serveur...",
 "1.0_menu_CodeRoomIncorrect" : "Le code est incorrect.",
 "1.0_menu_KeybordSetting" : "Clavier",
 "1.0_menu_ControllerSetting" : "Manette",
@@ -441,11 +443,11 @@
 "1.0_menu_SettingGame_TeamTrialyRoom" : "Salles d'épreuves en équipe",
 "1.0_menu_SettingGame_Object" : "Objets",
 "1.0_menu_SettingGame_TrapedRoom" : "Pièges",
-"1.0_menu_SettingGame_CorruptedSoulObject" : "Objets Âme corrompues",
-"1.0_menu_SettingGame_CorruptedSoulText" : "Âme corrompues",
+"1.0_menu_SettingGame_CorruptedSoulObject" : "Objets âme corrompue",
+"1.0_menu_SettingGame_CorruptedSoulText" : "Âme corrompue",
 "1.0_menu_SettingGame_NormalText" : "Normal",
 "1.0_menu_SettingGame_ManyText" : "Beaucoup",
-"1.0_menu_SettingGame_completeMap" : "Carte détaillée",
+"1.0_menu_SettingGame_completeMap" : "Carte",
 "1.0_menu_SettingGame_fieldProtection" : "Champ de protection",
 "1.0_menu_SettingGame_BlackTorch" : "Torche noire",
 "1.0_menu_SettingGame_BlindPotion" : "Potion d'aveuglement",
@@ -461,37 +463,37 @@
 
 "1.0_game_echapMenu_tutorial_role" : "Rôles",
 "1.0_game_echapMenu_tutorial_object" : "Objets",
-"1.0_game_echapMenu_tutorial_corrutpedSoul" : "Âme corrompues",
+"1.0_game_echapMenu_tutorial_corrutpedSoul" : "Âme corrompue",
 
 "1.0_game_echapMenu_tutorial_voteDoor_Maintext" : "Le chef peut lancer un vote d'ouverture de porte.",
-"1.0_game_echapMenu_tutorial_voteDoor_2_Maintext" : "Lorsque le vote est lancé, les âmes doivent choisir une porte à ouvrire.",
+"1.0_game_echapMenu_tutorial_voteDoor_2_Maintext" : "Lorsque le vote est lancé, les âmes doivent choisir une porte à ouvrir.",
 "1.0_game_echapMenu_tutorial_voteDoor_2_text2" : "La porte avec le plus de vote s'ouvrira.",
-"1.0_game_echapMenu_tutorial_voteDoor_2_textNote" : "Note : Une ouverture de porte utilisera une clef.",
-"1.0_game_echapMenu_tutorial_voteDoor_2_text3" : "+2 Votes",
+"1.0_game_echapMenu_tutorial_voteDoor_2_textNote" : "Note : une ouverture de porte utilisera une clef.",
+"1.0_game_echapMenu_tutorial_voteDoor_2_text3" : "+2 votes",
 "1.0_game_echapMenu_tutorial_voteDoor_2_text4" : "+1 vote",
 "1.0_game_echapMenu_tutorial_voteDoor_3_MainText" : "La zone au centre permet d'annuler le vote.",
 
-"1.0_game_echapMenu_tutorial_exploration_MainText" : "Le chef peut donner une torche bleue à une et une seule âme",
+"1.0_game_echapMenu_tutorial_exploration_MainText" : "Le chef peut donner une torche bleue à une seule âme",
 "1.0_game_echapMenu_tutorial_exploration_1_MainText" : "L'explorateur doit utiliser la torche bleue sur une porte de son choix.",
 "1.0_game_echapMenu_tutorial_exploration_2_MainText" : "L'utilisation de la torche bleue vous donnera une indication sur la direction à prendre.",
-"1.0_game_echapMenu_tutorial_exploration_2_Text1" : "Bleu = Bonne direction",
-"1.0_game_echapMenu_tutorial_exploration_2_Text2" : "Rouge = Mauvaise direction",
-"1.0_game_echapMenu_tutorial_exploration_2_TextNote" : "Note : Seule l'explorateur peut distinguer les couleurs",
+"1.0_game_echapMenu_tutorial_exploration_2_Text1" : "Bleu = bonne direction",
+"1.0_game_echapMenu_tutorial_exploration_2_Text2" : "Rouge = mauvaise direction",
+"1.0_game_echapMenu_tutorial_exploration_2_TextNote" : "Note : seul l'explorateur peut distinguer les couleurs",
 "1.0_game_echapMenu_tutorial_exploration_4_Text1" : "L'explorateur doit attendre qu'une autre âme utilise une torche bleue afin d'explorer à nouveau.",
 "1.0_game_echapMenu_tutorial_exploration_4_Text2" : "Ne peut plus explorer.",
-"1.0_game_echapMenu_tutorial_exploration_4_TextNote" : "Note : Un explorateur pourra toujours gagner des torches bleues lors des salles d'épreuves.",
+"1.0_game_echapMenu_tutorial_exploration_4_TextNote" : "Note : un explorateur pourra toujours gagner des torches bleues lors des salles d'épreuves.",
 
-"1.0_game_echapMenu_tutorial_role_MainText" : "L'objectif des âmes égarée est de trouver la porte du Paradis ! ",
-"1.0_game_echapMenu_tutorial_role_NoteText" : "Mais attention dans l'équipe se cache des âmes compompues",
-"1.0_game_echapMenu_tutorial_role_2_MainText" : "L'objectif des âmes Corrompues est de ne pas trouver le Paradis.",
+"1.0_game_echapMenu_tutorial_role_MainText" : "L'objectif des âmes égarées est de trouver la porte du Paradis ! ",
+"1.0_game_echapMenu_tutorial_role_NoteText" : "Mais attention dans l'équipe se cachent des âmes corrompues",
+"1.0_game_echapMenu_tutorial_role_2_MainText" : "L'objectif des âmes corrompues est de ne pas trouver le Paradis.",
 "1.0_game_echapMenu_tutorial_role_2_text2" : "Gaspillez toutes les clefs de l'équipe.",
 "1.0_game_echapMenu_tutorial_role_2_text3" : "Ou",
-"1.0_game_echapMenu_tutorial_role_2_text4" : "Emmenez l'équipe dans la salle des enfers.",
+"1.0_game_echapMenu_tutorial_role_2_text4" : "Emmenez l'équipe dans la salle des Enfers.",
 
 "1.0_game_echapMenu_tutorial_speciallyRoom_title1" : "Épreuve individuelle",
 "1.0_game_echapMenu_tutorial_speciallyRoom_texte1" : "Soyez le dernier survivant de l'épreuve afin de récupérer une récompense.",
 "1.0_game_echapMenu_tutorial_speciallyRoom_title2" : "Épreuve en équipe",
-"1.0_game_echapMenu_tutorial_speciallyRoom_texte2" : "Survivez à l'épreuve pour reçevoir une récompense d'équipe.",
+"1.0_game_echapMenu_tutorial_speciallyRoom_texte2" : "Survivez à l'épreuve pour recevoir une récompense d'équipe.",
 "1.0_game_echapMenu_tutorial_speciallyRoom_title3" : "Salle spéciale",
 "1.0_game_echapMenu_tutorial_speciallyRoom_texte3" : "Salle spéciale aléatoire (coffres, sacrifice etc..)",
 "1.0_game_echapMenu_tutorial_speciallyRoom_title4" : "Salle corrompue",
@@ -500,21 +502,21 @@
 "1.0_game_echapMenu_tutorial_SoulObject_title1" : "Carte",
 "1.0_game_echapMenu_tutorial_SoulObject_text1" : "Permet d'obtenir tout le contenu de la carte.",
 "1.0_game_echapMenu_tutorial_SoulObject_title2" : "Champ de protection",
-"1.0_game_echapMenu_tutorial_SoulObject_text2" : "Permet de vous prémunir contre toute malédiction, mais cet objet ne vous soigne pas.",
-"1.0_game_echapMenu_tutorial_SoulObject_title3" : "Torche Noire",
-"1.0_game_echapMenu_tutorial_SoulObject_text3" : "Vous permet d'avoir le pouvoir de la torche bleue mais qui s'applique sur toutes les portes en même temps.",
+"1.0_game_echapMenu_tutorial_SoulObject_text2" : "Permet de vous prémunir contre toutes malédictions, mais cet objet ne vous purifie pas.",
+"1.0_game_echapMenu_tutorial_SoulObject_title3" : "Torche noire",
+"1.0_game_echapMenu_tutorial_SoulObject_text3" : "Augmente la puissance de la torche bleue.",
 
 "1.0_game_echapMenu_tutorial_ImpostorChoice_text1" : "Pièges",
 "1.0_game_echapMenu_tutorial_ImpostorChoice_text2" : "Objets",
 
 "1.0_game_echapMenu_tutorial_TrapedRoom_texte1" : "Ce piège permet de cacher les couleurs lors de l'utilisation de la torche bleue.",
 "1.0_game_echapMenu_tutorial_TrapedRoom_texte2" : "Permet d'ajouter un malus sur les deux coffres.",
-"1.0_game_echapMenu_tutorial_TrapedRoom_texte3" : "Permet d'altérer la distance de la salle des prières.",
+"1.0_game_echapMenu_tutorial_TrapedRoom_texte3" : "Permet d'altérer la distance de la salle de prière.",
 
 "1.0_game_echapMenu_tutorial_ImpostorObject_title1" : "Potion d'aveuglement",
 "1.0_game_echapMenu_tutorial_ImpostorObject_text1" : "Vous permet de maudire une âme égarée, l'âme ne pourra plus distinguer les couleurs lors de l'utilisation de la torche bleue.",
 "1.0_game_echapMenu_tutorial_ImpostorObject_title2" : "Livre maudit",
-"1.0_game_echapMenu_tutorial_ImpostorObject_text2" : "Vous permet de maudire une âme égarée et de lui échanger l'interpretation des couleurs lors de l'utilisation de la torche bleue.",
+"1.0_game_echapMenu_tutorial_ImpostorObject_text2" : "Vous permet de maudire une âme égarée et de lui échanger l'interprétation des couleurs lors de l'utilisation de la torche bleue.",
 "1.0_game_echapMenu_tutorial_ImpostorObject_title3" : "Clef piégée",
 "1.0_game_echapMenu_tutorial_ImpostorObject_text3" : "Vous permet de placer le piège que vous souhaitez.",
 
@@ -529,22 +531,22 @@
 "1.0_game_TutorialPanel_choice_door" : "Portes",
 "1.0_game_TutorialPanel_choice_Exploration" : "Exploration",
 
-"1.0_game_TutorialPanel_Exploration_1_text" : "Le chef peut donner une torche bleu à une et une seule âme.",
-"1.0_game_TutorialPanel_Exploration_2_text" : "L'explorateur doit utiliser la torche bleu sur une porte de son choix.",
-"1.0_game_TutorialPanel_Exploration_3_text" : "L'utilisation de la torche bleu vous donnera la direction à prendre.",
-"1.0_game_TutorialPanel_Exploration_3_text2" : "Bleu = Bonne direction",
-"1.0_game_TutorialPanel_Exploration_3_text3" : "Rouge = Mauvaise direction",
-"1.0_game_TutorialPanel_Exploration_3_textNote" : "Note : Seul l'explorateur peut distinguer les couleurs.",
+"1.0_game_TutorialPanel_Exploration_1_text" : "Le chef peut donner une torche bleue à une seule âme.",
+"1.0_game_TutorialPanel_Exploration_2_text" : "L'explorateur doit utiliser la torche bleue sur une porte de son choix.",
+"1.0_game_TutorialPanel_Exploration_3_text" : "L'utilisation de la torche bleue vous donnera la direction à prendre.",
+"1.0_game_TutorialPanel_Exploration_3_text2" : "Bleu = bonne direction",
+"1.0_game_TutorialPanel_Exploration_3_text3" : "Rouge = mauvaise direction",
+"1.0_game_TutorialPanel_Exploration_3_textNote" : "Note : seul l'explorateur peut distinguer les couleurs.",
 "1.0_game_TutorialPanel_Exploration_4_text1" : "L'explorateur doit attendre qu'une autre âme utilise une torche bleue afin d'explorer à nouveau.",
 "1.0_game_TutorialPanel_Exploration_4_text2" : "Ne peut plus explorer.",
 "1.0_game_TutorialPanel_Exploration_4_textNote" : "Note : Un explorateur pourra toujours gagner des torches bleues lors des salles d'épreuves individuelles.",
 
 "1.0_game_TutorialPanel_voteDoor_1_text" : "Le chef peut lancer un vote d'ouverture de porte.",
-"1.0_game_TutorialPanel_voteDoor_2_text" : "Lorsque le vote est lancé, les âmes doivent choisir une porte à ouvrire..",
+"1.0_game_TutorialPanel_voteDoor_2_text" : "Lorsque le vote est lancé, les âmes doivent choisir une porte à ouvrir..",
 "1.0_game_TutorialPanel_voteDoor_2_text2" : "+1 vote",
-"1.0_game_TutorialPanel_voteDoor_2_text3" : "+2 Votes",
+"1.0_game_TutorialPanel_voteDoor_2_text3" : "+2 votes",
 "1.0_game_TutorialPanel_voteDoor_2_text4" : "La porte avec le plus de vote s'ouvrira.",
-"1.0_game_TutorialPanel_voteDoor_2_textNote" : "Note : Une ouverture de porte utilisera une clef.",
+"1.0_game_TutorialPanel_voteDoor_2_textNote" : "Note : une ouverture de porte utilisera une clef.",
 "1.0_game_TutorialPanel_voteDoor_3_text" : "La zone au centre permet d'annuler le vote.",
 
 
@@ -553,12 +555,12 @@
 "1.0_game_FirstTutorial_map_text3" : "Ce nombre donne la distance par rapport à la salle de départ.",
 
 
-"1.0_game_TutorialPanel_chest_title" : "Salle des coffres",
+"1.0_game_TutorialPanel_chest_title" : "Salle des Coffres",
 "1.0_game_TutorialPanel_chest_text" : "Vous devez choisir un coffre à ouvrir, mais un des coffres est vide.",
 "1.0_game_TutorialPanel_chest_textNote" : "Attention cette salle peut être piégée.",
 
-"1.0_game_TutorialPanel_sacrifice_title" : "Salle sacrifice",
-"1.0_game_TutorialPanel_sacrifice_text" : "Si vous sacrifiez une personne de votre équipe, vous serez récompensés par 2 clés supplémentaires.",
+"1.0_game_TutorialPanel_sacrifice_title" : "Salle Sacrifice",
+"1.0_game_TutorialPanel_sacrifice_text" : "Si vous sacrifiez une personne de votre équipe, vous serez récompensés par 2 cléfs supplémentaires.",
 "1.0_game_TutorialPanel_sacrifice_text2" : "L'âme ayant reçu le plus de votes sera sacrifiée.",
 
 
@@ -567,29 +569,29 @@
 "1.0_game_TutorialPanel_fireBall_text2" : "Le dernier survivant sera récompensé.",
 
 
-"1.0_game_TutorialPanel_ax_title" : "Salle des Gargouilles",
-"1.0_game_TutorialPanel_ax_text" : "Vous devez toucher vos adversaires avec votre hache.",
+"1.0_game_TutorialPanel_ax_title" : "Salle des Haches",
+"1.0_game_TutorialPanel_ax_text" : "Vous devez toucher vos adversaires avec vos haches.",
 "1.0_game_TutorialPanel_ax_text2" : "Le dernier survivant sera récompensé.",
 
-"1.0_game_TutorialPanel_sword_title" : "Salle des épées",
+"1.0_game_TutorialPanel_sword_title" : "Salle des Épées",
 "1.0_game_TutorialPanel_sword_text" : "Vous devez toucher vos adversaires avec votre épée.",
 "1.0_game_TutorialPanel_sword_text2" : "Le dernier survivant sera récompensé.",
 
 "1.0_game_TutorialPanel_damocles_title" : "Salle de Damoclès",
-"1.0_game_TutorialPanel_damocles_text" : "Touchez vos adversaires pour éviter que l'épée de Damoclès ne s'abbate sur vous.",
+"1.0_game_TutorialPanel_damocles_text" : "Touchez vos adversaires pour éviter que l'épée de Damoclès ne s'abatte sur vous.",
 "1.0_game_TutorialPanel_damocles_text2" : "Le dernier survivant sera récompensé.",
 
 "1.0_game_TutorialPanel_deathNPC_title" : "Salle des Faucheuses",
-"1.0_game_TutorialPanel_deathNPC_text" : "Évitez de vous faire toucher par les faucheuses.",
+"1.0_game_TutorialPanel_deathNPC_text" : "Évitez de vous faire toucher par les Faucheuses.",
 "1.0_game_TutorialPanel_deathNPC_text2" : "S'il y a au moins un survivant jusqu'au temps imparti, l'équipe sera récompensée.",
 "1.0_game_TutorialPanel_deathNPC_text3" : "Epreuve d'équipe",
 
-"1.0_game_TutorialPanel_torchRoom_title" : "Salle de la torche",
+"1.0_game_TutorialPanel_torchRoom_title" : "Salle de la Torche",
 "1.0_game_TutorialPanel_torchRoom_text" : "Volez la torche à vos adversaires.",
-"1.0_game_TutorialPanel_torchRoom_text2" : "La dernière âme à avoir la torche à la fin du temps imparti sera récompensée.",
+"1.0_game_TutorialPanel_torchRoom_text2" : "La dernière âme qui tient la torche à la fin du délai imparti recevra une récompense.",
 
 "1.0_game_TutorialPanel_monster_title" : "Salle des Créatures",
-"1.0_game_TutorialPanel_monster_text" : "Évitez de vous faire toucher par les créatures, vous pouvez utiliser votre épée pour les éliminer",
+"1.0_game_TutorialPanel_monster_text" : "Évitez de vous faire toucher par les créatures, vous pouvez utiliser votre épée pour les éliminer.",
 "1.0_game_TutorialPanel_monster_text2" : "S'il y a au moins un survivant jusqu'au temps imparti, l'équipe sera récompensée.",
 "1.0_game_TutorialPanel_monster_text3" : "Epreuve d'équipe",
 
@@ -597,31 +599,42 @@
 "1.0_game_TutorialPanel_labyrinth_text" : "Trouvez en premier les chemins cachés du labyrinthe pour récupérer les récompenses.",
 
 "1.0_game_TutorialPanel_purification_title" : "Salle de Purification",
-"1.0_game_TutorialPanel_purification_text" : "Vous pouvez purifier une âme.",
+"1.0_game_TutorialPanel_purification_text" : "Vous pouvez purifier une seule âme.",
 "1.0_game_TutorialPanel_purification_text2" : "Une âme purifiée n'aura plus aucune malédiction.",
 
-"1.0_game_TutorialPanel_pray_title" : "Salle des prières",
-"1.0_game_TutorialPanel_pray_text" : "Vous pouvez prier pour récupérer la distance qui vous sépare du Paradis.",
-"1.0_game_TutorialPanel_pray_text2" : "Attention, cette salle peut être piégée et vous donner une distance altérée.",
+"1.0_game_TutorialPanel_pray_title" : "Salle de Prière",
+"1.0_game_TutorialPanel_pray_text" : "Priez pour voir la distance qui vous sépare du Paradis.",
+"1.0_game_TutorialPanel_pray_text2" : "Attention, cette salle peut être piégée et vous donner une distance erronée.",
 
-"1.0_game_TutorialPanel_npc_title" : "Salle des informateurs",
-"1.0_game_TutorialPanel_npc_text" : "Choisissez un informateurs, afin qu'il vous révèle un indice.",
-"1.0_game_TutorialPanel_npc_text2" : "Attention à ne pas choisir de démon, car ils ont parfois tendance à mentir.",
+"1.0_game_TutorialPanel_npc_title" : "Salle des Informateurs",
+"1.0_game_TutorialPanel_npc_text" : "Choisissez un informateur, afin qu'il vous révèle un indice.",
+"1.0_game_TutorialPanel_npc_text2" : "Attention à ne pas choisir de démons, car ils ont tendance à mentir.",
 
+
+
+"1.0_game_FirstTutorial_impostor_title" : "Âme corrompue",
+"1.0_game_FirstTutorial_impostor_mainText" : "Vous êtes une âme corrompue, votre équipe ne doit pas trouver le Paradis !",
+"1.0_game_FirstTutorial_impostor_text2" : "Gaspillez toutes les clefs de votre équipe.",
+"1.0_game_FirstTutorial_impostor_text3" : "Ou",
+"1.0_game_FirstTutorial_impostor_text4" : "Emmenez votre équipe dans la salle des Enfers.",
+
+"1.0_game_FirstTutorial_soul_title" : "Ame égarée",
+"1.0_game_FirstTutorial_soul_mainText" : "Vous êtes une âme égarée et votre objectif est de trouver la porte du Paradis ! ",
+"1.0_game_FirstTutorial_soul_text2" : "Mais attention dans votre équipe se cachent des âmes corrompues.",
 
 "1.0_game_FirstTutorial_boss_text" : "Vous pouvez proposer de changer de chef d'équipe.",
-"1.0_game_FirstTutorial_boss_text1" : "Le chef changera si la majorité des âmes le demandent.",
+"1.0_game_FirstTutorial_boss_text1" : "Le chef changera si la majorité des âmes le demande.",
 
-"1.0_game_FirstTutorial_trapImpostor_1_text" : "Déplacez-vous proche d'une porte entourée d'une lueur rouge.",
-"1.0_game_FirstTutorial_trapImpostor_1_text2" : "Plusieurs pièges existent, avec différents pouvoirs.",
+"1.0_game_FirstTutorial_trapImpostor_1_text" : "Déplacez-vous proche d'une porte.",
+"1.0_game_FirstTutorial_trapImpostor_1_text2" : "Plusieurs pièges existent avec différents pouvoirs.",
 "1.0_game_FirstTutorial_trapImpostor_2_text" : "Salle maudite",
 "1.0_game_FirstTutorial_trapImpostor_2_text2" : "Cette salle ouvre une porte de manière aléatoire, indépendamment de la volonté de l'équipe.",
 "1.0_game_FirstTutorial_trapImpostor_2_text3" : "Salle embrumée",
 "1.0_game_FirstTutorial_trapImpostor_2_text4" : "Ce piège permet de rendre la torche bleue inutilisable.",
-"1.0_game_FirstTutorial_trapImpostor_3_text" : "Salle des coffres piégées",
+"1.0_game_FirstTutorial_trapImpostor_3_text" : "Salle des coffres piégée",
 "1.0_game_FirstTutorial_trapImpostor_3_text2" : "Piège les coffres avec des malus.",
-"1.0_game_FirstTutorial_trapImpostor_3_text3" : "Salle des prière piégées",
-"1.0_game_FirstTutorial_trapImpostor_3_text4" : "Piège une salle des prières et permet de modifier la distance affichée.",
+"1.0_game_FirstTutorial_trapImpostor_3_text3" : "Salle de prière piégée",
+"1.0_game_FirstTutorial_trapImpostor_3_text4" : "Piège une salle de prière et permet de modifier la distance affichée.",
 
 
 
@@ -643,12 +656,12 @@
 
 "1.0_game_magicalKeyPanel_text1" : "Salle des coffres",
 "1.0_game_magicalKeyPanel_text2" : "Salle sacrifice",
-"1.0_game_magicalKeyPanel_text3" : "Salle des prières",
+"1.0_game_magicalKeyPanel_text3" : "Salle de prière",
 "1.0_game_magicalKeyPanel_text4" : "Salle de purification",
 
 "1.0_game_TrapedKeyPanel_text1" : "Salle embrumée",
 "1.0_game_TrapedKeyPanel_text2" : "Salle maudite",
-"1.0_game_TrapedKeyPanel_text3" : "Salle des prières",
+"1.0_game_TrapedKeyPanel_text3" : "Salle de prière",
 "1.0_game_TrapedKeyPanel_text4" : "Salle des coffres",
 
 "1.0_game_trialObject_MainText" : "Vous avez gagné : ",
@@ -664,7 +677,7 @@
 "1.0_game_trialObject_text95" : "Piège brume",
 "1.0_game_trialObject_text10" : "Piège des coffres",
 "1.0_game_trialObject_text11" : "Piège de malédictions",
-"1.0_game_trialObject_text13" : "Piège de salle des prières",
+"1.0_game_trialObject_text13" : "Piège de salle de prière",
 "1.0_game_trialObject_text14" : "Piège illusion",
 
 "1.0_errorInGame_text1" : "La torche bleue n'est plus utilisable dans cette salle.",
@@ -674,12 +687,12 @@
 "1.0_errorInGame_text5" : "Cette âme ne peut utiliser de torche bleue pour le moment.",
 "1.0_errorInGame_text6" : "Une âme doit se situer dans le cercle de purification.",
 "1.0_errorInGame_text7" : "Toutes les portes sont déjà ouvertes.",
-"1.0_errorInGame_text8" : "Vous devez attendre 5 secondes avant de pouvoir proposer un vote à nouveau.",
-"1.0_errorInGame_text9" : "Vous n'avez plus de torches.",
-
+"1.0_errorInGame_text8" : "Vous devez attendre 5 secondes avant de pouvoir soumettre un nouveau vote.",
+"1.0_errorInGame_text9" : "Vous n'avez plus de torche.",
 
 "1.0_npcRoom_Maintext" : "Vous devez prendre la porte : ",
 
 "1.0_credit_assistantGraphist" : "Assistant graphiste",
 
+"1.0_welcome_firstPanel_0" : "Bienvenue",
   }

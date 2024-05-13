@@ -384,7 +384,7 @@ public class Ax : MonoBehaviourPun
     {
         yield return new WaitForSeconds(0.6f);
         counterTurn++;
-        if (counterTurn < 30)
+        if (counterTurn < 15)
         {
             this.transform.Find("Animation").GetChild(0).gameObject.SetActive(false);
             this.transform.Find("Animation").GetChild(0).gameObject.SetActive(true);

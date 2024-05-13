@@ -38,7 +38,8 @@ public class TrialsRoom : MonoBehaviourPun
 
     public void GetRandomAward(float randomFloat, int indexPlayer)
     {
-        //randomFloat = 99;
+        //randomFloat = 65;
+        //randomFloat = 45;
         if(randomFloat < 50)
         {
             // bluetorch

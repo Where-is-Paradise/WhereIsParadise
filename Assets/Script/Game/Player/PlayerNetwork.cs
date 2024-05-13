@@ -1451,14 +1451,15 @@ public class PlayerNetwork : MonoBehaviourPun
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Crown").gameObject.SetActive(player.isBossMenu);
     }
 
-    public void ResetHasWinFireBall()
+    public void SendResetHasWinFireBall()
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        photonView.RPC("SetResetHasWinFireBall", RpcTarget.All);
+    }
 
-        foreach(GameObject player in players)
-        {
-            player.GetComponent<PlayerGO>().ResetHasWinFireBallRoom();
-        }
+    [PunRPC]
+    public void SetResetHasWinFireBall()
+    {
+        player.hasWinFireBallRoom = false;
     }
 
 }
