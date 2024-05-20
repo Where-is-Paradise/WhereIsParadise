@@ -1464,12 +1464,12 @@ public class PlayerGO : MonoBehaviour
             }
             else
             {
-                if(gameManager.teamHasWinTrialRoom && !isTouchInTrial)
+                if(gameManager.teamHasWinTrialRoom && !isTouchInTrial && gameManager.game.currentRoom.isTeamTrial)
                 {
                     playerNetwork.SendDesactivateObjectTeam();
                 }
                 
-                if (gameManager.game.currentRoom.isImpostorRoom)
+                if (gameManager.game.currentRoom.isImpostorRoom && isImpostor && !isTouchInTrial)
                     GameObject.Find("ImpostorRoom").GetComponent<ImpostorRoom>().CollisionObject(collision.gameObject.name);
             }
         }
@@ -1666,8 +1666,8 @@ public class PlayerGO : MonoBehaviour
             groupSpeciality = "TrialRoom_lever";
             gameManager.gameManagerNetwork.SendLaunchLabyrinthRoom();
         }
-
-        gameManager.gameManagerNetwork.SendCloseDoorWhenVoteCoroutine();
+        if(!gameManager.game.currentRoom.isPurification && !gameManager.game.currentRoom.isPray)
+            gameManager.gameManagerNetwork.SendCloseDoorWhenVoteCoroutine();
         StartCoroutine(HideLeverCouroutine(groupSpeciality));
         onClickButtonKeySpecially = false;
         gameManager.ui_Manager.DisplayButtonSpeciallyRoomKeyBigger(false);

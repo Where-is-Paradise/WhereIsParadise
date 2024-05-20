@@ -106,7 +106,7 @@ public class SwordRoom : TrialsRoom
         gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("Final").gameObject.GetComponent<SpriteRenderer>().enabled = false;
         gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = false;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().canMove = true;
-        canAttack = true;
+        StartCoroutine(CanAttackCoroutine());
        
     }
 
@@ -139,6 +139,12 @@ public class SwordRoom : TrialsRoom
         gameManager.GetPlayer(indexPlayer).transform.Find("Sword").Find("Final").gameObject.GetComponent<BoxCollider2D>().enabled = true;
         //gameManager.GetPlayer(indexPlayer).transform.Find("Skins").GetChild(gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().indexSkin).Find("Sword").Find("Final").Find("SwordAnimation").GetChild(0).gameObject.SetActive(true);
         StartCoroutine(DisplayInitial(indexPlayer));
+    }
+
+    public IEnumerator CanAttackCoroutine()
+    {
+        yield return new WaitForSeconds(0.2f);
+        canAttack = true;
     }
 
     public void SendDesactivateRoomChild()

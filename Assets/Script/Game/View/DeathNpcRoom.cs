@@ -130,7 +130,7 @@ public class DeathNpcRoom : TrialsRoom
     public void GiveAward(int randomInt)
     {
         gameManager.teamHasWinTrialRoom = true;
-        DisplayGloballyAward(1);
+        DisplayGloballyAward(3);
     }
     public IEnumerator CouroutineEndGame(float secondes)
     {

@@ -292,6 +292,11 @@ public class TrialsRoom : MonoBehaviourPun
                     player.transform.GetChild(1).gameObject.SetActive(true);
                     if (player.GetComponent<PlayerGO>().hasProtection)
                         player.transform.Find("TrialObject").Find("AuraProtection").gameObject.SetActive(true);
+                    if(player.GetComponent<PlayerGO>().isBlind && gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+                        player.transform.Find("BlindPotion").gameObject.SetActive(true);
+                    if (player.GetComponent<PlayerGO>().isCursed && gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
+                        player.transform.Find("BookCursed").gameObject.SetActive(true);
+
                 }
             }
             player.GetComponent<PlayerGO>().ResetHeart();

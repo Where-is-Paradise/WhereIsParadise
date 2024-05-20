@@ -23601,8 +23601,8 @@ MonoBehaviour:
   firstTimePanel: 0
   welcome: 1
   region: eu
-  major: 0
-  minor: 8
+  major: 1
+  minor: 0
   revision: 0
   isCurrentChangeLanguage: 0
 --- !u!4 &503813623

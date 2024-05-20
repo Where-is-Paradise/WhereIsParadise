@@ -186,7 +186,7 @@ public class DamoclesSwordRoom : TrialsRoom
         {
             if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
             {
-                int randomTimer = Random.Range(5, 25);
+                int randomTimer = Random.Range(9, 16);
                 photonView.RPC("SendCouterLaunch", RpcTarget.All, randomTimer);
             }
         }

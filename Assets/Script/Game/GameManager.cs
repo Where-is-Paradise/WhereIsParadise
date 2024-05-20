@@ -2635,6 +2635,7 @@ public class GameManager : MonoBehaviourPun
             if (doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll)
             {
                 doorsParent.transform.GetChild(i).GetComponent<Door>().IsCloseNotPermantly = close;
+                Debug.LogError("sa passe ici collision field");
                 doorsParent.transform.GetChild(i).Find("CollisionField").gameObject.SetActive(close);
             }
         }

@@ -776,7 +776,7 @@ public class Death_NPC : MonoBehaviourPun
 
     public void DisplayTargetImg(bool display)
     {
-        if(target && !isInvisible)
+        if(target && !isInvisible && !gameManager.GetPlayer(target.GetComponent<PhotonView>().ViewID).GetComponent<PlayerGO>().isTouchInTrial)
             photonView.RPC("SendDisplayTarget",RpcTarget.All, target.GetComponent<PhotonView>().ViewID, display);
     }
 

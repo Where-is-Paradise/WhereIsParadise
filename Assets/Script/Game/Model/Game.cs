@@ -123,7 +123,10 @@ public class Game : ScriptableObject
             return 2;
         }else
         {
-            return 3;
+            if (setting.NB_IMPOSTOR == 2)
+                return 2;
+            else
+                return 3;
         }
     }
 

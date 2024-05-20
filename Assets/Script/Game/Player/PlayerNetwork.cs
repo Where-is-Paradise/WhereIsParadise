@@ -877,6 +877,8 @@ public class PlayerNetwork : MonoBehaviourPun
             player.transform.GetChild(1).gameObject.SetActive(false);
             player.transform.Find("Sword").gameObject.SetActive(false);
             player.transform.Find("Ax").gameObject.SetActive(false);
+            player.transform.Find("BookCursed").gameObject.SetActive(false);
+            player.transform.Find("BlindPotion").gameObject.SetActive(false);
             if (player.hasProtection)
                 player.transform.Find("TrialObject").Find("AuraProtection").gameObject.SetActive(false);
         }

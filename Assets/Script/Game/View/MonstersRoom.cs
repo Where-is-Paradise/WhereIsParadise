@@ -131,7 +131,7 @@ public class MonstersRoom : TrialsRoom
 
     public void SpawnMonster()
     {
-        if (GameObject.FindGameObjectsWithTag("Monster").Length >= 30)
+        if (GameObject.FindGameObjectsWithTag("Monster").Length >= 250)
             return;
 
         int indexSpawn = Random.Range(0, listSpawn.transform.childCount);

@@ -1030,7 +1030,7 @@ setting_button_echapMenu.SetActive(false);
 
     public void AnimationBrokenKey()
     {
-        Key_broken.transform.Translate(Vector3.up * Time.deltaTime * 3);
+        Key_broken.transform.Translate((Vector3.down + Vector3.left) * Time.deltaTime * 2);
     }
 
     private IEnumerator CoroutineBrokenKey(int seconds)
