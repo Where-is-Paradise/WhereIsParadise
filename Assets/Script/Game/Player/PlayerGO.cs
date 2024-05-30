@@ -195,6 +195,8 @@ public class PlayerGO : MonoBehaviour
 
     public bool isBossMenu = false;
 
+    public bool canPray = false;
+
     private void Awake()
     {
         displayChatInput = false;
@@ -1220,11 +1222,8 @@ public class PlayerGO : MonoBehaviour
             return;
         if (!collision.gameObject.tag.Equals("NPC"))
             return;
-        if (!isBoss)
-            return;
         if (gameManager.voteDoorHasProposed)
             return;
-
         if (collision.gameObject.name.Equals("NPCLeft"))
             indexNpc = 0;
         else if (collision.gameObject.name.Equals("NPCMiddle"))
@@ -1855,11 +1854,12 @@ public class PlayerGO : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             ClicktoExploration();
-            ClickToVoteSacrifice();   
+            ClickToVoteSacrifice();
+            ClickToPray();
         }
     }
 
-    public void ClicktoExploration()
+    public void ClickToPray()
     {
         if (!gameManager)
         {
@@ -1873,19 +1873,10 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (gameManager.speciallyIsLaunch)
+        if (!gameManager.game.currentRoom.isPray)
             return;
-        if (gameManager.game.currentRoom.explorationIsUsed)
-        {
-            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayErrorBlueTorchNotAvaible();
-            DispayRedLight();
+        if (!gameManager.PrayIsLaunch)
             return;
-        }
-        if(gameManager.game.nbTorch <= 0)
-        {
-            gameManager.errorMessage.GetComponent<ErrorMessage>().YouHaveNoMoreTorches();
-            return;
-        }
         if (gameManager.voteDoorHasProposed)
         {
             return;
@@ -1898,31 +1889,18 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
-        if (gameManager.game.currentRoom.isTrial && !gameManager.game.currentRoom.speciallyPowerIsUsed)
-        {
-            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayDoTrialBeforeUsedBlueTorch();
-            DispayRedLight();
+        
+        if (!canPray && (gameManager.GetNumberPlayerCanPray() >= GameObject.Find("PrayRoom").GetComponent<PrayRoom>().numberZone))
             return;
-        }
 
-        if (OnePlayerHasWinFireball())
-        {
-            Debug.LogError("error hasWinFireball");
-            return;
-        }
-          
-        if (gameManager.indexPlayerPreviousExploration == this.transform.GetComponent<PhotonView>().ViewID)
-        {
-            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayHeHasAlreadyTorch();
-            DispayRedLight();
-            return;
-        }
-            
-        if (gameManager.onePlayerHasTorch && !this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf)
-            return;
-        gameManager.gameManagerNetwork.SendDisplaySupportTorch(this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);
-        GetComponent<PlayerNetwork>().SendDisplayBlueTorch(!this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);
+        canPray = !canPray;
+        GetComponent<PlayerNetwork>().SendCanPray(canPray);
+        GetComponent<PlayerNetwork>().SendDisplayWhiteLight(canPray);
+     
     }
+
+    
+
     public void ClickToVoteSacrifice()
     {
         if (!gameManager)
@@ -1964,6 +1942,73 @@ public class PlayerGO : MonoBehaviour
         GetComponent<PlayerNetwork>().SendVoteToSacrifice(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice);
         transform.Find("Skins").GetChild(indexSkin).Find("Light_red").gameObject.SetActive(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasVoteSacrifice);
     }
+    public void ClicktoExploration()
+    {
+        if (!gameManager)
+        {
+            return;
+        }
+        if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            return;
+        }
+        if (this.GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        if (gameManager.speciallyIsLaunch)
+            return;
+        if (gameManager.game.currentRoom.explorationIsUsed)
+        {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayErrorBlueTorchNotAvaible();
+            DispayRedLight();
+            return;
+        }
+        if (gameManager.game.nbTorch <= 0)
+        {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().YouHaveNoMoreTorches();
+            return;
+        }
+        if (gameManager.voteDoorHasProposed)
+        {
+            return;
+        }
+        if (!gameManager.SamePositionAtBossWithIndex(this.GetComponent<PhotonView>().ViewID))
+        {
+            return;
+        }
+        if (isSacrifice)
+        {
+            return;
+        }
+        if (gameManager.game.currentRoom.isTrial && !gameManager.game.currentRoom.speciallyPowerIsUsed)
+        {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayDoTrialBeforeUsedBlueTorch();
+            DispayRedLight();
+            return;
+        }
+
+        if (OnePlayerHasWinFireball())
+        {
+            Debug.LogError("error hasWinFireball");
+            return;
+        }
+
+        if (gameManager.indexPlayerPreviousExploration == this.transform.GetComponent<PhotonView>().ViewID)
+        {
+            gameManager.errorMessage.GetComponent<ErrorMessage>().DisplayHeHasAlreadyTorch();
+            DispayRedLight();
+            return;
+        }
+        if (gameManager.PrayIsLaunch)
+            return;
+
+        if (gameManager.onePlayerHasTorch && !this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf)
+            return;
+        gameManager.gameManagerNetwork.SendDisplaySupportTorch(this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);
+        GetComponent<PlayerNetwork>().SendDisplayBlueTorch(!this.transform.Find("TrialObject").Find("BlueTorch").Find("BlueTorchImg").gameObject.activeSelf);
+    }
+
 
     public void DisplayChat(bool display)
     {

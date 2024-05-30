@@ -256,7 +256,6 @@ public class Dungeon : ScriptableObject
         listroomInDistance[randomIndex].isImpostorRoom = true;
         listroomInDistance[randomIndex].isHide = false;
         ResetSpeciallyRoom(listroomInDistance[randomIndex]);
-        Debug.LogError("Index impostor room : " + listroomInDistance[randomIndex].Index);
 
         return listroomInDistance[randomIndex].Index;
     }
@@ -865,6 +864,57 @@ public class Dungeon : ScriptableObject
                 room.IsObstacle = true;
                 room.isTooFar = true;
             }
+        }
+    }
+
+    public void AddAllPotentielHell()
+    {
+        foreach(Room room in rooms)
+        {
+            if(room.distance_pathFinding_initialRoom == exit.distance_pathFinding_initialRoom)
+            {
+                AddPotentialHell(room);
+            }
+        }
+    }
+
+    public void AddPotentialHell(Room endRoom)
+    {
+        int counter = 0;
+        foreach(Room neibgour in endRoom.listNeighbour)
+        {
+            if (neibgour.IsObstacle)
+                continue;
+            if (neibgour.distance_pathFinding_initialRoom != endRoom.distance_pathFinding_initialRoom)
+                continue;
+            counter++;
+        }
+        List<Room> listPotentialHell = new List<Room>();
+        if(counter == 0)
+        {
+          
+            foreach (Room neibgour in endRoom.listNeighbour)
+            {
+                if(neibgour.distance_pathFinding_initialRoom == endRoom.distance_pathFinding_initialRoom)
+                {
+                    listPotentialHell.Add(neibgour);
+                }
+            }
+
+            Debug.Log(listPotentialHell.Count);
+            if(listPotentialHell.Count > 0){
+                int randomInt = Random.Range(0, listPotentialHell.Count - 1);
+                listPotentialHell[randomInt].IsObstacle = false;
+                Debug.Log(listPotentialHell[randomInt].Index);
+                listPotentialHell.RemoveAt(randomInt);
+                if (listPotentialHell.Count > 0)
+                {
+                    int randomInt2 = Random.Range(0, listPotentialHell.Count - 1);
+                    listPotentialHell[randomInt2].IsObstacle = false;
+                    Debug.Log(listPotentialHell[randomInt2].Index);
+                }
+            }
+                
         }
     }
 

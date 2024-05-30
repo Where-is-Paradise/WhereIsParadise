@@ -1794,6 +1794,11 @@ setting_button_echapMenu.SetActive(false);
         GameObject.Find("Special").transform.Find("IllusionRoom").gameObject.SetActive(display);
     }
 
+    public void DiplayResultPray(bool display)
+    {
+        GameObject.Find("Special").transform.Find("PrayRoom").transform.Find("Status").Find("DistanceParadise").gameObject.SetActive(display);
+    }
+
     public void DisplayUI_Mobile_SpecialRoom(bool display)
     {
         if (gameManager.game.currentRoom.chest)
@@ -2504,7 +2509,12 @@ setting_button_echapMenu.SetActive(false);
 
         gameManager.gameManagerNetwork.SendNewSpeciallyRoom(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().GetRoomBehind().Index, indexChoice);
         gameManager.gameManagerNetwork.SendOrangeDoor(gameManager.GetDoorGo(indexDoor).GetComponent<Door>().index);
-        gameManager.gameManagerNetwork.SendTemporyCloseDoor();
+        //gameManager.gameManagerNetwork.SendTemporyCloseDoor();
+        if(GameObject.Find("MonstersRoom"))
+            GameObject.Find("MonstersRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+        if (GameObject.Find("DeathNPCRoom"))
+            GameObject.Find("DeathNPCRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+
     }
     public void UpdateRoomWithTrapedkey(int indexChoice)
     {
@@ -2638,7 +2648,7 @@ setting_button_echapMenu.SetActive(false);
     public void OnClickButtonNPC()
     {
         int indexNPC = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().indexNpc;
-        GameObject.Find("NPCRoom").GetComponent<NPCRoom>().SendDisplayDistanceByNpc(indexNPC);
+        gameManager.gameManagerNetwork.VoteNPC(indexNPC);
     }
 
     public void DisplayButtonNPC_InformationEndBigger(bool display)

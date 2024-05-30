@@ -446,7 +446,7 @@ public class Death_NPC : MonoBehaviourPun
 
     }
 
-    public IEnumerator RandomScenario()
+    public IEnumerator RandomScenario(bool canBeInvisible)
     {
         // 0 dash
         // circle dash
@@ -457,7 +457,7 @@ public class Death_NPC : MonoBehaviourPun
         float randomSeconde = Random.Range(3, 8);
         int randomInvisbility = Random.Range(0,2);
 
-        if (randomInvisbility == 0)
+        if (randomInvisbility == 0 && canBeInvisible)
         {
             invisibilityScenario = true;
             photonView.RPC("SendInvisibilityScenario", RpcTarget.All , true);
@@ -502,7 +502,7 @@ public class Death_NPC : MonoBehaviourPun
         }
         photonView.RPC("SendInvisibilityScenario", RpcTarget.All, false);
         invisibilityScenario = false;
-        StartCoroutine(RandomScenario());
+        StartCoroutine(RandomScenario(canBeInvisible));
 
     }
 

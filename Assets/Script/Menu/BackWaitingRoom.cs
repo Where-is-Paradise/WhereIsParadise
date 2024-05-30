@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class BackWaitingRoom : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class BackWaitingRoom : MonoBehaviour
     public bool isMatchmaking = false;
     public int indexSkin;
     public int indexSkinColor;
+    public string indexMasterClient = "-1";
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +29,8 @@ public class BackWaitingRoom : MonoBehaviour
         }
         indexSkin = GameObject.Find("Setting").GetComponent<Setting>().INDEX_SKIN;
         indexSkinColor = GameObject.Find("Setting").GetComponent<Setting>().INDEX_SKIN_COLOR;
+        if (PhotonNetwork.IsMasterClient)
+            indexMasterClient = PhotonNetwork.LocalPlayer.UserId;
     }
 
     // Update is called once per frame

@@ -635,7 +635,7 @@
 "1.0_errorInGame_text5" : "이 영혼은 현재 시간에 푸른 횃불을 사용할 수 없습니다.",
 "1.0_errorInGame_text6" : "정화 원 안에 영혼이 있어야 합니다.",
 "1.0_errorInGame_text7" : "모든 문이 이미 열려 있습니다.",
-"1.0_errorInGame_text8" : "다시 투표를 제안하기 전에 5초를 기다려야 합니다.",
+"1.0_errorInGame_text8" : "다시 투표를 제안하기 전에 10초를 기다려야 합니다.",
 "1.0_errorInGame_text9" : "더 이상 횃불이 없습니다.",
 "1.0_npcRoom_Maintext" : "당신은 다음 문을 선택해야 합니다:",
 "1.0_credit_assistantGraphist" : "보조 그래픽 디자이너",

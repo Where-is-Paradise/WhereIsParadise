@@ -479,7 +479,7 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public IEnumerator SendActiveZoneDoor()
     {
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.1f);
         gameManager.ui_Manager.ResetExplorationGost();
         photonView.RPC("ActiveZoneDoor", RpcTarget.All);
     }
@@ -516,7 +516,7 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public IEnumerator ResultAllDoorVoteSinceBoss()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(5.1f);
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             GameObject[] listDoor = GameObject.FindGameObjectsWithTag("Door");
@@ -1661,7 +1661,6 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendUpdateListSpecialityProbality(float newValue, int indexSpeciality)
     {
-        Debug.LogError("sa passe");
         photonView.RPC("SetUpdateListSpecialityProbality", RpcTarget.All, newValue, indexSpeciality);
     }
 
@@ -1673,14 +1672,12 @@ public class GameManagerNetwork : MonoBehaviourPun
 
     public void SendUpdateListVerySpecialityProbality(float newValue, int indexSpeciality)
     {
-        Debug.LogError(" sa passe avant erreur normalement");
         photonView.RPC("SetUpdateListVerySpecialityProbality", RpcTarget.All, newValue, indexSpeciality);
     }
 
     [PunRPC]
     public void SetUpdateListVerySpecialityProbality(float newValue, int indexSpeciality)
     {
-        Debug.LogError(indexSpeciality + " " + newValue);
         gameManager.listProbabilityVerySpecialityRoom[indexSpeciality] = newValue;
     }
 
@@ -1844,7 +1841,7 @@ public class GameManagerNetwork : MonoBehaviourPun
     [PunRPC]
     public void SetNPCRoom()
     {
-        GameObject.Find("NPCRoom").GetComponent<NPCRoom>().LaunchNPCRoom();
+        //GameObject.Find("NPCRoom").GetComponent<NPCRoom>().LaunchNPCRoom();
 
     }
 
@@ -2336,6 +2333,11 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).isVerySpecial = true;
         gameManager.game.dungeon.GetRoomByIndex(indexRoom).speciallyIsInsert = true;
 
+        if (GameObject.Find("MonstersRoom"))
+            GameObject.Find("MonstersRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+        if (GameObject.Find("DeathNPCRoom"))
+            GameObject.Find("DeathNPCRoom").GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+
     }
 
     public void SendNewTrapedRoom(int indexRoom, int indexSpeciallity)
@@ -2545,7 +2547,6 @@ public class GameManagerNetwork : MonoBehaviourPun
 
                 int random = Random.Range(0, 3);
                 //random = 2;
-                Debug.LogError(random);
                 switch (random)
                 {
                     case 0:
@@ -2702,29 +2703,54 @@ public class GameManagerNetwork : MonoBehaviourPun
             }
             else
             {
-                gameManager.ui_Manager.SetNBKey();
-                gameManager.ui_Manager.LaunchAnimationBrokenKey();
                 if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-                    gameManager.gameManagerNetwork.SendKeyNumber();
-                if (gameManager.SamePositionAtBoss())
-                    gameManager.OpenDoor(door, false);
-                gameManager.expeditionHasproposed = false;
-                gameManager.alreaydyExpeditionHadPropose = false;
+                {
+                    photonView.RPC("OpenDoorVote", RpcTarget.All,indexDoor);
+                }
 
             }
-            StartCoroutine(gameManager.ChangeBossCoroutine(0.1f));
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            {
+                StartCoroutine(gameManager.ChangeBossCoroutine(0.1f));
 
-            if (gameManager.game.key_counter > 0)
-                StartCoroutine(SetLaunchTimerForceOpenCoroutine());
+                if (gameManager.game.key_counter > 0)
+                    StartCoroutine(SetLaunchTimerForceOpenCoroutine());
+            }
+            gameManager.canLaunchVoteDoor = true;
         }
         else
         {
             if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            {
                 SendPauseTimerForce(false);
+                StartCoroutine(gameManager.ResetCanLaunchVoteDoorCouroutine());
+            }
+               
             gameManager.canLaunchVoteDoor = false;
-            StartCoroutine(gameManager.ResetCanLaunchVoteDoorCouroutine());
+            
+
         }
 
+        ResetVoteDoor();
+    }
+
+    [PunRPC]
+    public void OpenDoorVote(int indexDoor)
+    {
+        GameObject door = gameManager.GetDoorGo(indexDoor);
+
+        gameManager.ui_Manager.SetNBKey();
+        gameManager.ui_Manager.LaunchAnimationBrokenKey();
+        if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            gameManager.gameManagerNetwork.SendKeyNumber();
+        if (gameManager.SamePositionAtBoss())
+            gameManager.OpenDoor(door, false);
+        gameManager.expeditionHasproposed = false;
+        gameManager.alreaydyExpeditionHadPropose = false;
+    }
+
+    public void ResetVoteDoor()
+    {
         gameManager.ui_Manager.ResetNbVote();
         gameManager.ui_Manager.DesactiveZoneDoor();
         gameManager.voteDoorHasProposed = false;
@@ -2752,6 +2778,8 @@ public class GameManagerNetwork : MonoBehaviourPun
 
         if (gameManager.indexPlayerPreviousExploration == gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID)
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayTorchBarre(true);
+
+        
     }
 
 
@@ -2847,6 +2875,21 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.listProbabilitySpecialityRoom.Add(0);
         gameManager.listProbabilitySpecialityRoom.Add(0);
         gameManager.listProbabilitySpecialityRoom.Add(0);
+    }
+
+    public void SendInitiateListProbaVerySpeciallyRoom()
+    {
+        photonView.RPC("SetInitiateListProbaVerySpeciallyRoom", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetInitiateListProbaVerySpeciallyRoom()
+    {
+        gameManager.listProbabilityVerySpecialityRoom.Add(0);
+        gameManager.listProbabilityVerySpecialityRoom.Add(0);
+        gameManager.listProbabilityVerySpecialityRoom.Add(0);
+        gameManager.listProbabilityVerySpecialityRoom.Add(0);
+        gameManager.listProbabilityVerySpecialityRoom.Add(0);
     }
 
     public void SendDisplaySupportTorch(bool display)
@@ -2987,4 +3030,185 @@ public class GameManagerNetwork : MonoBehaviourPun
     {
          gameManager.ui_Manager.soundChrono_sacrifice_10sec.Play();
     }
+
+    public void SendResetAllVerySpecialRoom()
+    {
+        photonView.RPC("SetResetAllVerySpecialRoom", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetResetAllVerySpecialRoom()
+    {
+        gameManager.ResetAllVerySpecialRoom();
+    }
+
+    public void SendResetAllTrialRoom()
+    {
+        photonView.RPC("SetResetAllTrialRoom", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetResetAllTrialRoom()
+    {
+        StartCoroutine(gameManager.ResetAllTrialRoom());
+    }
+
+    public void SendResetAllTeamTrialRoom()
+    {
+        photonView.RPC("SetResetAllTeamTrialRoom", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void SetResetAllTeamTrialRoom()
+    {
+        gameManager.ResetAllTeamTrialRoom();
+    }
+
+
+    public void VoteNPC(int indexNPC)
+    {
+        if (gameManager.game.currentRoom.npcPowerIsUsed)
+            return;
+
+        int indexPlayerMine = gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID;
+        if (indexNPC == 2 )
+        {
+            if (gameManager.game.currentRoom.localHasVotedNPC )
+            {
+                if (gameManager.game.currentRoom.NPC_hasVoteRight)
+                {
+                    gameManager.game.currentRoom.localHasVotedNPC = !gameManager.game.currentRoom.localHasVotedNPC;
+                    photonView.RPC("SendCounterNpc", RpcTarget.All, "NPCRight", gameManager.game.currentRoom.localHasVotedNPC, indexNPC, gameManager.game.currentRoom.Index, indexPlayerMine);
+                    gameManager.game.currentRoom.NPC_hasVoteRight = !gameManager.game.currentRoom.NPC_hasVoteRight;
+                }
+            }
+            else
+            {
+                gameManager.game.currentRoom.localHasVotedNPC = !gameManager.game.currentRoom.localHasVotedNPC;
+                photonView.RPC("SendCounterNpc", RpcTarget.All, "NPCRight", gameManager.game.currentRoom.localHasVotedNPC, indexNPC, gameManager.game.currentRoom.Index, indexPlayerMine);
+                gameManager.game.currentRoom.NPC_hasVoteRight = !gameManager.game.currentRoom.NPC_hasVoteRight;
+            }
+            
+        }
+        if (indexNPC == 0 )
+        {
+            if (gameManager.game.currentRoom.localHasVotedNPC)
+            {
+                if (gameManager.game.currentRoom.NPC_hasVoteLeft)
+                {
+                    gameManager.game.currentRoom.localHasVotedNPC = !gameManager.game.currentRoom.localHasVotedNPC;
+                    photonView.RPC("SendCounterNpc", RpcTarget.All, "NPCLeft", gameManager.game.currentRoom.localHasVotedNPC, indexNPC, gameManager.game.currentRoom.Index, indexPlayerMine);
+                    gameManager.game.currentRoom.NPC_hasVoteLeft = !gameManager.game.currentRoom.NPC_hasVoteLeft;
+                }
+            }
+            else
+            {
+                gameManager.game.currentRoom.localHasVotedNPC = !gameManager.game.currentRoom.localHasVotedNPC;
+                photonView.RPC("SendCounterNpc", RpcTarget.All, "NPCLeft", gameManager.game.currentRoom.localHasVotedNPC, indexNPC, gameManager.game.currentRoom.Index, indexPlayerMine);
+                gameManager.game.currentRoom.NPC_hasVoteLeft = !gameManager.game.currentRoom.NPC_hasVoteLeft;
+            }
+           
+
+        }
+        if (indexNPC == 1)
+        {
+            if (gameManager.game.currentRoom.localHasVotedNPC)
+            {
+                if (gameManager.game.currentRoom.NPC_hasVoteMiddle)
+                {
+                    gameManager.game.currentRoom.localHasVotedNPC = !gameManager.game.currentRoom.localHasVotedNPC;
+                    photonView.RPC("SendCounterNpc", RpcTarget.All, "NPCMiddle", gameManager.game.currentRoom.localHasVotedNPC, indexNPC, gameManager.game.currentRoom.Index, indexPlayerMine);
+                    gameManager.game.currentRoom.NPC_hasVoteMiddle = !gameManager.game.currentRoom.NPC_hasVoteMiddle;
+                }
+            }
+            else
+            {
+                gameManager.game.currentRoom.localHasVotedNPC = !gameManager.game.currentRoom.localHasVotedNPC;
+                photonView.RPC("SendCounterNpc", RpcTarget.All, "NPCMiddle", gameManager.game.currentRoom.localHasVotedNPC, indexNPC, gameManager.game.currentRoom.Index, indexPlayerMine);
+                gameManager.game.currentRoom.NPC_hasVoteMiddle = !gameManager.game.currentRoom.NPC_hasVoteMiddle;
+            }
+           
+
+        }
+    }
+
+    [PunRPC]
+    public void SendCounterNpc(string npcName, bool hasVoted, int indexNPC, int indexRoom, int indexPlayer)
+    {
+        if (hasVoted)
+        {
+            if (npcName.Equals("NPCRight"))
+            {
+                
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCRight++;
+                Debug.LogError(gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCRight);
+                LaunchInformationNPC(gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCRight, indexNPC, indexRoom, indexPlayer);
+            }
+
+            else if (npcName.Equals("NPCMiddle"))
+            {
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCMiddle++;
+                LaunchInformationNPC(gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCMiddle, indexNPC, indexRoom, indexPlayer);
+            }
+
+            else if (npcName.Equals("NPCLeft"))
+            {
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCLeft++;
+                LaunchInformationNPC(gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCLeft, indexNPC, indexRoom, indexPlayer);
+            }
+
+        }
+        else
+        {
+            if (npcName.Equals("NPCRight"))
+            {
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCRight--;
+                LaunchInformationNPC(gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCRight, indexNPC, indexRoom, indexPlayer);
+            }
+            else if (npcName.Equals("NPCMiddle"))
+            {
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCMiddle--;
+                LaunchInformationNPC(gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCMiddle, indexNPC, indexRoom, indexPlayer);
+            }
+            else if (npcName.Equals("NPCLeft"))
+            {
+                gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCLeft--;
+                LaunchInformationNPC(gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCLeft, indexNPC, indexRoom, indexPlayer);
+            }
+        }
+    }
+
+    public void LaunchInformationNPC(int nbVote, int indexNPC, int indexRoom, int indexPlayer)
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        if (indexNPC == 2)
+        {
+            gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCRight = nbVote;
+
+        }
+        else if (indexNPC == 1)
+        {
+            gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCMiddle = nbVote;
+        }
+
+        else if (indexNPC == 0)
+        {
+            gameManager.game.dungeon.GetRoomByIndex(indexRoom).nbvoteNPCLeft = nbVote;
+        }
+
+        if (nbVote >= (players.Length / 2f))
+        {
+            
+            Debug.LogError(gameManager.game.currentRoom.Index + " " + indexRoom);
+            if (GameObject.Find("NPCRoom") && gameManager.game.currentRoom.Index == indexRoom)
+            {
+                GameObject.Find("NPCRoom").GetComponent<NPCRoom>().SendDisplayDistanceByNpc(indexNPC, indexPlayer, false, indexRoom);
+                GameObject.Find("NPCRoom").GetComponent<NPCRoom>().DisplayNbVoteAllNpc(false);
+                //gameManager.game.currentRoom.NPC_resultDisplayed = true;
+            }
+            gameManager.game.dungeon.GetRoomByIndex(indexRoom).npcPowerIsUsed = true;
+        }
+    }
+
 }

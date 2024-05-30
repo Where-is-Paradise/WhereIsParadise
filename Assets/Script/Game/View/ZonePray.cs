@@ -6,6 +6,7 @@ using UnityEngine;
 public class ZonePray : MonoBehaviourPun
 {
     public bool onePlayerPray = false;
+    public bool isImpostor = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +28,7 @@ public class ZonePray : MonoBehaviourPun
         if (collision.transform.parent.GetComponent<PlayerGO>().isSacrifice)
             return;
 
-        photonView.RPC("SetOnePlayerPray", RpcTarget.All, true);
+        photonView.RPC("SetOnePlayerPray", RpcTarget.All, true, collision.transform.parent.GetComponent<PlayerGO>().isImpostor);
         SetColorPlayerZone(collision.transform.parent.GetComponent<PlayerGO>(), true);
 
     }
@@ -41,7 +42,7 @@ public class ZonePray : MonoBehaviourPun
         if (collision.transform.parent.GetComponent<PlayerGO>().isSacrifice)
             return;
 
-        photonView.RPC("SetOnePlayerPray", RpcTarget.All, true);
+        photonView.RPC("SetOnePlayerPray", RpcTarget.All, true, collision.transform.parent.GetComponent<PlayerGO>().isImpostor);
         SetColorPlayerZone(collision.transform.parent.GetComponent<PlayerGO>(), true);
     }
 
@@ -54,14 +55,15 @@ public class ZonePray : MonoBehaviourPun
         if (collision.transform.parent.GetComponent<PlayerGO>().isSacrifice)
             return;
 
-        photonView.RPC("SetOnePlayerPray", RpcTarget.All, false);
+        photonView.RPC("SetOnePlayerPray", RpcTarget.All, false , false);
         SetColorPlayerZone(collision.transform.parent.GetComponent<PlayerGO>(), false);
     }
 
     [PunRPC]
-    public void SetOnePlayerPray(bool onePlayerPray)
+    public void SetOnePlayerPray(bool onePlayerPray, bool isImpostor)
     {
         this.onePlayerPray = onePlayerPray;
+        this.isImpostor = isImpostor;
     }
 
     public void SetColorPlayerZone(PlayerGO player, bool display)

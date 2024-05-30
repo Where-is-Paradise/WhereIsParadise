@@ -632,7 +632,7 @@
 "1.0_errorInGame_text5" : "This soul cannot use a blue torch at the moment.",
 "1.0_errorInGame_text6" : "A soul must be within the purification circle.",
 "1.0_errorInGame_text7" : "All doors are already open.",
-"1.0_errorInGame_text8" : "You must wait 5 seconds before you can propose a vote again.",
+"1.0_errorInGame_text8" : "You must wait 10 seconds before you can propose a vote again.",
 "1.0_errorInGame_text9" : "You have no more torches.",
 "1.0_npcRoom_Maintext" : "You must take the door:",
 "1.0_credit_assistantGraphist" : "Assistant Graphic Designer",

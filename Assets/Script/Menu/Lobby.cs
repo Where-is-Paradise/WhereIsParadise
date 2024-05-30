@@ -46,57 +46,44 @@ public class Lobby : MonoBehaviourPunCallbacks
     public Settin_management settingManagement;
 
     public bool disconnectByCancel = false;
+
+    public string old_masterClient = "-1";
     // Use this  initialization
     void Start()
     {
         matchmaking = false;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         PhotonNetwork.NetworkingClient.LoadBalancingPeer.MaximumTransferUnit = 400;
-        //ConnectToMaster();
-        //index_skin = Random.Range(0, 7);
         index_skin = 17;
         setting = GameObject.Find("Setting").GetComponent<Setting>();
         setting.INDEX_SKIN = index_skin;
         versionIsCorrect = true;
         StartCoroutine(GetText());
         ConnectToMaster();
-        //StartCoroutine(GetUserInfoRquest());
-        //StartCoroutine(waittotes());
-
-        //Debug.Log(SteamApps.GetCurrentGameLanguage());
-        //StartCoroutine(TestRequestSkin());
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Debug.LogError(PhotonNetwork.CloudRegion);
     }
 
 
 
     public void ConnectToMaster()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
-        //PhotonNetwork.LocalCleanPhotonView()
-        //PhotonNetwork.MaxResendsBeforeDisconnect = 10;
-        
+        PhotonNetwork.AutomaticallySyncScene = true;        
         PhotonNetwork.OfflineMode = false;
-
-        //PhotonNetwork.ConnectUsingSettings();
-        //ConnectToMasterInSpecificRegion();
         if(setting.region != "")
             PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = setting.region;
         PhotonNetwork.ConnectUsingSettings();
-       
-        //ConnectToMasterInSpecificRegion();
+      
     }
 
 
     public void ConnectToMasterInSpecificRegion()
     {
         PhotonNetwork.Disconnect();
-        //PhotonNetwork.BestRegionSummaryInPreferences
         Debug.Log(setting.region);
         PhotonNetwork.ConnectToRegion(setting.region);
     }
@@ -171,6 +158,7 @@ public class Lobby : MonoBehaviourPunCallbacks
                 index_skin = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().indexSkin;
                 setting.INDEX_SKIN_COLOR = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().indexSkinColor;
                 setting.INDEX_SKIN = index_skin;
+                old_masterClient = GameObject.Find("Setting_backWaitingRoom").GetComponent<BackWaitingRoom>().indexMasterClient;
                 CreateRoomBack();
 
 
@@ -467,9 +455,15 @@ public class Lobby : MonoBehaviourPunCallbacks
             }
         }
 
-
+        Debug.Log(isBackToWaitingRoom);
         if (isBackToWaitingRoom)
+        {
             newPlayer.GetComponent<PlayerNetwork>().SendNamePlayer(oldPlayerName);
+            Debug.Log(old_masterClient + " " + PhotonNetwork.LocalPlayer.UserId);
+            if(old_masterClient.Equals(PhotonNetwork.LocalPlayer.UserId))
+                PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer);
+        }
+            
 
 
         ui_management.SetLabelSearchPlayer(matchmaking);
@@ -477,7 +471,9 @@ public class Lobby : MonoBehaviourPunCallbacks
         //ui_management.SetSkin(newPlayer);
         newPlayer.GetComponent<PlayerGO>().SetPlayerNameServer();
 
-        isBackToWaitingRoom = false;
+        //isBackToWaitingRoom = false;
+
+
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -973,5 +969,9 @@ public class Lobby : MonoBehaviourPunCallbacks
     {
         disconnectByCancel = false;
        
+    }
+    public void ResetIsBackToWaitingRoom()
+    {
+        isBackToWaitingRoom = false;
     }
 }

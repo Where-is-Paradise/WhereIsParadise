@@ -687,7 +687,7 @@
 "1.0_errorInGame_text5" : "Cette âme ne peut utiliser de torche bleue pour le moment.",
 "1.0_errorInGame_text6" : "Une âme doit se situer dans le cercle de purification.",
 "1.0_errorInGame_text7" : "Toutes les portes sont déjà ouvertes.",
-"1.0_errorInGame_text8" : "Vous devez attendre 5 secondes avant de pouvoir soumettre un nouveau vote.",
+"1.0_errorInGame_text8" : "Vous devez attendre 10 secondes avant de pouvoir soumettre un nouveau vote.",
 "1.0_errorInGame_text9" : "Vous n'avez plus de torche.",
 
 "1.0_npcRoom_Maintext" : "Vous devez prendre la porte : ",

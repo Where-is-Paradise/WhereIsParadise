@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TrialsRoom : MonoBehaviourPun
 {
@@ -9,6 +10,11 @@ public class TrialsRoom : MonoBehaviourPun
     public bool roomIsLaunchParent = false;
     public int indexObject = -1;
     public PlayerGO playerwinner;
+
+    public bool alreadyChoose = false;
+    public int voteKey = 0;
+    public int voteTorch = 0;
+    public int voteGoldKey = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -395,16 +401,93 @@ public class TrialsRoom : MonoBehaviourPun
                 gameManagerParent.game.nbTorch++;
                 gameManagerParent.ui_Manager.LaunchAnimationAddKey();
                 StartCoroutine(CouroutineActivateDoorLever(2));
+
                 break;
             case 3:
-                if (!gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
-                    return;
                 gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.SetActive(true);
+                gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.transform.Find("Timer").GetComponent<TimerDisplay2>().timerLaunch = true;
+                StartCoroutine(CouroutineTimerVoteAwardTeamTrial());
                 break;
         }
         gameManagerParent.teamHasWinTrialRoom = false;
         gameManagerParent.ui_Manager.DisplayKeyAndTorch(true);
     }
+
+    public IEnumerator CouroutineTimerVoteAwardTeamTrial()
+    {
+        yield return new WaitForSeconds(15);
+        gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.transform.Find("Timer").GetComponent<TimerDisplay2>().timerLaunch = false;
+        gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.transform.Find("Timer").GetComponent<TimerDisplay2>().timeLeft = 15;
+
+        if (gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+            CalculVoteMajority();
+
+        
+        alreadyChoose = false;
+        voteKey = 0;
+        voteTorch = 0;
+        voteGoldKey = 0;
+        gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.transform.Find("Key").Find("vote").GetComponent<Text>().text = 0 + "";
+        gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.transform.Find("Torch").Find("vote").GetComponent<Text>().text = 0 + "";
+        gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.transform.Find("Magical Key").Find("vote").GetComponent<Text>().text = 0 + "";
+        gameManagerParent.ui_Manager.HidePanel(gameManagerParent.ui_Manager.panelChooseAwardTeamTrial);
+    }
+
+    public void CalculVoteMajority()
+    {
+        if (voteKey >= voteTorch && voteKey >= voteGoldKey)
+        {
+            photonView.RPC("SendGetAwardTeamTrial", RpcTarget.All, 0);
+            return;
+        }
+        if (voteTorch >= voteGoldKey)
+        {
+            photonView.RPC("SendGetAwardTeamTrial", RpcTarget.All, 1);
+            return;
+        }
+        else
+        {
+            photonView.RPC("SendGetAwardTeamTrial", RpcTarget.All, 2);
+        }
+    }
+
+    [PunRPC]
+    public void SendGetAwardTeamTrial(int index)
+    {
+        OnClickButtonChooseAwardTeamTriam(index);
+    }
+    
+    public void OnClickAwardTeamTrial(int index)
+    {
+        if (alreadyChoose)
+        {
+            return;
+        }
+        photonView.RPC("SendVoteAwardTeamTrial", RpcTarget.All, index);
+        alreadyChoose = true;
+    }
+
+    [PunRPC]
+    public void SendVoteAwardTeamTrial(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                voteKey++;
+                gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.transform.Find("Key").Find("vote").GetComponent<Text>().text = voteKey + "";
+                break;
+            case 1:
+                voteTorch++;
+                gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.transform.Find("Torch").Find("vote").GetComponent<Text>().text = voteTorch + "";
+                break;
+            case 2:
+                voteGoldKey++;
+                gameManagerParent.ui_Manager.panelChooseAwardTeamTrial.transform.Find("Magical Key").Find("vote").GetComponent<Text>().text = voteGoldKey + "";
+               break;
+        }
+    }
+
+
 
     public void SendObstalceGroup()
     {
@@ -453,6 +536,7 @@ public class TrialsRoom : MonoBehaviourPun
                 gameManagerParent.ui_Manager.LaunchAnimationAddKey();
                 gameManagerParent.gameManagerNetwork.SendAnimationAddKey();
                 gameManagerParent.gameManagerNetwork.SendKey(gameManagerParent.game.key_counter);
+                ReactivateCurrentRoom();
                 break;
             case 1:
                 gameManagerParent.game.nbTorch++;
@@ -460,13 +544,17 @@ public class TrialsRoom : MonoBehaviourPun
                 gameManagerParent.gameManagerNetwork.SendAnimationAddTorch();
                 gameManagerParent.gameManagerNetwork.SendTorchNumber(gameManagerParent.game.nbTorch);
                 gameManagerParent.ui_Manager.SetTorchNumber();
+                ReactivateCurrentRoom();
                 break;
             case 2:
-                gameManagerParent.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayMagicalKey(true);
-                gameManagerParent.ui_Manager.DisplayAllDoorLightOther(true);
-                gameManagerParent.ui_Manager.DisplayMagicalKeyButton();
-                gameManagerParent.CloseDoorWhenVote(true);
-                gameManagerParent.ActivateCollisionTPOfAllDoor(false);
+                if (gameManagerParent.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                {
+                    gameManagerParent.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayMagicalKey(true);
+                    gameManagerParent.ui_Manager.DisplayAllDoorLightOther(true);
+                    gameManagerParent.ui_Manager.DisplayMagicalKeyButton();
+                }
+/*                gameManagerParent.CloseDoorWhenVote(true);
+                gameManagerParent.ActivateCollisionTPOfAllDoor(false);*/
                 break;
         }
         photonView.RPC("SendReactivateCurrentRoom", RpcTarget.All);

@@ -77,11 +77,9 @@ public class DeathNpcRoom : TrialsRoom
         photonView.RPC("SendIgnoreCollisionPlayer", RpcTarget.All, false);
         death_NPC = GameObject.Find("DeathNPC_1").GetComponent<Death_NPC>();
         death_NPC_2 = GameObject.Find("DeathNPC_2").GetComponent<Death_NPC>();
-        StartCoroutine(death_NPC.RandomScenario());
-        StartCoroutine(death_NPC_2.RandomScenario());
-        float randomTimer = Random.Range(25, 70);
-        //float randomTimer = Random.Range(5, 15);
-        //randomTimer = 10;
+        StartCoroutine(death_NPC.RandomScenario(false));
+        StartCoroutine(death_NPC_2.RandomScenario(true));
+        float randomTimer = Random.Range(35, 55);
         photonView.RPC("SendSpeciallyIsLaucnh", RpcTarget.All, randomTimer);
     }
 

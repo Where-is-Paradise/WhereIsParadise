@@ -103,6 +103,8 @@ public class GameManager : MonoBehaviourPun
     public bool PurificationIsUsed = false;
     public bool SacrificeIsUsedOneTimes = false;
 
+    public bool PrayIsLaunch= false;
+
     public int coutnerDoorOpenToJail = 0;
     public int indexDoorExplorationInJail = 0;
     public bool onePlayerInJail = false;
@@ -313,7 +315,6 @@ public class GameManager : MonoBehaviourPun
         List<int> listIndexPlayer = new List<int>();
         foreach(PlayerGO player in listPlayer)
         {
-            Debug.LogError(player.GetComponent<PhotonView>().ViewID);
             listIndexPlayer.Add(player.GetComponent<PhotonView>().ViewID);
         }
 
@@ -322,10 +323,7 @@ public class GameManager : MonoBehaviourPun
         gameManagerNetwork.SendResetPlayerList();
         int i = 0;
         foreach (int index in listIndexPlayer)
-        {
-            Debug.LogError(index);
-
-            
+        {            
             listPlayerFinal.Add(GetPlayer(index).GetComponent<PlayerGO>());
             gameManagerNetwork.SendPlayerList(i, index);
             i++;
@@ -2023,6 +2021,8 @@ public class GameManager : MonoBehaviourPun
     public void ActiveZoneDoor()
     {
         gameManagerNetwork.SendCloseDoorWhenVoteCoroutine();
+
+        TeleportAllPlayerInRoomOfBoss();
         StartCoroutine(gameManagerNetwork.SendActiveZoneDoor());
     }
 
@@ -2635,7 +2635,6 @@ public class GameManager : MonoBehaviourPun
             if (doorsParent.transform.GetChild(i).GetComponent<Door>().isOpenForAll)
             {
                 doorsParent.transform.GetChild(i).GetComponent<Door>().IsCloseNotPermantly = close;
-                Debug.LogError("sa passe ici collision field");
                 doorsParent.transform.GetChild(i).Find("CollisionField").gameObject.SetActive(close);
             }
         }
@@ -2650,7 +2649,6 @@ public class GameManager : MonoBehaviourPun
             {
                 //door.GetComponent<Door>().closeForTimerExploration = close;
                 door.transform.Find("CollisionExplorationTimer").gameObject.SetActive(close);
-                Debug.Log("sa passe" + close);
             }
         }
     }
@@ -3042,13 +3040,19 @@ public class GameManager : MonoBehaviourPun
             {
                 ui_Manager.DisplaySpeciallyLevers(false, 0, "SpeciallyRoom_levers");
             }
+            if (!room.speciallyPowerIsUsed)
+                ui_Manager.DiplayResultPray(false);
+            else
+                ui_Manager.DiplayResultPray(true);
             UpdateColorDoor(room);
         }
         if (room.isNPC)
         {
             ui_Manager.DisplayNPCRoom(true);
+            
             //DisplayDoorForEachSituationInSpeciality("NPCRoom");
             GameObject.Find("NPCRoom").GetComponent<NPCRoom>().ActivateRoom();
+            GameObject.Find("NPCRoom").GetComponent<NPCRoom>().VerifyNbVoteNPC();
             ui_Manager.DisplayAllZoneDoorInNormalRoom(false);
             ui_Manager.DisplayAutelTutorialSpeciallyRoom(true);
             UpdateColorDoor(room);
@@ -3507,8 +3511,10 @@ public class GameManager : MonoBehaviourPun
                 for (int i = 0; i < 2; i++)
                 {
                     gameManagerNetwork.SendChestData(room.GetIndex(), room.chestList[i].index, room.chestList[i].isAward, room.chestList[i].indexAward, room.chestList[i].indexTrap);
-                }    
-            }else if (randomInt < AdditionalProbaVerySpeciality(1) && setting.listSpeciallyRoom[5])
+                }
+                CalculProbabiltyVerySpeciality(0);
+            }
+            else if (randomInt < AdditionalProbaVerySpeciality(1) && setting.listSpeciallyRoom[5])
             {
                 gameManagerNetwork.SendUpdateNeighbourVerySpeciality(room.Index, 1);
                 CalculProbabiltyVerySpeciality(1);
@@ -3656,6 +3662,7 @@ public class GameManager : MonoBehaviourPun
         if (sizeListProbabilitySpecialityRoom == 0)
         {
             StartCoroutine(ResetAllTrialRoom());
+            gameManagerNetwork.SendResetAllTrialRoom();
             return;
         }
           
@@ -3672,6 +3679,7 @@ public class GameManager : MonoBehaviourPun
         if (!setting.listTeamTrialRoom[0] && !setting.listTeamTrialRoom[1])
         {
             ResetAllTeamTrialRoom();
+            gameManagerNetwork.SendResetAllTeamTrialRoom();
         }
     }
 
@@ -3722,6 +3730,8 @@ public class GameManager : MonoBehaviourPun
         listProbabilityVerySpecialityRoom.Add(0);
         listProbabilityVerySpecialityRoom.Add(0);
         listProbabilityVerySpecialityRoom.Add(0);
+        gameManagerNetwork.SendInitiateListProbaVerySpeciallyRoom();
+
         UpdateProvaListVerySpecailityWithSetting();
 
     }
@@ -3730,25 +3740,16 @@ public class GameManager : MonoBehaviourPun
     {
         if (sizeListProbabilityVerySpecialityRoom == 0)
         {
-            StartCoroutine(ResetAllTrialRoom());
+            ResetAllVerySpecialRoom();
+            gameManagerNetwork.SendResetAllVerySpecialRoom();
             return;
         }
 
 
         for (int i = 0; i < listProbabilityVerySpecialityRoom.Count; i++)
         {
-            if(i == 0)
-            {
-
-                listProbabilityVerySpecialityRoom[i] = 30;
-
-                gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
-            }
-            else
-            {
-                listProbabilityVerySpecialityRoom[i] = (float)(70f / (sizeListProbabilityVerySpecialityRoom - 1));
-                gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
-            }
+            listProbabilityVerySpecialityRoom[i] = (float)(100f / (sizeListProbabilityVerySpecialityRoom));
+            gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
             
         }
     }
@@ -3756,22 +3757,25 @@ public class GameManager : MonoBehaviourPun
     public void CalculProbabiltyVerySpeciality(int indexSpeciality)
     {
         //listBoolapparitionSpecialityRoom[indexSpeciality] = true;
-        float devaluation = (listProbabilityVerySpecialityRoom[indexSpeciality] * 1f);
-        listProbabilityVerySpecialityRoom[indexSpeciality] -= (devaluation + 100);
+        float devaluation = (listProbabilityVerySpecialityRoom[indexSpeciality] * 0.7f);
+        listProbabilityVerySpecialityRoom[indexSpeciality] -= devaluation;
+
+
+
         gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[indexSpeciality], indexSpeciality);
 
-        int coutnerNegativRoomProba = 0;
+/*        int coutnerNegativRoomProba = 0;
         for (int i = 0; i < listProbabilityVerySpecialityRoom.Count; i++)
         {
             if (listProbabilityVerySpecialityRoom[i] <= 0)
                 coutnerNegativRoomProba++;
-        }
+        }*/
 
         for (int i = 0; i < listProbabilityVerySpecialityRoom.Count; i++)
         {
-            if (i == indexSpeciality || listProbabilityVerySpecialityRoom[i] <= 0)
+            if (i == indexSpeciality)
                 continue;
-            listProbabilityVerySpecialityRoom[i] += (float)(devaluation / (sizeListProbabilityVerySpecialityRoom - (coutnerNegativRoomProba)));
+            listProbabilityVerySpecialityRoom[i] += (float)(devaluation / (sizeListProbabilityVerySpecialityRoom - 1));
             gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
         }
 
@@ -4563,6 +4567,17 @@ public class GameManager : MonoBehaviourPun
         }
     }
 
+    public void ResetAllVerySpecialRoom()
+    {
+        foreach (Room room in game.dungeon.rooms)
+        {
+            if (room.isVerySpecial)
+            {
+                ResetSpeciallyRoomState(room);
+            }
+        }
+    }
+
     public void ResetIndexDoor()
     {
         GameObject doors = GameObject.Find("Doors");
@@ -4845,46 +4860,45 @@ public class GameManager : MonoBehaviourPun
         float randomRight = 100;
         if (!setting.listTrapRoom[0])
         {
-            randomLeft += (float)(100 / 4f);
+            randomLeft += (float)(100 / 3f);
         }
         if (!setting.listTrapRoom[2])
         {
-            if(!setting.listTrapRoom[1] && !setting.listTrapRoom[3])
-                randomRight -= (float)(100 / 4f);
+            if(!setting.listTrapRoom[1] )
+                randomRight -= (float)(100 / 3f);
             if(!!setting.listTrapRoom[0])
-                randomLeft += (float)(100 / 4f);
+                randomLeft += (float)(100 / 3f);
         }
         if (!setting.listTrapRoom[1])
         {
-            if(!setting.listTrapRoom[3])
-                randomRight -= (float)(100 / 4f);
+            randomRight -= (float)(100 / 3f);
         }
-        if (!setting.listTrapRoom[3])
+/*        if (!setting.listTrapRoom[3])
         {
             randomRight -= (float)(100 / 4f);
-        }
+        }*/
 
         float randomfloat = Random.Range(randomLeft, randomRight);
 
 
         //randomfloat = 14;
-        if (randomfloat < 25 && setting.listTrapRoom[0])
+        if (randomfloat < 33 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(0); // foggy
         }
-        else if (randomfloat < 50 && setting.listTrapRoom[2])
+        else if (randomfloat < 66 && setting.listTrapRoom[2])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(1); // chest
         }
-        else if (randomfloat < 75 && setting.listTrapRoom[1])
+        else if (randomfloat < 100 && setting.listTrapRoom[1])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(2); // virus
 
         }
-        else if (randomfloat < 100 && setting.listTrapRoom[3])
+/*        else if (randomfloat < 100 && setting.listTrapRoom[3])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(3); // pray
-        }
+        }*/
 
         ui_Manager.DisplayPowerImpostorInGame();
         GetPlayerMineGO().GetComponent<PlayerGO>().hasOneTrapPower = true;
@@ -5130,14 +5144,26 @@ public class GameManager : MonoBehaviourPun
         if(game.currentRoom.GetNumberOfNeigbourNoneObstacleAndNotOpen() < 3 && players.Length <= 4)
         {
             game.nbTorch--;
-        }
+            }
         
     }
 
     public IEnumerator ResetCanLaunchVoteDoorCouroutine()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(11);
         canLaunchVoteDoor = true;
+    }
+
+    public int GetNumberPlayerCanPray()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        foreach(GameObject player in players)
+        {
+            if (player.GetComponent<PlayerGO>().canPray)
+                counter++;
+        }
+        return counter;
     }
 
 }

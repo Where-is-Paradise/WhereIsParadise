@@ -23528,8 +23528,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PROD: 1
   linkServerAws: 
-  MODE_TEST_SKIN_IP: 0
-  ip: 
+  MODE_TEST_SKIN_IP: 1
+  ip: homertimes
   NB_PLAYER_MAX: 8
   KEY_ADDITIONAL: 1
   NB_IMPOSTOR: 1
@@ -58122,6 +58122,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1740359033}
+        m_TargetAssemblyTypeName: Lobby, Assembly-CSharp
+        m_MethodName: ResetIsBackToWaitingRoom
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1299565719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78810,6 +78822,7 @@ MonoBehaviour:
   nearServer: 
   settingManagement: {fileID: 1081620638}
   disconnectByCancel: 0
+  old_masterClient: 
 --- !u!4 &1740359034
 Transform:
   m_ObjectHideFlags: 0
@@ -93278,7 +93291,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2012421103}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.33999968, y: -0.04, z: 0}
+  m_LocalPosition: {x: -0.322, y: -0.036, z: 0}
   m_LocalScale: {x: 1.1, y: 1.134, z: 1}
   m_Children: []
   m_Father: {fileID: 1389218197}

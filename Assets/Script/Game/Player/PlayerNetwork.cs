@@ -453,13 +453,13 @@ public class PlayerNetwork : MonoBehaviourPun
     }
 
 
-    public void SendDeathSacrifice(bool KeyPlus)
+    public void SendDeathSacrifice(bool isSacrificeRoom)
     {
-        photonView.RPC("SetDeathSacrifice", RpcTarget.All, KeyPlus);
+        photonView.RPC("SetDeathSacrifice", RpcTarget.All, isSacrificeRoom);
     }
 
     [PunRPC]
-    public void SetDeathSacrifice(bool keyPlus)
+    public void SetDeathSacrifice(bool isSacrificeRoom)
     {
 
         if (player.GetComponent<PlayerGO>().isBoss)
@@ -467,12 +467,22 @@ public class PlayerNetwork : MonoBehaviourPun
             player.GetComponent<PlayerGO>().gameManager.ChangeBoss();
         }
         StartCoroutine(HidePlayerCouroutine());
-        if (keyPlus)
+        if (isSacrificeRoom && player.isImpostor)
         {
             player.GetComponent<PlayerGO>().gameManager.game.key_counter++;
             player.gameManager.ui_Manager.LaunchAnimationAddKey();
             StartCoroutine(player.gameManager.ui_Manager.LaunchAnimationAddKeyCouroutine());
         }
+        else
+        {
+            if (isSacrificeRoom)
+            {
+                player.GetComponent<PlayerGO>().gameManager.game.key_counter--;
+                player.gameManager.ui_Manager.SetNBKey();
+                player.gameManager.ui_Manager.LaunchAnimationBrokenKey();
+            }
+        }
+
         player.GetComponent<PlayerGO>().isSacrifice = true;
         player.gameManager.gameManagerNetwork.SetUpdateDataPlayer(player.GetComponent<PhotonView>().ViewID);
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_around").gameObject.SetActive(false);
@@ -935,6 +945,48 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.GetComponent<PlayerGO>().isCursed = false;
         player.GetComponent<PlayerGO>().isBlind = false;
+
+        ActivateImpostorObject(player.GetComponent<PhotonView>().ViewID);
+    }
+
+    public void ActivateImpostorObject(int indexPlayer)
+    {
+        if (!player.gameManager.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
+            return;
+        if (player.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasOneTrapPower)
+            return;
+        if (!player.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isImpostor)
+            return;
+
+        float randomfloat = Random.Range(0, 100);
+
+        //randomfloat = 20;
+
+        if (randomfloat < 25 && player.gameManager.setting.listTrapRoom[0])
+        {
+            player.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(player.gameManager.listIndexImpostorPower[0]);
+            player.gameManager.ui_Manager.DisplayInformationObjectWon(9);
+        }
+        else if (randomfloat < 50 && player.gameManager.setting.listTrapRoom[1])
+        {
+            player.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(player.gameManager.listIndexImpostorPower[1]);
+            player.gameManager.ui_Manager.DisplayInformationObjectWon(10);
+        }
+        else if (randomfloat < 75 && player.gameManager.setting.listTrapRoom[2])
+        {
+            player.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(player.gameManager.listIndexImpostorPower[2]);
+            player.gameManager.ui_Manager.DisplayInformationObjectWon(11);
+
+        }
+        else if (randomfloat < 100 && player.gameManager.setting.listTrapRoom[3])
+        {
+            player.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIndexPower(player.gameManager.listIndexImpostorPower[3]);
+            player.gameManager.ui_Manager.DisplayInformationObjectWon(12);
+        }
+
+
+        player.gameManager.ui_Manager.DisplayPowerImpostorInGame();
+        player.gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasOneTrapPower = true;
     }
 
 
@@ -1324,7 +1376,7 @@ public class PlayerNetwork : MonoBehaviourPun
         GameObject speciallyRoom = player.GetOnlyChildActive(GameObject.Find("Room").transform.Find("Special").gameObject);
         if (!speciallyRoom.GetComponent<TrialsRoom>())
             return;
-        speciallyRoom.GetComponent<TrialsRoom>().ReactivateCurrentRoom();
+        speciallyRoom.GetComponent<TrialsRoom>().ResetColorAllPlayer();
         speciallyRoom.GetComponent<TrialsRoom>().ApplyGlobalAward(player.GetComponent<PhotonView>().ViewID);
 
     }
@@ -1462,6 +1514,21 @@ public class PlayerNetwork : MonoBehaviourPun
     public void SetResetHasWinFireBall()
     {
         player.hasWinFireBallRoom = false;
+    }
+
+    public void SendCanPray(bool canPray)
+    {
+        photonView.RPC("SetCanPray", RpcTarget.All, canPray);
+    }
+
+    [PunRPC]
+    public void SetCanPray(bool canPray)
+    {
+        player.canPray = canPray;
+        if(player.GetComponent<PhotonView>().IsMine)
+            GameObject.Find("PrayRoom").GetComponent<PrayRoom>().DesactivateCollisionZone(canPray);
+
+        player.transform.Find("Prayeur").gameObject.SetActive(canPray);
     }
 
 }

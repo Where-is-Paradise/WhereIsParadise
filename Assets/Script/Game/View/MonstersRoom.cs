@@ -90,7 +90,7 @@ public class MonstersRoom : TrialsRoom
         canSpawn = true;
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCrown(false);
-        float randomTimer = Random.Range(25, 70);
+        float randomTimer = Random.Range(35, 55);
         //randomTimer = 10;
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {

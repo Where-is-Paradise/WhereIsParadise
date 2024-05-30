@@ -125,6 +125,21 @@ public class Room : ScriptableObject
 
     public bool animationFoogyAlreayHapped = false;
 
+    public int distancePray = 0;
+
+    public int nbvoteNPCRight = 0;
+    public int nbvoteNPCMiddle = 0;
+    public int nbvoteNPCLeft = 0;
+
+    public bool localHasVotedNPC = false;
+    public bool npcPowerIsUsed = false;
+
+    public bool NPC_hasVoteRight = false;
+    public bool NPC_hasVoteMiddle = false;
+    public bool NPC_hasVoteLeft = false;
+
+    public bool NPC_resultDisplayed = false;
+
     public void Init(int pos_X, int pos_Y)
     {
         this.x = pos_X;

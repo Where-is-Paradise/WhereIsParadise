@@ -92,6 +92,7 @@ public class Game : ScriptableObject
         }
 
         dungeon.RemoveAllRoomTooFarAway();
+        dungeon.AddAllPotentielHell();
         dungeon.InsertSpeciallyRoom(distanceExit);
     }
 

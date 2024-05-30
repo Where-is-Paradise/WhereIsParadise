@@ -187,6 +187,7 @@ GameObject:
   - component: {fileID: 4695169022583446958}
   - component: {fileID: 4695169022583446959}
   - component: {fileID: 6474057703425119100}
+  - component: {fileID: 2933967323202565555}
   m_Layer: 0
   m_Name: DeathNpc
   m_TagString: GodDeath
@@ -203,7 +204,7 @@ Transform:
   m_GameObject: {fileID: 4695169022583446946}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.13, y: 0.07, z: -1}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
+  m_LocalScale: {x: 0.28, y: 0.28, z: 1}
   m_Children:
   - {fileID: 4695169023555382422}
   - {fileID: 3253715873174214094}
@@ -384,6 +385,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 4695169022583446955}
   - {fileID: 4695169022583446958}
+  - {fileID: 2933967323202565555}
   sceneViewId: 39
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -415,7 +417,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4695169022583446946}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e7cb724808c322458aa4d15f5035fa9, type: 3}
   m_Name: 
@@ -424,7 +426,7 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 1.5
-  preciseSyncPosition: 0
+  preciseSyncPosition: 1
 --- !u!114 &4695169022583446958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -469,6 +471,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 501ed4f03eaec714b810bc9c722e1e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2933967323202565555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4695169022583446946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8efc6b1d64977384eb3405357896c656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PositionModel:
+    SynchronizeEnabled: 1
+    TeleportEnabled: 1
+    TeleportIfDistanceGreaterThan: 3
+    InterpolateOption: 2
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 1
+    ExtrapolateOption: 2
+    ExtrapolateSpeed: 1
+    ExtrapolateIncludingRoundTripTime: 1
+    ExtrapolateNumberOfStoredPositions: 1
+  m_RotationModel:
+    SynchronizeEnabled: 0
+    InterpolateOption: 1
+    InterpolateRotateTowardsSpeed: 180
+    InterpolateLerpSpeed: 5
+  m_ScaleModel:
+    SynchronizeEnabled: 0
+    InterpolateOption: 0
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 0
 --- !u!1 &4695169023555382417
 GameObject:
   m_ObjectHideFlags: 0
