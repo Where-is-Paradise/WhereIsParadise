@@ -197,6 +197,7 @@ public class PlayerGO : MonoBehaviour
 
     public bool canPray = false;
 
+    public bool wantToCancelVoteChest = false;
     private void Awake()
     {
         displayChatInput = false;
@@ -1596,6 +1597,12 @@ public class PlayerGO : MonoBehaviour
         }
         if (gameManager.game.currentRoom.chest)
         {
+            if (!gameManager.canRevoteChest)
+            {
+                gameManager.errorMessage.GetComponent<ErrorMessage>().YouHaveToWait();
+                return;
+            }
+               
             groupSpeciality = "SpeciallyRoom_levers";
             gameManager.gameManagerNetwork.SendActiveZoneVoteChest();
         }

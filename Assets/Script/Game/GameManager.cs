@@ -164,6 +164,8 @@ public class GameManager : MonoBehaviourPun
 
     public bool resetChestDisplayReset = false;
 
+    public bool canRevoteChest = true;
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -3185,39 +3187,45 @@ public class GameManager : MonoBehaviourPun
     {
         speciallyIsLaunch = true;
         gameManagerNetwork.DisplayLightAllAvailableDoorN2(false);
-        GameObject.Find("GameManager").GetComponent<GameManager>().PauseTimerFroce(true);
+        PauseTimerFroce(true);
         ui_Manager.DisplayCircleZoneColorChest(true);
         ui_Manager.soundChrono_8sec.Play();
-        yield return new WaitForSeconds(8);
-        voteChestHasProposed = false;
-        isActuallySpecialityTime = false;
-        ui_Manager.DisplayCircleZoneColorChest(false);
-        ui_Manager.DisplayAwardAndPenaltyForImpostor(false);
-        ui_Manager.ResetAllPlayerLightAround();
-        StartCoroutine(ResetAllPlayerLightAroundCoroutine());
-        gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
-        if (SamePositionAtBoss())
-        {
-            GameObject chest = CalculVoteChest();
-            ui_Manager.ActiveZoneVoteChest(false);
-            ChestManagement(chest);
-            StartCoroutine(CoroutineHideChest());
-        }
-        GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
-        game.dungeon.rooms[GetRoomOfBoss().GetComponent<Hexagone>().Room.Index].speciallyPowerIsUsed = true;
-        CloseDoorWhenVote(false);
-        speciallyIsLaunch = false;
-        if (game.key_counter <= 0 && !HaveMoreKeyInTraversedRoom() && GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-        {
-            SendLoose();
-        }
-        GameObject.Find("GameManager").GetComponent<GameManager>().PauseTimerFroce(false);
 
-        if (game.currentRoom.isTraped)
+        yield return new WaitForSeconds(8);
+
+        if (GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
-            ui_Manager.soundDemonicLaugh.Play();
+            if (IsCancelVoteChest())
+            {
+                gameManagerNetwork.SendResetChestRoom(false);
+                gameManagerNetwork.SendDisplaySpeciallyLevers(true, 0, "SpeciallyRoom_levers");
+
+            }
+            else
+            {
+                gameManagerNetwork.SendResetChestRoom(true);
+                gameManagerNetwork.SendLaunchChestRoomResult();
+            }
         }
     }
+
+    public bool IsCancelVoteChest()
+    {
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int countnerCancelVote = 0;
+        foreach(GameObject player in players)
+        {
+            if (player.GetComponent<PlayerGO>().wantToCancelVoteChest)
+                countnerCancelVote++;
+        }
+        if (countnerCancelVote > (players.Length / 2f))
+            return true;
+
+        return false;
+
+    }
+
     public IEnumerator ResetAllPlayerLightAroundCoroutine()
     {
         yield return new WaitForSeconds(0.2f);
@@ -5164,6 +5172,15 @@ public class GameManager : MonoBehaviourPun
                 counter++;
         }
         return counter;
+    }
+
+    public void ResetAllPlayerwantToCancelVoteChest()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            player.GetComponent<PlayerGO>().wantToCancelVoteChest = false;
+        }
     }
 
 }

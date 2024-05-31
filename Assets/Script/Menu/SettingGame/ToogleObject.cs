@@ -21,7 +21,7 @@ public class ToogleObject : MonoBehaviour
     void Update()
     {
 
-
+        UpdateToggle();
     }
 
     public void OnClickToogle()

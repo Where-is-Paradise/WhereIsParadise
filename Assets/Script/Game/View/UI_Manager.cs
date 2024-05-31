@@ -175,10 +175,11 @@ public class UI_Manager : MonoBehaviour
 
     public GameObject hexagoneImpostorInformation;
     public GameObject hexagoneNoneImpostorInformation;
-
     public GameObject doorsParent;
-
     public GameObject button_back;
+
+    public GameObject cancelVoteButton_chest;
+    public GameObject cancelVoteButton_chest_disabled;
 
     // Start is called before the first frame update
     void Start()
@@ -3269,6 +3270,12 @@ setting_button_echapMenu.SetActive(false);
     public void OnClickDisplayTutorialCouroutine(int indexPanel)
     {
         StartCoroutine(DisplayTutorialCouroutine(indexPanel));
+    }
+
+    public void OnClickCancelVoteChestButton()
+    {
+        gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().wantToCancelVoteChest = !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().wantToCancelVoteChest;
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCancelVoteChest(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().wantToCancelVoteChest);
     }
 }
 

@@ -1503,6 +1503,24 @@ public class PlayerNetwork : MonoBehaviourPun
     {
         player.isBossMenu = isBossMenu;
         player.transform.Find("Skins").GetChild(player.indexSkin).Find("Crown").gameObject.SetActive(player.isBossMenu);
+
+/*        if (player.GetComponent<PhotonView>().ViewID != GetPLayerMine().GetComponent<PhotonView>().ViewID)
+        {
+            GetPLayerMine().transform.Find("Skins").GetChild(GetPLayerMine().GetComponent<PlayerGO>().indexSkin).Find("Crown").gameObject.SetActive(false);
+        }*/
+        
+        
+    }
+
+    public GameObject GetPLayerMine()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Players");
+        foreach(GameObject player in players)
+        {
+            if (player.GetComponent<PhotonView>().IsMine)
+                return player;
+        }
+        return null;
     }
 
     public void SendResetHasWinFireBall()
@@ -1529,6 +1547,18 @@ public class PlayerNetwork : MonoBehaviourPun
             GameObject.Find("PrayRoom").GetComponent<PrayRoom>().DesactivateCollisionZone(canPray);
 
         player.transform.Find("Prayeur").gameObject.SetActive(canPray);
+    }
+
+    public void SendDisplayCancelVoteChest(bool wantToCancel)
+    {
+        photonView.RPC("SetDisplayCancelVoteChest", RpcTarget.All, wantToCancel);
+    }
+
+    [PunRPC]
+    public void SetDisplayCancelVoteChest(bool wantToCancel)
+    {
+        player.wantToCancelVoteChest = wantToCancel;
+        player.transform.Find("CancelVoteChest").gameObject.SetActive(wantToCancel);
     }
 
 }

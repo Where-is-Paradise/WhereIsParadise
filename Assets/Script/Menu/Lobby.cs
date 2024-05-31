@@ -459,9 +459,12 @@ public class Lobby : MonoBehaviourPunCallbacks
         if (isBackToWaitingRoom)
         {
             newPlayer.GetComponent<PlayerNetwork>().SendNamePlayer(oldPlayerName);
-            Debug.Log(old_masterClient + " " + PhotonNetwork.LocalPlayer.UserId);
-            if(old_masterClient.Equals(PhotonNetwork.LocalPlayer.UserId))
+            if (old_masterClient.Equals(PhotonNetwork.LocalPlayer.UserId))
+            {
                 PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer);
+                newPlayer.GetComponent<PlayerNetwork>().SendIsBossMenu(true);
+            }
+               
         }
             
 
@@ -520,7 +523,11 @@ public class Lobby : MonoBehaviourPunCallbacks
             PlayerIsMine().GetComponent<PlayerNetwork>().SendindexSkin(PlayerIsMine().GetComponent<PlayerGO>().indexSkin);
             PlayerIsMine().GetComponent<PlayerNetwork>().SendindexSkinColor(PlayerIsMine().GetComponent<PlayerGO>().indexSkinColor, true);
         }
-           
+
+        Debug.LogError(old_masterClient + " " + newPlayer.UserId);
+      
+        
+
         if (PhotonNetwork.IsMasterClient)
         {
             if(nbPlayer == 6 && matchmaking)
@@ -558,6 +565,11 @@ public class Lobby : MonoBehaviourPunCallbacks
 
         }
         GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsReady(GetPlayerMineGO().GetComponent<PlayerGO>().isReady);
+
+        if (old_masterClient.Equals(newPlayer.UserId))
+        {
+            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsBossMenu(false);
+        }
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -673,6 +685,7 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     public GameObject PlayerIsMine()
     {
+
         foreach(GameObject player in players)
         {
             if (player.GetComponent<PhotonView>().IsMine)

@@ -21,7 +21,7 @@ public class ToggleObjectImpostor : MonoBehaviour
     void Update()
     {
 
-        //UpdateToggle();
+        UpdateToggle();
 
     }
 

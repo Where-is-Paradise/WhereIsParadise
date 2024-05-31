@@ -1267,6 +1267,7 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.voteChestHasProposed = true;
         gameManager.ui_Manager.ActiveZoneVoteChest(true);
         gameManager.CloseDoorWhenVote(true);
+        gameManager.ui_Manager.OnClickDisplayPanel(gameManager.ui_Manager.cancelVoteButton_chest);
         StartCoroutine(gameManager.LaunchTimerChest());
     }
 
@@ -3208,6 +3209,67 @@ public class GameManagerNetwork : MonoBehaviourPun
                 //gameManager.game.currentRoom.NPC_resultDisplayed = true;
             }
             gameManager.game.dungeon.GetRoomByIndex(indexRoom).npcPowerIsUsed = true;
+        }
+    }
+
+    public void SendResetChestRoom(bool canRevoteNow)
+    {
+        photonView.RPC("SetResetChestRoom", RpcTarget.All, canRevoteNow);
+    }
+
+    [PunRPC]
+    public void SetResetChestRoom(bool canRevoteNow)
+    {
+        gameManager.voteChestHasProposed = false;
+        gameManager.isActuallySpecialityTime = false;
+        gameManager.ui_Manager.DisplayCircleZoneColorChest(false);
+        gameManager.ui_Manager.ResetAllPlayerLightAround();
+        StartCoroutine(gameManager.ResetAllPlayerLightAroundCoroutine());
+        DisplayLightAllAvailableDoorN2(true);
+        gameManager.CloseDoorWhenVote(false);
+        gameManager.speciallyIsLaunch = false;
+        gameManager.PauseTimerFroce(false);
+        
+        gameManager.ui_Manager.HidePanel(gameManager.ui_Manager.cancelVoteButton_chest);
+        gameManager.ui_Manager.HidePanel(gameManager.ui_Manager.cancelVoteButton_chest_disabled);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayCancelVoteChest(false);
+        gameManager.ResetAllPlayerwantToCancelVoteChest();
+        gameManager.canRevoteChest = canRevoteNow;
+        if (!canRevoteNow)
+            StartCoroutine(CanRevoteNowResetCoroutine());
+    }   
+
+    public IEnumerator CanRevoteNowResetCoroutine()
+    {
+        yield return new WaitForSeconds(10);
+        gameManager.canRevoteChest = true;
+    }
+
+    public void SendLaunchChestRoomResult()
+    {
+        photonView.RPC("SetdLaunchChestRoomResult", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SetdLaunchChestRoomResult()
+    {
+        gameManager.ui_Manager.DisplayAwardAndPenaltyForImpostor(false);
+        if (gameManager.SamePositionAtBoss())
+        {
+            GameObject chest = gameManager.CalculVoteChest();
+            gameManager.ui_Manager.ActiveZoneVoteChest(false);
+            gameManager.ChestManagement(chest);
+            StartCoroutine(gameManager.CoroutineHideChest());
+        }
+        gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.speciallyPowerIsUsed = true;
+        gameManager.game.dungeon.rooms[gameManager.GetRoomOfBoss().GetComponent<Hexagone>().Room.Index].speciallyPowerIsUsed = true;
+        if (gameManager.game.key_counter <= 0 && !gameManager.HaveMoreKeyInTraversedRoom() && gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+        {
+            gameManager.SendLoose();
+        }
+        if (gameManager.game.currentRoom.isTraped)
+        {
+            gameManager.ui_Manager.soundDemonicLaugh.Play();
         }
     }
 

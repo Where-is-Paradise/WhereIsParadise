@@ -21,7 +21,7 @@ public class ToggleTeamTrial : MonoBehaviour
     void Update()
     {
 
-        //UpdateToggle();
+        UpdateToggle();
 
     }
 

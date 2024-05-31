@@ -29,8 +29,7 @@ public class BackWaitingRoom : MonoBehaviour
         }
         indexSkin = GameObject.Find("Setting").GetComponent<Setting>().INDEX_SKIN;
         indexSkinColor = GameObject.Find("Setting").GetComponent<Setting>().INDEX_SKIN_COLOR;
-        if (PhotonNetwork.IsMasterClient)
-            indexMasterClient = PhotonNetwork.LocalPlayer.UserId;
+        indexMasterClient = PhotonNetwork.MasterClient.UserId;
     }
 
     // Update is called once per frame
@@ -38,4 +37,5 @@ public class BackWaitingRoom : MonoBehaviour
     {
         
     }
+
 }

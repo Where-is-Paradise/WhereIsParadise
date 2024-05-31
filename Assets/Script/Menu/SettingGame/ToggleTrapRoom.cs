@@ -21,7 +21,7 @@ public class ToggleTrapRoom : MonoBehaviourPun
     void Update()
     {
 
-         //UpdateToggle();
+         UpdateToggle();
 
     }
 
