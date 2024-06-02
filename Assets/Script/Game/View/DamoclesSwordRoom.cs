@@ -45,8 +45,6 @@ public class DamoclesSwordRoom : TrialsRoom
         gameManager.gameManagerNetwork.DisplayLightAllAvailableDoorN2(true);
         speciallyLaunched = true;
         DisplayHeartsFoAllPlayer(true);
-
-        //CounterLaunch(15);
        
 
         if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
@@ -120,7 +118,7 @@ public class DamoclesSwordRoom : TrialsRoom
         GameObject player = gameManager.GetPlayer(indexPlayer);
         sword.transform.position = player.transform.position;
         sword.transform.parent = player.transform;
-        sword.transform.localPosition = new Vector3(0f, 2.20f);
+        sword.transform.localPosition = new Vector3(0f, 2.5f);
          
     }
 
@@ -233,7 +231,7 @@ public class DamoclesSwordRoom : TrialsRoom
     public IEnumerator ReturnSwordPositionAfterAtack()
     {
         yield return new WaitForSeconds(0.5f);
-        sword.transform.position += new Vector3(0f, 1.5f);
+        sword.transform.localPosition = new Vector3(0f, 2.5f);
         canChangePlayer = true;
     }
 
@@ -346,7 +344,6 @@ public class DamoclesSwordRoom : TrialsRoom
     [PunRPC]
     public void SetCanLunchExploration(int indexPlayer)
     {
-        //gameManager.game.nbTorch++;
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
         gameManager.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);

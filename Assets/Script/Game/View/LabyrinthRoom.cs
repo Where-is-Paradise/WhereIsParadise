@@ -558,6 +558,7 @@ public class LabyrinthRoom : TrialsRoom
             ReactivateCurrentRoom();
         }
         gameManagerParent.ui_Manager.DisplayKeyAndTorch(true);
+        gameManagerParent.onePlayerHaveToTakeChestAward = false;
     }
 
     public void ResetAllData()

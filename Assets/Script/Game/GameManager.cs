@@ -166,6 +166,8 @@ public class GameManager : MonoBehaviourPun
 
     public bool canRevoteChest = true;
 
+    public bool onePlayerHaveToTakeChestAward = false;
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();

@@ -198,4 +198,10 @@ public class DeathNpcRoom : TrialsRoom
             player.transform.Find("TargetImgInDeathRoom").gameObject.SetActive(false);
         }
     }
+    public IEnumerator ResetOnePlayerHaveToTakeChestAward()
+    {
+        yield return new WaitForSeconds(1);
+        gameManagerParent.onePlayerHaveToTakeChestAward = false;
+
+    }
 }

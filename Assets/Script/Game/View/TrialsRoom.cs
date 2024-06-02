@@ -113,6 +113,7 @@ public class TrialsRoom : MonoBehaviourPun
 
     public void DesactivateRoom()
     {
+        
         photonView.RPC("SendDesactivateRoom", RpcTarget.All);
     }
 
@@ -123,8 +124,6 @@ public class TrialsRoom : MonoBehaviourPun
             return;
 
         ResetHeartForAllPlayer();
-       
-
 
     }
 
@@ -161,6 +160,8 @@ public class TrialsRoom : MonoBehaviourPun
         {
             gameManagerParent.ui_Manager.DisplayFloorVirusTransparency();
         }
+        Debug.LogError("sa passe trial 1");
+        gameManagerParent.onePlayerHaveToTakeChestAward = true;
     }
 
     public void ActivateObjectPower(int indexPlayer)

@@ -1360,6 +1360,8 @@ public class PlayerNetwork : MonoBehaviourPun
         speciallyRoom.GetComponent<TrialsRoom>().ActivateObjectPower(indexPlayer);
         if(player.isImpostor && !player.hasOneTrapPower)
             speciallyRoom.GetComponent<TrialsRoom>().ActivateImpostorObject(indexPlayer);
+
+        player.gameManager.onePlayerHaveToTakeChestAward = false;
     }
 
 

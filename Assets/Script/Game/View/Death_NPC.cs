@@ -48,6 +48,18 @@ public class Death_NPC : MonoBehaviourPun
         ChangeScaleForSituation();
 
         ChangeTransparencyToInvisibilty();
+
+        if (moveToTarget)
+        {
+            this.GetComponent<PhotonTransformViewClassic>().enabled = false;
+            this.GetComponent<PhotonRigidbody2DView>().enabled = true;
+        }
+        else
+        {
+            this.GetComponent<PhotonTransformViewClassic>().enabled = true;
+            this.GetComponent<PhotonRigidbody2DView>().enabled = false;
+        }
+
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
         {
             return;
@@ -69,7 +81,10 @@ public class Death_NPC : MonoBehaviourPun
             DashDirectionTarget(target2);
        
         if (moveToTarget)
+        {
             MoveOnTarget();
+            
+        }
 
         if(!moveToTarget)
             CalculVelocity();
@@ -261,6 +276,10 @@ public class Death_NPC : MonoBehaviourPun
         deathNPC_Room.loose = true;
         deathNPC_Room.ReactivateCurrentRoom();
         gameManager.ui_Manager.DisplayLeverVoteDoor(true);
+        Debug.LogError("sa passe oneplayerblabla");
+        gameManager.onePlayerHaveToTakeChestAward = false;
+        Debug.LogError("sa passe apres");
+        StartCoroutine(deathNPC_Room.ResetOnePlayerHaveToTakeChestAward());
     }
 
     public void Victory()
@@ -405,18 +424,25 @@ public class Death_NPC : MonoBehaviourPun
     [PunRPC]
     public void HideAndResetNPC()
     {
-        gameManager.deathNPCIsLaunch = false;
-        if (!gameManager.SamePositionAtBoss())
-            return;
-        this.gameObject.transform.Find("Faux").gameObject.SetActive(false);
-        this.gameObject.transform.Find("body_gfx").gameObject.SetActive(false);
-        this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
-        this.transform.position = new Vector3(0, 0, 0);
-        this.GetComponent<AIPath>().destination = new Vector3(0, 0, 0);
-        this.GetComponent<AIPath>().maxSpeed = 0;
-        if(gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
-            PhotonNetwork.Destroy(this.gameObject);
+        StartCoroutine(CoroutineHideAndResetNPC());
        
+    }
+
+    public IEnumerator CoroutineHideAndResetNPC()
+    {
+        yield return new WaitForSeconds(1.5f);
+        gameManager.deathNPCIsLaunch = false;
+        if (gameManager.SamePositionAtBoss())
+        {
+            this.gameObject.transform.Find("Faux").gameObject.SetActive(false);
+            this.gameObject.transform.Find("body_gfx").gameObject.SetActive(false);
+            this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
+            this.transform.position = new Vector3(0, 0, 0);
+            this.GetComponent<AIPath>().destination = new Vector3(0, 0, 0);
+            this.GetComponent<AIPath>().maxSpeed = 0;
+            if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
+                PhotonNetwork.Destroy(this.gameObject);
+        }
     }
 
     public IEnumerator CouroutineDesactivateAll()

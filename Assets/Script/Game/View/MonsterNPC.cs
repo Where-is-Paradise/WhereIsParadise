@@ -279,6 +279,7 @@ public class MonsterNPC : MonoBehaviourPun
         monsterRoom.ReactivateCurrentRoom();
         monsterRoom.gameManager.ui_Manager.DisplayLeverVoteDoor(true);
         monsterRoom.gameManager.ui_Manager.DisplayKeyAndTorch(true);
+        monsterRoom.gameManager.onePlayerHaveToTakeChestAward = false;
     }
 
     [PunRPC]

@@ -184,10 +184,10 @@ GameObject:
   - component: {fileID: 4695169022583446954}
   - component: {fileID: 4695169022583446952}
   - component: {fileID: 4695169022583446955}
-  - component: {fileID: 4695169022583446958}
   - component: {fileID: 4695169022583446959}
   - component: {fileID: 6474057703425119100}
   - component: {fileID: 2933967323202565555}
+  - component: {fileID: 536369051917041482}
   m_Layer: 0
   m_Name: DeathNpc
   m_TagString: GodDeath
@@ -384,8 +384,8 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 4695169022583446955}
-  - {fileID: 4695169022583446958}
   - {fileID: 2933967323202565555}
+  - {fileID: 536369051917041482}
   sceneViewId: 39
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -427,22 +427,6 @@ MonoBehaviour:
   m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 1.5
   preciseSyncPosition: 1
---- !u!114 &4695169022583446958
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4695169022583446946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 0
-  m_SynchronizeRotation: 0
-  m_SynchronizeScale: 1
-  m_UseLocal: 1
 --- !u!58 &4695169022583446959
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -500,10 +484,26 @@ MonoBehaviour:
     InterpolateRotateTowardsSpeed: 180
     InterpolateLerpSpeed: 5
   m_ScaleModel:
-    SynchronizeEnabled: 0
+    SynchronizeEnabled: 1
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
+--- !u!114 &536369051917041482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4695169022583446946}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &4695169023555382417
 GameObject:
   m_ObjectHideFlags: 0

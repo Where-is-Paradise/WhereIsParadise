@@ -383,7 +383,7 @@ public class PlayerGO : MonoBehaviour
             }
             else
             {
-                if (!explorationPowerIsAvailable && gameManager.SamePositionAtMine(this.GetComponent<PhotonView>().ViewID) && !this.isSacrifice)
+                if (!explorationPowerIsAvailable && gameManager.SamePositionAtMine(this.GetComponent<PhotonView>().ViewID) && !this.isSacrifice && !gameManager.onePlayerHaveToTakeChestAward)
                 {
                     this.transform.Find("TorchBarre").gameObject.SetActive(true);
                 }

@@ -127,6 +127,7 @@ public class LostTorchRoom : TrialsRoom
         lostTorch.transform.localPosition = new Vector3(0, 0);
         timerFinish = false;
         gameManager.speciallyIsLaunch = false;
+        gameManager.onePlayerHaveToTakeChestAward = true;
     }
 
     public void HideAllPlayer()
