@@ -946,6 +946,10 @@ public class PlayerNetwork : MonoBehaviourPun
         player.GetComponent<PlayerGO>().isCursed = false;
         player.GetComponent<PlayerGO>().isBlind = false;
 
+        player.transform.Find("BookCursed").gameObject.SetActive(false);
+        player.transform.Find("BlindPotion").gameObject.SetActive(false);
+        player.transform.Find("Skins").GetChild(player.indexSkin).Find("Light_Cursed").gameObject.SetActive(false);
+
         ActivateImpostorObject(player.GetComponent<PhotonView>().ViewID);
     }
 
@@ -1563,6 +1567,15 @@ public class PlayerNetwork : MonoBehaviourPun
         player.transform.Find("CancelVoteChest").gameObject.SetActive(wantToCancel);
     }
 
+    public void SendDisplayTarget(bool display)
+    {
+        photonView.RPC("SetDisplayTarget", RpcTarget.All, display);
+    }
+
+    public void SetDisplayTarget(bool display)
+    {
+        player.transform.Find("TargetImgInDeathRoom").gameObject.SetActive(display);
+    }
 }
 
  

@@ -168,6 +168,8 @@ public class GameManager : MonoBehaviourPun
 
     public bool onePlayerHaveToTakeChestAward = false;
 
+    public bool purificationAppeard = false;
+
     private void Awake()
     {
         gameManagerNetwork = gameObject.GetComponent<GameManagerNetwork>();
@@ -3767,9 +3769,22 @@ public class GameManager : MonoBehaviourPun
     public void CalculProbabiltyVerySpeciality(int indexSpeciality)
     {
         //listBoolapparitionSpecialityRoom[indexSpeciality] = true;
-        float devaluation = (listProbabilityVerySpecialityRoom[indexSpeciality] * 0.7f);
-        listProbabilityVerySpecialityRoom[indexSpeciality] -= devaluation;
+        float devaluation = 0;
+        if (indexSpeciality == 1)
+        {
+            devaluation = (listProbabilityVerySpecialityRoom[indexSpeciality] * 1f);
+            listProbabilityVerySpecialityRoom[indexSpeciality] -= devaluation;
+            
+            purificationAppeard = true;
+            gameManagerNetwork.SendPurificationAppeared(purificationAppeard);
+        }
+        else
+        {
+            devaluation = (listProbabilityVerySpecialityRoom[indexSpeciality] * 0.7f);
+            listProbabilityVerySpecialityRoom[indexSpeciality] -= devaluation;
+        }
 
+        
 
 
         gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[indexSpeciality], indexSpeciality);
@@ -3785,10 +3800,14 @@ public class GameManager : MonoBehaviourPun
         {
             if (i == indexSpeciality)
                 continue;
+            if (purificationAppeard && i == 1)
+                continue;
+
             listProbabilityVerySpecialityRoom[i] += (float)(devaluation / (sizeListProbabilityVerySpecialityRoom - 1));
             gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
         }
-
+        if(indexSpeciality == 1)
+            sizeListProbabilityVerySpecialityRoom--;
         //listProbabilityVerySpecialityRoom.RemoveAt(indexSpeciality);
     }
 
@@ -4876,27 +4895,29 @@ public class GameManager : MonoBehaviourPun
         {
             if(!setting.listTrapRoom[1] )
                 randomRight -= (float)(100 / 3f);
-            if(!!setting.listTrapRoom[0])
+            if(!setting.listTrapRoom[0])
                 randomLeft += (float)(100 / 3f);
+            if (setting.listTrapRoom[1] && setting.listTrapRoom[0])
+                randomRight -= (float)(100 / 3f);
         }
         if (!setting.listTrapRoom[1])
         {
             randomRight -= (float)(100 / 3f);
         }
-/*        if (!setting.listTrapRoom[3])
-        {
-            randomRight -= (float)(100 / 4f);
-        }*/
-
+        /*        if (!setting.listTrapRoom[3])
+                {
+                    randomRight -= (float)(100 / 4f);
+                }*/
+        Debug.Log("RANDOM : " + randomLeft + "/" + randomRight);
         float randomfloat = Random.Range(randomLeft, randomRight);
-
+        Debug.Log(randomfloat);
 
         //randomfloat = 14;
-        if (randomfloat < 33 && setting.listTrapRoom[0])
+        if (randomfloat < 33.33333 && setting.listTrapRoom[0])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(0); // foggy
         }
-        else if (randomfloat < 66 && setting.listTrapRoom[2])
+        else if (randomfloat < 66.66667 && setting.listTrapRoom[2])
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIndexPower(1); // chest
         }

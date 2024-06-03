@@ -1672,7 +1672,7 @@ public class PlayerGO : MonoBehaviour
             groupSpeciality = "TrialRoom_lever";
             gameManager.gameManagerNetwork.SendLaunchLabyrinthRoom();
         }
-        if(!gameManager.game.currentRoom.isPurification && !gameManager.game.currentRoom.isPray)
+        if(!gameManager.game.currentRoom.isPurification && !gameManager.game.currentRoom.isPray && !gameManager.game.currentRoom.isNPC)
             gameManager.gameManagerNetwork.SendCloseDoorWhenVoteCoroutine();
         StartCoroutine(HideLeverCouroutine(groupSpeciality));
         onClickButtonKeySpecially = false;
@@ -1963,6 +1963,8 @@ public class PlayerGO : MonoBehaviour
         {
             return;
         }
+        if (gameManager.ui_Manager.mapLostSoul.activeSelf || gameManager.ui_Manager.map.activeSelf)
+            return;
         if (gameManager.speciallyIsLaunch)
             return;
         if (gameManager.game.currentRoom.explorationIsUsed)

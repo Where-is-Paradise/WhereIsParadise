@@ -51,7 +51,17 @@ public class TrialsRoom : MonoBehaviourPun
             // bluetorch
             if (gameManagerParent.game.currentRoom.HaveOneNeighbour())
             {
-                GetAward(indexPlayer);
+                if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasMap &&
+                    gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasProtection)
+                {
+                    if (gameManagerParent.GetPlayerMineGO().GetComponent<PhotonView>().ViewID == indexPlayer)
+                        gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendDesactivateObject(this.GetComponent<PhotonView>().ViewID);
+                    ResetHasWinFireBallRoom();
+
+                    return;
+                }
+                if (gameManagerParent.GetPlayerMineGO().GetComponent<PhotonView>().ViewID == indexPlayer)
+                    GetAward(indexPlayer);
                 return;
             }
 
@@ -65,7 +75,8 @@ public class TrialsRoom : MonoBehaviourPun
                 if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
                     return;
                 Debug.Log("Has map restart");
-                GetAward(indexPlayer);
+                if (gameManagerParent.GetPlayerMineGO().GetComponent<PhotonView>().ViewID == indexPlayer)
+                    GetAward(indexPlayer);
                 return;
             }
 
@@ -79,7 +90,8 @@ public class TrialsRoom : MonoBehaviourPun
                 if (!gameManagerParent.GetBoss().GetComponent<PhotonView>().IsMine)
                     return;
                 Debug.Log("Has protection restart");
-                GetAward(indexPlayer);
+                if (gameManagerParent.GetPlayerMineGO().GetComponent<PhotonView>().ViewID == indexPlayer)
+                    GetAward(indexPlayer);
                 return;
             }
             DisplayAwardObject(0);
@@ -94,6 +106,18 @@ public class TrialsRoom : MonoBehaviourPun
         {
             if (gameManagerParent.game.currentRoom.HaveOneNeighbour())
             {
+                if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasMap &&
+                    gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasProtection)
+                {
+                    if (gameManagerParent.GetPlayerMineGO().GetComponent<PhotonView>().ViewID == indexPlayer)
+                        gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendDesactivateObject(this.GetComponent<PhotonView>().ViewID);
+                    ResetHasWinFireBallRoom();
+
+                    return;
+                }
+
+                if (gameManagerParent.GetPlayerMineGO().GetComponent<PhotonView>().ViewID == indexPlayer)
+                    GetAward(indexPlayer);
                 return;
             }
             DisplayAwardObject(0);

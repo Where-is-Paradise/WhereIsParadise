@@ -440,6 +440,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         {
             ui_management.SetPlayerNameMatchmaking(newPlayer);
             ui_management.SetDifficultyValue(0);
+            newPlayer.transform.Find("Skins").GetChild(newPlayer.GetComponent<PlayerGO>().indexSkin).Find("Crown").gameObject.SetActive(false);
         }
         else
         {
@@ -450,13 +451,13 @@ public class Lobby : MonoBehaviourPunCallbacks
                 if (!matchmaking)
                 {
                     newPlayer.GetComponent<PlayerGO>().isBossMenu = true;
-                    newPlayer.transform.Find("Skins").GetChild(index_skin).Find("Crown").gameObject.SetActive(true);
+                    newPlayer.GetComponent<PlayerNetwork>().SendIsBossMenu(true);
                 } 
             }
         }
 
         Debug.Log(isBackToWaitingRoom);
-        if (isBackToWaitingRoom)
+        if (isBackToWaitingRoom && !matchmaking)
         {
             newPlayer.GetComponent<PlayerNetwork>().SendNamePlayer(oldPlayerName);
             if (old_masterClient.Equals(PhotonNetwork.LocalPlayer.UserId))
@@ -522,6 +523,9 @@ public class Lobby : MonoBehaviourPunCallbacks
         {
             PlayerIsMine().GetComponent<PlayerNetwork>().SendindexSkin(PlayerIsMine().GetComponent<PlayerGO>().indexSkin);
             PlayerIsMine().GetComponent<PlayerNetwork>().SendindexSkinColor(PlayerIsMine().GetComponent<PlayerGO>().indexSkinColor, true);
+            if(matchmaking)
+                GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsBossMenu(false);
+
         }
 
         Debug.LogError(old_masterClient + " " + newPlayer.UserId);
@@ -535,6 +539,7 @@ public class Lobby : MonoBehaviourPunCallbacks
                 ui_management.SendDisplayReadyButton(false);
                 ui_management.DisabledBackButton();
                 photonView.RPC("SendLaunchCouroutine1", RpcTarget.All);
+
                
             }
             else
@@ -559,8 +564,8 @@ public class Lobby : MonoBehaviourPunCallbacks
                 }
               
             }
-
-            GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsBossMenu(true);
+            if(!matchmaking)
+                GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsBossMenu(true);
 
 
         }
@@ -620,7 +625,7 @@ public class Lobby : MonoBehaviourPunCallbacks
             ui_management.timerMatchmaking_global.SetActive(false);
             ui_management.labelSearch.SetActive(true);
         }
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient && !matchmaking)
         {
             GetPlayerMineGO().GetComponent<PlayerNetwork>().SendIsBossMenu(true);
         }

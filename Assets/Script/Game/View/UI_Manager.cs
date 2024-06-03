@@ -2107,7 +2107,7 @@ setting_button_echapMenu.SetActive(false);
                 continue;
             indexRoom = player.GetComponent<PlayerGO>().roomUsedWhenCursed.Index;
         }
-        gameManager.GetHexagone(indexRoom).transform.Find("Canvas").Find("Cursed").gameObject.SetActive(true);
+        //gameManager.GetHexagone(indexRoom).transform.Find("Canvas").Find("Cursed").gameObject.SetActive(true);
     }
     public void HideSpeciallyDisplay()
     {
@@ -2483,6 +2483,13 @@ setting_button_echapMenu.SetActive(false);
     public void OnClickButtonMagicalKey()
     {
         panelChooseRoom.SetActive(true);
+        if (gameManager.PurificationIsUsed)
+        {
+            panelChooseRoom.transform.Find("Purification").Find("PurificationDesactivate").gameObject.SetActive(true);
+            panelChooseRoom.transform.Find("Purification").GetComponent<Button>().enabled = false;
+        }
+            
+
         canvasInGame.transform.Find("Exploration").Find("MagicalKey").Find("Bigger").gameObject.SetActive(false);
         canvasInGame.transform.Find("Exploration").Find("MagicalKey").gameObject.SetActive(false);
         canvasInGame.transform.Find("Exploration").Find("Torch").gameObject.SetActive(true);
@@ -2543,6 +2550,7 @@ setting_button_echapMenu.SetActive(false);
         foreach(GameObject door in doors)
         {
             door.GetComponent<Door>().DisplayColorLightToExploration();
+            gameManager.gameManagerNetwork.SendDisplayLightExplorationTransparency(door.GetComponent<Door>().index);
         }
         canvasInGame.transform.Find("Exploration").Find("BlackTorch").Find("Bigger").gameObject.SetActive(false);
         canvasInGame.transform.Find("Exploration").Find("BlackTorch").gameObject.SetActive(false);

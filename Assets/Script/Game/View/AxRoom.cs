@@ -33,7 +33,7 @@ public class AxRoom : TrialsRoom
             
         if (!isLaunch)
             return;
-        if (Input.GetMouseButton(0) && !isPreparedToLauch && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchInTrial)
+        if (Input.GetMouseButton(0) && !isPreparedToLauch && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isTouchInTrial && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isSacrifice)
         {
             isPreparedToLauch = true;
             DisplayLineToShot(true);
@@ -110,7 +110,8 @@ public class AxRoom : TrialsRoom
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach(GameObject player in listPlayer)
         {
-            player.transform.Find("Ax").gameObject.SetActive(display);
+            if(!player.GetComponent<PlayerGO>().isSacrifice)
+                player.transform.Find("Ax").gameObject.SetActive(display);
         }
     }
 

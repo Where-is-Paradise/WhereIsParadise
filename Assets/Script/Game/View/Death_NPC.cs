@@ -53,11 +53,13 @@ public class Death_NPC : MonoBehaviourPun
         {
             this.GetComponent<PhotonTransformViewClassic>().enabled = false;
             this.GetComponent<PhotonRigidbody2DView>().enabled = true;
+            this.GetComponent<PhotonTransformView>().enabled = true;
         }
         else
         {
             this.GetComponent<PhotonTransformViewClassic>().enabled = true;
             this.GetComponent<PhotonRigidbody2DView>().enabled = false;
+            this.GetComponent<PhotonTransformView>().enabled = false;
         }
 
         if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
@@ -237,6 +239,7 @@ public class Death_NPC : MonoBehaviourPun
             return;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerGO>().isTouchInTrial = true;
         gameManager.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendIstouchInTrial(true);
+        gameManager.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendDisplayTarget(false);
         photonView.RPC("SendIgnoreCollisionOnePlayer", RpcTarget.All, indexPlayer,true);
 
         if (target)
@@ -430,16 +433,21 @@ public class Death_NPC : MonoBehaviourPun
 
     public IEnumerator CoroutineHideAndResetNPC()
     {
-        yield return new WaitForSeconds(1.5f);
-        gameManager.deathNPCIsLaunch = false;
         if (gameManager.SamePositionAtBoss())
         {
+            gameManager.deathNPCIsLaunch = false;
             this.gameObject.transform.Find("Faux").gameObject.SetActive(false);
             this.gameObject.transform.Find("body_gfx").gameObject.SetActive(false);
+            this.gameObject.transform.Find("targetIMG").gameObject.SetActive(false);
             this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
             this.transform.position = new Vector3(0, 0, 0);
             this.GetComponent<AIPath>().destination = new Vector3(0, 0, 0);
             this.GetComponent<AIPath>().maxSpeed = 0;
+        }
+        yield return new WaitForSeconds(2f);
+       
+        if (gameManager.SamePositionAtBoss())
+        {
             if (gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isBoss)
                 PhotonNetwork.Destroy(this.gameObject);
         }

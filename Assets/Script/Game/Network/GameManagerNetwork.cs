@@ -3273,4 +3273,15 @@ public class GameManagerNetwork : MonoBehaviourPun
         }
     }
 
+    public void SendPurificationAppeared(bool appear)
+    {
+        photonView.RPC("SetPurificationAppeared", RpcTarget.All, appear);
+    }
+
+    [PunRPC]
+    public void SetPurificationAppeared(bool appear)
+    {
+        gameManager.purificationAppeard = appear;
+    }
+
 }
