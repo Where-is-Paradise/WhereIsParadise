@@ -25191,19 +25191,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 540735927}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1081620638}
-        m_TargetAssemblyTypeName: Settin_management, Assembly-CSharp
-        m_MethodName: OnClickSetInputController
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1635897474}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &540735927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25217,7 +25205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.3679245, g: 0.36618903, b: 0.36618903, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -38378,19 +38366,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 840087922}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1081620638}
-        m_TargetAssemblyTypeName: Settin_management, Assembly-CSharp
-        m_MethodName: OnClickSetInputController
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1902181969}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &840087922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38404,7 +38380,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.3679245, g: 0.36618903, b: 0.36618903, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -40638,19 +40614,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 885618093}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1081620638}
-        m_TargetAssemblyTypeName: Settin_management, Assembly-CSharp
-        m_MethodName: OnClickSetInputController
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1639461079}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &885618093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40664,7 +40628,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.3679245, g: 0.36618903, b: 0.36618903, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -42190,19 +42154,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 912952534}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1081620638}
-        m_TargetAssemblyTypeName: Settin_management, Assembly-CSharp
-        m_MethodName: OnClickSetInputController
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 263535529}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &912952534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42216,7 +42168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.3679245, g: 0.36618903, b: 0.36618903, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

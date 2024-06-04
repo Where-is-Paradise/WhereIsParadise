@@ -169,6 +169,11 @@ public class GameManager : MonoBehaviourPun
     public bool onePlayerHaveToTakeChestAward = false;
 
     public bool purificationAppeard = false;
+    public bool sacrificeAppeard = false;
+
+    public GameObject setting_backWaitingRoom;
+
+    public bool onePlayerHaveToUseTorchAward = false;
 
     private void Awake()
     {
@@ -210,6 +215,7 @@ public class GameManager : MonoBehaviourPun
        
         //StartCoroutine(StartAmbianceBeginingMusic())
         StartCoroutine(PauseMusic());
+        setting_backWaitingRoom = GameObject.Find("Setting_backWaitingRoom");
     }
     public IEnumerator MasterClientCreateMap()
     {
@@ -3770,45 +3776,43 @@ public class GameManager : MonoBehaviourPun
     {
         //listBoolapparitionSpecialityRoom[indexSpeciality] = true;
         float devaluation = 0;
-        if (indexSpeciality == 1)
+        if (indexSpeciality == 1 || indexSpeciality == 2)
         {
             devaluation = (listProbabilityVerySpecialityRoom[indexSpeciality] * 1f);
             listProbabilityVerySpecialityRoom[indexSpeciality] -= devaluation;
             
-            purificationAppeard = true;
-            gameManagerNetwork.SendPurificationAppeared(purificationAppeard);
+            if(indexSpeciality == 1)
+            {
+                purificationAppeard = true;
+                gameManagerNetwork.SendPurificationAppeared(purificationAppeard);
+            }
+            if (indexSpeciality == 2)
+            {
+                sacrificeAppeard = true;
+                gameManagerNetwork.SendSacrificeAppeared(sacrificeAppeard);
+            }
         }
         else
         {
             devaluation = (listProbabilityVerySpecialityRoom[indexSpeciality] * 0.7f);
             listProbabilityVerySpecialityRoom[indexSpeciality] -= devaluation;
         }
-
-        
-
-
         gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[indexSpeciality], indexSpeciality);
-
-/*        int coutnerNegativRoomProba = 0;
-        for (int i = 0; i < listProbabilityVerySpecialityRoom.Count; i++)
-        {
-            if (listProbabilityVerySpecialityRoom[i] <= 0)
-                coutnerNegativRoomProba++;
-        }*/
-
         for (int i = 0; i < listProbabilityVerySpecialityRoom.Count; i++)
         {
             if (i == indexSpeciality)
                 continue;
             if (purificationAppeard && i == 1)
                 continue;
-
+            if (sacrificeAppeard && i == 2)
+                continue;
             listProbabilityVerySpecialityRoom[i] += (float)(devaluation / (sizeListProbabilityVerySpecialityRoom - 1));
             gameManagerNetwork.SendUpdateListVerySpecialityProbality(listProbabilityVerySpecialityRoom[i], i);
         }
         if(indexSpeciality == 1)
             sizeListProbabilityVerySpecialityRoom--;
-        //listProbabilityVerySpecialityRoom.RemoveAt(indexSpeciality);
+        if(indexSpeciality == 2)
+            sizeListProbabilityVerySpecialityRoom--;
     }
 
 
@@ -4286,7 +4290,7 @@ public class GameManager : MonoBehaviourPun
         ui_Manager.HideSpeciallyDisplay();
         gameManagerNetwork.SendIsEndGame(true);
         ui_Manager.StopAllMusic();
-
+        CloseDoorWhenVote(true);
         ui_Manager.soundAmbianceHell.Play();
         yield return new WaitForSeconds(4);
         if (!GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
@@ -5204,6 +5208,28 @@ public class GameManager : MonoBehaviourPun
         {
             player.GetComponent<PlayerGO>().wantToCancelVoteChest = false;
         }
+    }
+
+    public bool CurrentRoomHaveNoDoorAvailable()
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        foreach(GameObject door in doors)
+        {
+            if (!door.GetComponent<Door>().isOpenForAll && !door.GetComponent<Door>().barricade)
+                return false;
+        }
+        return true;
+    }
+
+    public Door GetRandomDoorAvailbleCurrentRoomAvailable()
+    {
+        GameObject[] doors = GameObject.FindGameObjectsWithTag("Door");
+        foreach (GameObject door in doors)
+        {
+            if (!door.GetComponent<Door>().isOpenForAll && !door.GetComponent<Door>().barricade)
+                return door.GetComponent<Door>();
+        }
+        return null;
     }
 
 }

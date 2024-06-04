@@ -2038,6 +2038,7 @@ setting_button_echapMenu.SetActive(false);
         if (gameManager.game.currentRoom.explorationIsUsed)
             return;
         int indexDoor = gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().collsionDoorIndexForExploration;
+        Debug.LogError(indexDoor);
         if (gameManager.GetDoorGo(indexDoor))
         {
             gameManager.GetDoorGo(indexDoor).GetComponent<Door>().DisplayColorLightToExploration();
@@ -2078,8 +2079,63 @@ setting_button_echapMenu.SetActive(false);
             gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
             gameManager.gameManagerNetwork.SendDisplaySupportTorch(false);
             gameManager.gameManagerNetwork.SendIndexPreviousExplorater(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayTimerHavoToTorch(false, 10);
+            gameManager.onePlayerHaveToUseTorchAward = false;
         }
            
+    }
+
+    public void ExecuteForcePowerExplorationBigger(int indexDoor)
+    {
+        if (gameManager.game.nbTorch <= 0 && !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
+            return;
+        if (gameManager.game.currentRoom.explorationIsUsed)
+            return;
+        Debug.LogError(indexDoor);
+        if (gameManager.GetDoorGo(indexDoor))
+        {
+            gameManager.GetDoorGo(indexDoor).GetComponent<Door>().DisplayColorLightToExploration();
+            gameManager.ui_Manager.doorTorched.Play();
+            gameManager.gameManagerNetwork.SendDisplayLightExplorationTransparency(indexDoor);
+            if (gameManager.GetPlayerWithTorchBarre())
+                gameManager.GetPlayerWithTorchBarre().GetComponent<PlayerNetwork>().SendExplorationPowerIsAvailable(true);
+            gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().explorationPowerIsAvailable = false;
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendExplorationPowerIsAvailable(false);
+
+            canvasInGame.transform.Find("Exploration").Find("Torch").Find("Bigger").gameObject.SetActive(false);
+            canvasInGame.transform.Find("Exploration").Find("Torch").Find("Disabled").gameObject.SetActive(true);
+
+            // set player when win trial game
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayWhiteLight(false);
+
+            if (!(gameManager.game.currentRoom.isTeamTrial && !gameManager.game.currentRoom.speciallyPowerIsUsed))
+                gameManager.gameManagerNetwork.SendDisplayMainLevers(true);
+
+
+            // set gameManager
+            if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().hasWinFireBallRoom)
+            {
+                gameManager.game.nbTorch--;
+                gameManager.gameManagerNetwork.SendTorchNumber(gameManager.game.nbTorch);
+            }
+            else
+            {
+                gameManager.gameManagerNetwork.SendTimerForcePause(false);
+            }
+            if (gameManager.game.nbTorch == 0)
+                DisabledButtonPowerExploration(true);
+            gameManager.gameManagerNetwork.SendExplorationIsUsed(gameManager.game.currentRoom.Index, true);
+
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(false);
+
+            //gameManager.ui_Manager.DisplayAllDoorLightExploration(false);
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlueTorch(false);
+            gameManager.gameManagerNetwork.SendDisplaySupportTorch(false);
+            gameManager.gameManagerNetwork.SendIndexPreviousExplorater(gameManager.GetPlayerMineGO().GetComponent<PhotonView>().ViewID);
+            gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayTimerHavoToTorch(false, 10);
+            gameManager.onePlayerHaveToUseTorchAward = false;
+        }
+
     }
 
     public void DisabledAllButtonBigger()
@@ -2088,6 +2144,7 @@ setting_button_echapMenu.SetActive(false);
         DisplayButtonChnageBossBigger(false);
         DisplayButtonMapBigger(false);
         DisplayButtonMainKeyBigger(false);
+        DisplayButtonNPCBigger(false);
     }
 
     public void DisabledButtonPowerExploration(bool display)
@@ -2568,7 +2625,9 @@ setting_button_echapMenu.SetActive(false);
             gameManager.GetPlayerWithTorchBarre().GetComponent<PlayerNetwork>().SendExplorationPowerIsAvailable(true);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendExplorationPowerIsAvailable(false);
         gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayBlackTorch(false);
+        gameManager.GetPlayerMineGO().GetComponent<PlayerNetwork>().SendDisplayTimerHavoToTorch(false, 10);
     }
+
 
     public void DisplayInformationObjectWon(int index)
     {
@@ -2591,6 +2650,7 @@ setting_button_echapMenu.SetActive(false);
     {
         canvasInGame.transform.Find("Interaction").Find("Key_intercation").gameObject.SetActive(display);
     }
+
     public void OnClickButtonMainKey()
     {
         if (!gameManager.canLaunchVoteDoor)

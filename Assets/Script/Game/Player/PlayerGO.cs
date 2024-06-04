@@ -2199,9 +2199,9 @@ public class PlayerGO : MonoBehaviour
         //transform.Find("ActivityCanvas").Find("E_inputImage").gameObject.SetActive(isEnter);
         gameManager.ui_Manager.mobileCanvas.transform.Find("Map_panel").gameObject.SetActive(isEnter);
         if(isEnter)
-            gameManager.ui_Manager.map_interaction.transform.Find("map_img").localScale = new Vector3(0.144f, 0.140f);
+            gameManager.ui_Manager.map_interaction.transform.Find("map_img").localScale = new Vector3(2f, 1f);
         else
-            gameManager.ui_Manager.map_interaction.transform.Find("map_img").localScale = new Vector3(0.110f, 0.100f);
+            gameManager.ui_Manager.map_interaction.transform.Find("map_img").localScale = new Vector3(1.5f, 0.8f);
         if (isEnter)
         {
             DisplayTutorial(12);

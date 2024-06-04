@@ -3284,4 +3284,16 @@ public class GameManagerNetwork : MonoBehaviourPun
         gameManager.purificationAppeard = appear;
     }
 
+    public void SendSacrificeAppeared(bool appear)
+    {
+        photonView.RPC("SendSacrifice", RpcTarget.All, appear);
+    }
+
+    [PunRPC]
+    public void SetSacrificeAppeared(bool appear)
+    {
+        gameManager.sacrificeAppeard = appear;
+    }
+
+
 }

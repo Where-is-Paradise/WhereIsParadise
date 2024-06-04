@@ -68,6 +68,8 @@ public class SwordRoom : TrialsRoom
         GameObject[] listPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in listPlayer)
         {
+            if (player.GetComponent<PlayerGO>().isSacrifice)
+                continue;
             player.GetComponent<PlayerGO>().DisiplayHeartInitial(display);
         }
     }

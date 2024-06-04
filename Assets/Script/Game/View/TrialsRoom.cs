@@ -49,7 +49,7 @@ public class TrialsRoom : MonoBehaviourPun
         if(randomFloat < 50)
         {
             // bluetorch
-            if (gameManagerParent.game.currentRoom.HaveOneNeighbour())
+            if (gameManagerParent.CurrentRoomHaveNoDoorAvailable())
             {
                 if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasMap &&
                     gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasProtection)
@@ -104,7 +104,7 @@ public class TrialsRoom : MonoBehaviourPun
         }
         else
         {
-            if (gameManagerParent.game.currentRoom.HaveOneNeighbour())
+            if (gameManagerParent.CurrentRoomHaveNoDoorAvailable())
             {
                 if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasMap &&
                     gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasProtection)
@@ -126,6 +126,15 @@ public class TrialsRoom : MonoBehaviourPun
         gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasWinFireBallRoom = true;
         playerwinner = gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>();
         StartCoroutine(ActiveCollisionChestCoroutine());
+       
+        if (gameManagerParent.setting_backWaitingRoom.GetComponent<BackWaitingRoom>().isMatchmaking)
+        {
+            StartCoroutine(CouroutineTimerHaveToTakeChestAward(indexPlayer));
+            gameManagerParent.GetPlayer(indexPlayer).transform.Find("TimerHaveTo").gameObject.SetActive(true);
+            gameManagerParent.GetPlayer(indexPlayer).transform.Find("TimerHaveTo").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay2>().timerLaunch = true;
+        }
+        gameManagerParent.onePlayerHaveToTakeChestAward = true;
+           
     }
 
     public void DisplayAwardObject(int index)
@@ -200,6 +209,8 @@ public class TrialsRoom : MonoBehaviourPun
             case 0:
                 if (!gameManagerParent.SamePositionAtBoss())
                     return;
+                gameManagerParent.onePlayerHaveToUseTorchAward = true;
+               
                 gameManagerParent.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
                 gameManagerParent.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendHasWinFireBallRoom(true);
                 gameManagerParent.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().SetCanLaunchExplorationCoroutine(true);
@@ -209,6 +220,12 @@ public class TrialsRoom : MonoBehaviourPun
                 {
                     gameManagerParent.ui_Manager.DisplayInformationObjectWon(0);
                 }
+                if (gameManagerParent.setting_backWaitingRoom.GetComponent<BackWaitingRoom>().isMatchmaking)
+                {
+                    gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendDisplayTimerHavoToTorch(true, 15);
+                    StartCoroutine(CouroutineTimerHaveToUsedTorchAward(indexPlayer, 0));
+                }
+                    
                 break;
             case 1:
                 gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerGO>().hasMap = true;
@@ -233,6 +250,8 @@ public class TrialsRoom : MonoBehaviourPun
             case 3:
                 if (!gameManagerParent.SamePositionAtBoss())
                     return;
+                gameManagerParent.onePlayerHaveToUseTorchAward = true;
+              
                 gameManagerParent.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerGO>().hasBlackTorch = true;
                 gameManagerParent.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendOnclickToExpedtionN2();
                 gameManagerParent.GetPlayer(indexPlayer).gameObject.GetComponent<PlayerNetwork>().SendBlackTorch(true);
@@ -242,6 +261,11 @@ public class TrialsRoom : MonoBehaviourPun
                 if (gameManagerParent.GetPlayer(indexPlayer).GetComponent<PhotonView>().IsMine)
                 {
                     gameManagerParent.ui_Manager.DisplayInformationObjectWon(3);
+                }
+                if (gameManagerParent.setting_backWaitingRoom.GetComponent<BackWaitingRoom>().isMatchmaking)
+                {
+                    gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendDisplayTimerHavoToTorch(true, 15);
+                    StartCoroutine(CouroutineTimerHaveToUsedTorchAward(indexPlayer, 1));
                 }
                 break;
         }
@@ -603,6 +627,33 @@ public class TrialsRoom : MonoBehaviourPun
         yield return new WaitForSeconds(1f);
         this.transform.parent.transform.Find("AwardObject").Find("ChestTeam").Find("collisionChest").gameObject.SetActive(false);
         this.transform.parent.transform.Find("AwardObject").Find("ChestTeam").GetComponent<BoxCollider2D>().enabled = true;
+    }
+
+    public IEnumerator CouroutineTimerHaveToTakeChestAward(int indexPlayer)
+    {
+        yield return new WaitForSeconds(10);
+        if(gameManagerParent.onePlayerHaveToTakeChestAward && gameManagerParent.GetPlayerMineGO().GetComponent<PhotonView>().ViewID == indexPlayer)
+        {
+            gameManagerParent.GetPlayerMineGO().transform.position = new Vector3(0, 0);
+            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendDisplayTimerHavoToTorch(false,10);
+        }
+    }
+
+    public IEnumerator CouroutineTimerHaveToUsedTorchAward(int indexPlayer, int indexTorch)
+    {
+        yield return new WaitForSeconds(15);
+        if (gameManagerParent.onePlayerHaveToUseTorchAward && gameManagerParent.GetPlayerMineGO().GetComponent<PhotonView>().ViewID == indexPlayer)
+        {
+            Door door = gameManagerParent.GetRandomDoorAvailbleCurrentRoomAvailable();
+            Debug.LogError(door.index);
+            gameManagerParent.GetPlayerMineGO().transform.position = door.transform.Find("TelportPlayerSpawn").transform.position;
+            if (indexTorch == 0)
+                gameManagerParent.ui_Manager.ExecuteForcePowerExplorationBigger(door.index);
+            else
+                gameManagerParent.ui_Manager.OnClickBlackTorchButton();
+
+            gameManagerParent.GetPlayer(indexPlayer).GetComponent<PlayerNetwork>().SendDisplayTimerHavoToTorch(false,10);
+        }
     }
 
 }

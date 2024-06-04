@@ -1365,6 +1365,7 @@ public class PlayerNetwork : MonoBehaviourPun
         if(player.isImpostor && !player.hasOneTrapPower)
             speciallyRoom.GetComponent<TrialsRoom>().ActivateImpostorObject(indexPlayer);
 
+        SetDisplayTimerHavoToTorch(false, 10);
         player.gameManager.onePlayerHaveToTakeChestAward = false;
     }
 
@@ -1572,9 +1573,22 @@ public class PlayerNetwork : MonoBehaviourPun
         photonView.RPC("SetDisplayTarget", RpcTarget.All, display);
     }
 
+    [PunRPC]
     public void SetDisplayTarget(bool display)
     {
         player.transform.Find("TargetImgInDeathRoom").gameObject.SetActive(display);
+    }
+
+    public void SendDisplayTimerHavoToTorch(bool display, int timer)
+    {
+        photonView.RPC("SetDisplayTimerHavoToTorch", RpcTarget.All, display, timer);
+    }
+    [PunRPC]
+    public void SetDisplayTimerHavoToTorch(bool display, int timer)
+    {
+        this.transform.Find("TimerHaveTo").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay2>().timeLeft = timer;
+        this.transform.Find("TimerHaveTo").Find("CanvasTimer").Find("Timer").GetComponent<TimerDisplay2>().timerLaunch = display;
+        this.transform.Find("TimerHaveTo").gameObject.SetActive(display);
     }
 }
 

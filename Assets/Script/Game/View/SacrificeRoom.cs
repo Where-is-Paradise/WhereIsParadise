@@ -34,6 +34,7 @@ public class SacrificeRoom : MonoBehaviour
         gameManager.gameManagerNetwork.SendTimerForcePause(true);
         gameManager.gameManagerNetwork.SendDisplayTimerForce(false);
         gameManager.gameManagerNetwork.SendChronoSacrifice();
+        gameManager.CloseDoorWhenVoteCoroutine(true);
 
         yield return new WaitForSeconds(10f);
         GameObject player = GetPlayerWithMaxVote();
