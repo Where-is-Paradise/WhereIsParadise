@@ -116,6 +116,10 @@ public class Hexagone : MonoBehaviourPun
                     this.transform.Find("Information_Speciality").gameObject.SetActive(false);
                     this.GetComponent<SpriteRenderer>().color = new Color(58 / 255f, 187 / 255f, 241 / 255f);
                 }
+                if (this.room.isImpostorRoom)
+                {
+                    this.transform.Find("Canvas").Find("Impostor_?").gameObject.SetActive(true);
+                }
               
 
                 if (!gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().isImpostor)
@@ -206,6 +210,10 @@ public class Hexagone : MonoBehaviourPun
                 {
                     if (this.room.isNewParadise && !this.room.isHide)
                         this.transform.Find("Information_Speciality").gameObject.SetActive(true);
+                }
+                if (this.room.isImpostorRoom)
+                {
+                    this.transform.Find("Canvas").Find("Impostor_?").gameObject.SetActive(false);
                 }
 
             }

@@ -3340,6 +3340,15 @@ setting_button_echapMenu.SetActive(false);
         StartCoroutine(DisplayTutorialCouroutine(indexPanel));
     }
 
+    public void OnClickDisplayTutorial(int indexPanel)
+    {
+        gameManager.ui_Manager.tutorial_parent.transform.parent.gameObject.SetActive(true);
+        gameManager.ui_Manager.tutorial_parent.SetActive(true);
+        gameManager.ui_Manager.tutorial[indexPanel].SetActive(true);
+
+    }
+
+
     public void OnClickCancelVoteChestButton()
     {
         gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().wantToCancelVoteChest = !gameManager.GetPlayerMineGO().GetComponent<PlayerGO>().wantToCancelVoteChest;
